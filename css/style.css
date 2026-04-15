@@ -2813,20 +2813,68 @@ section h2.shimmer-active::after,
   /* Preve que elementos quebrem layout por overflow horizontal */
   html, body { max-width: 100vw; overflow-x: hidden; }
 
-  /* Floatnav — mostra só logo + CTA compacto + burger */
+  /* Floatnav mobile — pill compacto + drawer expansível */
+  .header { padding: 0 14px !important; }
   .floatnav {
     gap: 4px !important;
-    padding: 6px 8px !important;
+    padding: 6px 6px 6px 10px !important;
+    position: relative;
+    flex-wrap: wrap;
+    max-width: calc(100vw - 28px);
   }
-  .floatnav__item,
   .floatnav .nav-sep { display: none !important; }
+  .floatnav__item {
+    display: none !important;
+    padding: 12px 16px !important;
+    width: 100%;
+    border-radius: 12px !important;
+    justify-content: flex-start !important;
+  }
+  .floatnav.active {
+    border-radius: 20px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 10px !important;
+    gap: 4px !important;
+  }
+  .floatnav.active .floatnav__item {
+    display: inline-flex !important;
+    order: 2;
+  }
+  .floatnav.active .nav-logo,
+  .floatnav.active .floatnav__cta { order: 1; }
+  .floatnav.active .floatnav__cta {
+    order: 3;
+    width: 100%;
+    justify-content: center !important;
+    margin-top: 4px;
+  }
+  .floatnav.active .floatnav__icon {
+    width: 18px !important;
+    opacity: 1 !important;
+    transform: none !important;
+    margin-right: 10px !important;
+  }
+  .floatnav.active .floatnav__text { font-size: 14px; }
   .floatnav__cta {
     padding: 8px 14px !important;
     font-size: 13px !important;
   }
   .floatnav__cta-icon { width: 22px !important; height: 22px !important; }
   .nav-logo img { width: 28px !important; height: 28px !important; }
-  .header__burger { display: flex !important; }
+  .header__burger {
+    display: flex !important;
+    position: absolute;
+    right: 14px;
+    top: 18px;
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+    z-index: 1001;
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
 
   /* Hero */
   .hero { min-height: auto !important; padding: 110px 0 60px !important; }
@@ -2967,4 +3015,76 @@ section h2.shimmer-active::after,
   .ticker__logo img { max-height: 38px !important; }
   .cs-hero__quote { font-size: 14px !important; }
   .footer__cols { grid-template-columns: 1fr !important; }
+}
+
+/* ============================================
+   MOBILE — bugs específicos (efeitos e layout)
+   ============================================ */
+@media (max-width: 768px) {
+  /* Hero visual (símbolo 3D) não pode cobrir o texto */
+  .hero-visual {
+    opacity: .10 !important;
+    transform: translate(25%, -50%) !important;
+    width: 140vw !important;
+    pointer-events: none;
+  }
+  .hero-visual img { filter: blur(1px); }
+
+  /* Team: destrava layout pinado do GSAP */
+  .team-pin {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 10px 0 40px !important;
+    transform: none !important;
+    position: relative !important;
+  }
+  .team-grid {
+    transform: none !important;
+    position: relative !important;
+    top: auto !important;
+    width: 100% !important;
+  }
+  .team-card-wrap {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Preve text-hover (BMAI gigante hover) travar rolagem */
+  .text-hover,
+  .text-hover__base,
+  .text-hover__glow,
+  .text-hover__fill { pointer-events: none; }
+
+  /* Cursor trail escondido (já estava mas garante) */
+  #cur-trail { display: none !important; }
+
+  /* Preloader mais rápido no mobile */
+  .preloader { transition: opacity .3s ease, visibility .3s ease !important; }
+
+  /* Sections sem overflow horizontal */
+  section, .container { overflow-x: visible; }
+
+  /* Botões com ícone alinhados */
+  .btn { line-height: 1.2; gap: 8px !important; flex-wrap: nowrap; }
+  .btn svg { flex-shrink: 0; }
+
+  /* Scroll progress bar menor */
+  .scroll-progress { height: 2px !important; }
+
+  /* Modal/dropdown overlays respeitam safe-area iOS */
+  .wpp-float {
+    bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  }
+
+  /* FAQ chevron alinhamento */
+  .faq__chevron { flex-shrink: 0; }
+
+  /* Reduz backdrop-filter (pesado em mobile) */
+  .floatnav,
+  #hero .container.hero__stats-row,
+  .glass-card {
+    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(10px) !important;
+  }
 }
