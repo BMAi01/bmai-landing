@@ -799,23 +799,26 @@ const CASES_DATA = [
     e.preventDefault();
 
     const btn = form.querySelector('.form-submit');
-    const nome     = document.getElementById('f-nome').value.trim();
-    const empresa  = document.getElementById('f-empresa').value.trim();
-    const email    = document.getElementById('f-email').value.trim();
-    const telefone = document.getElementById('f-tel').value.trim();
-    const cargo    = document.getElementById('f-cargo').value.trim();
-    const segmento = document.getElementById('f-segmento').value.trim();
-    const colab    = document.getElementById('f-colab').value.trim();
-    const dor      = document.getElementById('f-dor').value.trim();
+    const val = id => (document.getElementById(id)?.value || '').trim();
+    const nome     = val('f-nome');
+    const empresa  = val('f-empresa');
+    const email    = val('f-email');
+    const telefone = val('f-tel');
+    const cargo    = val('f-cargo');
+    const segmento = val('f-segmento');
+    const colab    = val('f-colab');
+    const dor      = val('f-dor');
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const telOk = telefone.replace(/\D/g, '').length >= 10;
-    const campos = [
+    const camposRaw = [
       ['f-nome', !!nome], ['f-empresa', !!empresa],
       ['f-email', !!email && emailOk], ['f-tel', !!telefone && telOk],
       ['f-cargo', !!cargo], ['f-segmento', !!segmento],
       ['f-colab', !!colab], ['f-dor', !!dor]
     ];
+    // ignora campos que não existem no DOM (compat com HTML antigo)
+    const campos = camposRaw.filter(([id]) => document.getElementById(id));
     let faltantes = 0;
     campos.forEach(([id, ok]) => {
       const el = document.getElementById(id);
@@ -845,12 +848,15 @@ const CASES_DATA = [
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab, interesse: dor })
       });
-      if (!res.ok) throw new Error('status ' + res.status);
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        throw new Error('HTTP ' + res.status + ' ' + txt);
+      }
 
       showFeedback('success', 'Recebido! A Anna vai entrar em contato em até 24h.');
       form.reset();
     } catch (err) {
-      console.warn('Anna offline:', err);
+      console.error('[bmai-form] Falha no envio:', err);
       showFeedback('error', 'Não conseguimos enviar agora. Tente novamente em instantes ou chame a Anna no WhatsApp.');
     } finally {
       btn.disabled = false;
