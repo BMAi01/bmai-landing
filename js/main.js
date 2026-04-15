@@ -131,17 +131,22 @@ document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
   if (!stream) return;
 
   const notifs = [
-    { t: '08:54', a: 'WhatsApp',   m: 'Pedro: "Você mandou o orçamento? Preciso hoje"' },
-    { t: '09:07', a: 'E-mail',     m: 'Lead do anúncio sem resposta há 3 dias' },
-    { t: '09:18', a: 'CRM',        m: '5 leads novos sem follow-up na fila' },
-    { t: '09:31', a: 'WhatsApp',   m: 'Ana: "Tive que cancelar, a agenda bagunçou"' },
-    { t: '09:47', a: 'Reunião',    m: 'Decisão adiada — dados incompletos' },
-    { t: '10:02', a: 'Time',       m: 'Lucas: "Você pode revisar antes de eu enviar?"' },
-    { t: '10:19', a: 'Financeiro', m: 'Cobrança manual pendente — terceiro mês' },
-    { t: '10:35', a: 'E-mail',     m: 'Proposta enviada sem follow-up programado' },
-    { t: '10:51', a: 'WhatsApp',   m: 'Novo lead sem processo definido — perdido' },
-    { t: '11:08', a: 'Agenda',     m: 'Conflito de horário — confirmação pendente' },
+    { a: 'WhatsApp',   m: 'Pedro: "Você mandou o orçamento? Preciso hoje"' },
+    { a: 'E-mail',     m: 'Lead do anúncio sem resposta há 3 dias' },
+    { a: 'CRM',        m: '5 leads novos sem follow-up na fila' },
+    { a: 'WhatsApp',   m: 'Ana: "Tive que cancelar, a agenda bagunçou"' },
+    { a: 'Reunião',    m: 'Decisão adiada — dados incompletos' },
+    { a: 'Time',       m: 'Lucas: "Você pode revisar antes de eu enviar?"' },
+    { a: 'Financeiro', m: 'Cobrança manual pendente — terceiro mês' },
+    { a: 'E-mail',     m: 'Proposta enviada sem follow-up programado' },
+    { a: 'WhatsApp',   m: 'Novo lead sem processo definido — perdido' },
+    { a: 'Agenda',     m: 'Conflito de horário — confirmação pendente' },
   ];
+
+  function nowTime(offsetMin = 0) {
+    const d = new Date(Date.now() - offsetMin * 60000);
+    return d.toTimeString().slice(0, 5);
+  }
 
   let ni = 0, unread = 0, timer;
 
@@ -150,7 +155,7 @@ document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
     const div = document.createElement('div');
     div.className = 'pb__notif';
     div.innerHTML = `
-      <span class="pb__notif-time">${n.t}</span>
+      <span class="pb__notif-time">${nowTime(Math.max(0, (5 - ni) * 4))}</span>
       <div class="pb__notif-body">
         <div class="pb__notif-app">${n.a}</div>
         <div class="pb__notif-msg">${n.m}</div>
@@ -253,12 +258,13 @@ document.querySelectorAll('section[id]').forEach(s => {
     {
       num: '01 / 04', letter: 'A', title: 'Análise',
       subtitle: 'Diagnóstico antes de qualquer ferramenta.',
-      desc: 'Mapeamos onde estão os entraves, as perdas invisíveis e as oportunidades reais do seu negócio. Nada é configurado antes de entender o contexto completo.',
+      desc: 'Enxergamos o seu negócio como ele realmente é — único. Mapeamos os entraves, as perdas invisíveis e as oportunidades reais. Nada é configurado antes de entender o contexto completo.',
       bullets: [
         'Mapeamento do processo comercial',
         'Identificação de perdas invisíveis',
         'Entrevistas com time e gestão',
-        'Relatório de oportunidades prioritárias'
+        'Relatório de oportunidades prioritárias',
+        'Priorização por impacto e viabilidade'
       ],
       time: '⏱ 1 a 2 semanas',
       tag: 'Sem diagnóstico, não há solução real.',
@@ -267,12 +273,13 @@ document.querySelectorAll('section[id]').forEach(s => {
     {
       num: '02 / 04', letter: 'I', title: 'Implementação',
       subtitle: 'IA onde gera resultado, não onde impressiona.',
-      desc: 'Integramos automações e IA nos pontos validados. Cada ferramenta é testada em produção antes de ser entregue. Sem surpresas.',
+      desc: 'Construímos e integramos as soluções nos pontos validados. Cada etapa é testada em produção e ajustada com o time antes de ir para escala. É aqui que começam as primeiras mudanças na cultura e no modo de pensar da empresa.',
       bullets: [
-        'Automações nos pontos críticos',
-        'Integração com ferramentas existentes',
-        'Testes antes de ir para produção',
-        'Treinamento do time'
+        'Construção sob medida dos agentes e fluxos',
+        'Integração com as ferramentas que você já usa',
+        'Testes em produção antes da escala',
+        'Treinamento e onboarding do time',
+        'Primeiras mudanças de cultura operacional'
       ],
       time: '⏱ 3 a 6 semanas',
       tag: 'IA integrada ao processo real.',
@@ -280,13 +287,14 @@ document.querySelectorAll('section[id]').forEach(s => {
     },
     {
       num: '03 / 04', letter: 'R', title: 'Resultado',
-      subtitle: 'Metas claras antes de qualquer execução.',
-      desc: 'Definimos os resultados esperados com indicadores concretos. Cada ação tem um número atrelado — sem achismo, sem promessa vazia.',
+      subtitle: 'ROI mais rápido do mercado — porque é análise e personalização, não milagre.',
+      desc: 'Definimos os resultados esperados com indicadores concretos. Cada ação tem um número atrelado — sem achismo, sem promessa vazia. É o mapeamento bem feito que permite retorno no primeiro mês.',
       bullets: [
         'Definição de KPIs e metas mensuráveis',
         'Projeção de ROI por frente de atuação',
         'Alinhamento de expectativas com o time',
-        'Validação do plano de ação antes de executar'
+        'Validação do plano de ação antes de executar',
+        'Retorno visível já no primeiro mês'
       ],
       time: '⏱ 1 a 2 semanas',
       tag: 'Sem meta clara, não há resultado real.',
@@ -294,17 +302,19 @@ document.querySelectorAll('section[id]').forEach(s => {
     },
     {
       num: '04 / 04', letter: 'A', title: 'Acompanhamento',
-      subtitle: 'Não entregamos e sumimos.',
-      desc: 'Monitoramos indicadores, ajustamos o sistema conforme o negócio evolui e garantimos que o resultado se sustente no longo prazo.',
+      subtitle: 'Não vamos te deixar desamparado. Se construímos, vamos manter.',
+      desc: 'Monitoramos indicadores, ajustamos prompt e lógica conforme o negócio evolui e garantimos que o resultado se sustente no longo prazo. Você ainda tem acesso ao nosso SaaS interno de acompanhamento de métricas — fechou com a BMAi, vira parceiro, não só mais um cliente.',
       bullets: [
         'Monitoramento de indicadores mensais',
+        'Melhorias contínuas de prompt e lógica',
         'Ajustes conforme o negócio evolui',
         'Suporte contínuo ao time',
-        'Expansão gradual das automações'
+        'Acesso ao SaaS interno da BMAi',
+        'Expansão gradual das soluções'
       ],
       time: '⏱ Contínuo',
       tag: 'Crescimento de longo prazo.',
-      result: 'Entregável: relatório mensal de performance'
+      result: 'Entregável: relatório mensal de performance + SaaS de acompanhamento'
     }
   ];
 
@@ -790,17 +800,21 @@ const CASES_DATA = [
 
     const btn = form.querySelector('.form-submit');
     const nome     = document.getElementById('f-nome').value.trim();
+    const empresa  = document.getElementById('f-empresa').value.trim();
     const email    = document.getElementById('f-email').value.trim();
     const telefone = document.getElementById('f-tel').value.trim();
     const cargo    = document.getElementById('f-cargo').value.trim();
+    const segmento = document.getElementById('f-segmento').value.trim();
     const colab    = document.getElementById('f-colab').value.trim();
     const dor      = document.getElementById('f-dor').value.trim();
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const telOk = telefone.replace(/\D/g, '').length >= 10;
     const campos = [
-      ['f-nome', !!nome], ['f-email', !!email && emailOk], ['f-tel', !!telefone && telOk],
-      ['f-cargo', !!cargo], ['f-colab', !!colab], ['f-dor', !!dor]
+      ['f-nome', !!nome], ['f-empresa', !!empresa],
+      ['f-email', !!email && emailOk], ['f-tel', !!telefone && telOk],
+      ['f-cargo', !!cargo], ['f-segmento', !!segmento],
+      ['f-colab', !!colab], ['f-dor', !!dor]
     ];
     let faltantes = 0;
     campos.forEach(([id, ok]) => {
@@ -829,7 +843,7 @@ const CASES_DATA = [
       const res = await fetch('https://anna.bmai.space/lead-site', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, email, whatsapp, cargo, colaboradores: colab, interesse: dor })
+        body: JSON.stringify({ nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab, interesse: dor })
       });
       if (!res.ok) throw new Error('status ' + res.status);
 
