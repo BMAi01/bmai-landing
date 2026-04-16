@@ -633,12 +633,16 @@ section { position: relative; z-index: 1; display: block; }
 .ticker__track { display: flex; align-items: center; width: max-content; animation: ticker 40s linear infinite; }
 .ticker__track span { font-size: .82rem; font-weight: 500; color: var(--gray2); white-space: nowrap; }
 .ticker__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--orange); opacity: .4; margin: 0 16px; flex-shrink: 0; }
-.ticker__track--logos { animation-duration: 22s; }
+.ticker__track--logos { animation-duration: 30s; }
 .ticker__track--logos .ticker__dot { margin: 0 40px; }
-.ticker__logo { display: inline-flex; align-items: center; height: 72px; padding: 0 8px; flex-shrink: 0; }
+.ticker__logo { display: inline-flex; align-items: center; justify-content: center; width: 260px; height: 100px; padding: 0 14px; flex-shrink: 0; }
 .ticker__logo img {
-  height: 100%; width: auto; max-height: 72px; object-fit: contain;
+  max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;
 }
+.ticker__logo--luciana { width: 360px; }
+.ticker__logo--luciana img { transform: scale(1.7); filter: brightness(0) invert(1); }
+.ticker__logo--ocanto img { filter: brightness(0) invert(1); }
+.ticker__logo--white img { filter: brightness(0) invert(1); }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ============================================
@@ -2904,8 +2908,8 @@ section h2.shimmer-active::after,
   .ticker { padding: 14px 0 !important; }
   .ticker__track--logos { animation-duration: 16s !important; }
   .ticker__track--logos .ticker__dot { margin: 0 20px !important; }
-  .ticker__logo { height: 44px !important; padding: 0 4px !important; }
-  .ticker__logo img { max-height: 44px !important; }
+  .ticker__logo { width: 160px !important; height: 56px !important; padding: 0 6px !important; }
+  .ticker__logo img { max-width: 100% !important; max-height: 100% !important; }
 
   /* Problema — layout stack + painel */
   .pb__layout { grid-template-columns: 1fr !important; gap: 32px !important; }
@@ -3011,8 +3015,8 @@ section h2.shimmer-active::after,
   .hero__title { font-size: clamp(26px, 8.4vw, 36px) !important; }
   .hero__stat-value { font-size: 26px !important; }
   .hero__stats-row { padding: 14px 16px !important; }
-  .ticker__logo { height: 38px !important; }
-  .ticker__logo img { max-height: 38px !important; }
+  .ticker__logo { width: 130px !important; height: 46px !important; }
+  .ticker__logo img { max-width: 100% !important; max-height: 100% !important; }
   .cs-hero__quote { font-size: 14px !important; }
   .footer__cols { grid-template-columns: 1fr !important; }
 }
