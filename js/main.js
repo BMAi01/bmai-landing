@@ -2,7 +2,7 @@
    PRELOADER
    ============================================ */
 window.addEventListener('load', () => {
-  setTimeout(() => document.getElementById('preloader').classList.add('done'), 800);
+  setTimeout(() => document.getElementById('preloader').classList.add('done'), 200);
 });
 
 /* ============================================
