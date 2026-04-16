@@ -807,7 +807,6 @@ const CASES_DATA = [
     const cargo    = val('f-cargo');
     const segmento = val('f-segmento');
     const colab    = val('f-colab');
-    const dor      = val('f-dor');
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const telOk = telefone.replace(/\D/g, '').length >= 10;
@@ -815,7 +814,7 @@ const CASES_DATA = [
       ['f-nome', !!nome], ['f-empresa', !!empresa],
       ['f-email', !!email && emailOk], ['f-tel', !!telefone && telOk],
       ['f-cargo', !!cargo], ['f-segmento', !!segmento],
-      ['f-colab', !!colab], ['f-dor', !!dor]
+      ['f-colab', !!colab]
     ];
     // ignora campos que não existem no DOM (compat com HTML antigo)
     const campos = camposRaw.filter(([id]) => document.getElementById(id));
@@ -846,7 +845,7 @@ const CASES_DATA = [
       const res = await fetch('https://anna.bmai.space/lead-site', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab, interesse: dor })
+        body: JSON.stringify({ nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab })
       });
       if (!res.ok) {
         const txt = await res.text().catch(() => '');
