@@ -80,6 +80,7 @@
     </button>
   </header>
 
+  <main id="main">
   <!-- ========== HERO ========== -->
   <section class="hero" id="hero">
     <div class="hero-visual" aria-hidden="true">
@@ -618,28 +619,28 @@
 
             <div class="field-group">
               <div class="field">
-                <input type="email" id="f-email" name="email" placeholder=" " required autocomplete="email"/>
+                <input type="email" id="f-email" name="email" placeholder=" " required autocomplete="email" inputmode="email" enterkeyhint="next"/>
                 <label for="f-email">E-mail corporativo</label>
               </div>
               <div class="field">
-                <input type="tel" id="f-tel" name="telefone" placeholder=" " required autocomplete="tel"/>
+                <input type="tel" id="f-tel" name="telefone" placeholder=" " required autocomplete="tel" inputmode="tel" enterkeyhint="next"/>
                 <label for="f-tel">Telefone / WhatsApp</label>
               </div>
             </div>
 
             <div class="field-group">
               <div class="field">
-                <input type="text" id="f-cargo" name="cargo" placeholder=" " required/>
+                <input type="text" id="f-cargo" name="cargo" placeholder=" " required autocomplete="organization-title" enterkeyhint="next"/>
                 <label for="f-cargo">Cargo</label>
               </div>
               <div class="field">
-                <input type="text" id="f-segmento" name="segmento" placeholder=" " required/>
+                <input type="text" id="f-segmento" name="segmento" placeholder=" " required autocomplete="off" enterkeyhint="next"/>
                 <label for="f-segmento">Segmento</label>
               </div>
             </div>
 
             <div class="field">
-              <input type="text" id="f-colab" name="colaboradores" placeholder=" " required/>
+              <input type="text" id="f-colab" name="colaboradores" placeholder=" " required inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="send"/>
               <label for="f-colab">Número de colaboradores</label>
             </div>
 
@@ -672,20 +673,21 @@
       </div>
     </div>
   </section>
+  </main>
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer__nav">
       <div class="footer__cols">
         <div class="footer__col">
-          <h4>Navegação</h4>
+          <h3>Navegação</h3>
           <ul>
             <li><a href="#metodo">Método ARIA</a></li>
             <li><a href="#para-quem">Team</a></li>
           </ul>
         </div>
         <div class="footer__col">
-          <h4>Soluções</h4>
+          <h3>Soluções</h3>
           <ul>
             <li><a href="#metodo">Soluções com IA</a></li>
             <li><a href="#metodo">Agentes de IA</a></li>
@@ -693,14 +695,14 @@
           </ul>
         </div>
         <div class="footer__col">
-          <h4>Empresa</h4>
+          <h3>Empresa</h3>
           <ul>
             <li><a href="#faq">FAQ</a></li>
             <li><a href="#form">Diagnóstico</a></li>
           </ul>
         </div>
         <div class="footer__col">
-          <h4>Contato</h4>
+          <h3>Contato</h3>
           <ul>
             <li><a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener">WhatsApp</a></li>
             <li><a href="https://instagram.com/bmai.oficial" target="_blank" rel="noopener">Instagram</a></li>
@@ -729,20 +731,20 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <!-- ========== SECTION DOTS ========== -->
   <nav id="sdots" aria-label="Navegação rápida">
-    <a class="sd" data-target="hero" title="Início"></a>
-    <a class="sd" data-target="pb" title="Problema"></a>
-    <a class="sd" data-target="por-que" title="Por que BMAI"></a>
-    <a class="sd" data-target="metodo" title="Método ARIA"></a>
-    <a class="sd" data-target="para-quem" title="Team"></a>
-    <a class="sd" data-target="cases" title="Cases"></a>
-    <a class="sd" data-target="faq" title="FAQ"></a>
-    <a class="sd" data-target="form" title="Diagnóstico"></a>
-    <a class="sd" data-target="contato" title="Contato"></a>
+    <a class="sd" href="#hero" data-target="hero" aria-label="Início" title="Início"></a>
+    <a class="sd" href="#pb" data-target="pb" aria-label="Problema" title="Problema"></a>
+    <a class="sd" href="#por-que" data-target="por-que" aria-label="Por que BMAI" title="Por que BMAI"></a>
+    <a class="sd" href="#metodo" data-target="metodo" aria-label="Método ARIA" title="Método ARIA"></a>
+    <a class="sd" href="#para-quem" data-target="para-quem" aria-label="Team" title="Team"></a>
+    <a class="sd" href="#cases" data-target="cases" aria-label="Cases" title="Cases"></a>
+    <a class="sd" href="#faq" data-target="faq" aria-label="FAQ" title="FAQ"></a>
+    <a class="sd" href="#form" data-target="form" aria-label="Diagnóstico" title="Diagnóstico"></a>
+    <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
   <!-- ========== LANGUAGE SWITCHER ========== -->
   <div class="lang-btn" id="lang-btn">
-    <button class="lang-trigger" id="lang-trigger" aria-label="Traduzir site" aria-expanded="false">
+    <button class="lang-trigger" id="lang-trigger" aria-label="Alterar idioma (atual: PT)" aria-haspopup="listbox" aria-expanded="false">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
       <span id="lang-current">PT</span>
       <svg class="lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -851,7 +853,9 @@
         const lang = opt.dataset.lang;
         opts.forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
-        curLabel.textContent = labels[lang] || lang.toUpperCase();
+        const lbl = labels[lang] || lang.toUpperCase();
+        curLabel.textContent = lbl;
+        trigger.setAttribute('aria-label', `Alterar idioma (atual: ${lbl})`);
         dropdown.classList.remove('open');
         trigger.setAttribute('aria-expanded', 'false');
         translateTo(lang);
@@ -862,6 +866,7 @@
     const m = document.cookie.match(/googtrans=\/pt\/([\w-]+)/);
     if (m && labels[m[1]]) {
       curLabel.textContent = labels[m[1]];
+      trigger.setAttribute('aria-label', `Alterar idioma (atual: ${labels[m[1]]})`);
       opts.forEach(o => o.classList.toggle('active', o.dataset.lang === m[1]));
     }
   })();

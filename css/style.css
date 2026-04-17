@@ -1344,7 +1344,7 @@ section { position: relative; z-index: 1; display: block; }
   flex-direction: column;
   gap: 14px;
 }
-.footer__col h4 {
+.footer__col h3 {
   font-family: var(--ff);
   font-size: 13px;
   font-weight: 600;
@@ -2103,7 +2103,7 @@ body { font-family: var(--fp); }
 .case-result,
 .tc-back-footer span,
 .form-disclaimer,
-.footer__col h4,
+.footer__col h3,
 .footer__bottom p,
 .team-scroll-hint,
 .hero__stat-label {
@@ -3012,7 +3012,7 @@ section h2.shimmer-active::after,
     gap: 24px !important;
     padding: 40px 20px !important;
   }
-  .footer__col h4 { font-size: 12px !important; }
+  .footer__col h3 { font-size: 12px !important; }
   .footer__col a { font-size: 13px !important; }
   .footer__bottom { padding: 20px !important; }
   .footer__bottom p { font-size: 11px !important; text-align: center; }
