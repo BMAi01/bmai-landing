@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
 
   <!-- Preload do LCP + fontes críticas -->
-  <link rel="preload" as="image" href="assets/images/simbolo-3d-close.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/images/simbolo-3d-close.webp" type="image/webp" fetchpriority="high">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Regular.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Semibold.woff2" crossorigin>
 
@@ -21,7 +21,7 @@
 
   <meta property="og:title" content="BMAI — Hub de soluções com IA integrada">
   <meta property="og:description" content="Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
-  <meta property="og:image" content="https://bmai.com.br/assets/images/og-bmai.jpg">
+  <meta property="og:image" content="https://bmai.com.br/assets/images/og-bmai.webp">
   <meta property="og:url" content="https://bmai.com.br">
   <meta property="og:type" content="website">
 </head>
@@ -84,7 +84,10 @@
   <!-- ========== HERO ========== -->
   <section class="hero" id="hero">
     <div class="hero-visual" aria-hidden="true">
-      <img src="assets/images/simbolo-3d-close.png" alt="" draggable="false" fetchpriority="high" width="960" height="960"/>
+      <picture>
+        <source srcset="assets/images/simbolo-3d-close.webp" type="image/webp">
+        <img src="assets/images/simbolo-3d-close.png" alt="" draggable="false" fetchpriority="high" width="960" height="960"/>
+      </picture>
       <div class="hero-visual-fade"></div>
     </div>
     <div class="container hero__wrap">
@@ -132,33 +135,33 @@
   <div class="ticker">
     <div class="ticker__track ticker__track--logos">
       <!-- Set 1 -->
-      <span class="ticker__logo"><img src="slides/logo-mgt.png" alt="MGT Engenharia"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--white"><img src="slides/logo-sohydraulica.png" alt="Só Hydráulica"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo"><img src="slides/logo-drtulio.png" alt="Dr. Túlio Cunha"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--ocanto"><img src="slides/logo-ocanto.png" alt="O Canto"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--luciana"><img src="slides/logo-luciana.png" alt="Luciana Rodrigues"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo"><img src="slides/logo-redeconstruir.png" alt="Rede Construir"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo"><img src="slides/logo-mgt.webp" alt="MGT Engenharia"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--white"><img src="slides/logo-sohydraulica.webp" alt="Só Hydráulica"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo"><img src="slides/logo-drtulio.webp" alt="Dr. Túlio Cunha"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--ocanto"><img src="slides/logo-ocanto.webp" alt="O Canto"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--luciana"><img src="slides/logo-luciana.webp" alt="Luciana Rodrigues"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo"><img src="slides/logo-redeconstruir.webp" alt="Rede Construir"/></span><span class="ticker__dot"></span>
       <!-- Set 2 -->
-      <span class="ticker__logo"><img src="slides/logo-mgt.png" alt="MGT Engenharia"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--white"><img src="slides/logo-sohydraulica.png" alt="Só Hydráulica"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo"><img src="slides/logo-drtulio.png" alt="Dr. Túlio Cunha"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--ocanto"><img src="slides/logo-ocanto.png" alt="O Canto"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--luciana"><img src="slides/logo-luciana.png" alt="Luciana Rodrigues"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo"><img src="slides/logo-redeconstruir.png" alt="Rede Construir"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo"><img src="slides/logo-mgt.webp" alt="MGT Engenharia"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--white"><img src="slides/logo-sohydraulica.webp" alt="Só Hydráulica"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo"><img src="slides/logo-drtulio.webp" alt="Dr. Túlio Cunha"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--ocanto"><img src="slides/logo-ocanto.webp" alt="O Canto"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--luciana"><img src="slides/logo-luciana.webp" alt="Luciana Rodrigues"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo"><img src="slides/logo-redeconstruir.webp" alt="Rede Construir"/></span><span class="ticker__dot"></span>
       <!-- Clone (aria-hidden) - Set 3 -->
-      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mgt.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-drtulio.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--ocanto" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-ocanto.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--luciana" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-luciana.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mgt.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-drtulio.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--ocanto" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-ocanto.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--luciana" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-luciana.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <!-- Clone (aria-hidden) - Set 4 -->
-      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mgt.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-drtulio.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--ocanto" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-ocanto.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--luciana" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-luciana.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mgt.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-drtulio.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--ocanto" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-ocanto.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--luciana" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-luciana.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
     </div>
   </div>
 
@@ -340,7 +343,7 @@
           </div>
         </div>
         <div class="cs-hero__visual">
-          <img src="assets/images/logo-gastroobesi.png" alt="GastroObesi" class="cs-hero__visual-logo" loading="lazy"/>
+          <img src="assets/images/logo-gastroobesi.webp" alt="GastroObesi" class="cs-hero__visual-logo" loading="lazy"/>
         </div>
       </div>
     </div>
@@ -354,7 +357,7 @@
           <div class="cs-card__glow"></div>
           <div class="cs-card__top">
             <div class="cs-card__brand">
-              <img src="assets/images/logo-mataco.png" alt="Mataco" class="cs-card__logo" loading="lazy"
+              <img src="assets/images/logo-mataco.webp" alt="Mataco" class="cs-card__logo" loading="lazy"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
               <span class="cs-card__logo-fb" style="display:none">Mataco</span>
             </div>
@@ -375,7 +378,7 @@
           <div class="cs-card__glow"></div>
           <div class="cs-card__top">
             <div class="cs-card__brand">
-              <img src="assets/images/logo-sohydraulica.png" alt="Só Hydráulica" class="cs-card__logo" loading="lazy"
+              <img src="assets/images/logo-sohydraulica.webp" alt="Só Hydráulica" class="cs-card__logo" loading="lazy"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
               <span class="cs-card__logo-fb" style="display:none">Só Hydráulica</span>
             </div>
@@ -396,7 +399,7 @@
           <div class="cs-card__glow"></div>
           <div class="cs-card__top">
             <div class="cs-card__brand">
-              <img src="assets/images/logo-ocanto.png" alt="O Canto" class="cs-card__logo" loading="lazy"
+              <img src="assets/images/logo-ocanto.webp" alt="O Canto" class="cs-card__logo" loading="lazy"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
               <span class="cs-card__logo-fb" style="display:none">O Canto</span>
             </div>
@@ -440,7 +443,7 @@
         <div class="team-card-wrap">
           <div class="team-card" id="tc-0">
             <div class="tc-front">
-              <img src="assets/images/team-matheus-resized.jpg" alt="Matheus — CEO & Founder da BMAI" onerror="this.style.display='none'" loading="lazy"/>
+              <img src="assets/images/team-matheus-resized.webp" alt="Matheus — CEO & Founder da BMAI" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Matheus</h3>
                 <span>CEO &amp; Founder</span>
@@ -465,7 +468,7 @@
         <div class="team-card-wrap">
           <div class="team-card" id="tc-1">
             <div class="tc-front">
-              <img src="assets/images/team-pedro-resized.jpg" alt="Pedro — Sócio-fundador da BMAI" onerror="this.style.display='none'" loading="lazy"/>
+              <img src="assets/images/team-pedro-resized.webp" alt="Pedro — Sócio-fundador da BMAI" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Pedro</h3>
                 <span>Sócio-fundador</span>
@@ -490,7 +493,7 @@
         <div class="team-card-wrap">
           <div class="team-card" id="tc-2">
             <div class="tc-front">
-              <img src="assets/images/team-thiago-resized.jpg" alt="Thiago — COO & Diretor Operacional da BMAI" onerror="this.style.display='none'" loading="lazy"/>
+              <img src="assets/images/team-thiago-resized.webp" alt="Thiago — COO & Diretor Operacional da BMAI" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Thiago</h3>
                 <span>COO · Diretor Operacional</span>
@@ -516,7 +519,7 @@
         <div class="team-card-wrap">
           <div class="team-card" id="tc-3">
             <div class="tc-front">
-              <img src="assets/images/anna-resized.jpg" alt="Anna" onerror="this.style.display='none'" loading="lazy"/>
+              <img src="assets/images/anna-resized.webp" alt="Anna" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Anna</h3>
                 <span>Atendente</span>
