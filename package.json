@@ -7,5 +7,22 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "description": "Site estático da BMAI. HTML/CSS/JS puro, **sem build**.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BMAi01/bmai-landing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/BMAi01/bmai-landing/issues"
+  },
+  "homepage": "https://github.com/BMAi01/bmai-landing#readme",
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }
