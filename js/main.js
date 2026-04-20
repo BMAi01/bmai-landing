@@ -153,174 +153,42 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   MÉTODO AIRA — scroll-driven flow
+   MÉTODO AIRA — tabs (ARIA tablist pattern)
    ============================================ */
 (function () {
-  const ARIA_DATA = [
-    {
-      num: '01 / 04', letter: 'A', title: 'Análise',
-      subtitle: 'Diagnóstico antes de qualquer ferramenta.',
-      desc: 'Enxergamos o seu negócio como ele realmente é — único. Mapeamos os entraves, as perdas invisíveis e as oportunidades reais. Nada é configurado antes de entender o contexto completo.',
-      bullets: [
-        'Mapeamento do processo comercial',
-        'Identificação de perdas invisíveis',
-        'Entrevistas com time e gestão',
-        'Relatório de oportunidades prioritárias',
-        'Priorização por impacto e viabilidade'
-      ],
-      time: '⏱ 1 a 2 semanas',
-      tag: 'Sem diagnóstico, não há solução real.',
-      result: 'Entregável: documento de diagnóstico completo'
-    },
-    {
-      num: '02 / 04', letter: 'I', title: 'Implementação',
-      subtitle: 'IA onde gera resultado, não onde impressiona.',
-      desc: 'Construímos e integramos as soluções nos pontos validados. Cada etapa é testada em produção e ajustada com o time antes de ir para escala. É aqui que começam as primeiras mudanças na cultura e no modo de pensar da empresa.',
-      bullets: [
-        'Construção sob medida dos agentes e fluxos',
-        'Integração com as ferramentas que você já usa',
-        'Testes em produção antes da escala',
-        'Treinamento e onboarding do time',
-        'Primeiras mudanças de cultura operacional'
-      ],
-      time: '⏱ 3 a 6 semanas',
-      tag: 'IA integrada ao processo real.',
-      result: 'Entregável: sistema funcionando em produção'
-    },
-    {
-      num: '03 / 04', letter: 'R', title: 'Resultado',
-      subtitle: 'ROI mais rápido do mercado — porque é análise e personalização, não milagre.',
-      desc: 'Definimos os resultados esperados com indicadores concretos. Cada ação tem um número atrelado — sem achismo, sem promessa vazia. É o mapeamento bem feito que permite retorno no primeiro mês.',
-      bullets: [
-        'Definição de KPIs e metas mensuráveis',
-        'Projeção de ROI por frente de atuação',
-        'Alinhamento de expectativas com o time',
-        'Validação do plano de ação antes de executar',
-        'Retorno visível já no primeiro mês'
-      ],
-      time: '⏱ 1 a 2 semanas',
-      tag: 'Sem meta clara, não há resultado real.',
-      result: 'Entregável: plano de resultados com KPIs definidos'
-    },
-    {
-      num: '04 / 04', letter: 'A', title: 'Acompanhamento',
-      subtitle: 'Não vamos te deixar desamparado. Se construímos, vamos manter.',
-      desc: 'Monitoramos indicadores, ajustamos prompt e lógica conforme o negócio evolui e garantimos que o resultado se sustente no longo prazo. Você ainda tem acesso ao nosso SaaS interno de acompanhamento de métricas — fechou com a BMAi, vira parceiro, não só mais um cliente.',
-      bullets: [
-        'Monitoramento de indicadores mensais',
-        'Melhorias contínuas de prompt e lógica',
-        'Ajustes conforme o negócio evolui',
-        'Suporte contínuo ao time',
-        'Acesso ao SaaS interno da BMAi',
-        'Expansão gradual das soluções'
-      ],
-      time: '⏱ Contínuo',
-      tag: 'Crescimento de longo prazo.',
-      result: 'Entregável: relatório mensal de performance + SaaS de acompanhamento'
-    }
-  ];
+  const tabs  = Array.from(document.querySelectorAll('.metodo__tab'));
+  const steps = Array.from(document.querySelectorAll('.metodo__step'));
+  if (!tabs.length || !steps.length) return;
 
-  const track  = document.getElementById('aria-track');
-  const nodes  = document.querySelectorAll('.aria-node');
-  const detail = document.getElementById('aria-detail');
-  const inner  = document.getElementById('aria-detail-inner');
-  if (!track || !nodes.length || !detail || !inner) return;
-
-  function renderDetail(d) {
-    return `
-      <div class="aria-detail-grid">
-        <div class="aria-detail-left">
-          <div class="aria-detail-num">${d.num}</div>
-          <div class="aria-detail-letter">${d.letter}</div>
-          <h3 class="aria-detail-title">${d.title}</h3>
-          <div class="aria-detail-subtitle">${d.subtitle}</div>
-          <p class="aria-detail-desc">${d.desc}</p>
-        </div>
-        <div class="aria-detail-right">
-          <ul class="aria-detail-bullets">
-            ${d.bullets.map(b => `<li>${b}</li>`).join('')}
-          </ul>
-          <div class="aria-detail-footer">
-            <span class="aria-detail-tag">${d.tag}</span>
-            <span class="aria-detail-time">${d.time}</span>
-            <span class="aria-detail-result">${d.result}</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  let current = -1;
-  function activate(index) {
-    if (index === current) return;
-    current = index;
-    nodes.forEach((n, i) => n.classList.toggle('active', i === index));
-
-    inner.style.opacity = '0';
-    inner.style.transform = 'translateY(10px)';
-    setTimeout(() => {
-      inner.innerHTML = renderDetail(ARIA_DATA[index]);
-      inner.style.opacity = '1';
-      inner.style.transform = 'translateY(0)';
-    }, 180);
-    detail.classList.add('open');
-  }
-
-  // Inicial
-  inner.innerHTML = renderDetail(ARIA_DATA[0]);
-  inner.style.opacity = '1';
-  inner.style.transform = 'translateY(0)';
-  current = 0;
-  detail.classList.add('open');
-
-  const isMobile = matchMedia('(max-width: 768px)').matches;
-
-  if (isMobile) {
-    // Mobile: ativa cada step conforme o usuário chega na seção com IntersectionObserver "chunked"
-    // Simples: 4 sentinelas invisíveis verticais dentro do track
-    const sentinels = Array.from({ length: 4 }, (_, i) => {
-      const s = document.createElement('div');
-      s.style.cssText = `position:absolute;left:0;right:0;top:${i * 25}%;height:1px;pointer-events:none;`;
-      track.appendChild(s);
-      return s;
+  function activate(i, focus) {
+    tabs.forEach((t, idx) => {
+      const on = idx === i;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
     });
-    track.style.position = 'relative';
-    const ioM = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const idx = sentinels.indexOf(e.target);
-        if (idx >= 0) activate(idx);
-      });
-    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
-    sentinels.forEach(s => ioM.observe(s));
-    return;
+    steps.forEach((s, idx) => {
+      const on = idx === i;
+      if (on) {
+        s.hidden = false;
+        requestAnimationFrame(() => s.classList.add('is-active'));
+      } else {
+        s.classList.remove('is-active');
+        s.hidden = true;
+      }
+    });
+    if (focus) tabs[i].focus();
   }
 
-  // Desktop: scroll progress no track define step ativo
-  let ticking = false;
-  function updateFromScroll() {
-    ticking = false;
-    const rect = track.getBoundingClientRect();
-    const total = rect.height - window.innerHeight;
-    if (total <= 0) { activate(0); return; }
-    let progress = -rect.top / total;
-    progress = Math.max(0, Math.min(0.9999, progress));
-    const idx = Math.min(3, Math.floor(progress * 4));
-    activate(idx);
-  }
-  window.addEventListener('scroll', () => {
-    if (!ticking) { requestAnimationFrame(updateFromScroll); ticking = true; }
-  }, { passive: true });
-  window.addEventListener('resize', updateFromScroll, { passive: true });
-  updateFromScroll();
-
-  // Click em node salta pra aquele chunk
-  nodes.forEach((node, i) => {
-    node.addEventListener('click', () => {
-      const rect = track.getBoundingClientRect();
-      const total = rect.height - window.innerHeight;
-      const y = window.scrollY + rect.top + (total * (i / 4)) + 20;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => activate(i, false));
+    tab.addEventListener('keydown', e => {
+      let next = -1;
+      if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      if (next !== -1) { e.preventDefault(); activate(next, true); }
     });
   });
 })();
