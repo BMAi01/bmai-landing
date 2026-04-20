@@ -636,8 +636,9 @@ section { position: relative; z-index: 1; display: block; }
   100% { background-position: 0% 50%; }
 }
 .hero__sub {
-  font-size: 1.2rem; color: var(--gray1); line-height: 1.7;
-  max-width: 560px; margin-bottom: 36px; font-weight: 400;
+  font-size: 1rem; color: var(--gray1); line-height: 1.55;
+  max-width: 720px; margin-bottom: 36px; font-weight: 500;
+  letter-spacing: .02em;
   animation: fadeUp .6s var(--ease) .5s both;
 }
 .hero__ctas { display: flex; gap: 12px; justify-content: flex-start; animation: fadeUp .6s var(--ease) .7s both; }
