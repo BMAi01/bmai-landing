@@ -3260,3 +3260,118 @@ html { scroll-padding-top: 84px; }
   .aria-node-inner { width: 46px !important; height: 46px !important; }
   .aria-node-letter { font-size: 16px !important; }
 }
+
+/* ============================================
+   MOBILE — polish final auditoria (2026-04-20)
+   Corrige tipografia, tap targets, padding, hierarquia
+   ============================================ */
+@media (max-width: 767px) {
+  /* Container — 20px padding-inline (16px só em <=360) */
+  .container { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Hero — top menor + base respirando */
+  .hero { padding: 96px 0 56px !important; }
+
+  /* CTAs primários — tap target 48px + font legível (não dispara zoom iOS em inputs adjacentes) */
+  .hero__ctas .btn,
+  .cta__actions .btn,
+  .form-submit {
+    min-height: 50px !important;
+    font-size: 15px !important;
+    padding: 14px 22px !important;
+  }
+
+  /* Hero stats — label respirando sem quebrar em 5 linhas */
+  .hero__stat-label {
+    font-size: 10.5px !important;
+    max-width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.3 !important;
+  }
+
+  /* Quem Somos — cards encaixam melhor em 320-375px */
+  .qs__pillar { padding: 30px 22px 26px !important; }
+  .qs__num { font-size: 58px !important; top: 10px !important; right: 18px !important; }
+  .qs__title { font-size: 1.22rem !important; line-height: 1.22 !important; }
+  .qs__desc { font-size: .92rem !important; line-height: 1.55 !important; }
+
+  /* Método AIRA — labels nunca quebram feio */
+  .aria-node-label {
+    text-align: center !important;
+    line-height: 1.1 !important;
+    max-width: 64px;
+    white-space: normal !important;
+  }
+
+  /* Cases — logo visual proporcional (evita logo minúsculo em container grande) */
+  .cs-hero__visual { min-height: 120px !important; padding: 16px !important; }
+  .cs-hero__visual-logo { padding: 24px !important; position: relative !important; inset: auto !important; height: auto !important; max-height: 88px; }
+
+  /* Section titles — consistência de hierarquia em mobile */
+  .section__title { font-size: clamp(24px, 7vw, 34px) !important; }
+
+  /* Respiro do #para-quem após seção anterior (cancela padding 0 anterior) */
+  #para-quem { padding-top: 20px !important; }
+
+  /* FAQ — aproveita padding do container, evita dupla margem */
+  .faq__q { padding-left: 4px !important; padding-right: 4px !important; }
+  .faq__a { padding-left: 4px !important; padding-right: 4px !important; }
+
+  /* Ticker — fade lateral não come mais os logos em 320px */
+  .ticker::before, .ticker::after { width: 40px !important; }
+
+  /* Hero badge — folga no smartphone */
+  .hero__badge {
+    letter-spacing: .08em !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Lang switcher — tap target garantido */
+  .lang-trigger { padding: 10px 14px !important; min-height: 44px !important; }
+
+  /* WhatsApp float — posição e tamanho confortáveis pro polegar */
+  .wpp-float {
+    width: 54px !important;
+    height: 54px !important;
+    right: 20px !important;
+    bottom: max(20px, env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Tag — não estourar em 3 linhas */
+  .tag { font-size: 12px !important; padding: 6px 13px !important; letter-spacing: .1em !important; }
+
+  /* Hero sub — leitura confortável */
+  .hero__sub { font-size: 1.05rem !important; line-height: 1.6 !important; }
+
+  /* FAQ item — line-height mais confortável */
+  .faq__q span { line-height: 1.4 !important; }
+}
+
+/* Footer — 1 coluna em smartphones comuns (não só iPhone SE) */
+@media (max-width: 480px) {
+  .footer__cols {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
+    padding: 32px 20px !important;
+  }
+  .footer__col ul { gap: 12px !important; }
+}
+
+/* iPhone SE / Android pequeno — 360 e abaixo */
+@media (max-width: 360px) {
+  .container { padding-left: 16px !important; padding-right: 16px !important; }
+  .hero__title { font-size: clamp(22px, 8vw, 30px) !important; line-height: 1.1 !important; }
+  .hero__sub { font-size: .96rem !important; }
+  .hero__stat-label { font-size: 9px !important; max-width: 80px; }
+  .qs__num { font-size: 48px !important; }
+  .qs__title { font-size: 1.12rem !important; }
+  .qs__desc { font-size: .88rem !important; }
+  .tag { font-size: 11px !important; padding: 5px 11px !important; }
+  .aria-node-inner { width: 44px !important; height: 44px !important; }
+  .aria-node-letter { font-size: 14px !important; }
+  .aria-node-label { font-size: 8.5px !important; max-width: 56px; }
+  .faq__q { font-size: 14px !important; min-height: 52px !important; }
+  .cs-hero__content { padding: 20px 16px !important; }
+}
