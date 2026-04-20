@@ -345,17 +345,38 @@ addEventListener('load', function () {
 
   // 2) ARIA slides — sem GSAP de entrada (CSS classes controlam tudo, evita jitter no hover)
 
-  // 3) Team flip cards — entram de baixo
-  document.querySelectorAll('.team-card-wrap').forEach((card, i) => {
-    gsap.fromTo(card,
-      { y: 80, opacity: 0, rotateX: 15 },
+  // 3) Team flip cards — pin + scrub: cada card vira 180° conforme rola (stagger)
+  const teamPin = document.getElementById('team-pin');
+  const teamCards = document.querySelectorAll('.team-card');
+  if (teamPin && teamCards.length) {
+    // Entrada suave dos wraps (fade up) antes do pin
+    gsap.fromTo('.team-card-wrap',
+      { y: 60, opacity: 0 },
       {
-        y: 0, opacity: 1, rotateX: 0, duration: .85, ease: 'power3.out',
-        scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' },
-        delay: i * .12
+        y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .1,
+        scrollTrigger: { trigger: teamPin, start: 'top 88%', toggleActions: 'play none none none' }
       }
     );
-  });
+
+    // Pin + scrub: timeline que gira cada card
+    const flipTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: teamPin,
+        start: 'center center',
+        end: '+=300%',
+        pin: true,
+        scrub: 1.5,
+        anticipatePin: 1
+      }
+    });
+    teamCards.forEach((card, i) => {
+      flipTl.to(card, {
+        rotationY: 180,
+        ease: 'power2.inOut',
+        duration: 1
+      }, i * 0.35);
+    });
+  }
 
   // 4) Cases cards
   document.querySelectorAll('.mv-card').forEach((card, i) => {

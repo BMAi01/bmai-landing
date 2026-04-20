@@ -1225,13 +1225,12 @@ section { position: relative; z-index: 1; display: block; }
   position: relative;
   width: 100%; height: 100%;
   transform-style: preserve-3d;
-  transition: transform .7s cubic-bezier(.16,1,.3,1);
   will-change: transform;
 }
-.team-card-wrap:hover .team-card,
-.team-card-wrap.flipped .team-card { transform: rotateY(180deg); }
+/* Desktop: GSAP scroll-pin controla o rotationY. Sem hover-flip pra evitar conflito. */
+/* Mobile (touch): click-to-flip com transição CSS como fallback. */
 @media (pointer: coarse) {
-  .team-card-wrap:hover .team-card { transform: none; }
+  .team-card { transition: transform .7s cubic-bezier(.16,1,.3,1); }
   .team-card-wrap.flipped .team-card { transform: rotateY(180deg); }
 }
 
