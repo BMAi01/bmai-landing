@@ -490,131 +490,37 @@ section { position: relative; z-index: 1; display: block; }
 .header__burger.active span:last-child { transform: rotate(-45deg) translate(3px, -3px); }
 
 /* ============================================
-   HERO
+   HERO — grid 2 colunas (texto / imagem), sem overlap
    ============================================ */
 .hero {
   position: relative; z-index: 1;
   min-height: 100vh; min-height: min(100svh, 100vh);
   display: flex; flex-direction: column; justify-content: center;
-  align-items: flex-start;
-  padding: calc(var(--hdr) + 60px) 0 50px;
+  padding: calc(var(--hdr) + 40px) 0 40px;
   overflow: hidden;
 }
+
+/* Wrap = grid 2 col */
 #hero .container.hero__wrap {
-  max-width: 100%;
+  max-width: var(--max-w);
   width: 100%;
-  margin: 0;
-  padding-left: clamp(40px, 7vw, 110px);
-  padding-right: 0;
-}
-
-/* Imagem 3D close-up — lado direito do hero */
-.hero-visual {
-  position: absolute;
-  right: -8%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: min(75vw, 960px);
-  z-index: 0;
-  pointer-events: none;
-  will-change: transform;
-  animation: heroFloat 9s ease-in-out infinite;
-  animation-play-state: paused;
-}
-.hero-visual.entered { animation-play-state: running; }
-.hero-visual img {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: brightness(1.4) saturate(1.6) contrast(1.1);
-  opacity: 1 !important;
-}
-
-/* Glow laranja pulsando atrás da imagem */
-.hero-visual::before {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 70%; height: 70%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle,
-    rgba(219,85,0,.45) 0%,
-    rgba(219,85,0,.18) 35%,
-    rgba(219,85,0,.05) 60%,
-    transparent 75%);
-  z-index: 0;
-  pointer-events: none;
-  animation: heroGlow 4s ease-in-out infinite;
-  filter: blur(20px);
-}
-@keyframes heroGlow {
-  0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: .8; }
-  50%      { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
-}
-
-/* Fade lateral esquerdo (legibilidade do texto) — suave */
-.hero-visual-fade {
-  position: absolute;
-  inset: 0;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 80px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 100px);
+  align-items: center;
+  position: relative;
   z-index: 2;
-  pointer-events: none;
-  background: linear-gradient(to right,
-    #0d1b2a 0%,
-    #0d1b2a 22%,
-    rgba(13,27,42,.55) 38%,
-    rgba(13,27,42,.08) 58%,
-    transparent 70%);
-}
-/* Fade vertical sutil (topo + base) */
-.hero-visual::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    linear-gradient(to bottom, #0d1b2a 0%, transparent 18%),
-    linear-gradient(to top,    #0d1b2a 0%, rgba(13,27,42,.6) 10%, transparent 28%);
-}
-/* Reforço suave na base do hero */
-.hero::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 160px;
-  background: linear-gradient(to top, #0d1b2a 0%, rgba(13,27,42,.55) 50%, transparent 100%);
-  z-index: 3;
-  pointer-events: none;
-}
-@keyframes heroFloat {
-  0%, 100% { transform: translateY(-50%) scale(1); }
-  50%      { transform: translateY(calc(-50% - 16px)) scale(1.015); }
 }
 
-/* Proteção do texto à esquerda */
-.hero::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 50%;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(to right,
-    #0d1b2a 0%,
-    #0d1b2a 65%,
-    transparent 100%);
-}
-
-.hero__wrap { position: relative; z-index: 2; }
+/* Coluna esquerda — texto */
 .hero__content {
-  max-width: 880px;
+  max-width: 620px;
   width: 100%;
-  margin-left: 0;
-  margin-right: auto;
-  padding-bottom: clamp(60px, 8vw, 100px);
   text-align: left;
+  padding-bottom: 0;
 }
-.hero__content .hero__title { max-width: 640px; }
 #hero .hero__content,
 #hero .hero__title,
 #hero .hero__sub,
@@ -623,6 +529,98 @@ section { position: relative; z-index: 1; display: block; }
   display: flex; flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap; gap: 12px;
+}
+
+/* Coluna direita — imagem, sem absolute */
+.hero-visual {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+  animation: heroFloat 9s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.hero-visual.entered { animation-play-state: running; }
+.hero-visual picture,
+.hero-visual img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: brightness(1.35) saturate(1.5) contrast(1.08);
+  opacity: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* Glow laranja atrás da imagem */
+.hero-visual::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 75%; height: 75%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle,
+    rgba(219,85,0,.40) 0%,
+    rgba(219,85,0,.16) 38%,
+    rgba(219,85,0,.04) 65%,
+    transparent 78%);
+  z-index: 0;
+  pointer-events: none;
+  animation: heroGlow 4s ease-in-out infinite;
+  filter: blur(22px);
+}
+@keyframes heroGlow {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: .8; }
+  50%      { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+/* Float sutil (sem mais alinhamento vertical via translateY porque não é absolute) */
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-12px) scale(1.015); }
+}
+
+/* Fade horizontal removido — não existe mais overlap pra esconder. Só fade suave na base pra costura com a próxima seção */
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 120px;
+  background: linear-gradient(to top, #0d1b2a 0%, rgba(13,27,42,.4) 60%, transparent 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Elemento .hero-visual-fade no DOM vira no-op agora (mantém compatibilidade) */
+.hero-visual-fade { display: none; }
+
+/* Mobile: stack (texto em cima, imagem embaixo, menor) */
+@media (max-width: 900px) {
+  #hero .container.hero__wrap {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 0 clamp(20px, 5vw, 40px);
+  }
+  .hero__content { max-width: 100%; order: 1; }
+  .hero-visual {
+    order: 2;
+    max-width: 360px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+  }
+}
+@media (max-width: 560px) {
+  .hero-visual { max-width: 280px; }
 }
 .hero__badge {
   font-family: var(--mono); font-size: 13px; font-weight: 600;
@@ -654,15 +652,10 @@ section { position: relative; z-index: 1; display: block; }
   100% { background-position: 0% 50%; }
 }
 .hero__sub {
-  font-size: .92rem; color: var(--gray1); line-height: 1.55;
+  font-size: .92rem; color: var(--gray1); line-height: 1.5;
   max-width: 100%; margin-bottom: 36px; font-weight: 700;
   letter-spacing: .005em;
-  white-space: nowrap;
   animation: fadeUp .6s var(--ease) .5s both;
-}
-.hero__sub br { display: block; }
-@media (max-width: 1100px) {
-  .hero__sub { white-space: normal; font-size: .88rem; }
 }
 .hero__ctas { display: flex; gap: 12px; justify-content: flex-start; animation: fadeUp .6s var(--ease) .7s both; }
 
@@ -1622,21 +1615,11 @@ section { position: relative; z-index: 1; display: block; }
   }
   .header { pointer-events: none; }
   .hero { min-height: auto; }
-  .hero-visual {
-    right: 50%;
-    transform: translate(50%, -50%);
-    width: 130vw;
-    opacity: .22;
-  }
-  .hero-visual img { animation: none; filter: brightness(1.1) saturate(1.2); }
-  .hero-visual::before { display: none; }
-  .hero::before {
-    width: 100%;
-    background: rgba(13,27,42,.85);
-  }
-  @keyframes heroFloat {
-    0%, 100% { transform: translate(50%, -50%); }
-    50%      { transform: translate(50%, calc(-50% - 12px)); }
+  .hero-visual img { animation: none; filter: brightness(1.15) saturate(1.25); }
+  .hero-visual::before { opacity: .6; }
+  @keyframes heroFloatLegacy {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
   }
   .hero__stats { position: relative; bottom: auto; padding: 24px 0 12px; }
   #hero .container.hero__stats-row {
@@ -2272,16 +2255,10 @@ h1, h2, h3, p, span, li, a {
     transition: none !important;
   }
 
-  /* Hero visual sem parallax/rotação/glow */
+  /* Hero visual mobile (grid stack): sem animações pesadas */
   .hero-visual {
-    transform: translateY(-50%) !important;
     animation: none !important;
     transition: none !important;
-    opacity: 0.15 !important;
-    width: 100vw !important;
-    right: 0 !important;
-    left: 0 !important;
-    top: 50% !important;
   }
   .hero-visual img {
     animation: none !important;
@@ -2289,11 +2266,7 @@ h1, h2, h3, p, span, li, a {
   }
   .hero-visual::before {
     animation: none !important;
-    display: none !important;
-  }
-  .hero-overlay,
-  .hero-visual-fade {
-    background: rgba(4,4,4,0.75) !important;
+    opacity: .5 !important;
   }
 
   /* Hero layout */
@@ -3159,14 +3132,8 @@ section h2.shimmer-active::after,
    MOBILE — bugs específicos (efeitos e layout)
    ============================================ */
 @media (max-width: 768px) {
-  /* Hero visual (símbolo 3D) não pode cobrir o texto */
-  .hero-visual {
-    opacity: .10 !important;
-    transform: translate(25%, -50%) !important;
-    width: 140vw !important;
-    pointer-events: none;
-  }
-  .hero-visual img { filter: blur(1px); }
+  /* Hero visual mobile (agora grid stack, imagem abaixo do texto): sem blur/scale */
+  .hero-visual { pointer-events: none; }
 
   /* Team: destrava layout pinado do GSAP */
   .team-pin {
