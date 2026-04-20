@@ -188,44 +188,92 @@ section { position: relative; z-index: 1; display: block; }
 /* ============================================
    QUEM SOMOS — dois pilares
    ============================================ */
+#quem-somos { padding: 120px 0; }
+#quem-somos .section__center { margin-bottom: 80px; }
+#quem-somos .section__title {
+  font-size: clamp(2.25rem, 3.8vw, 3.2rem);
+  letter-spacing: -.035em;
+  line-height: 1.08;
+}
+
 .qs__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-top: 8px;
+  gap: 32px;
 }
 .qs__pillar {
-  padding: 32px;
   position: relative;
+  padding: 48px 40px 40px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color .3s ease, box-shadow .3s ease, background .3s ease;
 }
+.qs__pillar:hover {
+  border-color: var(--orange);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 40px rgba(219, 85, 0, 0.15);
+}
+
+/* Número gigante — marca d'água decorativa, canto superior direito */
 .qs__num {
-  font-family: var(--mono);
-  font-size: 40px;
-  font-weight: 700;
+  position: absolute;
+  top: 16px;
+  right: 28px;
+  font-family: inherit;
+  font-size: 96px;
+  font-weight: 800;
   color: var(--orange);
-  letter-spacing: -.02em;
+  opacity: 0.22;
   line-height: 1;
+  letter-spacing: -.04em;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Divisor laranja acima do título */
+.qs__bar {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--orange);
+  border-radius: 2px;
   margin-bottom: 20px;
 }
+
 .qs__title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  font-size: 1.6rem;
+  font-weight: 700;
   color: var(--white);
-  letter-spacing: -.01em;
-  margin-bottom: 12px;
+  letter-spacing: -.015em;
+  line-height: 1.2;
+  margin-bottom: 16px;
 }
 .qs__desc {
-  font-size: .96rem;
-  color: var(--gray1);
-  line-height: 1.75;
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
   font-weight: 400;
+  max-width: 52ch;
 }
+
 @media (max-width: 768px) {
-  .qs__grid { grid-template-columns: 1fr; gap: 16px; }
-  .qs__pillar { padding: 24px; }
-  .qs__num { font-size: 32px; margin-bottom: 14px; }
-  .qs__title { font-size: 1.12rem; }
-  .qs__desc { font-size: .92rem; line-height: 1.7; }
+  #quem-somos { padding: 80px 0; }
+  #quem-somos .section__center { margin-bottom: 48px; }
+  .qs__grid { grid-template-columns: 1fr; gap: 20px; }
+  .qs__pillar { padding: 36px 28px 28px; }
+  .qs__num { font-size: 64px; top: 12px; right: 20px; }
+  .qs__bar { width: 40px; height: 2px; margin-bottom: 16px; }
+  .qs__title { font-size: 1.35rem; }
+  .qs__desc { font-size: .95rem; }
 }
 
 /* ============================================
