@@ -1763,15 +1763,6 @@ section { position: relative; z-index: 1; display: block; }
   50%      { opacity: 1;  transform: scale(1.05); }
 }
 
-/* Float bobbing — badge do hero e tags */
-.hero__badge {
-  animation: floatBob 5s ease-in-out infinite;
-}
-@keyframes floatBob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-
 /* Pulse rings no botão flutuante WhatsApp */
 .wpp-float { position: fixed; }
 .wpp-float::before,
