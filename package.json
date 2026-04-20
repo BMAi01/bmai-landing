@@ -22,7 +22,7 @@
     "url": "https://github.com/BMAi01/bmai-landing/issues"
   },
   "homepage": "https://github.com/BMAi01/bmai-landing#readme",
-  "devDependencies": {
+  "dependencies": {
     "sharp": "^0.34.5"
   }
 }

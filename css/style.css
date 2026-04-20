@@ -523,7 +523,6 @@ section { position: relative; z-index: 1; display: block; }
   display: inline-flex; align-items: center; gap: 8px;
   margin-bottom: 28px; background: rgba(219,85,0,.06);
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  animation: fadeUp .6s var(--ease) .2s both;
 }
 .hero__title {
   display: flex; flex-direction: column;
@@ -655,27 +654,24 @@ section { position: relative; z-index: 1; display: block; }
 .glow-pulse {
   color: var(--orange);
   font-style: normal;
-  display: inline-block;
   animation: textGlow 2s ease-in-out infinite;
-  will-change: text-shadow, transform;
+  will-change: text-shadow;
 }
 @keyframes textGlow {
   0%, 100% {
     text-shadow:
-      0 0 16px rgba(219, 85, 0, 0.45),
-      0 0 32px rgba(219, 85, 0, 0.18);
-    transform: scale(1);
+      0 0 14px rgba(219, 85, 0, 0.40),
+      0 0 28px rgba(219, 85, 0, 0.15);
   }
   50% {
     text-shadow:
-      0 0 28px rgba(219, 85, 0, 0.95),
-      0 0 56px rgba(219, 85, 0, 0.55),
-      0 0 96px rgba(219, 85, 0, 0.25);
-    transform: scale(1.03);
+      0 0 26px rgba(219, 85, 0, 0.95),
+      0 0 52px rgba(219, 85, 0, 0.55),
+      0 0 90px rgba(219, 85, 0, 0.25);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .glow-pulse { animation: none; transform: none; }
+  .glow-pulse { animation: none; }
 }
 
 /* ============================================
