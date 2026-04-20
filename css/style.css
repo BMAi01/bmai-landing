@@ -654,24 +654,24 @@ section { position: relative; z-index: 1; display: block; }
 .glow-pulse {
   color: var(--orange);
   font-style: normal;
-  animation: textGlow 2s ease-in-out infinite;
-  will-change: text-shadow;
+  animation: textBlink 1.4s ease-in-out infinite;
+  will-change: opacity, text-shadow;
 }
-@keyframes textGlow {
+@keyframes textBlink {
   0%, 100% {
+    opacity: 1;
     text-shadow:
-      0 0 14px rgba(219, 85, 0, 0.40),
-      0 0 28px rgba(219, 85, 0, 0.15);
+      0 0 22px rgba(219, 85, 0, 0.75),
+      0 0 48px rgba(219, 85, 0, 0.35);
   }
   50% {
+    opacity: 0.3;
     text-shadow:
-      0 0 26px rgba(219, 85, 0, 0.95),
-      0 0 52px rgba(219, 85, 0, 0.55),
-      0 0 90px rgba(219, 85, 0, 0.25);
+      0 0 6px rgba(219, 85, 0, 0.2);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .glow-pulse { animation: none; }
+  .glow-pulse { animation: none; opacity: 1; }
 }
 
 /* ============================================
