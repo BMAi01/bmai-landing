@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260420-metodo">
+  <link rel="stylesheet" href="css/style.css?v=20260420-mobile">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -190,161 +190,79 @@
   </section>
 
   <!-- ========== MÉTODO AIRA ========== -->
-  <section class="metodo" id="metodo">
+  <section id="metodo">
     <div class="container">
-      <div class="metodo__header">
+      <div class="aria-hdr">
         <p class="tag">Método AIRA</p>
         <h2 class="section__title" style="text-align:center">Do diagnóstico<br><span style="color:var(--orange)">à escala real.</span></h2>
-        <p class="metodo__subtitle">Enxergamos o seu negócio como ele realmente é — único. 4 fases sequenciais, cada uma construindo sobre a anterior. Nenhum passo é pulado.</p>
+        <p class="aria-sub">Enxergamos o seu negócio como ele realmente é — único. 4 fases sequenciais, cada uma construindo sobre a anterior. Nenhum passo é pulado.</p>
       </div>
 
-      <div class="metodo__tabs" role="tablist" aria-label="Fases do método AIRA">
-        <button class="metodo__tab is-active" role="tab" id="tab-step-1" aria-selected="true" aria-controls="step-1" data-target="step-1" tabindex="0">
-          <span class="metodo__tab-num">01</span>
-          <span class="metodo__tab-label">Análise</span>
-        </button>
-        <button class="metodo__tab" role="tab" id="tab-step-2" aria-selected="false" aria-controls="step-2" data-target="step-2" tabindex="-1">
-          <span class="metodo__tab-num">02</span>
-          <span class="metodo__tab-label">Implementação</span>
-        </button>
-        <button class="metodo__tab" role="tab" id="tab-step-3" aria-selected="false" aria-controls="step-3" data-target="step-3" tabindex="-1">
-          <span class="metodo__tab-num">03</span>
-          <span class="metodo__tab-label">Resultado</span>
-        </button>
-        <button class="metodo__tab" role="tab" id="tab-step-4" aria-selected="false" aria-controls="step-4" data-target="step-4" tabindex="-1">
-          <span class="metodo__tab-num">04</span>
-          <span class="metodo__tab-label">Acompanhamento</span>
-        </button>
+      <div class="aria-flow" id="aria-flow">
+        <div class="aria-node" data-index="0">
+          <div class="aria-node-inner">
+            <span class="aria-node-letter">A</span>
+            <span class="aria-node-num">01</span>
+          </div>
+          <span class="aria-node-label">Análise</span>
+        </div>
+        <div class="aria-connector">
+          <svg class="aria-connector-svg" viewBox="0 0 120 24" preserveAspectRatio="none">
+            <defs>
+              <marker id="arr1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="rgba(219,85,0,0.6)"/>
+              </marker>
+            </defs>
+            <line class="aria-conn-line" x1="0" y1="12" x2="120" y2="12" marker-end="url(#arr1)"/>
+          </svg>
+        </div>
+        <div class="aria-node" data-index="1">
+          <div class="aria-node-inner">
+            <span class="aria-node-letter">I</span>
+            <span class="aria-node-num">02</span>
+          </div>
+          <span class="aria-node-label">Implementação</span>
+        </div>
+        <div class="aria-connector">
+          <svg class="aria-connector-svg" viewBox="0 0 120 24" preserveAspectRatio="none">
+            <defs>
+              <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="rgba(219,85,0,0.6)"/>
+              </marker>
+            </defs>
+            <line class="aria-conn-line" x1="0" y1="12" x2="120" y2="12" marker-end="url(#arr2)"/>
+          </svg>
+        </div>
+        <div class="aria-node" data-index="2">
+          <div class="aria-node-inner">
+            <span class="aria-node-letter">R</span>
+            <span class="aria-node-num">03</span>
+          </div>
+          <span class="aria-node-label">Resultado</span>
+        </div>
+        <div class="aria-connector">
+          <svg class="aria-connector-svg" viewBox="0 0 120 24" preserveAspectRatio="none">
+            <defs>
+              <marker id="arr3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="rgba(219,85,0,0.6)"/>
+              </marker>
+            </defs>
+            <line class="aria-conn-line" x1="0" y1="12" x2="120" y2="12" marker-end="url(#arr3)"/>
+          </svg>
+        </div>
+        <div class="aria-node" data-index="3">
+          <div class="aria-node-inner">
+            <span class="aria-node-letter">A</span>
+            <span class="aria-node-num">04</span>
+          </div>
+          <span class="aria-node-label">Acompanhamento</span>
+        </div>
       </div>
 
-      <div class="metodo__content">
-
-        <article class="metodo__step is-active" id="step-1" role="tabpanel" aria-labelledby="tab-step-1">
-          <div class="metodo__text">
-            <span class="metodo__step-kicker">01 / 04 · Fase de entrada</span>
-            <h3 class="metodo__step-title">Análise</h3>
-            <p class="metodo__step-subtitle">Diagnóstico antes de qualquer ferramenta.</p>
-            <p class="metodo__step-desc">Enxergamos o seu negócio como ele realmente é — único. Mapeamos os entraves, as perdas invisíveis e as oportunidades reais. Nada é configurado antes de entender o contexto completo.</p>
-            <ul class="metodo__step-bullets">
-              <li>Mapeamento do processo comercial</li>
-              <li>Identificação de perdas invisíveis</li>
-              <li>Entrevistas com time e gestão</li>
-              <li>Relatório de oportunidades prioritárias</li>
-              <li>Priorização por impacto e viabilidade</li>
-            </ul>
-            <div class="metodo__step-meta">
-              <span class="metodo__step-time">⏱ 1 a 2 semanas</span>
-              <span class="metodo__step-deliver">Entregável: documento de diagnóstico completo</span>
-            </div>
-            <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener" class="btn btn--primary btn--lg metodo__cta">
-              Falar com a Anna
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-          </div>
-          <div class="metodo__visual" aria-hidden="true">
-            <div class="metodo__visual-inner">
-              <span class="metodo__visual-num">01</span>
-              <span class="metodo__visual-letter">A</span>
-              <span class="metodo__visual-caption">Análise</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="metodo__step" id="step-2" role="tabpanel" aria-labelledby="tab-step-2" hidden>
-          <div class="metodo__text">
-            <span class="metodo__step-kicker">02 / 04 · Fase de construção</span>
-            <h3 class="metodo__step-title">Implementação</h3>
-            <p class="metodo__step-subtitle">IA onde gera resultado, não onde impressiona.</p>
-            <p class="metodo__step-desc">Construímos e integramos as soluções nos pontos validados. Cada etapa é testada em produção e ajustada com o time antes de ir para escala. É aqui que começam as primeiras mudanças na cultura e no modo de pensar da empresa.</p>
-            <ul class="metodo__step-bullets">
-              <li>Construção sob medida dos agentes e fluxos</li>
-              <li>Integração com as ferramentas que você já usa</li>
-              <li>Testes em produção antes da escala</li>
-              <li>Treinamento e onboarding do time</li>
-              <li>Primeiras mudanças de cultura operacional</li>
-            </ul>
-            <div class="metodo__step-meta">
-              <span class="metodo__step-time">⏱ 3 a 6 semanas</span>
-              <span class="metodo__step-deliver">Entregável: sistema funcionando em produção</span>
-            </div>
-            <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener" class="btn btn--primary btn--lg metodo__cta">
-              Falar com a Anna
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-          </div>
-          <div class="metodo__visual" aria-hidden="true">
-            <div class="metodo__visual-inner">
-              <span class="metodo__visual-num">02</span>
-              <span class="metodo__visual-letter">I</span>
-              <span class="metodo__visual-caption">Implementação</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="metodo__step" id="step-3" role="tabpanel" aria-labelledby="tab-step-3" hidden>
-          <div class="metodo__text">
-            <span class="metodo__step-kicker">03 / 04 · Fase de validação</span>
-            <h3 class="metodo__step-title">Resultado</h3>
-            <p class="metodo__step-subtitle">ROI mais rápido do mercado — porque é análise e personalização, não milagre.</p>
-            <p class="metodo__step-desc">Definimos os resultados esperados com indicadores concretos. Cada ação tem um número atrelado — sem achismo, sem promessa vazia. É o mapeamento bem feito que permite retorno no primeiro mês.</p>
-            <ul class="metodo__step-bullets">
-              <li>Definição de KPIs e metas mensuráveis</li>
-              <li>Projeção de ROI por frente de atuação</li>
-              <li>Alinhamento de expectativas com o time</li>
-              <li>Validação do plano de ação antes de executar</li>
-              <li>Retorno visível já no primeiro mês</li>
-            </ul>
-            <div class="metodo__step-meta">
-              <span class="metodo__step-time">⏱ 1 a 2 semanas</span>
-              <span class="metodo__step-deliver">Entregável: plano de resultados com KPIs definidos</span>
-            </div>
-            <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener" class="btn btn--primary btn--lg metodo__cta">
-              Falar com a Anna
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-          </div>
-          <div class="metodo__visual" aria-hidden="true">
-            <div class="metodo__visual-inner">
-              <span class="metodo__visual-num">03</span>
-              <span class="metodo__visual-letter">R</span>
-              <span class="metodo__visual-caption">Resultado</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="metodo__step" id="step-4" role="tabpanel" aria-labelledby="tab-step-4" hidden>
-          <div class="metodo__text">
-            <span class="metodo__step-kicker">04 / 04 · Fase contínua</span>
-            <h3 class="metodo__step-title">Acompanhamento</h3>
-            <p class="metodo__step-subtitle">Não vamos te deixar desamparado. Se construímos, vamos manter.</p>
-            <p class="metodo__step-desc">Monitoramos indicadores, ajustamos prompt e lógica conforme o negócio evolui e garantimos que o resultado se sustente no longo prazo. Você ainda tem acesso ao nosso SaaS interno de acompanhamento de métricas — fechou com a BMAi, vira parceiro, não só mais um cliente.</p>
-            <ul class="metodo__step-bullets">
-              <li>Monitoramento de indicadores mensais</li>
-              <li>Melhorias contínuas de prompt e lógica</li>
-              <li>Ajustes conforme o negócio evolui</li>
-              <li>Suporte contínuo ao time</li>
-              <li>Acesso ao SaaS interno da BMAi</li>
-              <li>Expansão gradual das soluções</li>
-            </ul>
-            <div class="metodo__step-meta">
-              <span class="metodo__step-time">⏱ Contínuo</span>
-              <span class="metodo__step-deliver">Entregável: relatório mensal + SaaS de acompanhamento</span>
-            </div>
-            <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener" class="btn btn--primary btn--lg metodo__cta">
-              Falar com a Anna
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-          </div>
-          <div class="metodo__visual" aria-hidden="true">
-            <div class="metodo__visual-inner">
-              <span class="metodo__visual-num">04</span>
-              <span class="metodo__visual-letter">A</span>
-              <span class="metodo__visual-caption">Acompanhamento</span>
-            </div>
-          </div>
-        </article>
-
+      <div class="aria-detail" id="aria-detail">
+        <div class="aria-detail-inner" id="aria-detail-inner"></div>
       </div>
+
     </div>
   </section>
   <!-- ========== CASES DE SUCESSO ========== -->
@@ -807,7 +725,7 @@
   </div>
   <div id="google_translate_element" style="display:none"></div>
 
-  <script defer src="js/main.js?v=20260420-metodo"></script>
+  <script defer src="js/main.js?v=20260420-1918"></script>
 
   <script>
   // Lazy load Google Translate — só carrega se o user já tem cookie OU clicar em idioma ≠ PT
