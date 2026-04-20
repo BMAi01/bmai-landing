@@ -3049,19 +3049,17 @@ section h2.shimmer-active::after,
     gap: 12px !important;
     padding: 0 16px !important;
   }
-  .team-card-wrap { aspect-ratio: 3 / 4.6 !important; }
-  .tc-front-info { padding: 18px 14px !important; }
+  .team-card-wrap { aspect-ratio: 3 / 4.4 !important; }
+  .tc-front-info { padding: 16px 14px !important; }
   .tc-front-info h3 { font-size: 17px !important; margin-bottom: 2px !important; }
-  .tc-front-info span { font-size: 9.5px !important; letter-spacing: .08em !important; }
-  .tc-back-content { padding: 16px 14px !important; }
-  .tc-back-content p { font-size: 12px !important; line-height: 1.5 !important; margin-top: 6px !important; -webkit-line-clamp: unset !important; display: block !important; }
-  .tc-quotes { font-size: 32px !important; }
+  .tc-front-info span { font-size: 9px !important; letter-spacing: .08em !important; }
+  .tc-back-content { padding: 18px 16px !important; overflow: visible !important; }
+  .tc-back-content p { font-size: 13px !important; line-height: 1.5 !important; margin-top: 6px !important; -webkit-line-clamp: unset !important; display: block !important; }
+  .tc-quotes { font-size: 28px !important; margin-bottom: 0 !important; }
   .tc-back-footer { padding-top: 12px !important; }
   .tc-back-footer strong { font-size: 14px !important; }
   .tc-back-footer span { font-size: 9px !important; }
   .tc-back-bar { margin-bottom: 8px !important; }
-
-  /* FAQ */
   .faq__q { font-size: 15px !important; padding: 18px 16px !important; gap: 12px; }
   .faq__q span { line-height: 1.35; }
   .faq__a p { font-size: 14px !important; line-height: 1.6 !important; }
@@ -3353,6 +3351,22 @@ html { scroll-padding-top: 84px; }
     padding: 32px 20px !important;
   }
   .footer__col ul { gap: 12px !important; }
+}
+
+/* Team: 1 coluna com folga pra textos longos em telas médias-estreitas */
+@media (max-width: 560px) {
+  .team-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+    gap: 18px !important;
+    padding: 0 20px !important;
+  }
+  .team-card-wrap { aspect-ratio: 3 / 3.8 !important; }
+  .tc-back-content { padding: 22px 20px !important; }
+  .tc-back-content p { font-size: 14px !important; line-height: 1.6 !important; }
+  .tc-quotes { font-size: 36px !important; }
+  .tc-back-footer strong { font-size: 16px !important; }
 }
 
 /* iPhone SE / Android pequeno — 360 e abaixo */
