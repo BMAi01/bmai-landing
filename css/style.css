@@ -186,6 +186,49 @@ section { position: relative; z-index: 1; display: block; }
 }
 
 /* ============================================
+   QUEM SOMOS — dois pilares
+   ============================================ */
+.qs__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+.qs__pillar {
+  padding: 32px;
+  position: relative;
+}
+.qs__num {
+  font-family: var(--mono);
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--orange);
+  letter-spacing: -.02em;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+.qs__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -.01em;
+  margin-bottom: 12px;
+}
+.qs__desc {
+  font-size: .96rem;
+  color: var(--gray1);
+  line-height: 1.75;
+  font-weight: 400;
+}
+@media (max-width: 768px) {
+  .qs__grid { grid-template-columns: 1fr; gap: 16px; }
+  .qs__pillar { padding: 24px; }
+  .qs__num { font-size: 32px; margin-bottom: 14px; }
+  .qs__title { font-size: 1.12rem; }
+  .qs__desc { font-size: .92rem; line-height: 1.7; }
+}
+
+/* ============================================
    HEADER — Apple frosted nav
    ============================================ */
 .header {
@@ -651,13 +694,15 @@ section { position: relative; z-index: 1; display: block; }
   display: block;
   white-space: nowrap;
 }
-.glow-pulse {
+/* Especificidade alta pra não competir com .hero__title color */
+.hero__title .hero-resultado,
+.hero-resultado {
   color: var(--orange);
   font-style: normal;
-  animation: textBlink 1.4s ease-in-out infinite;
+  animation: pulse-glow 2s ease-in-out infinite;
   will-change: opacity, text-shadow;
 }
-@keyframes textBlink {
+@keyframes pulse-glow {
   0%, 100% {
     opacity: 1;
     text-shadow:
@@ -665,13 +710,13 @@ section { position: relative; z-index: 1; display: block; }
       0 0 48px rgba(219, 85, 0, 0.35);
   }
   50% {
-    opacity: 0.3;
+    opacity: 0.35;
     text-shadow:
       0 0 6px rgba(219, 85, 0, 0.2);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .glow-pulse { animation: none; opacity: 1; }
+  .hero-resultado { animation: none; opacity: 1; }
 }
 
 /* ============================================
