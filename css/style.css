@@ -940,6 +940,12 @@ section { position: relative; z-index: 1; display: block; }
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
+  outline: none;
+}
+.aria-node:focus-visible .aria-node-inner {
+  box-shadow:
+    0 0 0 3px rgba(219, 85, 0, .25),
+    0 0 20px rgba(219, 85, 0, 0.35);
 }
 .aria-node-inner {
   width: 80px;
@@ -1253,7 +1259,14 @@ section { position: relative; z-index: 1; display: block; }
   will-change: transform;
   cursor: pointer;
 }
-.team-card-wrap.flipped .team-card { transform: rotateY(180deg); }
+.team-card-wrap.flipped .team-card,
+.team-card-wrap:focus-within .team-card { transform: rotateY(180deg); }
+.team-card-wrap:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; border-radius: 18px; }
+/* Mata sticky-hover em telas touch */
+@media (hover: none) and (pointer: coarse) {
+  .team-card-wrap:focus-within .team-card { transform: none; }
+  .team-card-wrap.flipped .team-card { transform: rotateY(180deg); }
+}
 
 .tc-front,
 .tc-back {

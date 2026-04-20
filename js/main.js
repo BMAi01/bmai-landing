@@ -142,32 +142,121 @@ document.querySelectorAll('section[id]').forEach(s => {
 });
 
 /* ============================================
-   TEAM — auto-flip staggered ao entrar na viewport
-   + click pra virar/desvirar
+   TEAM — hover-driven desktop (click/tap no touch)
    ============================================ */
 (function () {
-  const wraps = document.querySelectorAll('.team-card-wrap');
+  const wraps = Array.from(document.querySelectorAll('.team-card-wrap'));
   if (!wraps.length) return;
+  const section = document.getElementById('para-quem');
+  const pin = document.getElementById('team-pin');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
 
-  // Click toggle (funciona em qualquer device)
-  wraps.forEach(wrap => {
-    wrap.addEventListener('click', () => wrap.classList.toggle('flipped'));
+  // ARIA + semântica
+  wraps.forEach((wrap, i) => {
+    wrap.setAttribute('role', 'button');
+    wrap.setAttribute('tabindex', '0');
+    wrap.setAttribute('aria-expanded', 'false');
+    const name = wrap.querySelector('.tc-front-info h3')?.textContent?.trim() || `Membro ${i + 1}`;
+    wrap.setAttribute('aria-label', `Ver bio de ${name}`);
   });
 
-  // Auto-flip em stagger quando a seção entra na viewport
-  const pin = document.getElementById('team-pin');
-  if (!pin) return;
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) return;
-
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      wraps.forEach((w, i) => setTimeout(() => w.classList.add('flipped'), 600 + i * 220));
-      io.disconnect();
+  function flipOne(wrap) {
+    wraps.forEach(w => {
+      const on = w === wrap;
+      w.classList.toggle('flipped', on);
+      w.setAttribute('aria-expanded', on ? 'true' : 'false');
     });
-  }, { threshold: 0.35 });
-  io.observe(pin);
+  }
+  function flipNone() {
+    wraps.forEach(w => {
+      w.classList.remove('flipped');
+      w.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  // Keyboard: Enter/Space toggle, Esc fecha
+  wraps.forEach(wrap => {
+    wrap.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (wrap.classList.contains('flipped')) flipNone();
+        else flipOne(wrap);
+      } else if (e.key === 'Escape') {
+        flipNone();
+        wrap.blur();
+      }
+    });
+  });
+
+  if (isTouch) {
+    // ── Touch: click toggle + tap fora fecha + auto-flip stagger ──
+    wraps.forEach(wrap => {
+      wrap.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (wrap.classList.contains('flipped')) flipNone();
+        else flipOne(wrap);
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (section && !section.contains(e.target)) flipNone();
+    });
+
+    // Auto-flip stagger ao entrar viewport (demo visual em mobile)
+    if (pin && !reduceMotion) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          wraps.forEach((w, i) => setTimeout(() => w.classList.add('flipped'), 600 + i * 220));
+          io.disconnect();
+        });
+      }, { threshold: 0.35 });
+      io.observe(pin);
+    }
+    return;
+  }
+
+  // ── Desktop: hover-driven com delay 120/250 ──
+  let enterTimer = null;
+  let leaveTimer = null;
+
+  wraps.forEach(wrap => {
+    wrap.addEventListener('mouseenter', () => {
+      clearTimeout(leaveTimer);
+      clearTimeout(enterTimer);
+      enterTimer = setTimeout(() => flipOne(wrap), 120);
+    });
+    wrap.addEventListener('focus', () => {
+      clearTimeout(leaveTimer);
+      clearTimeout(enterTimer);
+      flipOne(wrap);
+    });
+    wrap.addEventListener('click', () => {
+      // Click em desktop: bypass delay, abre/fecha direto
+      clearTimeout(enterTimer);
+      clearTimeout(leaveTimer);
+      if (wrap.classList.contains('flipped')) flipNone();
+      else flipOne(wrap);
+    });
+  });
+
+  // Sair da seção → colapsa após 250ms (tolerância)
+  if (section) {
+    section.addEventListener('mouseleave', () => {
+      clearTimeout(enterTimer);
+      clearTimeout(leaveTimer);
+      leaveTimer = setTimeout(flipNone, 250);
+    });
+    section.addEventListener('mouseenter', () => {
+      clearTimeout(leaveTimer);
+    });
+    section.addEventListener('focusout', (e) => {
+      if (!section.contains(e.relatedTarget)) {
+        clearTimeout(leaveTimer);
+        leaveTimer = setTimeout(flipNone, 250);
+      }
+    });
+  }
 })();
 
 /* ============================================
@@ -298,13 +387,50 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   }
 
+  // ARIA + semantic role
   nodes.forEach((node, i) => {
-    node.addEventListener('click', () => activate(i));
+    node.setAttribute('role', 'button');
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('aria-pressed', 'false');
+    node.setAttribute('aria-controls', 'aria-detail');
+  });
+  function syncPressed() {
+    nodes.forEach((n, i) => n.setAttribute('aria-pressed', i === current ? 'true' : 'false'));
+  }
+
+  // Touch detection
+  const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
+  let enterTimer = null;
+
+  nodes.forEach((node, i) => {
+    if (!isTouch) {
+      node.addEventListener('mouseenter', () => {
+        clearTimeout(enterTimer);
+        enterTimer = setTimeout(() => { activate(i); syncPressed(); }, 120);
+      });
+      node.addEventListener('mouseleave', () => clearTimeout(enterTimer));
+      node.addEventListener('focus', () => {
+        clearTimeout(enterTimer);
+        if (current !== i) { activate(i); syncPressed(); }
+      });
+    }
+    // Click funciona sempre (desktop bypass delay, touch único gatilho)
+    node.addEventListener('click', () => {
+      clearTimeout(enterTimer);
+      activate(i); syncPressed();
+    });
+    node.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        clearTimeout(enterTimer);
+        activate(i); syncPressed();
+      }
+    });
   });
 
   const io = new IntersectionObserver(entries => {
     if (entries[0].isIntersecting) {
-      setTimeout(() => activate(0), 400);
+      setTimeout(() => { activate(0); syncPressed(); }, 400);
       io.disconnect();
     }
   }, { threshold: 0.4 });
