@@ -142,14 +142,32 @@ document.querySelectorAll('section[id]').forEach(s => {
 });
 
 /* ============================================
-   TEAM — flip on hover (touch fallback)
+   TEAM — auto-flip staggered ao entrar na viewport
+   + click pra virar/desvirar
    ============================================ */
 (function () {
-  if (matchMedia('(pointer:coarse)').matches) {
-    document.querySelectorAll('.team-card-wrap').forEach(wrap => {
-      wrap.addEventListener('click', () => wrap.classList.toggle('flipped'));
+  const wraps = document.querySelectorAll('.team-card-wrap');
+  if (!wraps.length) return;
+
+  // Click toggle (funciona em qualquer device)
+  wraps.forEach(wrap => {
+    wrap.addEventListener('click', () => wrap.classList.toggle('flipped'));
+  });
+
+  // Auto-flip em stagger quando a seção entra na viewport
+  const pin = document.getElementById('team-pin');
+  if (!pin) return;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      wraps.forEach((w, i) => setTimeout(() => w.classList.add('flipped'), 600 + i * 220));
+      io.disconnect();
     });
-  }
+  }, { threshold: 0.35 });
+  io.observe(pin);
 })();
 
 /* ============================================
@@ -345,38 +363,14 @@ addEventListener('load', function () {
 
   // 2) ARIA slides — sem GSAP de entrada (CSS classes controlam tudo, evita jitter no hover)
 
-  // 3) Team flip cards — pin + scrub: cada card vira 180° conforme rola (stagger)
-  const teamPin = document.getElementById('team-pin');
-  const teamCards = document.querySelectorAll('.team-card');
-  if (teamPin && teamCards.length) {
-    // Entrada suave dos wraps (fade up) antes do pin
-    gsap.fromTo('.team-card-wrap',
-      { y: 60, opacity: 0 },
-      {
-        y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .1,
-        scrollTrigger: { trigger: teamPin, start: 'top 88%', toggleActions: 'play none none none' }
-      }
-    );
-
-    // Pin + scrub: timeline que gira cada card
-    const flipTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: teamPin,
-        start: 'center center',
-        end: '+=300%',
-        pin: true,
-        scrub: 1.5,
-        anticipatePin: 1
-      }
-    });
-    teamCards.forEach((card, i) => {
-      flipTl.to(card, {
-        rotationY: 180,
-        ease: 'power2.inOut',
-        duration: 1
-      }, i * 0.35);
-    });
-  }
+  // 3) Team flip cards — entrada fade-up, flip ao entrar na viewport (stagger)
+  gsap.fromTo('.team-card-wrap',
+    { y: 60, opacity: 0 },
+    {
+      y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .1,
+      scrollTrigger: { trigger: '#team-pin', start: 'top 85%', toggleActions: 'play none none none' }
+    }
+  );
 
   // 4) Cases cards
   document.querySelectorAll('.mv-card').forEach((card, i) => {

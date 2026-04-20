@@ -82,8 +82,25 @@
   box-shadow: 0 0 14px rgba(219,85,0,.7);
 }
 ::-webkit-scrollbar-corner { background: #0d1b2a; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-body { font-family: var(--ff); font-size: 16px; line-height: 1.6; color: var(--white); background: var(--bg); overflow-x: hidden; }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-padding-top: 84px;
+}
+body {
+  font-family: var(--ff);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--white);
+  background: var(--bg);
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 img { max-width: 100%; height: auto; display: block; }
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
@@ -1226,14 +1243,11 @@ section { position: relative; z-index: 1; display: block; }
   position: relative;
   width: 100%; height: 100%;
   transform-style: preserve-3d;
+  transition: transform .9s cubic-bezier(.2, .8, .2, 1);
   will-change: transform;
+  cursor: pointer;
 }
-/* Desktop: GSAP scroll-pin controla o rotationY. Sem hover-flip pra evitar conflito. */
-/* Mobile (touch): click-to-flip com transição CSS como fallback. */
-@media (pointer: coarse) {
-  .team-card { transition: transform .7s cubic-bezier(.16,1,.3,1); }
-  .team-card-wrap.flipped .team-card { transform: rotateY(180deg); }
-}
+.team-card-wrap.flipped .team-card { transform: rotateY(180deg); }
 
 .tc-front,
 .tc-back {
