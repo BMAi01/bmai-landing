@@ -3406,3 +3406,445 @@ html { scroll-padding-top: 84px; }
   .faq__q { font-size: 14px !important; min-height: 52px !important; }
   .cs-hero__content { padding: 20px 16px !important; }
 }
+
+/* ============================================
+   QUEM SOMOS — Cena animada (IDV BMAi)
+   Cliente → Agente → Resposta personalizada. Loop 12s.
+   ============================================ */
+:root {
+  --qs-cyan: #4fc3f7;
+  --qs-cyan-d: #29b6f6;
+  --qs-amber: #db5500;
+  --qs-amber-l: #ff9a56;
+  --qs-green: #5dcaa5;
+  --qs-surf-1: rgba(18, 32, 58, .88);
+  --qs-surf-2: rgba(24, 38, 74, .94);
+  --qs-text-1: #e8eef5;
+  --qs-text-2: #a8b3c2;
+  --qs-text-3: #7e8a9d;
+}
+
+.qs__grid--animated {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 48px;
+  align-items: center;
+}
+.qs__pillars { display: flex; flex-direction: column; gap: 24px; }
+.qs__grid--animated .qs__pillar { padding: 36px 32px 30px; }
+
+/* ── Palco 3D ── */
+.qs-scene-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 560px;
+}
+.qs-scene {
+  position: absolute;
+  inset: 0;
+  perspective: 1600px;
+  perspective-origin: 50% 45%;
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 45%, #091a33 0%, #030812 100%);
+  border: 1px solid rgba(255, 255, 255, .05);
+  box-shadow:
+    inset 0 0 120px rgba(0, 0, 0, .4),
+    0 40px 80px -30px rgba(0, 0, 0, .6);
+}
+.qs-scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .02) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 40%, transparent 80%);
+  pointer-events: none;
+}
+.qs-stage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: qsCamJitter 6s ease-in-out infinite;
+}
+@keyframes qsCamJitter {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateY(0deg); }
+  25%      { transform: translate3d(.15%, -.1%, 0) rotateY(-.3deg); }
+  50%      { transform: translate3d(-.1%, .15%, 0) rotateY(.2deg); }
+  75%      { transform: translate3d(.1%, .05%, 0) rotateY(-.2deg); }
+}
+
+/* ── Cards base ── */
+.qs-card {
+  position: absolute;
+  background: var(--qs-surf-1);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 16px;
+  padding: 16px 18px;
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  box-shadow:
+    0 20px 50px -20px rgba(0, 0, 0, .7),
+    0 4px 12px rgba(0, 0, 0, .3),
+    inset 0 1px 0 rgba(255, 255, 255, .04);
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  opacity: 0;
+  color: var(--qs-text-1);
+  font-family: var(--ff);
+  overflow: hidden;
+}
+.qs-card__fresnel {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from 120deg at 50% 50%,
+    rgba(255, 255, 255, .14) 0deg,
+    transparent 60deg,
+    transparent 180deg,
+    rgba(255, 255, 255, .08) 240deg,
+    transparent 320deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  padding: 1px;
+  mix-blend-mode: screen;
+  opacity: .65;
+}
+
+/* Card 1 — Client (top-left, tilted) */
+.qs-card--client {
+  top: 6%;
+  left: 4%;
+  width: 46%;
+  transform: translate3d(-40px, -16px, -60px) rotateY(-13deg) rotateX(3deg);
+  animation: qsFloatClient 7s ease-in-out infinite;
+}
+@keyframes qsFloatClient {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateY(-13deg) rotateX(3deg); }
+  50%      { transform: translate3d(0, -6px, 0) rotateY(-13deg) rotateX(3deg); }
+}
+.qs-card--client.qs--entered {
+  opacity: 1;
+  animation: qsEnterClient .9s cubic-bezier(.22, 1.2, .4, 1) forwards, qsFloatClient 7s ease-in-out 1s infinite;
+}
+@keyframes qsEnterClient {
+  0%   { opacity: 0; transform: translate3d(-80px, -10px, -120px) rotateY(-22deg) rotateX(6deg); }
+  60%  { opacity: 1; transform: translate3d(10px, 0, 0) rotateY(-10deg) rotateX(2deg); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) rotateY(-13deg) rotateX(3deg); }
+}
+
+/* Card 2 — Agent (center, dominant) */
+.qs-card--agent {
+  top: 28%;
+  left: 50%;
+  width: 52%;
+  transform: translate(-50%, 0) translate3d(0, 40px, -80px);
+  background: var(--qs-surf-2);
+  border-color: rgba(219, 85, 0, .18);
+  z-index: 2;
+  padding: 18px 20px;
+}
+.qs-card--agent.qs--entered {
+  opacity: 1;
+  animation: qsEnterAgent 1.1s cubic-bezier(.22, 1.1, .36, 1) forwards;
+}
+@keyframes qsEnterAgent {
+  0%   { opacity: 0; transform: translate(-50%, 0) translate3d(0, 60px, -100px); }
+  70%  { opacity: 1; transform: translate(-50%, 0) translate3d(0, -6px, 20px); }
+  100% { opacity: 1; transform: translate(-50%, 0) translate3d(0, 0, 0); }
+}
+.qs-card__glow {
+  position: absolute;
+  inset: -30px;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(219, 85, 0, .28), transparent 70%);
+  filter: blur(24px);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity .8s ease;
+}
+.qs-card--agent.qs--glow-on .qs-card__glow {
+  opacity: 1;
+  animation: qsBreath 3.6s ease-in-out infinite;
+}
+@keyframes qsBreath {
+  0%, 100% { opacity: .78; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.05); }
+}
+
+/* Card 3 — Output (bottom-right, tilted) */
+.qs-card--output {
+  bottom: 6%;
+  right: 4%;
+  width: 46%;
+  transform: translate3d(40px, 16px, -60px) rotateY(13deg) rotateX(-3deg);
+}
+.qs-card--output.qs--entered {
+  opacity: 1;
+  animation: qsEnterOutput 1s cubic-bezier(.22, 1.2, .4, 1) forwards, qsFloatOutput 7s ease-in-out 1.2s infinite;
+}
+@keyframes qsEnterOutput {
+  0%   { opacity: 0; transform: translate3d(80px, 30px, -120px) rotateY(24deg) rotateX(-6deg); }
+  60%  { opacity: 1; transform: translate3d(-8px, 0, 0) rotateY(10deg) rotateX(-2deg); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) rotateY(13deg) rotateX(-3deg); }
+}
+@keyframes qsFloatOutput {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateY(13deg) rotateX(-3deg); }
+  50%      { transform: translate3d(0, -6px, 0) rotateY(13deg) rotateX(-3deg); }
+}
+
+/* ── Client card content ── */
+.qs-card__head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.qs-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--qs-cyan) 0%, #0288d1 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #031724;
+  letter-spacing: .02em;
+  box-shadow: 0 0 12px rgba(79, 195, 247, .3), inset 0 1px 0 rgba(255, 255, 255, .2);
+}
+.qs-head-meta { display: flex; flex-direction: column; gap: 2px; line-height: 1.1; }
+.qs-name { font-size: 12.5px; font-weight: 700; color: var(--qs-text-1); letter-spacing: -.01em; }
+.qs-status { font-size: 10px; color: var(--qs-text-3); display: flex; align-items: center; gap: 5px; font-weight: 500; }
+.qs-dot-live {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--qs-green);
+  box-shadow: 0 0 6px rgba(93, 202, 165, .6);
+  animation: qsPulseLive 2s ease-in-out infinite;
+}
+@keyframes qsPulseLive { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+.qs-bubble--client {
+  background: rgba(79, 195, 247, .08);
+  border-left: 2px solid var(--qs-cyan);
+  padding: 9px 12px;
+  border-radius: 0 10px 10px 10px;
+  font-size: 12.5px;
+  color: var(--qs-text-1);
+  line-height: 1.4;
+  position: relative;
+  transition: box-shadow .4s ease;
+}
+.qs-bubble--client.qs--pulse {
+  box-shadow: -3px 0 0 var(--qs-cyan), 0 0 18px rgba(79, 195, 247, .3);
+}
+.qs-bubble__text { display: inline-block; font-weight: 500; }
+.qs-bubble__meta {
+  display: block;
+  font-size: 9.5px;
+  color: var(--qs-text-3);
+  margin-top: 4px;
+  font-family: var(--fm);
+  letter-spacing: .03em;
+}
+.qs-ticks { color: var(--qs-cyan); margin-left: 2px; }
+.qs-ticks.qs--flick { animation: qsFlick .25s ease; }
+@keyframes qsFlick { 50% { opacity: .35; } }
+
+/* ── Agent card content ── */
+.qs-dot-agent {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--qs-amber);
+  box-shadow: 0 0 8px rgba(219, 85, 0, .7);
+  animation: qsAgentPulse 1.6s ease-in-out infinite;
+}
+@keyframes qsAgentPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(219, 85, 0, .7); }
+  50%      { opacity: .55; box-shadow: 0 0 14px rgba(219, 85, 0, .9); }
+}
+.qs-name--agent { flex: 1; font-size: 12.5px; }
+.qs-pill {
+  font-family: var(--fm);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: var(--qs-amber-l);
+  background: rgba(219, 85, 0, .1);
+  border: 1px solid rgba(219, 85, 0, .3);
+  padding: 3px 8px;
+  border-radius: 100px;
+  text-transform: uppercase;
+}
+
+.qs-tasks { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.qs-task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, .02);
+  border: 1px solid rgba(255, 255, 255, .04);
+  border-radius: 8px;
+  font-size: 11.5px;
+  color: var(--qs-text-2);
+  letter-spacing: -.005em;
+  position: relative;
+  overflow: hidden;
+  transition: color .3s ease, border-color .3s ease;
+}
+.qs-task.qs--done {
+  color: var(--qs-text-1);
+  border-color: rgba(93, 202, 165, .2);
+}
+.qs-task__icon {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .08);
+  color: var(--qs-green);
+  transition: background .3s ease, border-color .3s ease;
+  position: relative;
+}
+.qs-task.qs--done .qs-task__icon {
+  background: rgba(93, 202, 165, .14);
+  border-color: var(--qs-green);
+}
+.qs-check { opacity: 0; transform: scale(0); transition: none; }
+.qs-task.qs--done .qs-check {
+  animation: qsStamp .5s cubic-bezier(.22, 1.4, .36, 1) forwards;
+}
+@keyframes qsStamp {
+  0%   { opacity: 0; transform: scale(0); }
+  55%  { opacity: 1; transform: scale(1.35); }
+  75%  { transform: scale(.92); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.qs-task--spinner .qs-check { display: none; }
+.qs-task--spinner.qs--done .qs-check { display: block; }
+.qs-task--spinner.qs--done .qs-spin { display: none; }
+.qs-spin {
+  color: var(--qs-amber);
+  animation: qsSpinLoop 1.2s linear infinite;
+  animation-play-state: paused;
+}
+.qs-task--spinner.qs--spinning .qs-spin { animation-play-state: running; }
+@keyframes qsSpinLoop { to { transform: rotate(360deg); } }
+
+.qs-task__scan {
+  position: absolute;
+  top: 0; left: -60%;
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(90deg, transparent 0%, rgba(79, 195, 247, .18) 50%, transparent 100%);
+  pointer-events: none;
+  opacity: 0;
+}
+.qs-task.qs--scanning .qs-task__scan {
+  opacity: 1;
+  animation: qsScanSweep .85s ease-out forwards;
+}
+@keyframes qsScanSweep {
+  0%   { left: -60%; opacity: 0; }
+  30%  { opacity: 1; }
+  100% { left: 110%; opacity: 0; }
+}
+
+.qs-ripple {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(219, 85, 0, .18) 0%, transparent 50%);
+  opacity: 0;
+  transform: scale(.2);
+  transform-origin: 30px calc(100% - 30px);
+}
+.qs-ripple.qs--fire {
+  animation: qsRipple .65s ease-out;
+}
+@keyframes qsRipple {
+  0%   { opacity: 0; transform: scale(.2); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+
+/* ── Output card content ── */
+.qs-out-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.qs-out-icon {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--qs-amber-l), var(--qs-amber));
+  color: #201000;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(219, 85, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .25);
+  transform: scale(0);
+  opacity: 0;
+}
+.qs-card--output.qs--built .qs-out-icon {
+  animation: qsStamp .6s .2s cubic-bezier(.22, 1.4, .36, 1) forwards;
+}
+.qs-out-meta { display: flex; flex-direction: column; gap: 2px; line-height: 1.1; }
+.qs-out-title { font-size: 12.5px; font-weight: 700; color: var(--qs-text-1); letter-spacing: -.005em; }
+.qs-out-sub { font-size: 9.5px; color: var(--qs-text-3); font-family: var(--fm); letter-spacing: .03em; }
+
+.qs-bubble--output {
+  background: rgba(219, 85, 0, .08);
+  border-left: 2px solid var(--qs-amber);
+  padding: 10px 12px;
+  border-radius: 0 10px 10px 10px;
+  font-size: 12px;
+  color: var(--qs-text-1);
+  line-height: 1.45;
+  font-weight: 500;
+  filter: blur(6px);
+  opacity: 0;
+  transition: filter .6s ease, opacity .6s ease;
+}
+.qs-card--output.qs--built .qs-bubble--output {
+  filter: blur(0);
+  opacity: 1;
+}
+
+/* ── SVG flow (particle + path) ── */
+.qs-flow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 3;
+}
+.qs-path {
+  filter: drop-shadow(0 0 4px currentColor);
+}
+.qs-path.qs--fire {
+  animation: qsPathDraw 1s cubic-bezier(.3, .1, .1, 1) forwards;
+  stroke-opacity: 1;
+}
+@keyframes qsPathDraw {
+  0%   { stroke-dashoffset: 260; stroke-opacity: 0; }
+  15%  { stroke-opacity: 1; }
+  100% { stroke-dashoffset: -120; stroke-opacity: 0; }
+}
+
+/* ── Mobile stack ── */
+@media (max-width: 900px) {
+  .qs__grid--animated {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .qs-scene-wrap { max-height: 460px; }
+}
+@media (max-width: 560px) {
+  .qs-scene-wrap { max-height: 380px; aspect-ratio: 1 / .95; }
+  .qs-card { font-size: 11px; padding: 12px 14px; border-radius: 12px; }
+  .qs-card--client { top: 4%; left: 3%; width: 58%; }
+  .qs-card--agent  { top: 30%; width: 70%; }
+  .qs-card--output { bottom: 4%; right: 3%; width: 62%; }
+  .qs-task { font-size: 10px; padding: 6px 8px; }
+  .qs-bubble--client, .qs-bubble--output { font-size: 11px; padding: 8px 10px; }
+  .qs-name, .qs-name--agent, .qs-out-title { font-size: 11.5px; }
+  .qs-avatar { width: 26px; height: 26px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qs-card, .qs-card__glow, .qs-stage, .qs-dot-agent, .qs-dot-live { animation: none !important; }
+  .qs-card { opacity: 1 !important; }
+  .qs-card--agent.qs--glow-on .qs-card__glow { opacity: .8 !important; }
+}

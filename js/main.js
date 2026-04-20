@@ -916,3 +916,200 @@ const CASES_DATA = [
     wrap.style.setProperty('--sy', '-999px');
   });
 })();
+
+/* ============================================
+   QUEM SOMOS — Cena animada (12s loop)
+   ============================================ */
+(function () {
+  const scene = document.getElementById('qsScene');
+  if (!scene) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Simplesmente mostra tudo estático
+    scene.querySelectorAll('.qs-card').forEach(c => c.classList.add('qs--entered'));
+    scene.querySelector('.qs-card--agent')?.classList.add('qs--glow-on');
+    scene.querySelectorAll('.qs-task').forEach(t => t.classList.add('qs--done'));
+    scene.querySelector('.qs-card--output')?.classList.add('qs--built');
+    const clientText = document.getElementById('qsClientText');
+    if (clientText) clientText.textContent = 'Preciso de uma atualização agora';
+    return;
+  }
+
+  const els = {
+    client:  scene.querySelector('.qs-card--client'),
+    agent:   scene.querySelector('.qs-card--agent'),
+    output:  scene.querySelector('.qs-card--output'),
+    bubble:  scene.querySelector('.qs-bubble--client'),
+    ticks:   scene.querySelector('.qs-ticks'),
+    tasks:   scene.querySelectorAll('.qs-task'),
+    spinner: scene.querySelector('.qs-task--spinner'),
+    spinSvg: scene.querySelector('.qs-spin'),
+    ripple:  document.getElementById('qsRipple'),
+    clientText: document.getElementById('qsClientText'),
+    pathOut:    document.getElementById('qsPathToOut'),
+    pathAgent:  document.getElementById('qsPathToAgent'),
+    pathClient: document.getElementById('qsPathToClient')
+  };
+
+  const CLIENT_MSG = 'Preciso de uma atualização agora';
+
+  // Typewriter com deceleração não-linear (human typing)
+  function typeMessage(el, text, onDone) {
+    if (!el) { onDone?.(); return; }
+    el.textContent = '';
+    let i = 0;
+    const len = text.length;
+    function tick() {
+      if (i >= len) { onDone?.(); return; }
+      el.textContent += text.charAt(i);
+      i++;
+      // 1ªs 60% dos chars rápidos (~70ms), últimos 40% desacelera (~140ms)
+      const progress = i / len;
+      const delay = progress < 0.6 ? 60 + Math.random() * 30 : 110 + Math.random() * 60;
+      setTimeout(tick, delay);
+    }
+    tick();
+  }
+
+  // Timer centralizado pra permitir cleanup no stop
+  let timers = [];
+  function after(ms, fn) {
+    const t = setTimeout(fn, ms);
+    timers.push(t);
+    return t;
+  }
+  function clearAll() {
+    timers.forEach(t => clearTimeout(t));
+    timers = [];
+  }
+
+  function resetScene() {
+    els.client?.classList.remove('qs--entered');
+    els.agent?.classList.remove('qs--entered', 'qs--glow-on');
+    els.output?.classList.remove('qs--entered', 'qs--built');
+    els.bubble?.classList.remove('qs--pulse');
+    els.ticks?.classList.remove('qs--flick');
+    els.tasks.forEach(t => t.classList.remove('qs--done', 'qs--scanning'));
+    els.spinner?.classList.remove('qs--spinning');
+    if (els.clientText) els.clientText.textContent = '';
+    [els.pathOut, els.pathAgent, els.pathClient].forEach(p => p?.classList.remove('qs--fire'));
+  }
+
+  function scanThenStamp(taskIdx, scanDur, stampDelay) {
+    const task = els.tasks[taskIdx];
+    if (!task) return;
+    task.classList.add('qs--scanning');
+    after(scanDur, () => {
+      task.classList.remove('qs--scanning');
+      task.classList.add('qs--done');
+      fireRipple();
+    });
+  }
+
+  function fireRipple() {
+    if (!els.ripple) return;
+    els.ripple.classList.remove('qs--fire');
+    // trigger reflow
+    void els.ripple.offsetWidth;
+    els.ripple.classList.add('qs--fire');
+  }
+
+  function firePath(pathEl) {
+    if (!pathEl) return;
+    pathEl.classList.remove('qs--fire');
+    void pathEl.getBBox();
+    pathEl.classList.add('qs--fire');
+  }
+
+  function playCycle() {
+    resetScene();
+
+    // 0.0s — client enters
+    after(150, () => els.client?.classList.add('qs--entered'));
+    // typewriter começa após overshoot
+    after(900, () => {
+      typeMessage(els.clientText, CLIENT_MSG);
+      els.bubble?.classList.add('qs--pulse');
+      after(380, () => els.bubble?.classList.remove('qs--pulse'));
+    });
+    // timestamp flicker
+    after(4200, () => {
+      els.ticks?.classList.add('qs--flick');
+      after(300, () => els.ticks?.classList.remove('qs--flick'));
+    });
+
+    // 1.5s — agent rises
+    after(1500, () => els.agent?.classList.add('qs--entered'));
+    // glow desync 0.3s
+    after(1800, () => els.agent?.classList.add('qs--glow-on'));
+
+    // 2.5s — check 1 (scan + stamp)
+    after(2100, () => els.tasks[0]?.classList.add('qs--scanning'));
+    after(2500, () => {
+      els.tasks[0]?.classList.remove('qs--scanning');
+      els.tasks[0]?.classList.add('qs--done');
+      fireRipple();
+    });
+
+    // 3.3s — check 2 (after 0.8s)
+    after(2900, () => els.tasks[1]?.classList.add('qs--scanning'));
+    after(3300, () => {
+      els.tasks[1]?.classList.remove('qs--scanning');
+      els.tasks[1]?.classList.add('qs--done');
+      fireRipple();
+    });
+
+    // 3.6s — spinner da 3ª task começa os micro-impulses
+    after(3600, () => {
+      if (!els.spinSvg) return;
+      // 2 micro-impulses (~40deg twitches)
+      els.spinSvg.style.transition = 'transform .2s cubic-bezier(.4,0,.2,1)';
+      els.spinSvg.style.transform = 'rotate(40deg)';
+      after(220, () => { els.spinSvg.style.transform = 'rotate(20deg)'; });
+      after(440, () => { els.spinSvg.style.transform = 'rotate(70deg)'; });
+      // pausa "decidindo"
+      after(600, () => { els.spinSvg.style.transform = 'rotate(70deg)'; }); // hold
+      // commit 360
+      after(1200, () => {
+        els.spinSvg.style.transition = 'transform .75s cubic-bezier(.65,.02,.3,1)';
+        els.spinSvg.style.transform = 'rotate(430deg)';
+      });
+    });
+
+    // 4.7s — check 3 stamps
+    after(4300, () => els.tasks[2]?.classList.add('qs--scanning'));
+    after(4700, () => {
+      els.tasks[2]?.classList.remove('qs--scanning');
+      els.tasks[2]?.classList.add('qs--done');
+      fireRipple();
+    });
+
+    // 5.5s — particle fires agent → output
+    after(5500, () => firePath(els.pathOut));
+
+    // 7.0s — output is built (halo → text → icon)
+    after(7000, () => els.output?.classList.add('qs--built'));
+
+    // 10.0s — loop reverse: output → agent (cyan)
+    after(10000, () => firePath(els.pathAgent));
+    // 10.9s — agent → client (cyan continuation)
+    after(10900, () => firePath(els.pathClient));
+
+    // 12.0s — restart
+    after(12000, playCycle);
+  }
+
+  let running = false;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !running) {
+        running = true;
+        playCycle();
+      } else if (!e.isIntersecting && running) {
+        running = false;
+        clearAll();
+        resetScene();
+      }
+    });
+  }, { threshold: 0.25 });
+  io.observe(scene);
+})();

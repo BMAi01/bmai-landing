@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260420-sub2lines">
+  <link rel="stylesheet" href="css/style.css?v=20260420-qsidv">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -172,19 +172,133 @@
         <h2 class="section__title">Duas frentes,<br>um resultado.</h2>
         <p class="section__sub">A BMAi organiza o processo antes e constrói a IA depois — sob medida pra cada operação.</p>
       </div>
-      <div class="qs__grid">
-        <article class="qs__pillar">
-          <span class="qs__num" aria-hidden="true">01</span>
-          <span class="qs__bar" aria-hidden="true"></span>
-          <h3 class="qs__title">Estruturamos o processo</h3>
-          <p class="qs__desc">Preparamos um terreno eficiente para a IA potencializar. Antes de qualquer automação, organizamos o fluxo do negócio para que a tecnologia entre num ambiente pronto para gerar ganho real.</p>
-        </article>
-        <article class="qs__pillar">
-          <span class="qs__num" aria-hidden="true">02</span>
-          <span class="qs__bar" aria-hidden="true"></span>
-          <h3 class="qs__title">Construímos IAs personalizadas</h3>
-          <p class="qs__desc">Desenvolvemos Inteligências Artificiais sob medida para a função específica de cada operação. Nada de solução genérica: a IA é moldada ao processo, não o contrário.</p>
-        </article>
+      <div class="qs__grid qs__grid--animated">
+        <div class="qs__pillars">
+          <article class="qs__pillar">
+            <span class="qs__num" aria-hidden="true">01</span>
+            <span class="qs__bar" aria-hidden="true"></span>
+            <h3 class="qs__title">Estruturamos o processo</h3>
+            <p class="qs__desc">Preparamos um terreno eficiente para a IA potencializar. Antes de qualquer automação, organizamos o fluxo do negócio para que a tecnologia entre num ambiente pronto para gerar ganho real.</p>
+          </article>
+          <article class="qs__pillar">
+            <span class="qs__num" aria-hidden="true">02</span>
+            <span class="qs__bar" aria-hidden="true"></span>
+            <h3 class="qs__title">Construímos IAs personalizadas</h3>
+            <p class="qs__desc">Desenvolvemos Inteligências Artificiais sob medida para a função específica de cada operação. Nada de solução genérica: a IA é moldada ao processo, não o contrário.</p>
+          </article>
+        </div>
+
+        <!-- ===== Cena animada: cliente → agente → resposta ===== -->
+        <div class="qs-scene-wrap" aria-hidden="true">
+          <div class="qs-scene" id="qsScene">
+            <div class="qs-stage">
+
+              <!-- CARD 1 — CLIENT -->
+              <div class="qs-card qs-card--client" data-card="client">
+                <div class="qs-card__fresnel"></div>
+                <div class="qs-card__head">
+                  <div class="qs-avatar">JS</div>
+                  <div class="qs-head-meta">
+                    <span class="qs-name">João Silva</span>
+                    <span class="qs-status"><i class="qs-dot-live"></i>Cliente · online</span>
+                  </div>
+                </div>
+                <div class="qs-bubble qs-bubble--client">
+                  <span class="qs-bubble__text" id="qsClientText"></span>
+                  <span class="qs-bubble__meta"><span id="qsTimestamp">14:31</span> <span class="qs-ticks">✓✓</span></span>
+                </div>
+              </div>
+
+              <!-- CARD 2 — AGENT -->
+              <div class="qs-card qs-card--agent" data-card="agent">
+                <div class="qs-card__fresnel"></div>
+                <div class="qs-card__glow"></div>
+                <div class="qs-card__head">
+                  <span class="qs-dot-agent"></span>
+                  <span class="qs-name qs-name--agent">BMAi Agente</span>
+                  <span class="qs-pill">EM EXECUÇÃO</span>
+                </div>
+                <ul class="qs-tasks" id="qsTasks">
+                  <li class="qs-task" data-i="0">
+                    <span class="qs-task__icon">
+                      <svg class="qs-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
+                    </span>
+                    <span class="qs-task__label">Acessando sistemas conectados</span>
+                    <span class="qs-task__scan"></span>
+                  </li>
+                  <li class="qs-task" data-i="1">
+                    <span class="qs-task__icon">
+                      <svg class="qs-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
+                    </span>
+                    <span class="qs-task__label">Analisando contexto do cliente</span>
+                    <span class="qs-task__scan"></span>
+                  </li>
+                  <li class="qs-task qs-task--spinner" data-i="2">
+                    <span class="qs-task__icon">
+                      <svg class="qs-spin" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>
+                      <svg class="qs-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
+                    </span>
+                    <span class="qs-task__label">Gerando resposta personalizada</span>
+                    <span class="qs-task__scan"></span>
+                  </li>
+                </ul>
+                <div class="qs-ripple" id="qsRipple"></div>
+              </div>
+
+              <!-- CARD 3 — OUTPUT -->
+              <div class="qs-card qs-card--output" data-card="output">
+                <div class="qs-card__fresnel"></div>
+                <div class="qs-out-head">
+                  <span class="qs-out-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
+                  </span>
+                  <div class="qs-out-meta">
+                    <span class="qs-out-title">Resposta entregue</span>
+                    <span class="qs-out-sub">14h32 · Personalizada</span>
+                  </div>
+                </div>
+                <div class="qs-bubble qs-bubble--output">
+                  Atualização pronta no padrão do cliente
+                </div>
+              </div>
+
+              <!-- PARTICLE / FLOW PATH -->
+              <svg class="qs-flow" viewBox="0 0 600 520" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="qs-streak-amber" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#ff9a56" stop-opacity="0"/>
+                    <stop offset="60%" stop-color="#ffb070" stop-opacity=".9"/>
+                    <stop offset="100%" stop-color="#db5500" stop-opacity="1"/>
+                  </linearGradient>
+                  <linearGradient id="qs-streak-cyan" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#4fc3f7" stop-opacity="0"/>
+                    <stop offset="60%" stop-color="#4fc3f7" stop-opacity=".85"/>
+                    <stop offset="100%" stop-color="#29b6f6" stop-opacity="1"/>
+                  </linearGradient>
+                  <radialGradient id="qs-particle-amber" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffd28a" stop-opacity="1"/>
+                    <stop offset="70%" stop-color="#db5500" stop-opacity=".5"/>
+                    <stop offset="100%" stop-color="#db5500" stop-opacity="0"/>
+                  </radialGradient>
+                  <radialGradient id="qs-particle-cyan" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#bae7f9" stop-opacity="1"/>
+                    <stop offset="70%" stop-color="#4fc3f7" stop-opacity=".5"/>
+                    <stop offset="100%" stop-color="#4fc3f7" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <!-- path agent → output: sai do centro do agent (300,260) até o output (500,420) -->
+                <path id="qsPathToOut" class="qs-path" d="M 300 260 C 380 280, 430 340, 500 420" fill="none" stroke="url(#qs-streak-amber)" stroke-width="2" stroke-linecap="round" stroke-opacity="0" stroke-dasharray="60 260" stroke-dashoffset="260"/>
+                <!-- path output → agent (loop reverse) -->
+                <path id="qsPathToAgent" class="qs-path" d="M 500 420 C 430 340, 380 280, 300 260" fill="none" stroke="url(#qs-streak-cyan)" stroke-width="2" stroke-linecap="round" stroke-opacity="0" stroke-dasharray="60 260" stroke-dashoffset="260"/>
+                <!-- path agent → client (loop reverse phase 2) -->
+                <path id="qsPathToClient" class="qs-path" d="M 300 260 C 220 240, 170 180, 110 100" fill="none" stroke="url(#qs-streak-cyan)" stroke-width="2" stroke-linecap="round" stroke-opacity="0" stroke-dasharray="60 260" stroke-dashoffset="260"/>
+                <!-- particle blob (we'll move it via JS transform) -->
+                <circle id="qsParticle" cx="0" cy="0" r="9" fill="url(#qs-particle-amber)" opacity="0"/>
+              </svg>
+
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -725,7 +839,7 @@
   </div>
   <div id="google_translate_element" style="display:none"></div>
 
-  <script defer src="js/main.js?v=20260420-smooth"></script>
+  <script defer src="js/main.js?v=20260420-qsidv"></script>
 
   <script>
   // Lazy load Google Translate — só carrega se o user já tem cookie OU clicar em idioma ≠ PT
