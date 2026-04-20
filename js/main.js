@@ -71,41 +71,6 @@ reveal('.faq__item', true);
 })();
 
 /* ============================================
-   HERO TYPEWRITER — cycling phrases
-   ============================================ */
-(function () {
-  const el = document.getElementById('typed-text');
-  if (!el) return;
-  const phrases = ['não é processo.', 'é um bloqueio.', 'vira improviso.', 'não escala.', 'não cresce.'];
-  let pi = 0, ci = phrases[0].length, deleting = true;
-
-  function type() {
-    const phrase = phrases[pi];
-    if (deleting) {
-      ci--;
-      el.textContent = phrase.slice(0, ci);
-      if (ci === 0) {
-        deleting = false;
-        pi = (pi + 1) % phrases.length;
-        setTimeout(type, 400);
-        return;
-      }
-      setTimeout(type, 38);
-    } else {
-      ci++;
-      el.textContent = phrases[pi].slice(0, ci);
-      if (ci === phrases[pi].length) {
-        deleting = true;
-        setTimeout(type, 2500);
-        return;
-      }
-      setTimeout(type, 72);
-    }
-  }
-  setTimeout(type, 3000);
-})();
-
-/* ============================================
    COUNTERS
    ============================================ */
 const cObs = new IntersectionObserver(entries => {
