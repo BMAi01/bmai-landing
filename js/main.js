@@ -1,4 +1,13 @@
 /* ============================================
+   PERFORMANCE GATE — desliga animações pesadas
+   em mobile, touch devices e prefers-reduced-motion
+   ============================================ */
+const IS_MOBILE = matchMedia('(max-width: 768px), (max-height: 500px) and (orientation: landscape)').matches;
+const IS_TOUCH  = matchMedia('(hover: none), (pointer: coarse)').matches;
+const PREFERS_REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LOW_MOTION = IS_MOBILE || PREFERS_REDUCE;
+
+/* ============================================
    PRELOADER
    ============================================ */
 window.addEventListener('load', () => {
@@ -47,6 +56,10 @@ const revealObs = new IntersectionObserver(entries => {
 }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
 
 function reveal(sel, stagger) {
+  if (LOW_MOTION) {
+    document.querySelectorAll(sel).forEach(el => el.classList.add('reveal', 'revealed'));
+    return;
+  }
   document.querySelectorAll(sel).forEach((el, i) => {
     el.classList.add('reveal');
     if (stagger) el.style.transitionDelay = (i % 4) * 0.07 + 's';
@@ -71,32 +84,40 @@ reveal('.faq__item', true);
 })();
 
 /* ============================================
-   COUNTERS
+   COUNTERS — em mobile vai direto pro número final
    ============================================ */
-const cObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    const el = e.target, target = +el.dataset.count, dur = 1600, t0 = performance.now();
-    (function tick(now) {
-      const p = Math.min((now - t0) / dur, 1);
-      el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
-      p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
-    })(t0);
-    cObs.unobserve(el);
-  });
-}, { threshold: .5 });
-document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
+if (LOW_MOTION) {
+  document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count; });
+} else {
+  const cObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target, target = +el.dataset.count, dur = 1600, t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / dur, 1);
+        el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
+        p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
+      })(t0);
+      cObs.unobserve(el);
+    });
+  }, { threshold: .5 });
+  document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
+}
 
 /* ============================================
-   MANIFESTO — staggered reveal
+   MANIFESTO — staggered reveal (instant em mobile)
    ============================================ */
-const mObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); mObs.unobserve(e.target); } });
-}, { threshold: .2 });
-document.querySelectorAll('.manifesto__line').forEach((l, i) => {
-  l.style.transitionDelay = i * .14 + 's';
-  mObs.observe(l);
-});
+if (LOW_MOTION) {
+  document.querySelectorAll('.manifesto__line').forEach(l => l.classList.add('revealed'));
+} else {
+  const mObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); mObs.unobserve(e.target); } });
+  }, { threshold: .2 });
+  document.querySelectorAll('.manifesto__line').forEach((l, i) => {
+    l.style.transitionDelay = i * .14 + 's';
+    mObs.observe(l);
+  });
+}
 
 /* ============================================
    FAQ
@@ -762,8 +783,9 @@ const CASES_DATA = [
   document.querySelectorAll('.aria-card, .dep-card, .qc, .nin, .mv-card').forEach(el => borderIO.observe(el));
 })();
 
-/* Partículas flutuantes globais */
+/* Partículas flutuantes globais — OFF em mobile/reduced-motion */
 (function() {
+  if (LOW_MOTION) return;
   const canvas = document.createElement('canvas');
   canvas.style.cssText = `
     position: fixed;
@@ -953,7 +975,7 @@ const CASES_DATA = [
    CURSOR TRAIL — ring com lerp
    ============================================ */
 (function() {
-  if (window.matchMedia('(pointer:coarse)').matches) return;
+  if (LOW_MOTION || IS_TOUCH) return;
   const trail = document.getElementById('cur-trail');
   if (!trail) return;
 
@@ -1055,8 +1077,8 @@ const CASES_DATA = [
   const rings   = Array.from(scene.querySelectorAll('.qs-ring'));
   if (!notifs.length || !agent) return;
 
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) {
+  // Mobile / reduced-motion: mostra estado final estático, sem ciclo
+  if (LOW_MOTION) {
     notifs.forEach(n => { n.classList.add('qs--in', 'qs--done'); });
     agent.classList.add('qs--in', 'qs--glow', 'qs--chips-in');
     return;

@@ -3974,3 +3974,84 @@ html { scroll-padding-top: 84px; }
   .qs-notif__check { opacity: 1 !important; transform: scale(1) !important; }
 }
 
+/* ============================================
+   PERFORMANCE MOBILE — kill animations pesadas
+   Cobre: <=768, landscape mobile baixo, reduced-motion
+   Preserva: hero-resultado pulse-glow, FAQ, menu, accordion
+   ============================================ */
+@media (max-width: 768px),
+       (max-height: 500px) and (orientation: landscape),
+       (prefers-reduced-motion: reduce) {
+
+  /* Kill global de animações exceto whitelist */
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: .15s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Whitelist: pulse-glow da palavra "resultado" permanece (identidade BMAi) */
+  .hero-resultado { animation: pulse-glow 2s ease-in-out infinite !important; }
+
+  /* Hero visual — sem float/glow rodando */
+  .hero-visual, .hero-visual::before { animation: none !important; }
+
+  /* Ticker — pausa scroll infinito */
+  .ticker__track { animation: none !important; transform: none !important; }
+
+  /* Cena Quem Somos — estado final estático (já setado via JS LOW_MOTION) */
+  .qs-stage, .qs-card__glow, .qs-dot-agent, .qs-dot-live,
+  .qs-agent__dot, .qs-ring, .qs-notif, .qs-agent, .qs-chip,
+  .qs-notif__check, .qs-card, .qs-bubble--client {
+    animation: none !important;
+  }
+  .qs-notif { opacity: 1 !important; transform: scale(1) var(--tilt, ) !important; }
+  .qs-agent { opacity: 1 !important; transform: translate(-50%, -50%) scale(1) !important; }
+  .qs-chip  { opacity: 1 !important; transform: scale(1) !important; }
+  .qs-notif__check { opacity: 1 !important; transform: scale(1) !important; }
+
+  /* Reveal on scroll — sem lag, já visível */
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .manifesto__line { opacity: 1 !important; transform: none !important; }
+
+  /* Hover levitation / translateY — neutralizados em touch */
+  .glass-card:hover, .btn--primary:hover, .cs-card:hover,
+  .team-card-wrap:hover, .versus__col:hover {
+    transform: none !important;
+  }
+
+  /* Backgrounds respirantes — estáticos */
+  #pb::before, #nm::before, #ct::before,
+  #df::before, #pq::before, #faq::before { animation: none !important; }
+  .chip, .bf::after, .nv2, .hero__stat-value { animation: none !important; }
+  .metodo__header::after { animation: none !important; }
+  .manifesto__line--accent { text-shadow: 0 0 30px rgba(219,85,0,.2) !important; }
+
+  /* Preloader sumir mais rápido */
+  .preloader { transition: opacity .2s ease, visibility .2s ease !important; }
+
+  /* WhatsApp pulse ring — removido pra economizar GPU */
+  .wpp-float::before, .wpp-float::after { display: none !important; }
+
+  /* Scroll progress bar — fica mas sem shine */
+  .scroll-progress { box-shadow: 0 0 4px rgba(219,85,0,.4) !important; }
+
+  /* Floatnav CTA shimmer — off */
+  .floatnav__cta::before, .floatnav__cta:hover::before { animation: none !important; opacity: 0 !important; }
+  .floatnav__cta:hover .floatnav__cta-icon svg { animation: none !important; }
+
+  /* Exceções explícitas que DEVEM continuar com transição curta (≤150ms) */
+  .faq__q, .faq__a,
+  .btn, .btn--primary,
+  .floatnav, .floatnav.active,
+  .header, .header__burger,
+  .lang-trigger, .lang-dropdown,
+  .team-card /* flip no click */ {
+    transition-duration: .15s !important;
+  }
+  .team-card { transition-duration: .5s !important; }
+  .faq__a { transition-duration: .4s !important; }
+}
+
