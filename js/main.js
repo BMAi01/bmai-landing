@@ -1044,59 +1044,39 @@ const CASES_DATA = [
 })();
 
 /* ============================================
-   QUEM SOMOS — Cena animada (12s loop)
+   QUEM SOMOS — IDV enxurrada (12s loop)
    ============================================ */
 (function () {
   const scene = document.getElementById('qsScene');
   if (!scene) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // Simplesmente mostra tudo estático
-    scene.querySelectorAll('.qs-card').forEach(c => c.classList.add('qs--entered'));
-    scene.querySelector('.qs-card--agent')?.classList.add('qs--glow-on');
-    scene.querySelectorAll('.qs-task').forEach(t => t.classList.add('qs--done'));
-    scene.querySelector('.qs-card--output')?.classList.add('qs--built');
-    const clientText = document.getElementById('qsClientText');
-    if (clientText) clientText.textContent = 'Preciso de uma atualização agora';
+  const stage   = scene.querySelector('.qs-stage');
+  const notifs  = Array.from(scene.querySelectorAll('.qs-notif'));
+  const agent   = scene.querySelector('.qs-agent');
+  const rings   = Array.from(scene.querySelectorAll('.qs-ring'));
+  if (!notifs.length || !agent) return;
+
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    notifs.forEach(n => { n.classList.add('qs--in', 'qs--done'); });
+    agent.classList.add('qs--in', 'qs--glow', 'qs--chips-in');
     return;
   }
 
-  const els = {
-    client:  scene.querySelector('.qs-card--client'),
-    agent:   scene.querySelector('.qs-card--agent'),
-    output:  scene.querySelector('.qs-card--output'),
-    bubble:  scene.querySelector('.qs-bubble--client'),
-    ticks:   scene.querySelector('.qs-ticks'),
-    tasks:   scene.querySelectorAll('.qs-task'),
-    spinner: scene.querySelector('.qs-task--spinner'),
-    spinSvg: scene.querySelector('.qs-spin'),
-    ripple:  document.getElementById('qsRipple'),
-    clientText: document.getElementById('qsClientText'),
-    pathOut:    document.getElementById('qsPathToOut'),
-    pathAgent:  document.getElementById('qsPathToAgent'),
-    pathClient: document.getElementById('qsPathToClient')
-  };
+  // Agrupa notifs por wave (data-wave 1/2/3) → ordem de pop-in
+  const wave1 = notifs.filter(n => n.dataset.wave === '1');
+  const wave2 = notifs.filter(n => n.dataset.wave === '2');
+  const wave3 = notifs.filter(n => n.dataset.wave === '3');
 
-  const CLIENT_MSG = 'Preciso de uma atualização agora';
-
-  // Typewriter com deceleração não-linear (human typing)
-  function typeMessage(el, text, onDone) {
-    if (!el) { onDone?.(); return; }
-    el.textContent = '';
-    let i = 0;
-    const len = text.length;
-    function tick() {
-      if (i >= len) { onDone?.(); return; }
-      el.textContent += text.charAt(i);
-      i++;
-      // 1ªs 60% dos chars rápidos (~70ms), últimos 40% desacelera (~140ms)
-      const progress = i / len;
-      const delay = progress < 0.6 ? 60 + Math.random() * 30 : 110 + Math.random() * 60;
-      setTimeout(tick, delay);
+  // Shuffle pra feel de "popcorn" (mesmo resultado em cada ciclo ok, mas não linear pela ordem HTML)
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
-    tick();
+    return a;
   }
 
-  // Timer centralizado pra permitir cleanup no stop
   let timers = [];
   function after(ms, fn) {
     const t = setTimeout(fn, ms);
@@ -1104,123 +1084,80 @@ const CASES_DATA = [
     return t;
   }
   function clearAll() {
-    timers.forEach(t => clearTimeout(t));
+    timers.forEach(clearTimeout);
     timers = [];
   }
 
   function resetScene() {
-    els.client?.classList.remove('qs--entered');
-    els.agent?.classList.remove('qs--entered', 'qs--glow-on');
-    els.output?.classList.remove('qs--entered', 'qs--built');
-    els.bubble?.classList.remove('qs--pulse');
-    els.ticks?.classList.remove('qs--flick');
-    els.tasks.forEach(t => t.classList.remove('qs--done', 'qs--scanning'));
-    els.spinner?.classList.remove('qs--spinning');
-    if (els.clientText) els.clientText.textContent = '';
-    [els.pathOut, els.pathAgent, els.pathClient].forEach(p => p?.classList.remove('qs--fire'));
+    notifs.forEach(n => n.classList.remove('qs--in', 'qs--flash', 'qs--done', 'qs--unstamp'));
+    agent.classList.remove('qs--in', 'qs--glow', 'qs--chips-in');
+    rings.forEach(r => r.classList.remove('qs--go'));
+    stage?.classList.remove('qs-stage--chaos');
   }
 
-  function scanThenStamp(taskIdx, scanDur, stampDelay) {
-    const task = els.tasks[taskIdx];
-    if (!task) return;
-    task.classList.add('qs--scanning');
-    after(scanDur, () => {
-      task.classList.remove('qs--scanning');
-      task.classList.add('qs--done');
-      fireRipple();
+  function popIn(el, delayMs) {
+    after(delayMs, () => {
+      el.classList.add('qs--in', 'qs--flash');
+      after(200, () => el.classList.remove('qs--flash'));
     });
-  }
-
-  function fireRipple() {
-    if (!els.ripple) return;
-    els.ripple.classList.remove('qs--fire');
-    // trigger reflow
-    void els.ripple.offsetWidth;
-    els.ripple.classList.add('qs--fire');
-  }
-
-  function firePath(pathEl) {
-    if (!pathEl) return;
-    pathEl.classList.remove('qs--fire');
-    void pathEl.getBBox();
-    pathEl.classList.add('qs--fire');
   }
 
   function playCycle() {
     resetScene();
+    stage?.classList.add('qs-stage--chaos');
 
-    // 0.0s — client enters
-    after(150, () => els.client?.classList.add('qs--entered'));
-    // typewriter começa após overshoot
-    after(900, () => {
-      typeMessage(els.clientText, CLIENT_MSG);
-      els.bubble?.classList.add('qs--pulse');
-      after(380, () => els.bubble?.classList.remove('qs--pulse'));
-    });
-    // timestamp flicker
-    after(4200, () => {
-      els.ticks?.classList.add('qs--flick');
-      after(300, () => els.ticks?.classList.remove('qs--flick'));
-    });
+    // ── Phase 1 — CHAOS (0 → 2.5s) ──
+    // Wave A: 5 cards 150ms → 850ms
+    const wA = shuffle(wave1);
+    wA.forEach((n, i) => popIn(n, 150 + i * 140 + Math.random() * 80));
+    // Wave B: 5 cards 900ms → 1650ms
+    const wB = shuffle(wave2);
+    wB.forEach((n, i) => popIn(n, 900 + i * 150 + Math.random() * 90));
+    // Wave C: 4 cards 1700ms → 2400ms
+    const wC = shuffle(wave3);
+    wC.forEach((n, i) => popIn(n, 1700 + i * 175 + Math.random() * 100));
 
-    // 1.5s — agent rises
-    after(1500, () => els.agent?.classList.add('qs--entered'));
-    // glow desync 0.3s
-    after(1800, () => els.agent?.classList.add('qs--glow-on'));
-
-    // 2.5s — check 1 (scan + stamp)
-    after(2100, () => els.tasks[0]?.classList.add('qs--scanning'));
+    // ── Phase 2 — AGENT RISES (2.5 → 4.0s) ──
     after(2500, () => {
-      els.tasks[0]?.classList.remove('qs--scanning');
-      els.tasks[0]?.classList.add('qs--done');
-      fireRipple();
+      stage?.classList.remove('qs-stage--chaos');
+      agent.classList.add('qs--in');
     });
+    after(2800, () => agent.classList.add('qs--glow'));
+    // Chip stack reveal
+    after(3100, () => agent.classList.add('qs--chips-in'));
 
-    // 3.3s — check 2 (after 0.8s)
-    after(2900, () => els.tasks[1]?.classList.add('qs--scanning'));
-    after(3300, () => {
-      els.tasks[1]?.classList.remove('qs--scanning');
-      els.tasks[1]?.classList.add('qs--done');
-      fireRipple();
-    });
+    // ── Phase 3 — READING RINGS (4.0 → 5.5s) ──
+    after(4000, () => rings[0]?.classList.add('qs--go'));
+    after(4150, () => rings[1]?.classList.add('qs--go'));
+    after(4300, () => rings[2]?.classList.add('qs--go'));
+    // cleanup rings quando animação termina (2s depois)
+    after(6500, () => rings.forEach(r => r.classList.remove('qs--go')));
 
-    // 3.6s — spinner da 3ª task começa os micro-impulses
-    after(3600, () => {
-      if (!els.spinSvg) return;
-      // 2 micro-impulses (~40deg twitches)
-      els.spinSvg.style.transition = 'transform .2s cubic-bezier(.4,0,.2,1)';
-      els.spinSvg.style.transform = 'rotate(40deg)';
-      after(220, () => { els.spinSvg.style.transform = 'rotate(20deg)'; });
-      after(440, () => { els.spinSvg.style.transform = 'rotate(70deg)'; });
-      // pausa "decidindo"
-      after(600, () => { els.spinSvg.style.transform = 'rotate(70deg)'; }); // hold
-      // commit 360
-      after(1200, () => {
-        els.spinSvg.style.transition = 'transform .75s cubic-bezier(.65,.02,.3,1)';
-        els.spinSvg.style.transform = 'rotate(430deg)';
+    // ── Phase 4 — STAMPS (5.5 → 9.0s) — 4 waves, stagger irregular ──
+    const allNotifs = shuffle(notifs);
+    // Wave A (~5.5-5.85s): 3 cards
+    allNotifs.slice(0, 3).forEach((n, i) => after(5500 + i * 120 + Math.random() * 80, () => n.classList.add('qs--done')));
+    // Wave B (~6.1-6.55): 4 cards
+    allNotifs.slice(3, 7).forEach((n, i) => after(6100 + i * 130 + Math.random() * 80, () => n.classList.add('qs--done')));
+    // Wave C (~6.85-7.35): 3 cards
+    allNotifs.slice(7, 10).forEach((n, i) => after(6850 + i * 140 + Math.random() * 90, () => n.classList.add('qs--done')));
+    // Wave D (~7.6-8.0): resto
+    allNotifs.slice(10).forEach((n, i) => after(7600 + i * 150 + Math.random() * 90, () => n.classList.add('qs--done')));
+
+    // ── Phase 5 — RESOLVED (9.0 → 10.5s) ──
+    // calm — já está no estado desejado
+
+    // ── Phase 6 — REVERSE LOOP (10.5 → 12.0s) ──
+    // un-stamp staggered
+    const unshuffled = shuffle(notifs);
+    unshuffled.forEach((n, i) => {
+      after(10500 + i * 50, () => {
+        n.classList.add('qs--unstamp');
+        after(420, () => n.classList.remove('qs--done', 'qs--unstamp'));
       });
     });
 
-    // 4.7s — check 3 stamps
-    after(4300, () => els.tasks[2]?.classList.add('qs--scanning'));
-    after(4700, () => {
-      els.tasks[2]?.classList.remove('qs--scanning');
-      els.tasks[2]?.classList.add('qs--done');
-      fireRipple();
-    });
-
-    // 5.5s — particle fires agent → output
-    after(5500, () => firePath(els.pathOut));
-
-    // 7.0s — output is built (halo → text → icon)
-    after(7000, () => els.output?.classList.add('qs--built'));
-
-    // 10.0s — loop reverse: output → agent (cyan)
-    after(10000, () => firePath(els.pathAgent));
-    // 10.9s — agent → client (cyan continuation)
-    after(10900, () => firePath(els.pathClient));
-
-    // 12.0s — restart
+    // Restart em 12s
     after(12000, playCycle);
   }
 
@@ -1236,6 +1173,6 @@ const CASES_DATA = [
         resetScene();
       }
     });
-  }, { threshold: 0.25 });
+  }, { threshold: 0.2 });
   io.observe(scene);
 })();

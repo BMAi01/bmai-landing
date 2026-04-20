@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260420-rvthero">
+  <link rel="stylesheet" href="css/style.css?v=20260420-qscaos">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -189,113 +189,148 @@
           </article>
         </div>
 
-        <!-- ===== Cena animada: cliente → agente → resposta ===== -->
+        <!-- ===== Cena animada: enxurrada de clientes → agente resolve ===== -->
         <div class="qs-scene-wrap" aria-hidden="true">
           <div class="qs-scene" id="qsScene">
-            <div class="qs-stage">
+            <div class="qs-stage" id="qsStage">
 
-              <!-- CARD 1 — CLIENT -->
-              <div class="qs-card qs-card--client" data-card="client">
-                <div class="qs-card__fresnel"></div>
-                <div class="qs-card__head">
-                  <div class="qs-avatar">JS</div>
-                  <div class="qs-head-meta">
-                    <span class="qs-name">João Silva</span>
-                    <span class="qs-status"><i class="qs-dot-live"></i>Cliente · online</span>
-                  </div>
-                </div>
-                <div class="qs-bubble qs-bubble--client">
-                  <span class="qs-bubble__text" id="qsClientText"></span>
-                  <span class="qs-bubble__meta"><span id="qsTimestamp">14:31</span> <span class="qs-ticks">✓✓</span></span>
-                </div>
-              </div>
-
-              <!-- CARD 2 — AGENT -->
-              <div class="qs-card qs-card--agent" data-card="agent">
-                <div class="qs-card__fresnel"></div>
-                <div class="qs-card__glow"></div>
-                <div class="qs-card__head">
-                  <span class="qs-dot-agent"></span>
-                  <span class="qs-name qs-name--agent">BMAi Agente</span>
-                  <span class="qs-pill">EM EXECUÇÃO</span>
-                </div>
-                <ul class="qs-tasks" id="qsTasks">
-                  <li class="qs-task" data-i="0">
-                    <span class="qs-task__icon">
-                      <svg class="qs-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
-                    </span>
-                    <span class="qs-task__label">Acessando sistemas conectados</span>
-                    <span class="qs-task__scan"></span>
-                  </li>
-                  <li class="qs-task" data-i="1">
-                    <span class="qs-task__icon">
-                      <svg class="qs-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
-                    </span>
-                    <span class="qs-task__label">Analisando contexto do cliente</span>
-                    <span class="qs-task__scan"></span>
-                  </li>
-                  <li class="qs-task qs-task--spinner" data-i="2">
-                    <span class="qs-task__icon">
-                      <svg class="qs-spin" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>
-                      <svg class="qs-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
-                    </span>
-                    <span class="qs-task__label">Gerando resposta personalizada</span>
-                    <span class="qs-task__scan"></span>
-                  </li>
-                </ul>
-                <div class="qs-ripple" id="qsRipple"></div>
-              </div>
-
-              <!-- CARD 3 — OUTPUT -->
-              <div class="qs-card qs-card--output" data-card="output">
-                <div class="qs-card__fresnel"></div>
-                <div class="qs-out-head">
-                  <span class="qs-out-icon">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
-                  </span>
-                  <div class="qs-out-meta">
-                    <span class="qs-out-title">Resposta entregue</span>
-                    <span class="qs-out-sub">14h32 · Personalizada</span>
-                  </div>
-                </div>
-                <div class="qs-bubble qs-bubble--output">
-                  Atualização pronta no padrão do cliente
-                </div>
-              </div>
-
-              <!-- PARTICLE / FLOW PATH -->
-              <svg class="qs-flow" viewBox="0 0 600 520" preserveAspectRatio="none" aria-hidden="true">
-                <defs>
-                  <linearGradient id="qs-streak-amber" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stop-color="#ff9a56" stop-opacity="0"/>
-                    <stop offset="60%" stop-color="#ffb070" stop-opacity=".9"/>
-                    <stop offset="100%" stop-color="#db5500" stop-opacity="1"/>
-                  </linearGradient>
-                  <linearGradient id="qs-streak-cyan" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stop-color="#4fc3f7" stop-opacity="0"/>
-                    <stop offset="60%" stop-color="#4fc3f7" stop-opacity=".85"/>
-                    <stop offset="100%" stop-color="#29b6f6" stop-opacity="1"/>
-                  </linearGradient>
-                  <radialGradient id="qs-particle-amber" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#ffd28a" stop-opacity="1"/>
-                    <stop offset="70%" stop-color="#db5500" stop-opacity=".5"/>
-                    <stop offset="100%" stop-color="#db5500" stop-opacity="0"/>
-                  </radialGradient>
-                  <radialGradient id="qs-particle-cyan" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#bae7f9" stop-opacity="1"/>
-                    <stop offset="70%" stop-color="#4fc3f7" stop-opacity=".5"/>
-                    <stop offset="100%" stop-color="#4fc3f7" stop-opacity="0"/>
-                  </radialGradient>
-                </defs>
-                <!-- path agent → output: sai do centro do agent (300,260) até o output (500,420) -->
-                <path id="qsPathToOut" class="qs-path" d="M 300 260 C 380 280, 430 340, 500 420" fill="none" stroke="url(#qs-streak-amber)" stroke-width="2" stroke-linecap="round" stroke-opacity="0" stroke-dasharray="60 260" stroke-dashoffset="260"/>
-                <!-- path output → agent (loop reverse) -->
-                <path id="qsPathToAgent" class="qs-path" d="M 500 420 C 430 340, 380 280, 300 260" fill="none" stroke="url(#qs-streak-cyan)" stroke-width="2" stroke-linecap="round" stroke-opacity="0" stroke-dasharray="60 260" stroke-dashoffset="260"/>
-                <!-- path agent → client (loop reverse phase 2) -->
-                <path id="qsPathToClient" class="qs-path" d="M 300 260 C 220 240, 170 180, 110 100" fill="none" stroke="url(#qs-streak-cyan)" stroke-width="2" stroke-linecap="round" stroke-opacity="0" stroke-dasharray="60 260" stroke-dashoffset="260"/>
-                <!-- particle blob (we'll move it via JS transform) -->
-                <circle id="qsParticle" cx="0" cy="0" r="9" fill="url(#qs-particle-amber)" opacity="0"/>
+              <!-- RINGS (leitura) -->
+              <svg class="qs-rings" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <circle class="qs-ring qs-ring--1" cx="50" cy="50" r="0" fill="none" stroke="#FF6B1A" stroke-width=".35"/>
+                <circle class="qs-ring qs-ring--2" cx="50" cy="50" r="0" fill="none" stroke="#FF6B1A" stroke-width=".25"/>
+                <circle class="qs-ring qs-ring--3" cx="50" cy="50" r="0" fill="none" stroke="#FFA866" stroke-width=".2"/>
               </svg>
+
+              <!-- NOTIFICATIONS (12 cards) -->
+              <div class="qs-notif qs-notif--hero"   data-tier="hero"   style="top:2%;left:-4%"   data-tilt="left"  data-wave="1">
+                <div class="qs-notif__avatar" style="--c:#00E5FF">JS</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">João Silva</span><span class="qs-notif__time">14:31</span></div>
+                  <div class="qs-notif__msg">Preciso atualização</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini"   data-tier="mini"   style="top:4%;left:38%"   data-tilt="center-top" data-wave="2">
+                <div class="qs-notif__avatar" style="--c:#FFD28A">IC</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Isabela</span><span class="qs-notif__time">14:30</span></div>
+                  <div class="qs-notif__msg qs-notif__msg--urgent">Help urgente!</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--hero"   data-tier="hero"   style="top:2%;right:-4%"  data-tilt="right" data-wave="1">
+                <div class="qs-notif__avatar" style="--c:#ED93B1">MR</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Maria Rocha</span><span class="qs-notif__time">14:32</span></div>
+                  <div class="qs-notif__msg">Cliente furioso</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--hero"   data-tier="hero"   style="top:30%;left:-6%"  data-tilt="left"  data-wave="2">
+                <div class="qs-notif__avatar" style="--c:#7F77DD">LT</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Lucas Tavares</span><span class="qs-notif__time">14:33</span></div>
+                  <div class="qs-notif__msg">Relatório travado</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini"   data-tier="mini"   style="top:26%;left:22%"  data-tilt="mild-left"  data-wave="2">
+                <div class="qs-notif__avatar" style="--c:#ED93B1">DO</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Débora</span><span class="qs-notif__time">14:29</span></div>
+                  <div class="qs-notif__msg qs-notif__msg--urgent">Status do pedido?</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini"   data-tier="mini"   style="top:26%;right:22%" data-tilt="mild-right" data-wave="3">
+                <div class="qs-notif__avatar" style="--c:#7F77DD">JL</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Júlio</span><span class="qs-notif__time">14:31</span></div>
+                  <div class="qs-notif__msg qs-notif__msg--urgent">Socorro!</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--hero"   data-tier="hero"   style="top:30%;right:-6%" data-tilt="right" data-wave="1">
+                <div class="qs-notif__avatar" style="--c:#1D9E75">AF</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Ana Ferreira</span><span class="qs-notif__time">14:33</span></div>
+                  <div class="qs-notif__msg">Reunião em 10min</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--med"    data-tier="med"    style="top:54%;left:-3%"  data-tilt="left"  data-wave="3">
+                <div class="qs-notif__avatar" style="--c:#F0997B">CB</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Carlos Bueno</span><span class="qs-notif__time">14:30</span></div>
+                  <div class="qs-notif__msg">Proposta sumiu</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--med"    data-tier="med"    style="top:54%;right:-3%" data-tilt="right" data-wave="3">
+                <div class="qs-notif__avatar" style="--c:#378ADD">PM</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Paula Mattos</span><span class="qs-notif__time">14:32</span></div>
+                  <div class="qs-notif__msg">Erro urgente</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--med"    data-tier="med"    style="bottom:4%;left:4%" data-tilt="left"  data-wave="2">
+                <div class="qs-notif__avatar" style="--c:#5DCAA5">GS</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Gabriel Souza</span><span class="qs-notif__time">14:31</span></div>
+                  <div class="qs-notif__msg">Pagto travou</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini"   data-tier="mini"   style="bottom:6%;left:36%" data-tilt="center-bottom" data-wave="3">
+                <div class="qs-notif__avatar" style="--c:#F0997B">CM</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Camila</span><span class="qs-notif__time">14:28</span></div>
+                  <div class="qs-notif__msg qs-notif__msg--urgent">Pedido atrasado</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--med"    data-tier="med"    style="bottom:4%;right:4%" data-tilt="right" data-wave="2">
+                <div class="qs-notif__avatar" style="--c:#F09595">FT</div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__head"><span class="qs-notif__name">Fábio Torres</span><span class="qs-notif__time">14:28</span></div>
+                  <div class="qs-notif__msg">Cliente saindo</div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <!-- AGENT (centro, dominante) -->
+              <div class="qs-agent" id="qsAgent">
+                <div class="qs-agent__glow"></div>
+                <div class="qs-agent__fresnel"></div>
+                <div class="qs-agent__head">
+                  <span class="qs-agent__dot"></span>
+                  <span class="qs-agent__title">BMAi Agente</span>
+                  <span class="qs-agent__pill">EM AÇÃO</span>
+                </div>
+                <p class="qs-agent__body">Respondendo <span class="qs-agent__highlight">+47 clientes</span> em paralelo, cada um no seu contexto e padrão.</p>
+                <div class="qs-agent__foot">
+                  <div class="qs-agent__stack">
+                    <span class="qs-chip" style="--c:#00E5FF">J</span>
+                    <span class="qs-chip" style="--c:#ED93B1">M</span>
+                    <span class="qs-chip" style="--c:#7F77DD">L</span>
+                    <span class="qs-chip" style="--c:#1D9E75">A</span>
+                    <span class="qs-chip qs-chip--plus">+</span>
+                  </div>
+                  <span class="qs-agent__count">43 ativos agora</span>
+                </div>
+              </div>
 
             </div>
           </div>
@@ -651,8 +686,8 @@
           <div class="faq__a"><p>Se o seu time está saturado, se você perde lead por falta de follow-up, se decisões demoram por falta de dado ou se você ainda responde WhatsApp às 22h — o momento é agora. Postergar implementação de IA é o custo invisível mais caro de 2026: seu concorrente já começou. Começamos pelo diagnóstico gratuito, sem compromisso, e você decide se faz sentido avançar.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>Posso testar antes de aprovar?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Pode e deve. Toda solução passa por teste em produção controlada antes de ir para escala — com métricas claras do que é "ok" e do que precisa ajustar. Você não aprova nada no escuro. Antes disso, o diagnóstico inicial é gratuito: você já sai com um mapa do que muda no seu processo, mesmo que decida não seguir com a gente.</p></div>
+          <button class="faq__q"><span>Quanto custa?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p>Não trabalhamos com tabela. Cada projeto é precificado com base no diagnóstico real: escopo da operação, número de frentes que a IA vai atender, nível de integração com os sistemas que você já usa e complexidade dos fluxos. Solução sob medida não cabe em pacote fechado — e é exatamente por isso que o ROI aparece no primeiro mês. O diagnóstico inicial é gratuito e você sai com um orçamento claro, sem pegadinha e sem compromisso.</p></div>
         </div>
         <div class="faq__item">
           <button class="faq__q"><span>Quanto tempo leva para estar funcionando?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -840,7 +875,7 @@
   </div>
   <div id="google_translate_element" style="display:none"></div>
 
-  <script defer src="js/main.js?v=20260420-hover"></script>
+  <script defer src="js/main.js?v=20260420-qscaos"></script>
 
   <script>
   // Lazy load Google Translate — só carrega se o user já tem cookie OU clicar em idioma ≠ PT
