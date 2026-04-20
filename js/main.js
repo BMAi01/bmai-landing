@@ -88,69 +88,6 @@ const cObs = new IntersectionObserver(entries => {
 document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
 
 /* ============================================
-   NOTIFICATION STREAM — #pb panel
-   ============================================ */
-(function () {
-  const stream = document.getElementById('pbStream');
-  const badge = document.getElementById('pbBadge');
-  if (!stream) return;
-
-  const notifs = [
-    { a: 'WhatsApp',   m: 'Pedro: "Você mandou o orçamento? Preciso hoje"' },
-    { a: 'E-mail',     m: 'Lead do anúncio sem resposta há 3 dias' },
-    { a: 'CRM',        m: '5 leads novos sem follow-up na fila' },
-    { a: 'WhatsApp',   m: 'Ana: "Tive que cancelar, a agenda bagunçou"' },
-    { a: 'Reunião',    m: 'Decisão adiada — dados incompletos' },
-    { a: 'Time',       m: 'Lucas: "Você pode revisar antes de eu enviar?"' },
-    { a: 'Financeiro', m: 'Cobrança manual pendente — terceiro mês' },
-    { a: 'E-mail',     m: 'Proposta enviada sem follow-up programado' },
-    { a: 'WhatsApp',   m: 'Novo lead sem processo definido — perdido' },
-    { a: 'Agenda',     m: 'Conflito de horário — confirmação pendente' },
-  ];
-
-  function nowTime(offsetMin = 0) {
-    const d = new Date(Date.now() - offsetMin * 60000);
-    return d.toTimeString().slice(0, 5);
-  }
-
-  let ni = 0, unread = 0, timer;
-
-  function addNotif() {
-    const n = notifs[ni % notifs.length];
-    const div = document.createElement('div');
-    div.className = 'pb__notif';
-    div.innerHTML = `
-      <span class="pb__notif-time">${nowTime(Math.max(0, (5 - ni) * 4))}</span>
-      <div class="pb__notif-body">
-        <div class="pb__notif-app">${n.a}</div>
-        <div class="pb__notif-msg">${n.m}</div>
-      </div>
-      <span class="pb__notif-dot"></span>
-    `;
-    stream.prepend(div);
-    while (stream.children.length > 8) stream.removeChild(stream.lastChild);
-    ni++;
-    unread++;
-    if (badge) badge.textContent = unread + ' não lida' + (unread > 1 ? 's' : '');
-  }
-
-  // Pre-load 6 then add every 2.2s
-  function startStream() {
-    for (let i = 0; i < 6; i++) addNotif();
-    timer = setInterval(addNotif, 2200);
-  }
-
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting && !timer) { startStream(); }
-      else if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; }
-    });
-  }, { threshold: .15 });
-
-  obs.observe(stream);
-})();
-
-/* ============================================
    MANIFESTO — staggered reveal
    ============================================ */
 const mObs = new IntersectionObserver(entries => {
