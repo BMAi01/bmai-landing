@@ -3441,8 +3441,112 @@ html { scroll-padding-top: 84px; }
   gap: 48px;
   align-items: center;
 }
-.qs__pillars { display: flex; flex-direction: column; gap: 24px; }
-.qs__grid--animated .qs__pillar { padding: 36px 32px 30px; }
+
+/* ── Card unificado com 2 pilares (lado esquerdo) ── */
+.card-unificado {
+  position: relative;
+  background: rgba(14, 20, 32, .88);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 0.5px solid rgba(255, 107, 26, .28);
+  border-radius: 16px;
+  padding: 44px 36px;
+  overflow: hidden;
+  transition: border-color .4s ease, box-shadow .4s ease;
+}
+.card-unificado:hover {
+  border-color: rgba(255, 107, 26, .45);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, .35),
+    0 0 80px rgba(255, 107, 26, .06);
+}
+.card-top-line {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 107, 26, .55) 20%,
+    rgba(255, 107, 26, .55) 80%,
+    transparent 100%);
+}
+
+/* Pilares empilhados verticais + divisor horizontal no meio
+   (a coluna esquerda do qs__grid--animated é estreita pra 2 lado a lado) */
+.pilares-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 32px;
+  align-items: start;
+}
+.pilar { min-width: 0; }
+.pilar-num {
+  font-family: var(--fd);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--orange);
+  letter-spacing: -1.2px;
+  line-height: 1;
+  margin-bottom: 12px;
+  text-shadow: 0 0 24px rgba(255, 107, 26, .25);
+}
+.pilar-bar {
+  width: 32px;
+  height: 2px;
+  background: var(--orange);
+  border-radius: 1px;
+  margin-bottom: 18px;
+  box-shadow: 0 0 8px rgba(255, 107, 26, .4);
+}
+.pilar h3 {
+  font-family: var(--ff);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0 0 12px;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+.pilar p {
+  font-size: .95rem;
+  line-height: 1.6;
+  color: var(--gray1);
+  margin: 0;
+  max-width: 44ch;
+  font-weight: 400;
+}
+
+/* Divisor horizontal entre pilares (vertical stack) */
+.pilar-divisor {
+  position: relative;
+  width: 100%;
+  height: 0.5px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 107, 26, .35) 20%,
+    rgba(255, 107, 26, .35) 80%,
+    transparent 100%);
+  align-self: stretch;
+}
+.pilar-divisor-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 16px rgba(255, 107, 26, .75);
+}
+
+@media (max-width: 560px) {
+  .card-unificado { padding: 32px 22px; border-radius: 14px; }
+  .pilares-grid { gap: 24px; }
+  .pilar-num { font-size: 36px; }
+  .pilar h3 { font-size: 1.1rem; }
+  .pilar p { font-size: .92rem; }
+}
 
 /* ── Palco ── */
 .qs-scene-wrap {
