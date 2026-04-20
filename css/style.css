@@ -3442,91 +3442,120 @@ html { scroll-padding-top: 84px; }
   align-items: center;
 }
 
-/* ── Card unificado com 2 pilares (lado esquerdo) ── */
+/* ── Card unificado com 2 pilares (lado esquerdo) — polido ── */
 .card-unificado {
   position: relative;
-  background: rgba(14, 20, 32, .88);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 0.5px solid rgba(255, 107, 26, .28);
-  border-radius: 16px;
-  padding: 44px 36px;
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(255, 107, 26, .06) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, rgba(255, 107, 26, .05) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(16, 24, 38, .94) 0%, rgba(11, 18, 30, .94) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 107, 26, .18);
+  border-radius: 20px;
+  padding: 48px 40px;
   overflow: hidden;
-  transition: border-color .4s ease, box-shadow .4s ease;
+  transition: border-color .4s ease, box-shadow .4s ease, transform .4s ease;
+  box-shadow:
+    0 24px 48px -18px rgba(0, 0, 0, .45),
+    0 4px 12px rgba(0, 0, 0, .2),
+    inset 0 1px 0 rgba(255, 255, 255, .05);
+}
+.card-unificado::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg,
+    rgba(255, 107, 26, .35) 0%,
+    rgba(255, 107, 26, .08) 30%,
+    transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: .85;
 }
 .card-unificado:hover {
-  border-color: rgba(255, 107, 26, .45);
+  border-color: rgba(255, 107, 26, .32);
   box-shadow:
-    0 30px 60px rgba(0, 0, 0, .35),
-    0 0 80px rgba(255, 107, 26, .06);
+    0 30px 60px -16px rgba(0, 0, 0, .55),
+    0 0 64px rgba(255, 107, 26, .08),
+    inset 0 1px 0 rgba(255, 255, 255, .08);
 }
 .card-top-line {
   position: absolute;
   top: 0; left: 0;
   width: 100%;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(255, 107, 26, .55) 20%,
-    rgba(255, 107, 26, .55) 80%,
+    rgba(255, 107, 26, .35) 15%,
+    rgba(255, 167, 102, .9) 50%,
+    rgba(255, 107, 26, .35) 85%,
     transparent 100%);
+  box-shadow: 0 0 20px rgba(255, 107, 26, .5), 0 2px 14px rgba(255, 107, 26, .4);
 }
 
-/* Pilares empilhados verticais + divisor horizontal no meio
-   (a coluna esquerda do qs__grid--animated é estreita pra 2 lado a lado) */
 .pilares-grid {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto auto;
-  gap: 32px;
+  gap: 36px;
   align-items: start;
+  position: relative;
+  z-index: 1;
 }
-.pilar { min-width: 0; }
-.pilar-num {
-  font-family: var(--fd);
-  font-size: 42px;
-  font-weight: 600;
-  color: var(--orange);
-  letter-spacing: -1.2px;
-  line-height: 1;
-  margin-bottom: 12px;
-  text-shadow: 0 0 24px rgba(255, 107, 26, .25);
-}
+.pilar { min-width: 0; position: relative; }
 .pilar-bar {
-  width: 32px;
-  height: 2px;
-  background: var(--orange);
-  border-radius: 1px;
-  margin-bottom: 18px;
-  box-shadow: 0 0 8px rgba(255, 107, 26, .4);
+  position: relative;
+  width: 44px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange) 0%, var(--orange-l) 100%);
+  border-radius: 2px;
+  margin-bottom: 22px;
+  box-shadow: 0 0 12px rgba(255, 107, 26, .55);
+}
+.pilar-bar::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--orange-l);
+  box-shadow: 0 0 12px rgba(255, 167, 102, .9);
 }
 .pilar h3 {
   font-family: var(--ff);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--white);
-  margin: 0 0 12px;
-  line-height: 1.25;
-  letter-spacing: -.01em;
+  margin: 0 0 14px;
+  line-height: 1.22;
+  letter-spacing: -.015em;
 }
 .pilar p {
-  font-size: .95rem;
-  line-height: 1.6;
-  color: var(--gray1);
+  font-size: .98rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, .72);
   margin: 0;
-  max-width: 44ch;
+  max-width: 48ch;
   font-weight: 400;
+  letter-spacing: -.005em;
 }
 
-/* Divisor horizontal entre pilares (vertical stack) */
 .pilar-divisor {
   position: relative;
   width: 100%;
-  height: 0.5px;
+  height: 1px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(255, 107, 26, .35) 20%,
-    rgba(255, 107, 26, .35) 80%,
+    rgba(255, 107, 26, .25) 15%,
+    rgba(255, 107, 26, .4) 50%,
+    rgba(255, 107, 26, .25) 85%,
     transparent 100%);
   align-self: stretch;
 }
@@ -3534,18 +3563,31 @@ html { scroll-padding-top: 84px; }
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 8px; height: 8px;
+  width: 10px; height: 10px;
   border-radius: 50%;
-  background: var(--orange);
-  box-shadow: 0 0 16px rgba(255, 107, 26, .75);
+  background: radial-gradient(circle, var(--orange-l) 0%, var(--orange) 60%, transparent 100%);
+  box-shadow:
+    0 0 14px rgba(255, 107, 26, .8),
+    0 0 28px rgba(255, 107, 26, .4),
+    inset 0 0 4px rgba(255, 255, 255, .4);
+  animation: pilarDotPulse 2.8s ease-in-out infinite;
+}
+@keyframes pilarDotPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  50%      { transform: translate(-50%, -50%) scale(1.25); opacity: .85; }
 }
 
+@media (max-width: 900px) {
+  .card-unificado { padding: 40px 32px; }
+  .pilares-grid { gap: 32px; }
+  .pilar h3 { font-size: 1.3rem; }
+}
 @media (max-width: 560px) {
-  .card-unificado { padding: 32px 22px; border-radius: 14px; }
-  .pilares-grid { gap: 24px; }
-  .pilar-num { font-size: 36px; }
-  .pilar h3 { font-size: 1.1rem; }
-  .pilar p { font-size: .92rem; }
+  .card-unificado { padding: 32px 22px; border-radius: 16px; }
+  .pilares-grid { gap: 26px; }
+  .pilar h3 { font-size: 1.15rem; }
+  .pilar p { font-size: .92rem; line-height: 1.6; }
+  .pilar-bar { width: 38px; margin-bottom: 18px; }
 }
 
 /* ── Palco ── */
