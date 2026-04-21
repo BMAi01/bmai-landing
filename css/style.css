@@ -42,16 +42,21 @@
    APPLE-INSPIRED DARK THEME
    ============================================ */
 :root {
-  --bg: #0d1b2a;
-  --bg2: #0d1b2a;
+  /* === Paleta oficial BMAi (Mataco Studio IDV) === */
+  --bg: #0d1b2a;        /* Azul primário ⭐ */
+  --bg-2: #162534;      /* Azul surface */
+  --bg-3: #202f3f;      /* Azul surface hover */
+  --bg2: #0d1b2a;       /* alias legado */
+  --orange: #db5500;    /* Laranja primário ⭐ */
+  --orange-d: #c84d01;  /* Laranja hover/active */
+  --orange-dd: #a53e00; /* Laranja ênfase/depth */
+  --orange-l: #e87030;  /* Variação clara estética (fora do IDV, mantida) */
+  --white: #ede7e1;     /* Off-white primário ⭐ */
+  --gray1: #798086;     /* Cinza quente primário ⭐ — texto secondary */
+  --gray2: #9da4ab;     /* Cinza oficial shade 4 — muted/disabled */
   --glass: rgba(255,255,255,.03);
   --glass-border: rgba(255,255,255,.06);
   --glass-h: rgba(255,255,255,.05);
-  --orange: #db5500;
-  --orange-l: #e87030;
-  --white: #f0ede8;
-  --gray1: #a09a94;
-  --gray2: #6b6560;
   /* Tipografia — General Sans */
   --ff: 'General Sans', system-ui, -apple-system, sans-serif;
   --fp: 'General Sans', system-ui, sans-serif;
