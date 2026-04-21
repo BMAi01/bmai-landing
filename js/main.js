@@ -573,7 +573,7 @@ document.querySelectorAll('section[id]').forEach(s => {
     return;
   }
 
-  const DISTANCE = 900;      /* px de wheel a acumular pra completar 100% */
+  const DISTANCE = 700;      /* px de wheel a acumular pra completar 100% */
   const html = document.documentElement;
   let lock = null;
 
@@ -631,13 +631,33 @@ document.querySelectorAll('section[id]').forEach(s => {
 
   addEventListener('keydown', (e) => {
     if (!lock) return;
+    /* Teclas de avanço ADIANTAM a progress (não liberam). Só completa
+       o ciclo inteiro deixa descer. */
     const advance = ['PageDown','End','ArrowDown',' ','Enter'];
-    const back    = ['PageUp','Home','ArrowUp','Escape','Tab'];
-    if (advance.includes(e.key)) { e.preventDefault(); release(1); }
-    else if (back.includes(e.key)) { e.preventDefault(); release(-1); }
+    const back    = ['PageUp','Home','ArrowUp'];
+    if (advance.includes(e.key)) {
+      e.preventDefault();
+      lock.progress += 140;
+      if (lock.progress >= DISTANCE) return release(1);
+      apply();
+    } else if (back.includes(e.key)) {
+      e.preventDefault();
+      lock.progress -= 140;
+      if (lock.progress < 0) return release(-1);
+      apply();
+    } else if (e.key === 'Escape') {
+      /* ESC é única escape válvula de emergência */
+      e.preventDefault();
+      release(1);
+    }
   });
 
   addEventListener('hashchange', () => { if (lock) release(1); });
+
+  /* Bloqueia qualquer forma de scroll nativo enquanto o lock tá ativo */
+  addEventListener('touchmove', (e) => {
+    if (lock) e.preventDefault();
+  }, { passive: false });
 
   /* Safety net: scroll rápido que escapou da janela do wheel */
   let prevY = window.scrollY;
