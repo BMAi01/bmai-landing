@@ -195,6 +195,12 @@ ul { list-style: none; }
    SECTION
    ============================================ */
 section { position: relative; z-index: 1; display: block; }
+/* Perf: browser pula layout/paint de seções fora da viewport (60fps scroll).
+   intrinsic-size = estimativa da altura pra evitar saltos no scrollbar. */
+#metodo, #cases, #para-quem, #form, #faq, #contato {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+}
 .section { padding: 64px 0; }
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 40px; }
@@ -516,10 +522,10 @@ section { position: relative; z-index: 1; display: block; }
 /* Imagem 3D close-up — lado direito do hero */
 .hero-visual {
   position: absolute;
-  right: -8%;
+  right: -4%;
   top: 50%;
   transform: translateY(-50%);
-  width: min(75vw, 960px);
+  width: min(56vw, 720px);
   z-index: 0;
   pointer-events: none;
   will-change: transform;
@@ -612,14 +618,15 @@ section { position: relative; z-index: 1; display: block; }
 
 .hero__wrap { position: relative; z-index: 2; }
 .hero__content {
-  max-width: 880px;
+  max-width: 640px;
   width: 100%;
   margin-left: 0;
   margin-right: auto;
   padding-bottom: clamp(60px, 8vw, 100px);
   text-align: left;
 }
-.hero__content .hero__title { max-width: 640px; }
+.hero__content .hero__title { max-width: 600px; }
+.hero__content .hero__sub { max-width: 620px; }
 #hero .hero__content,
 #hero .hero__title,
 #hero .hero__sub,
@@ -659,15 +666,10 @@ section { position: relative; z-index: 1; display: block; }
   100% { background-position: 0% 50%; }
 }
 .hero__sub {
-  font-size: .92rem; color: var(--gray1); line-height: 1.55;
-  max-width: 100%; margin-bottom: 36px; font-weight: 700;
+  font-size: .88rem; color: var(--gray1); line-height: 1.6;
+  max-width: 620px; margin-bottom: 36px; font-weight: 700;
   letter-spacing: .005em;
-  white-space: nowrap;
   animation: fadeUp .6s var(--ease) .5s both;
-}
-.hero__sub br { display: block; }
-@media (max-width: 1100px) {
-  .hero__sub { white-space: normal; font-size: .88rem; }
 }
 .hero__ctas { display: flex; gap: 12px; justify-content: flex-start; animation: fadeUp .6s var(--ease) .7s both; }
 

@@ -48,16 +48,41 @@ nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
    HEADER
    ============================================ */
 const header = document.getElementById('header');
-window.addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 30), { passive: true });
+(function () {
+  let lastState = false;
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const s = scrollY > 30;
+      if (s !== lastState) {
+        header.classList.toggle('scrolled', s);
+        lastState = s;
+      }
+      ticking = false;
+    });
+  }, { passive: true });
+})();
 
 /* ============================================
    SCROLL PROGRESS
    ============================================ */
 const progress = document.getElementById('scrollProgress');
-window.addEventListener('scroll', () => {
-  const h = document.documentElement.scrollHeight - innerHeight;
-  if (h > 0) progress.style.width = (scrollY / h * 100) + '%';
-}, { passive: true });
+(function () {
+  // rAF throttle — evita mutation de style em todo scroll event (que roda até
+  // 120x/s em trackpads MacOS). Com rAF, limita ao refresh rate do display.
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      if (h > 0) progress.style.width = (scrollY / h * 100) + '%';
+      ticking = false;
+    });
+  }, { passive: true });
+})();
 
 /* ============================================
    SMOOTH SCROLL
@@ -245,6 +270,26 @@ document.querySelectorAll('section[id]').forEach(s => {
     document.addEventListener('click', (e) => {
       if (section && !section.contains(e.target)) flipNone();
     });
+
+    // Swipe horizontal — navega entre cards do time
+    if (section) {
+      let sx = 0, sy = 0;
+      section.addEventListener('touchstart', e => {
+        const t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY;
+      }, { passive: true });
+      section.addEventListener('touchend', e => {
+        const t = e.changedTouches[0];
+        const dx = t.clientX - sx;
+        const dy = t.clientY - sy;
+        if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+        // acha atual (primeiro flipped) e navega
+        let cur = wraps.findIndex(w => w.classList.contains('flipped'));
+        if (cur < 0) cur = 0;
+        const dir = dx < 0 ? 1 : -1;
+        const n = (cur + dir + wraps.length) % wraps.length;
+        flipOne(wraps[n]);
+      }, { passive: true });
+    }
 
     // Auto-flip stagger ao entrar viewport (demo visual em mobile)
     if (pin && !reduceMotion) {
@@ -479,6 +524,27 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   }, { threshold: 0.4 });
   io.observe(document.getElementById('metodo'));
+
+  /* Swipe horizontal pra navegar entre as 4 etapas AIRA (touch devices) */
+  const metodoSection = document.getElementById('metodo');
+  if (metodoSection && IS_TOUCH) {
+    let sx = 0, sy = 0;
+    metodoSection.addEventListener('touchstart', e => {
+      const t = e.changedTouches[0];
+      sx = t.clientX; sy = t.clientY;
+    }, { passive: true });
+    metodoSection.addEventListener('touchend', e => {
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx;
+      const dy = t.clientY - sy;
+      // threshold 60px + dominante horizontal (não interfere em scroll vertical)
+      if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+      const dir = dx < 0 ? 1 : -1; // swipe left → next, right → prev
+      const n = (current + dir + nodes.length) % nodes.length;
+      activate(n);
+      syncPressed();
+    }, { passive: true });
+  }
 })();
 
 /* ============================================
