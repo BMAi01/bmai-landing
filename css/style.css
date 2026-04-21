@@ -2204,36 +2204,8 @@ li, label, input, textarea {
   * { cursor: auto !important; }
 }
 
-#cur-trail {
-  position: fixed;
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(219,85,0,0.35);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 999998;
-  transform: translate(-50%, -50%);
-  transition:
-    width  0.4s cubic-bezier(0.16,1,0.3,1),
-    height 0.4s cubic-bezier(0.16,1,0.3,1),
-    border-color 0.3s ease,
-    opacity      0.3s ease;
-  will-change: left, top;
-}
-body.ct-hover #cur-trail {
-  width: 20px;
-  height: 20px;
-  border-color: rgba(219,85,0,0.7);
-  box-shadow: 0 0 8px rgba(219,85,0,0.2);
-}
-body.ct-click #cur-trail {
-  width: 44px;
-  height: 44px;
-  border-color: rgba(219,85,0,0.15);
-  opacity: 0;
-}
-body.ct-text #cur-trail { opacity: 0; }
-@media (pointer: coarse) { #cur-trail { display: none; } }
+/* #cur-trail removido — sem bola de cursor */
+#cur-trail { display: none !important; }
 
 /* ============================================
    SECTION DOTS — navegação lateral

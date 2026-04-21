@@ -1172,48 +1172,7 @@ const CASES_DATA = [
   });
 })();
 
-/* ============================================
-   CURSOR TRAIL — ring com lerp
-   ============================================ */
-(function() {
-  if (LOW_MOTION || IS_TOUCH || IS_MOBILE) return;
-  const trail = document.getElementById('cur-trail');
-  if (!trail) return;
-
-  let tx = innerWidth / 2, ty = innerHeight / 2;
-  let rx = tx, ry = ty;
-
-  document.addEventListener('mousemove', e => {
-    tx = e.clientX; ty = e.clientY;
-  }, { passive: true });
-
-  (function lerp() {
-    rx += (tx - rx) * 0.12;
-    ry += (ty - ry) * 0.12;
-    trail.style.left = rx + 'px';
-    trail.style.top  = ry + 'px';
-    requestAnimationFrame(lerp);
-  })();
-
-  document.addEventListener('mousedown', () => {
-    document.body.classList.add('ct-click');
-    setTimeout(() => document.body.classList.remove('ct-click'), 300);
-  });
-
-  const hoverSel = 'a, button, .aria-node, .ac-card, .sd, .nav-cta, .nav-links a, .team-card-wrap, .faq-q, .book-wrap';
-  document.querySelectorAll(hoverSel).forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('ct-hover'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('ct-hover'));
-  });
-
-  document.querySelectorAll('p, h1, h2, h3, li, input, textarea').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('ct-text'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('ct-text'));
-  });
-
-  document.addEventListener('mouseleave', () => trail.style.opacity = '0');
-  document.addEventListener('mouseenter', () => trail.style.opacity = '1');
-})();
+/* CURSOR TRAIL removido a pedido — sem bola de cursor */
 
 /* ============================================
    TEXT HOVER EFFECT — mouse spotlight
