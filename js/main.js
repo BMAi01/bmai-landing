@@ -446,9 +446,11 @@ document.querySelectorAll('section[id]').forEach(s => {
     `;
   }
 
-  function activate(index) {
-    if (animating) return;
+  function activate(index, opts) {
+    opts = opts || {};
+    if (animating && !opts.force) return;
     if (index === current) {
+      if (opts.noToggle) return;    /* Trigger externo nunca fecha */
       nodes[index].classList.remove('active');
       detail.classList.remove('open');
       current = -1;
@@ -522,6 +524,12 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   }, { threshold: 0.4 });
   io.observe(document.getElementById('metodo'));
+
+  /* Trigger externo (ex: scroll-hijack) — nunca fecha, só troca */
+  document.addEventListener('metodo:set', (e) => {
+    const i = e.detail && e.detail.index;
+    if (typeof i === 'number') { activate(i, { noToggle: true, force: true }); syncPressed(); }
+  });
 
   /* Swipe horizontal pra navegar entre as 4 etapas DEIA (touch devices) */
   const metodoSection = document.getElementById('metodo');
@@ -621,11 +629,9 @@ document.querySelectorAll('section[id]').forEach(s => {
       const ns = lock.target.node.querySelectorAll(lock.target.nodes);
       if (ns.length) {
         const idx = Math.min(ns.length - 1, Math.floor(t * ns.length));
-        ns.forEach((n, i) => n.classList.toggle('active', i === idx));
-        /* Dispara click programático pro detail render só quando muda */
         if (idx !== lock.lastIdx) {
           lock.lastIdx = idx;
-          ns[idx].click();
+          document.dispatchEvent(new CustomEvent('metodo:set', { detail: { index: idx } }));
         }
       }
     }

@@ -195,9 +195,9 @@ ul { list-style: none; }
    SECTION
    ============================================ */
 section { position: relative; z-index: 1; display: block; }
-.section { padding: 64px 0; }
+.section { padding: 48px 0; }
 .section--alt { background: var(--bg2); }
-.section__center { text-align: center; margin-bottom: 40px; }
+.section__center { text-align: center; margin-bottom: 28px; }
 .section__title {
   font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700;
   line-height: 1.12; letter-spacing: -.03em; color: var(--white);
@@ -211,7 +211,7 @@ section { position: relative; z-index: 1; display: block; }
    QUEM SOMOS — dois pilares
    ============================================ */
 #quem-somos { padding: 0; }
-#quem-somos .section__center { margin-bottom: 56px; }
+#quem-somos .section__center { margin-bottom: 32px; }
 
 /* Pinned section (Algarys/Framer style) — com scroll-hijack real em desktop.
    Em mobile/reduced-motion volta pro sticky tall. */
@@ -927,7 +927,7 @@ section { position: relative; z-index: 1; display: block; }
    ARIA METHOD — flow diagram
    ============================================ */
 #metodo {
-  padding: 64px 0 72px;
+  padding: 48px 0 56px;
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -954,7 +954,7 @@ section { position: relative; z-index: 1; display: block; }
   50%     { opacity: 1;  transform: scaleX(1.15); }
 }
 .aria-hdr { position: relative; }
-.aria-hdr { text-align: center; margin-bottom: 64px; }
+.aria-hdr { text-align: center; margin-bottom: 36px; }
 .aria-sub {
   font-size: 15px;
   color: #888;
@@ -1267,7 +1267,7 @@ section { position: relative; z-index: 1; display: block; }
    TEAM — flip cards (GSAP scroll)
    ============================================ */
 #para-quem { position: relative; z-index: 1; isolation: isolate; }
-.team-header { padding: 64px 0 28px; text-align: center; }
+.team-header { padding: 48px 0 20px; text-align: center; }
 .team-scroll-hint {
   display: inline-block;
   font-size: 11px;
@@ -1974,8 +1974,8 @@ section { position: relative; z-index: 1; display: block; }
 }
 
 @media (max-width: 1000px) {
-  #form { padding: 100px 0; }
-  .form-grid { grid-template-columns: 1fr; gap: 48px; }
+  #form { padding: 64px 0; }
+  .form-grid { grid-template-columns: 1fr; gap: 36px; }
   .form-card { padding: 28px 24px; }
 }
 @media (max-width: 600px) {
@@ -2556,7 +2556,7 @@ h1, h2, h3, p, span, li, a {
    CASES — 3D Tabs (Aceternity inspired)
    ============================================ */
 #cases {
-  padding: 64px 0 72px;
+  padding: 48px 0 56px;
   position: relative;
   z-index: 1;
 }
