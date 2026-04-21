@@ -120,7 +120,7 @@ reveal('.aria__card', true);
 reveal('.resultados__item', true);
 reveal('.personas__card', true);
 reveal('.faq__item', true);
-reveal('.team-card-wrap', true);
+reveal('.team-card-wrap:not(:has(#tc-1))', true);  /* Pedro (#tc-1) sem fade-in de entrada */
 reveal('.cs-card', true);
 /* NUNCA aplicar reveal em .card-stack ou .qs-scene-wrap — elas ficam dentro
    de section com scroll-lock; opacity:0 sem trigger deixa o card invisível
