@@ -213,14 +213,15 @@ section { position: relative; z-index: 1; display: block; }
 #quem-somos { padding: 0; }
 #quem-somos .section__center { margin-bottom: 56px; }
 
-/* Pinned section estilo Algarys — a viewport trava enquanto o usuário
-   rola os cards; ao fim da altura da section, destrava naturalmente.
-   Altura longa (400vh) pra dar sensação de "lock" forte antes de liberar. */
-#quem-somos.qs-pinned {
+/* Pinned section (Algarys/Framer style) — com scroll-hijack real em desktop.
+   Em mobile/reduced-motion volta pro sticky tall. */
+#quem-somos.qs-pinned,
+#metodo.metodo-pinned {
   position: relative;
   height: 400vh;
 }
-.qs-pin {
+.qs-pin,
+.metodo-pin {
   position: sticky;
   top: 0;
   height: 100vh;
@@ -230,12 +231,20 @@ section { position: relative; z-index: 1; display: block; }
   overflow: hidden;
   padding: 56px 0 40px;
 }
-.qs-pin .container {
-  width: 100%;
+.qs-pin .container,
+.metodo-pin .container { width: 100%; }
+
+/* Quando o scroll-hijack está ativo, a section fica com altura == 100vh
+   e seu conteúdo permanece estático; a progressão é controlada por wheel */
+#quem-somos.qs-pinned.lock-active,
+#metodo.metodo-pinned.lock-active {
+  height: 100vh;
 }
+
 @media (max-width: 900px) {
   #quem-somos.qs-pinned { height: 340vh; }
-  .qs-pin { padding: 40px 0 32px; }
+  #metodo.metodo-pinned { height: 340vh; }
+  .qs-pin, .metodo-pin { padding: 40px 0 32px; }
 }
 #quem-somos .section__title {
   font-size: clamp(2.25rem, 3.8vw, 3.2rem);

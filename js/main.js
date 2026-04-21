@@ -546,9 +546,101 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   CARD STACK — swap on scroll progress
-   Cada .card-stack vira 'flipped' quando o scroll passa do 50%
-   da sua seção-pai visível. Scroll reverso desflipa.
+   SCROLL HIJACK — lock de verdade estilo Framer
+   Desktop only. Touch/reduced-motion caem no fallback sticky+progress.
+   ============================================ */
+(function() {
+  if (IS_TOUCH || PREFERS_REDUCE) return;
+
+  const configs = [
+    { sel: '.qs-pinned',     stack: '.card-stack', distance: 1600 },
+    { sel: '.metodo-pinned', nodes: '.aria-node',  distance: 1800 },
+  ];
+
+  const targets = configs
+    .map(c => ({ ...c, node: document.querySelector(c.sel) }))
+    .filter(c => c.node);
+  if (!targets.length) return;
+
+  let lock = null;
+  /* lock = { target, progress, anchorY } */
+
+  function tryAcquireLock(deltaY) {
+    if (lock || deltaY <= 0) return;
+    for (const t of targets) {
+      const rect = t.node.getBoundingClientRect();
+      /* Section encostou no topo da viewport (±4px) */
+      if (rect.top <= 4 && rect.top > -50) {
+        lock = { target: t, progress: 0, anchorY: window.scrollY + rect.top };
+        t.node.classList.add('lock-active');
+        window.scrollTo(0, lock.anchorY);
+        return;
+      }
+    }
+  }
+
+  function releaseLock(direction) {
+    if (!lock) return;
+    lock.target.node.classList.remove('lock-active');
+    const anchorY = lock.anchorY;
+    const vh = window.innerHeight;
+    lock = null;
+    /* Nudge pra sair do zone de captura na direção certa */
+    if (direction > 0) window.scrollTo(0, anchorY + vh + 2);
+    else window.scrollTo(0, anchorY - 2);
+  }
+
+  function applyProgress() {
+    if (!lock) return;
+    const t = Math.max(0, Math.min(1, lock.progress / lock.target.distance));
+
+    if (lock.target.stack) {
+      const stack = lock.target.node.querySelector(lock.target.stack);
+      if (stack) stack.style.setProperty('--progress', t.toFixed(3));
+    }
+
+    if (lock.target.nodes) {
+      /* Mapeia progress pra um dos 4 nodes DEIA */
+      const ns = lock.target.node.querySelectorAll(lock.target.nodes);
+      if (ns.length) {
+        const idx = Math.min(ns.length - 1, Math.floor(t * ns.length));
+        ns.forEach((n, i) => n.classList.toggle('active', i === idx));
+        /* Dispara click programático pro detail render só quando muda */
+        if (idx !== lock.lastIdx) {
+          lock.lastIdx = idx;
+          ns[idx].click();
+        }
+      }
+    }
+  }
+
+  addEventListener('wheel', (e) => {
+    /* Sem lock ativo: tenta capturar quando a section encosta */
+    if (!lock) { tryAcquireLock(e.deltaY); if (!lock) return; }
+
+    e.preventDefault();
+    lock.progress += e.deltaY;
+
+    if (lock.progress < 0) { releaseLock(-1); return; }
+    if (lock.progress >= lock.target.distance) { releaseLock(1); return; }
+
+    /* Mantém a página congelada no ponto de ancoragem */
+    window.scrollTo(0, lock.anchorY);
+    applyProgress();
+  }, { passive: false });
+
+  /* Libera lock se o user apertar tecla, clicar ou mexer em hash */
+  addEventListener('keydown', (e) => {
+    if (!lock) return;
+    if (['Escape','Tab','Home','End','PageUp','PageDown','ArrowUp','ArrowDown',' '].includes(e.key)) {
+      releaseLock(e.key === 'PageUp' || e.key === 'Home' || e.key === 'ArrowUp' ? -1 : 1);
+    }
+  });
+})();
+
+/* ============================================
+   CARD STACK — swap on scroll progress (fallback pra touch/reduce-motion
+   e pra quando o scroll-hijack ainda não capturou o lock)
    ============================================ */
 (function() {
   const stacks = document.querySelectorAll('.card-stack');
