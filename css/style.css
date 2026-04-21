@@ -248,10 +248,11 @@ html { scrollbar-gutter: stable; }
 }
 /* Respiros explícitos: afasta QS do ticker e Método do QS */
 #quem-somos.qs-pinned { margin: 120px 0 96px; }
-#metodo.metodo-pinned { margin: 120px 0 96px; }
+/* Método: empurrado forte pra baixo, sem grudar no Cases */
+#metodo.metodo-pinned { margin: 240px 0 120px; }
 @media (max-width: 768px) {
-  #quem-somos.qs-pinned,
-  #metodo.metodo-pinned { margin: 72px 0 64px; }
+  #quem-somos.qs-pinned { margin: 72px 0 64px; }
+  #metodo.metodo-pinned { margin: 120px 0 72px; }
 }
 .qs-pin,
 .metodo-pin {
