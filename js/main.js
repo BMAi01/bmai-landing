@@ -559,40 +559,129 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   QS CARD STACK — HOVER slide + EXPLODE ao sair o cursor
+   QS CARD STACK — scroll-hijack
+   Desktop: trava scroll da página; wheel consome progress (0→1) até
+   card 2 estar 100% visível, só então libera.
+   Touch/reduce: mostra card 2 direto (sem lock).
    ============================================ */
 (function() {
   const stack = document.querySelector('.card-stack');
-  if (!stack) return;
+  const section = document.getElementById('quem-somos');
+  if (!stack || !section) return;
 
-  if (IS_TOUCH) {
-    /* Touch: tap alterna */
-    stack.addEventListener('click', () => {
-      stack.classList.toggle('is-revealed');
-    });
+  if (IS_TOUCH || PREFERS_REDUCE) {
+    stack.style.setProperty('--progress', '1');
     return;
   }
 
-  /* Desktop: mouseleave detona animação explode */
-  let explodeTimer = null;
-  stack.addEventListener('mouseleave', () => {
-    stack.classList.add('explode');
-    clearTimeout(explodeTimer);
-    explodeTimer = setTimeout(() => {
-      /* Snap pro estado hidden sem transição (evita slide de volta feio) */
-      stack.classList.remove('explode');
-      stack.classList.add('snap');
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => stack.classList.remove('snap'));
-      });
-    }, 550);
+  const DISTANCE = 800;
+  const body = document.body;
+  let lock = null;
+  let completed = false;  /* após completar uma vez, não re-trava descendo */
+
+  function apply() {
+    const raw = Math.max(0, Math.min(1, lock.progress / DISTANCE));
+    const t = raw * raw * (3 - 2 * raw); /* smoothstep */
+    stack.style.setProperty('--progress', t.toFixed(3));
+  }
+
+  function acquire(fromTop) {
+    const rect = section.getBoundingClientRect();
+    const anchorY = window.scrollY + rect.top;
+    lock = { anchorY, progress: fromTop ? 0 : DISTANCE };
+    window.scrollTo(0, anchorY);
+    body.style.setProperty('--lock-top', `-${anchorY}px`);
+    body.classList.add('scroll-locked');
+    apply();
+  }
+
+  function release(direction) {
+    if (!lock) return;
+    const anchorY = lock.anchorY;
+    const h = section.offsetHeight;
+    const finalProgress = lock.progress / DISTANCE;
+    lock = null;
+    body.classList.remove('scroll-locked');
+    body.style.removeProperty('--lock-top');
+    if (direction > 0) {
+      window.scrollTo(0, anchorY + h + 8);
+      /* marca como completado: card 2 fica permanente + não re-trava */
+      stack.style.setProperty('--progress', '1');
+      completed = true;
+    } else {
+      window.scrollTo(0, Math.max(0, anchorY - 16));
+      stack.style.setProperty('--progress', '0');
+      completed = false;
+    }
+  }
+
+  addEventListener('wheel', (e) => {
+    if (!lock) {
+      const rect = section.getBoundingClientRect();
+      const vh = innerHeight;
+      /* Entrada por cima: seção encostando no topo */
+      if (!completed && e.deltaY > 0 && rect.top <= 40 && rect.top > -80) {
+        e.preventDefault();
+        acquire(true);
+        return;
+      }
+      /* Entrada por baixo (subindo): seção encostando no fundo */
+      if (completed && e.deltaY < 0 && rect.bottom >= vh - 40 && rect.bottom < vh + 80) {
+        e.preventDefault();
+        acquire(false);
+        return;
+      }
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    lock.progress += e.deltaY;
+    if (lock.progress < 0)          return release(-1);
+    if (lock.progress >= DISTANCE)  return release(1);
+    apply();
+  }, { passive: false });
+
+  /* Teclas: adiantam progress (não liberam sem completar) */
+  addEventListener('keydown', (e) => {
+    if (!lock) return;
+    const advance = ['PageDown','End','ArrowDown',' ','Enter'];
+    const back    = ['PageUp','Home','ArrowUp'];
+    if (advance.includes(e.key)) {
+      e.preventDefault();
+      lock.progress += 160;
+      if (lock.progress >= DISTANCE) return release(1);
+      apply();
+    } else if (back.includes(e.key)) {
+      e.preventDefault();
+      lock.progress -= 160;
+      if (lock.progress < 0) return release(-1);
+      apply();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      release(1);  /* ESC libera e marca como completado */
+    }
   });
-  stack.addEventListener('mouseenter', () => {
-    /* Cancela explode se o user voltar rapidamente */
-    clearTimeout(explodeTimer);
-    stack.classList.remove('explode');
-    stack.classList.remove('snap');
-  });
+
+  /* Bloqueia touchmove durante lock */
+  addEventListener('touchmove', (e) => {
+    if (lock) e.preventDefault();
+  }, { passive: false });
+
+  addEventListener('hashchange', () => { if (lock) release(1); });
+
+  /* Safety net: scroll rápido que escapou do wheel */
+  let prevY = window.scrollY;
+  addEventListener('scroll', () => {
+    if (lock) return;
+    const y = window.scrollY;
+    const goingDown = y > prevY;
+    prevY = y;
+    if (completed) return;  /* já passou — não re-trava */
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= 0 && rect.bottom > 120 && goingDown) {
+      acquire(true);
+    }
+  }, { passive: true });
 })();
 
 /* ============================================

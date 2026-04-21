@@ -218,6 +218,17 @@ section + .section,
 
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
 html { scrollbar-gutter: stable; }
+/* Lock físico (position:fixed no body) aplicado pelo JS do scroll-hijack */
+body.scroll-locked {
+  position: fixed !important;
+  top: var(--lock-top, 0);
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  touch-action: none;
+}
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 28px; }
 .section__title {
@@ -3967,17 +3978,15 @@ html { scroll-padding-top: 84px; }
   transform: translate3d(0, 0, 0);
 }
 
-/* Card 2 EMERGE DE TRÁS DO MOTION (lado esquerdo do card-stack = lado do motion).
-   Começa invisível via clip-path(0 100% 0 0) — wipe revelado esquerda→direita.
-   Leve translateY+scale pra dar sensação de card saindo de trás. */
+/* Card 2 — scroll-linked via --progress (0..1).
+   Emerge de trás do motion (esquerda) — wipe left→right + leve translate+scale. */
 .card-stack__item--2 {
   z-index: 2;
   opacity: 1;
-  transform: translate3d(-14px, 6px, 0) scale(.96);
-  clip-path: inset(0 100% 0 0 round 24px);
-  transition:
-    transform .8s cubic-bezier(.4, 0, .2, 1),
-    clip-path .75s cubic-bezier(.25, 0.8, .35, 1);
+  transform:
+    translate3d(calc((1 - var(--progress)) * -14px), calc((1 - var(--progress)) * 6px), 0)
+    scale(calc(.96 + var(--progress) * .04));
+  clip-path: inset(0 calc((1 - var(--progress)) * 100%) 0 0 round 24px);
   pointer-events: auto;
 
   /* Paleta invertida — branco creme + laranja */
@@ -4012,57 +4021,6 @@ html { scroll-padding-top: 84px; }
   opacity: 1;
 }
 
-/* Hover reveal — só em devices com cursor de verdade */
-@media (hover: hover) and (pointer: fine) {
-  .card-stack:hover .card-stack__item--2 {
-    transform: translate3d(0, 0, 0) scale(1);
-    clip-path: inset(0 0 0 0 round 24px);
-  }
-}
-/* Touch: tap alterna via classe .revealed */
-.card-stack.is-revealed .card-stack__item--2 {
-  transform: translate3d(0, 0, 0) scale(1);
-  clip-path: inset(0 0 0 0 round 24px);
-}
-
-/* EXPLODE — detona card 2 quando o cursor sai (classe setada via JS) */
-.card-stack.explode .card-stack__item--2 {
-  transition: none !important;
-  animation: cardExplode .55s cubic-bezier(.34, 1.56, .64, 1) forwards;
-}
-/* Snap: pós-explosão, snapar o card 2 pro estado hidden sem transição */
-.card-stack.snap .card-stack__item--2 {
-  transition: none !important;
-}
-
-@keyframes cardExplode {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1) rotate(0);
-    clip-path: inset(0 round 24px);
-    opacity: 1;
-    filter: brightness(1.25) blur(0);
-    box-shadow:
-      0 30px 60px -20px rgba(0, 0, 0, .55),
-      0 0 56px -16px rgba(219, 85, 0, .3);
-  }
-  30% {
-    transform: translate3d(0, 0, 0) scale(1.08) rotate(.4deg);
-    clip-path: inset(0 round 24px);
-    opacity: 1;
-    filter: brightness(1.7) blur(0);
-    box-shadow:
-      0 30px 60px -20px rgba(0, 0, 0, .55),
-      0 0 160px rgba(219, 85, 0, 1),
-      0 0 60px rgba(255, 220, 180, .9);
-  }
-  100% {
-    transform: translate3d(20%, -12px, 0) scale(1.3) rotate(1.5deg);
-    clip-path: inset(0 round 24px);
-    opacity: 0;
-    filter: brightness(.4) blur(16px);
-    box-shadow: 0 0 0 rgba(219, 85, 0, 0);
-  }
-}
 /* Mobile */
 @media (max-width: 768px) {
   .card-stack { min-height: 340px; }
