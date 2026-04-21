@@ -575,8 +575,10 @@ document.querySelectorAll('section[id]').forEach(s => {
     const total = rect.height + vh;
     const passed = vh - rect.top;
     const p = Math.max(0, Math.min(1, passed / total));
-    /* Janela de ação concentrada no meio da seção visível */
-    const t = Math.max(0, Math.min(1, (p - 0.25) / 0.45));
+    /* Janela de ação concentrada no meio da seção visível — animação nítida */
+    const raw = Math.max(0, Math.min(1, (p - 0.3) / 0.35));
+    /* Easing cubic pra dar snap — cards não ficam muito tempo no meio */
+    const t = raw * raw * (3 - 2 * raw);
     stack.style.setProperty('--progress', t.toFixed(3));
   }
 
