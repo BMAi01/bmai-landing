@@ -559,37 +559,98 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   QS CARD STACK — scroll-linked simples (sem hijack)
-   Card 2 aparece por cima conforme o scroll entra/sai da seção.
+   QS CARD STACK — scroll-hijack: trava scroll até animação 100%
+   Desktop: page lock via overflow hidden + wheel consome progress.
+   Touch/reduce: pula direto pro progress 1 (sem lock).
    ============================================ */
 (function() {
   const stack = document.querySelector('.card-stack');
   const section = document.getElementById('quem-somos');
   if (!stack || !section) return;
 
-  function update() {
-    const vh = innerHeight || 800;
-    const rect = section.getBoundingClientRect();
-    /* progresso: 0 = seção entrou (top no bottom da viewport),
-       1 = seção saiu (bottom no top da viewport) */
-    const total = rect.height + vh;
-    const passed = vh - rect.top;
-    const p = Math.max(0, Math.min(1, passed / total));
-    /* Janela de ação concentrada no meio da seção visível — animação nítida */
-    const raw = Math.max(0, Math.min(1, (p - 0.3) / 0.35));
-    /* Easing cubic pra dar snap — cards não ficam muito tempo no meio */
+  if (IS_TOUCH || PREFERS_REDUCE) {
+    stack.style.setProperty('--progress', '1');
+    return;
+  }
+
+  const DISTANCE = 900;      /* px de wheel a acumular pra completar 100% */
+  const html = document.documentElement;
+  let lock = null;
+
+  function apply() {
+    const raw = Math.max(0, Math.min(1, lock.progress / DISTANCE));
+    /* Easing smoothstep */
     const t = raw * raw * (3 - 2 * raw);
     stack.style.setProperty('--progress', t.toFixed(3));
   }
 
-  let raf = 0;
-  function onScroll() {
-    if (raf) return;
-    raf = requestAnimationFrame(() => { update(); raf = 0; });
+  function acquire(fromTop) {
+    const rect = section.getBoundingClientRect();
+    const anchorY = window.scrollY + rect.top;
+    lock = { anchorY, progress: fromTop ? 0 : DISTANCE };
+    html.classList.add('scroll-locked');
+    window.scrollTo(0, anchorY);
+    apply();
   }
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll, { passive: true });
-  update();
+
+  function release(direction) {
+    if (!lock) return;
+    const anchorY = lock.anchorY;
+    const h = section.offsetHeight;
+    lock = null;
+    html.classList.remove('scroll-locked');
+    if (direction > 0) window.scrollTo(0, anchorY + h + 8);
+    else               window.scrollTo(0, anchorY - 16);
+  }
+
+  addEventListener('wheel', (e) => {
+    if (!lock) {
+      const rect = section.getBoundingClientRect();
+      const vh = innerHeight;
+      /* Captura descendo: seção encosta no topo */
+      if (e.deltaY > 0 && rect.top <= 40 && rect.top > -80) {
+        e.preventDefault();
+        acquire(true);
+        return;
+      }
+      /* Captura subindo: seção encosta no fundo (vindo de baixo) */
+      if (e.deltaY < 0 && rect.bottom >= vh - 40 && rect.bottom < vh + 80) {
+        e.preventDefault();
+        acquire(false);
+        return;
+      }
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    lock.progress += e.deltaY;
+    if (lock.progress < 0)          return release(-1);
+    if (lock.progress >= DISTANCE)  return release(1);
+    apply();
+  }, { passive: false });
+
+  addEventListener('keydown', (e) => {
+    if (!lock) return;
+    const advance = ['PageDown','End','ArrowDown',' ','Enter'];
+    const back    = ['PageUp','Home','ArrowUp','Escape','Tab'];
+    if (advance.includes(e.key)) { e.preventDefault(); release(1); }
+    else if (back.includes(e.key)) { e.preventDefault(); release(-1); }
+  });
+
+  addEventListener('hashchange', () => { if (lock) release(1); });
+
+  /* Safety net: scroll rápido que escapou da janela do wheel */
+  let prevY = window.scrollY;
+  addEventListener('scroll', () => {
+    if (lock) return;
+    const y = window.scrollY;
+    const goingDown = y > prevY;
+    prevY = y;
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= 0 && rect.bottom > 120 && goingDown) {
+      acquire(true);
+    }
+  }, { passive: true });
 })();
 
 /* ============================================

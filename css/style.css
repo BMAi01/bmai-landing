@@ -209,6 +209,9 @@ section {
 
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
 html { scrollbar-gutter: stable; }
+/* Lock: ativado pelo scroll-hijack do QS enquanto a animação não chega a 100% */
+html.scroll-locked,
+html.scroll-locked body { overflow: hidden !important; }
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 28px; }
 .section__title {
@@ -3640,17 +3643,24 @@ html { scroll-padding-top: 84px; }
 }
 
 .qs__grid--animated {
-  grid-template-columns: minmax(0, 1fr);    /* 1 coluna: card em cima, motion embaixo */
-  gap: 48px;
-  justify-items: center;
-  max-width: 820px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+  max-width: 1080px;
   margin: 0 auto;
   width: 100%;
 }
-.qs__grid--animated > .card-stack,
-.qs__grid--animated > .qs-scene-wrap {
-  width: 100%;
-  max-width: 820px;
+/* Motion esquerda, card direita */
+.qs__grid--animated > .qs-scene-wrap { order: 1; }
+.qs__grid--animated > .card-stack    { order: 2; }
+
+@media (max-width: 900px) {
+  .qs__grid--animated {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+  }
+  .qs__grid--animated > .qs-scene-wrap { order: 2; }
+  .qs__grid--animated > .card-stack    { order: 1; }
 }
 @media (max-width: 900px) {
   .qs__grid--animated {
@@ -3861,7 +3871,7 @@ html { scroll-padding-top: 84px; }
   --progress: 0;
   position: relative;
   width: 100%;
-  min-height: 380px;
+  min-height: 320px;
   perspective: 1400px;
 }
 /* Cada item = card completo, absolute inset pra empilhar */
@@ -3977,9 +3987,8 @@ html { scroll-padding-top: 84px; }
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 620px;
+  min-height: 480px;
   align-self: stretch;
-  /* Isola paint/layout do resto da página durante animações internas */
   contain: layout paint;
 }
 .qs-scene {
