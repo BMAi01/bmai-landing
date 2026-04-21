@@ -1244,9 +1244,9 @@ section { position: relative; z-index: 1; display: block; }
 }
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  max-width: 1280px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1100px;
   width: 100%;
   padding: 0 40px;
 }
@@ -4324,15 +4324,8 @@ html { scroll-padding-top: 84px; }
   .qs-notif--mini { width: 128px; }
 }
 @media (max-width: 768px) {
-  /* Kill agressivo de animações infinitas da cena em mobile — LOW_MOTION mostra
-     estado estático via JS, mas as infinitas de CSS puro continuavam rodando
-     (qsCamJitter, dot pulses, ring glows etc) causando jitter. */
-  .qs-stage { animation: none !important; }
-  .qs-agent__dot,
-  .qs-dot-agent,
-  .qs-dot-live,
-  .qs-card__glow,
-  .qs-ring { animation: none !important; }
+  /* Mobile roda as animações leves. qsCamJitter só fica off em <=560 (regra abaixo)
+     pra não pesar no container 3D com 25 notifs em telas estreitas. */
 }
 @media (max-width: 560px) {
   .qs-scene-wrap { max-height: 440px; aspect-ratio: 1 / 1; height: auto; min-height: 0; }
