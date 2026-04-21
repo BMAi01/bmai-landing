@@ -4162,6 +4162,16 @@ html { scroll-padding-top: 84px; }
   inset: 0;
   transform-style: preserve-3d;
   animation: qsCamJitter 7s ease-in-out infinite;
+  /* Máscara radial — fade suave na zona central onde o brand card vive,
+     evita corte duro e sobreposição confusa no miolo. */
+  -webkit-mask-image: radial-gradient(ellipse 55% 45% at 50% 50%,
+    transparent 0%,
+    rgba(0, 0, 0, .35) 40%,
+    #000 68%);
+          mask-image: radial-gradient(ellipse 55% 45% at 50% 50%,
+    transparent 0%,
+    rgba(0, 0, 0, .35) 40%,
+    #000 68%);
 }
 .qs-stage.qs-stage--chaos { animation: qsCamJitter 2.5s cubic-bezier(.36,.07,.19,.97) infinite; }
 @keyframes qsCamJitter {
@@ -4316,6 +4326,8 @@ html { scroll-padding-top: 84px; }
   background: linear-gradient(135deg, #7BE3B8 0%, #5DCAA5 100%);
   color: #063923;
   font-size: 11px;
+  z-index: 1;                                /* amarra ao stacking do pai */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .45); /* separa visualmente */
   font-weight: 700;
   line-height: 1;
   display: flex;
@@ -4528,16 +4540,33 @@ html { scroll-padding-top: 84px; }
   opacity: 0;
   width: min(60%, 340px);
   padding: 32px 28px 28px;
-  background: #0D1B2A;
-  border: 1px solid rgba(255, 107, 26, .5);
+  /* Fundo com gradient radial — fade suave no entorno (evita corte duro) */
+  background:
+    radial-gradient(ellipse 130% 110% at 50% 50%,
+      #0D1B2A 55%,
+      rgba(13, 27, 42, .85) 78%,
+      rgba(13, 27, 42, 0) 100%);
+  border: none;
   border-radius: 24px;
   box-shadow:
-    0 0 70px rgba(255, 107, 26, .3),
+    0 0 80px rgba(255, 107, 26, .35),
+    0 0 160px rgba(255, 107, 26, .15),
     0 30px 80px -20px rgba(0, 0, 0, .8);
   text-align: center;
   z-index: 100;
   font-family: var(--ff);
   will-change: transform, opacity;
+}
+/* Borda laranja renderizada como halo interno sutil — não corta o que tá atrás */
+.qs-brand::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(255, 107, 26, .4);
+  border-radius: inherit;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, #000 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, #000 65%, transparent 100%);
 }
 
 /* Backdrop escurecedor — aplicado no .qs-scene (fora do preserve-3d) */
