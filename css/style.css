@@ -1758,7 +1758,6 @@ section { position: relative; z-index: 1; display: block; }
     opacity: .22;
   }
   .hero-visual img { animation: none; filter: brightness(1.1) saturate(1.2); }
-  .hero-visual::before { display: none; }
   .hero::before {
     width: 100%;
     background: rgba(13,27,42,.85);
@@ -2425,12 +2424,13 @@ h1, h2, h3, p, span, li, a {
     transition: none !important;
   }
 
-  /* Hero visual sem parallax/rotação/glow */
+  /* Hero visual mobile: sem parallax da imagem (pesado), mantém glow
+     pulsante atrás (leve: só opacity+scale no ::before) */
   .hero-visual {
     transform: translateY(-50%) !important;
     animation: none !important;
     transition: none !important;
-    opacity: 0.15 !important;
+    opacity: 0.2 !important;
     width: 100vw !important;
     right: 0 !important;
     left: 0 !important;
@@ -2441,12 +2441,7 @@ h1, h2, h3, p, span, li, a {
     transform: none !important;
   }
   .hero-visual::before {
-    animation: none !important;
-    display: none !important;
-  }
-  .hero-overlay,
-  .hero-visual-fade {
-    background: rgba(4,4,4,0.75) !important;
+    opacity: .45 !important;
   }
 
   /* Hero layout */

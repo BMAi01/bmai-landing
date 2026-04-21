@@ -103,8 +103,7 @@ const revealObs = new IntersectionObserver(entries => {
 }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
 
 function reveal(sel, stagger) {
-  // Mobile + reduced-motion: conteúdo já visível (economiza IO + transitions)
-  if (LOW_MOTION || IS_MOBILE) {
+  if (LOW_MOTION) {
     document.querySelectorAll(sel).forEach(el => el.classList.add('reveal', 'revealed'));
     return;
   }
@@ -134,7 +133,7 @@ reveal('.faq__item', true);
 /* ============================================
    COUNTERS — em mobile vai direto pro número final
    ============================================ */
-if (LOW_MOTION || IS_MOBILE) {
+if (LOW_MOTION) {
   document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count; });
 } else {
   const cObs = new IntersectionObserver(entries => {
@@ -155,7 +154,7 @@ if (LOW_MOTION || IS_MOBILE) {
 /* ============================================
    MANIFESTO — staggered reveal (instant em mobile)
    ============================================ */
-if (LOW_MOTION || IS_MOBILE) {
+if (LOW_MOTION) {
   document.querySelectorAll('.manifesto__line').forEach(l => l.classList.add('revealed'));
 } else {
   const mObs = new IntersectionObserver(entries => {
