@@ -4003,26 +4003,66 @@ html { scroll-padding-top: 84px; }
   color: var(--qs-text-3);
 }
 
-/* ── Brand card central (entra após todas as notifs) ── */
+/* ── Brand card central (entra após todas as notifs e SOBREPÕE tudo) ── */
 .qs-brand {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0);
   opacity: 0;
-  width: min(44%, 260px);
-  padding: 24px 22px 22px;
-  background: rgba(13, 27, 42, .88);
-  border: 1px solid rgba(255, 107, 26, .45);
-  border-radius: 22px;
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  backdrop-filter: blur(28px) saturate(180%);
+  width: min(58%, 340px);
+  padding: 32px 28px 28px;
+  background: rgba(13, 27, 42, .95);
+  border: 1px solid rgba(255, 107, 26, .5);
+  border-radius: 24px;
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  backdrop-filter: blur(32px) saturate(200%);
   box-shadow:
-    0 0 60px rgba(255, 107, 26, .28),
-    0 30px 80px -20px rgba(0, 0, 0, .8),
-    inset 0 1px 0 rgba(255, 255, 255, .1);
+    0 0 80px rgba(255, 107, 26, .35),
+    0 40px 100px -20px rgba(0, 0, 0, .85),
+    inset 0 1px 0 rgba(255, 255, 255, .12);
   text-align: center;
   z-index: 100;
   font-family: var(--ff);
+}
+
+/* Backdrop — escurece + desfoca as notifs atrás do brand */
+.qs-stage.qs--brand-on::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(4, 8, 18, .85) 0%, rgba(4, 8, 18, .55) 45%, rgba(4, 8, 18, .15) 75%, transparent 100%);
+  z-index: 90;
+  pointer-events: none;
+  animation: qsBackdropIn .6s ease forwards;
+}
+.qs-stage.qs--brand-off::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(4, 8, 18, .85) 0%, rgba(4, 8, 18, .55) 45%, rgba(4, 8, 18, .15) 75%, transparent 100%);
+  z-index: 90;
+  pointer-events: none;
+  animation: qsBackdropOut .5s ease forwards;
+}
+@keyframes qsBackdropIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes qsBackdropOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Notifs desfocam/ficam embaçadas quando brand entra */
+.qs-stage.qs--brand-on .qs-notif {
+  filter: blur(1.5px) saturate(.7) brightness(.7);
+  transition: filter .6s ease;
+}
+.qs-stage.qs--brand-off .qs-notif {
+  filter: none;
+  transition: filter .5s ease;
 }
 .qs-brand__halo {
   position: absolute;

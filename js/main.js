@@ -1081,6 +1081,7 @@ const CASES_DATA = [
   if (LOW_MOTION) {
     notifs.forEach(n => { n.classList.add('qs--in', 'qs--done'); });
     brand?.classList.add('qs--in');
+    stage?.classList.add('qs--brand-on');
     return;
   }
 
@@ -1114,7 +1115,7 @@ const CASES_DATA = [
     notifs.forEach(n => n.classList.remove('qs--in', 'qs--flash', 'qs--done', 'qs--unstamp'));
     rings.forEach(r => r.classList.remove('qs--go'));
     brand?.classList.remove('qs--in', 'qs--out');
-    stage?.classList.remove('qs-stage--chaos');
+    stage?.classList.remove('qs-stage--chaos', 'qs--brand-on', 'qs--brand-off');
   }
 
   function popIn(el, delayMs) {
@@ -1143,7 +1144,11 @@ const CASES_DATA = [
     after(2500, () => stage?.classList.remove('qs-stage--chaos'));
 
     // ── BRAND CARD entra (~3.0s, depois de todas as notifs popparem) ──
-    after(3000, () => brand?.classList.add('qs--in'));
+    after(3000, () => {
+      brand?.classList.add('qs--in');
+      stage?.classList.remove('qs--brand-off');
+      stage?.classList.add('qs--brand-on');
+    });
 
     // ── Phase 3 — READING RINGS (4.0 → 5.5s) — BMAi processando em massa ──
     after(4000, () => rings[0]?.classList.add('qs--go'));
@@ -1168,7 +1173,11 @@ const CASES_DATA = [
 
     // ── Phase 6 — REVERSE LOOP (10.3 → 12.0s) ──
     // Brand sai primeiro
-    after(10300, () => brand?.classList.add('qs--out'));
+    after(10300, () => {
+      brand?.classList.add('qs--out');
+      stage?.classList.remove('qs--brand-on');
+      stage?.classList.add('qs--brand-off');
+    });
     // un-stamp staggered
     const unshuffled = shuffle(notifs);
     unshuffled.forEach((n, i) => {
