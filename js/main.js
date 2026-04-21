@@ -353,9 +353,9 @@ document.querySelectorAll('section[id]').forEach(s => {
 (function() {
   const ARIA_DATA = [
     {
-      num: '01 / 04', letter: 'A', title: 'Análise',
-      subtitle: 'Diagnóstico antes de qualquer ferramenta.',
-      desc: 'Enxergamos o seu negócio como ele realmente é — único. Mapeamos os entraves, as perdas invisíveis e as oportunidades reais. Nada é configurado antes de entender o contexto completo.',
+      num: '01 / 04', letter: 'D', title: 'Diagnóstico',
+      subtitle: 'Enxergar antes de construir.',
+      desc: 'Mapeamos o seu negócio como ele realmente é — único. Identificamos entraves, perdas invisíveis e oportunidades reais. Nada é configurado antes de entender o contexto completo.',
       bullets: [
         'Mapeamento do processo comercial',
         'Identificação de perdas invisíveis',
@@ -368,7 +368,22 @@ document.querySelectorAll('section[id]').forEach(s => {
       result: 'Entregável: documento de diagnóstico completo'
     },
     {
-      num: '02 / 04', letter: 'I', title: 'Implementação',
+      num: '02 / 04', letter: 'E', title: 'Estruturação',
+      subtitle: 'Projeto da solução — arquitetura, KPIs e plano de ação.',
+      desc: 'Desenhamos a arquitetura dos agentes e integrações, definimos KPIs mensuráveis e projetamos ROI por frente. É o blueprint completo antes de uma linha de código entrar em produção.',
+      bullets: [
+        'Arquitetura dos agentes e fluxos',
+        'Definição de KPIs e metas mensuráveis',
+        'Projeção de ROI por frente de atuação',
+        'Escolha de stack e integrações',
+        'Cronograma com marcos semanais'
+      ],
+      time: '⏱ 1 a 2 semanas',
+      tag: 'Plano antes da execução.',
+      result: 'Entregável: blueprint técnico + plano de resultados'
+    },
+    {
+      num: '03 / 04', letter: 'I', title: 'Implementação',
       subtitle: 'IA onde gera resultado, não onde impressiona.',
       desc: 'Construímos e integramos as soluções nos pontos validados. Cada etapa é testada em produção e ajustada com o time antes de ir para escala. É aqui que começam as primeiras mudanças na cultura e no modo de pensar da empresa.',
       bullets: [
@@ -381,21 +396,6 @@ document.querySelectorAll('section[id]').forEach(s => {
       time: '⏱ 3 a 6 semanas',
       tag: 'IA integrada ao processo real.',
       result: 'Entregável: sistema funcionando em produção'
-    },
-    {
-      num: '03 / 04', letter: 'R', title: 'Resultado',
-      subtitle: 'ROI mais rápido do mercado — porque é análise e personalização, não milagre.',
-      desc: 'Definimos os resultados esperados com indicadores concretos. Cada ação tem um número atrelado — sem achismo, sem promessa vazia. É o mapeamento bem feito que permite retorno no primeiro mês.',
-      bullets: [
-        'Definição de KPIs e metas mensuráveis',
-        'Projeção de ROI por frente de atuação',
-        'Alinhamento de expectativas com o time',
-        'Validação do plano de ação antes de executar',
-        'Retorno visível já no primeiro mês'
-      ],
-      time: '⏱ 1 a 2 semanas',
-      tag: 'Sem meta clara, não há resultado real.',
-      result: 'Entregável: plano de resultados com KPIs definidos'
     },
     {
       num: '04 / 04', letter: 'A', title: 'Acompanhamento',
@@ -524,7 +524,7 @@ document.querySelectorAll('section[id]').forEach(s => {
   }, { threshold: 0.4 });
   io.observe(document.getElementById('metodo'));
 
-  /* Swipe horizontal pra navegar entre as 4 etapas AIRA (touch devices) */
+  /* Swipe horizontal pra navegar entre as 4 etapas DEIA (touch devices) */
   const metodoSection = document.getElementById('metodo');
   if (metodoSection && IS_TOUCH) {
     let sx = 0, sy = 0;
@@ -544,6 +544,39 @@ document.querySelectorAll('section[id]').forEach(s => {
       syncPressed();
     }, { passive: true });
   }
+})();
+
+/* ============================================
+   CARD STACK — swap on scroll progress
+   Cada .card-stack vira 'flipped' quando o scroll passa do 50%
+   da sua seção-pai visível. Scroll reverso desflipa.
+   ============================================ */
+(function() {
+  const stacks = document.querySelectorAll('.card-stack');
+  if (!stacks.length) return;
+
+  function update() {
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    stacks.forEach(stack => {
+      const section = stack.closest('section') || stack.parentElement;
+      if (!section) return;
+      const rect = section.getBoundingClientRect();
+      const total = rect.height + vh;
+      const passed = vh - rect.top;
+      const progress = Math.max(0, Math.min(1, passed / total));
+      const flipped = progress > 0.55;
+      stack.classList.toggle('flipped', flipped);
+    });
+  }
+
+  let raf = 0;
+  function onScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { update(); raf = 0; });
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll, { passive: true });
+  update();
 })();
 
 /* ============================================

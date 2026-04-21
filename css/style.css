@@ -3774,6 +3774,100 @@ html { scroll-padding-top: 84px; }
   .card-content p { font-size: .96rem; line-height: 1.65; padding-left: 16px; }
 }
 
+/* ───────────────────────────────────────────
+   Card Stack — 2 cards empilhados que alternam no scroll
+   ─────────────────────────────────────────── */
+.card-stack {
+  position: relative;
+  width: 100%;
+  min-height: 440px;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+}
+.card-stack__item {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(255, 107, 26, .06) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, rgba(255, 107, 26, .05) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(16, 24, 38, .94) 0%, rgba(11, 18, 30, .94) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 107, 26, .18);
+  border-radius: 20px;
+  padding: 48px 40px;
+  overflow: hidden;
+  transform-origin: center top;
+  transition:
+    transform .8s cubic-bezier(.22, .61, .36, 1),
+    opacity .6s ease,
+    filter .6s ease,
+    box-shadow .6s ease;
+  box-shadow:
+    0 24px 48px -18px rgba(0, 0, 0, .45),
+    0 4px 12px rgba(0, 0, 0, .2),
+    inset 0 1px 0 rgba(255, 255, 255, .05);
+  will-change: transform, opacity;
+}
+.card-stack__item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg,
+    rgba(255, 107, 26, .35) 0%,
+    rgba(255, 107, 26, .08) 30%,
+    transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: .85;
+}
+
+/* Estado inicial: item 1 na frente, item 2 atrás */
+.card-stack__item--1 {
+  z-index: 2;
+  transform: translate3d(0, 0, 0) scale(1);
+  opacity: 1;
+  filter: none;
+}
+.card-stack__item--2 {
+  z-index: 1;
+  transform: translate3d(0, 32px, -40px) scale(.94);
+  opacity: .55;
+  filter: blur(.6px);
+}
+
+/* Swap: item 2 pra frente, item 1 pra trás */
+.card-stack.flipped .card-stack__item--1 {
+  z-index: 1;
+  transform: translate3d(0, 32px, -40px) scale(.94);
+  opacity: .55;
+  filter: blur(.6px);
+}
+.card-stack.flipped .card-stack__item--2 {
+  z-index: 2;
+  transform: translate3d(0, 0, 0) scale(1);
+  opacity: 1;
+  filter: none;
+}
+
+@media (max-width: 900px) {
+  .card-stack { min-height: 400px; }
+  .card-stack__item { padding: 40px 32px; }
+}
+@media (max-width: 560px) {
+  .card-stack { min-height: 360px; }
+  .card-stack__item { padding: 32px 22px; border-radius: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-stack__item { transition: none !important; }
+}
+
 /* ── Palco ── */
 .qs-scene-wrap {
   position: relative;
