@@ -570,9 +570,11 @@ document.querySelectorAll('section[id]').forEach(s => {
         const passed = vh - rect.top;
         progress = Math.max(0, Math.min(1, passed / total));
       }
-      /* Concentra a animação no meio do scroll: 0 até .3 é "card 1 puro",
-         .3 a .7 é a transição, .7+ é "card 2 puro" */
-      const t = Math.max(0, Math.min(1, (progress - 0.3) / 0.4));
+      /* Zonas de scroll dentro do pin:
+           0.00 – 0.25: card 1 puro (trava na tela antes de nada acontecer)
+           0.25 – 0.60: transição card 1 → card 2
+           0.60 – 1.00: card 2 puro (segura preso antes de liberar scroll) */
+      const t = Math.max(0, Math.min(1, (progress - 0.25) / 0.35));
       stack.style.setProperty('--progress', t.toFixed(3));
       stack.classList.toggle('flipped', t > 0.5);
     });

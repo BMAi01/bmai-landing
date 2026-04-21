@@ -214,10 +214,11 @@ section { position: relative; z-index: 1; display: block; }
 #quem-somos .section__center { margin-bottom: 56px; }
 
 /* Pinned section estilo Algarys — a viewport trava enquanto o usuário
-   rola os cards; ao fim da altura da section, destrava naturalmente. */
+   rola os cards; ao fim da altura da section, destrava naturalmente.
+   Altura longa (400vh) pra dar sensação de "lock" forte antes de liberar. */
 #quem-somos.qs-pinned {
   position: relative;
-  height: 260vh;
+  height: 400vh;
 }
 .qs-pin {
   position: sticky;
@@ -233,7 +234,7 @@ section { position: relative; z-index: 1; display: block; }
   width: 100%;
 }
 @media (max-width: 900px) {
-  #quem-somos.qs-pinned { height: 240vh; }
+  #quem-somos.qs-pinned { height: 340vh; }
   .qs-pin { padding: 40px 0 32px; }
 }
 #quem-somos .section__title {
