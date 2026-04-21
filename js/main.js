@@ -559,121 +559,19 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   QS CARD STACK — scroll-hijack: trava scroll até animação 100%
-   Desktop: page lock via overflow hidden + wheel consome progress.
-   Touch/reduce: pula direto pro progress 1 (sem lock).
+   QS CARD STACK — reveal por HOVER (desktop) ou TAP (touch)
+   Sem scroll-lock. Card 2 só aparece quando o cursor passa sobre o card.
    ============================================ */
 (function() {
   const stack = document.querySelector('.card-stack');
-  const section = document.getElementById('quem-somos');
-  if (!stack || !section) return;
+  if (!stack) return;
 
-  if (IS_TOUCH || PREFERS_REDUCE) {
-    stack.style.setProperty('--progress', '1');
-    return;
+  /* Touch: tap alterna entre card 1 e card 2 (hover não existe) */
+  if (IS_TOUCH) {
+    stack.addEventListener('click', () => {
+      stack.classList.toggle('is-revealed');
+    });
   }
-
-  const DISTANCE = 700;      /* px de wheel a acumular pra completar 100% */
-  const body = document.body;
-  let lock = null;
-
-  function apply() {
-    const raw = Math.max(0, Math.min(1, lock.progress / DISTANCE));
-    const t = raw * raw * (3 - 2 * raw);
-    stack.style.setProperty('--progress', t.toFixed(3));
-  }
-
-  function acquire(fromTop) {
-    const rect = section.getBoundingClientRect();
-    const anchorY = window.scrollY + rect.top;
-    lock = { anchorY, progress: fromTop ? 0 : DISTANCE };
-    /* Trava REAL via position:fixed no body (funciona em todos browsers) */
-    window.scrollTo(0, anchorY);
-    body.style.setProperty('--lock-top', `-${anchorY}px`);
-    body.classList.add('scroll-locked');
-    apply();
-  }
-
-  function release(direction) {
-    if (!lock) return;
-    const anchorY = lock.anchorY;
-    const h = section.offsetHeight;
-    lock = null;
-    body.classList.remove('scroll-locked');
-    body.style.removeProperty('--lock-top');
-    /* Restaura scroll position e move pra destino */
-    if (direction > 0) window.scrollTo(0, anchorY + h + 8);
-    else               window.scrollTo(0, Math.max(0, anchorY - 16));
-  }
-
-  addEventListener('wheel', (e) => {
-    if (!lock) {
-      const rect = section.getBoundingClientRect();
-      const vh = innerHeight;
-      /* Captura descendo: seção encosta no topo */
-      if (e.deltaY > 0 && rect.top <= 40 && rect.top > -80) {
-        e.preventDefault();
-        acquire(true);
-        return;
-      }
-      /* Captura subindo: seção encosta no fundo (vindo de baixo) */
-      if (e.deltaY < 0 && rect.bottom >= vh - 40 && rect.bottom < vh + 80) {
-        e.preventDefault();
-        acquire(false);
-        return;
-      }
-      return;
-    }
-    e.preventDefault();
-    e.stopPropagation();
-    lock.progress += e.deltaY;
-    if (lock.progress < 0)          return release(-1);
-    if (lock.progress >= DISTANCE)  return release(1);
-    apply();
-  }, { passive: false });
-
-  addEventListener('keydown', (e) => {
-    if (!lock) return;
-    /* Teclas de avanço ADIANTAM a progress (não liberam). Só completa
-       o ciclo inteiro deixa descer. */
-    const advance = ['PageDown','End','ArrowDown',' ','Enter'];
-    const back    = ['PageUp','Home','ArrowUp'];
-    if (advance.includes(e.key)) {
-      e.preventDefault();
-      lock.progress += 140;
-      if (lock.progress >= DISTANCE) return release(1);
-      apply();
-    } else if (back.includes(e.key)) {
-      e.preventDefault();
-      lock.progress -= 140;
-      if (lock.progress < 0) return release(-1);
-      apply();
-    } else if (e.key === 'Escape') {
-      /* ESC é única escape válvula de emergência */
-      e.preventDefault();
-      release(1);
-    }
-  });
-
-  addEventListener('hashchange', () => { if (lock) release(1); });
-
-  /* Bloqueia qualquer forma de scroll nativo enquanto o lock tá ativo */
-  addEventListener('touchmove', (e) => {
-    if (lock) e.preventDefault();
-  }, { passive: false });
-
-  /* Safety net: scroll rápido que escapou da janela do wheel */
-  let prevY = window.scrollY;
-  addEventListener('scroll', () => {
-    if (lock) return;
-    const y = window.scrollY;
-    const goingDown = y > prevY;
-    prevY = y;
-    const rect = section.getBoundingClientRect();
-    if (rect.top <= 0 && rect.bottom > 120 && goingDown) {
-      acquire(true);
-    }
-  }, { passive: true });
 })();
 
 /* ============================================

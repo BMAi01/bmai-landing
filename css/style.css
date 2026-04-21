@@ -209,17 +209,6 @@ section {
 
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
 html { scrollbar-gutter: stable; }
-/* Lock físico (position:fixed no body) — aplicado pelo JS do hijack */
-body.scroll-locked {
-  position: fixed !important;
-  top: var(--lock-top, 0);
-  left: 0;
-  right: 0;
-  width: 100%;
-  overflow: hidden !important;
-  overscroll-behavior: none;
-  touch-action: none;
-}
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 28px; }
 .section__title {
@@ -3939,14 +3928,16 @@ html { scroll-padding-top: 84px; }
   transform: translate3d(0, 0, 0);
 }
 
-/* Card 2 DESLIZA de baixo (translateY 100% → 0), totalmente opaco,
-   com clip-path cobrindo o card 1 progressivamente.
-   Paleta invertida: fundo branco, accent laranja. */
+/* Card 2 DESLIZA de baixo ao PASSAR O CURSOR sobre o card.
+   Sem scroll-lock, sem progress JS — CSS hover puro com transição .7s. */
 .card-stack__item--2 {
   z-index: 2;
-  opacity: 1;                                   /* sempre opaco — sem transparência */
-  transform: translate3d(0, calc((1 - var(--progress)) * 100%), 0);
-  clip-path: inset(calc((1 - var(--progress)) * 100%) 0 0 0 round 24px);
+  opacity: 1;
+  transform: translate3d(0, 100%, 0);
+  clip-path: inset(100% 0 0 0 round 24px);
+  transition:
+    transform .7s cubic-bezier(.4, 0, .2, 1),
+    clip-path .7s cubic-bezier(.4, 0, .2, 1);
   pointer-events: auto;
 
   /* Paleta invertida — branco creme + laranja */
@@ -3979,6 +3970,19 @@ html { scroll-padding-top: 84px; }
 .card-stack__item--2 .card-eyebrow::before {
   background: var(--orange);
   opacity: 1;
+}
+
+/* Hover reveal — só em devices com cursor de verdade */
+@media (hover: hover) and (pointer: fine) {
+  .card-stack:hover .card-stack__item--2 {
+    transform: translate3d(0, 0, 0);
+    clip-path: inset(0 0 0 0 round 24px);
+  }
+}
+/* Touch: tap pra alternar via classe .revealed (JS setta) */
+.card-stack.is-revealed .card-stack__item--2 {
+  transform: translate3d(0, 0, 0);
+  clip-path: inset(0 0 0 0 round 24px);
 }
 /* Mobile */
 @media (max-width: 768px) {
