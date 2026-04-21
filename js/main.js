@@ -1045,7 +1045,7 @@ const CASES_DATA = [
   const form = document.getElementById('bmai-form');
   if (!form) return;
 
-  const btnDefaultHTML = 'Enviar para o time BMAi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+  const btnDefaultHTML = 'Enviar para o time da BMAi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
   const feedback = document.getElementById('form-feedback');
 
   const icons = {
@@ -1118,11 +1118,11 @@ const CASES_DATA = [
         throw new Error('HTTP ' + res.status + ' ' + txt);
       }
 
-      showFeedback('success', 'Recebido! O time BMAi vai entrar em contato em até 24h.');
+      showFeedback('success', 'Recebido! O time da BMAi vai entrar em contato em até 24h.');
       form.reset();
     } catch (err) {
       console.error('[bmai-form] Falha no envio:', err);
-      showFeedback('error', 'Não conseguimos enviar agora. Tente novamente em instantes ou chame o time BMAi no WhatsApp.');
+      showFeedback('error', 'Não conseguimos enviar agora. Tente novamente em instantes ou chame o time da BMAi no WhatsApp.');
     } finally {
       btn.disabled = false;
       btn.innerHTML = btnDefaultHTML;

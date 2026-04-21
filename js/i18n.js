@@ -12,13 +12,13 @@
       'nav.team':      'Team',
       'nav.cases':     'Cases',
       'nav.faq':       'FAQ',
-      'nav.cta':       'Falar com o time BMAi',
+      'nav.cta':       'Falar com o time da BMAi',
 
       /* HERO */
       'hero.badge':   '+10.000 horas economizadas com IA',
       'hero.title':   '<span class="h-line">IA não precisa ser complicada,</span><span class="h-line">mas precisa dar <span class="hero-resultado">resultado</span></span>',
       'hero.sub':     'DEVOLVEMOS O CONTROLE DO NEGÓCIO AO EMPREENDEDOR QUE DEIXA DE OPERAR NO IMPROVISO<br>E PASSA A TOMAR DECISÕES BASEADO EM DADOS.',
-      'hero.cta':     'Falar com o time BMAi',
+      'hero.cta':     'Falar com o time da BMAi',
       'hero.stat1':   'Projetos realizados',
       'hero.stat2':   'Aumento na conversão do WhatsApp',
       'hero.stat3':   'Dias de implementação média',
@@ -98,9 +98,9 @@
       'faq.8.a':   'Se a gente construiu, a gente mantém. Não te deixamos desamparado. O "A" final do DEIA é Acompanhamento: monitoramos os indicadores, ajustamos prompt e lógica conforme seu negócio evolui e te damos acesso ao nosso SaaS interno de acompanhamento de métricas. Cliente BMAi vira parceiro — não só mais um.',
 
       /* FORM */
-      'form.tag':     'Fale com o time BMAi',
+      'form.tag':     'Fale com o time da BMAi',
       'form.title':   'Pronto para estruturar<br><span style="color:var(--orange)">seu negócio de verdade?</span>',
-      'form.lead':    'Preencha o formulário. O time BMAi entra em contato em até 24h para entender o momento da sua empresa.',
+      'form.lead':    'Preencha o formulário. O time da BMAi entra em contato em até 24h para entender o momento da sua empresa.',
       'form.b1':      'Diagnóstico real do seu processo comercial',
       'form.b2':      'Identificação dos principais entraves operacionais',
       'form.b3':      'Proposta com método e cronograma em até 48h',
@@ -112,10 +112,10 @@
       'form.p_cargo': 'Cargo',
       'form.p_seg':   'Segmento',
       'form.p_col':   'Número de colaboradores',
-      'form.submit':  'Enviar para o time BMAi',
-      'form.disclaim':'Ao enviar, o time BMAi entrará em contato com você.',
-      'form.fb_ok':   'Recebido! O time BMAi vai entrar em contato em até 24h.',
-      'form.fb_err':  'Não conseguimos enviar agora. Tente novamente em instantes ou chame o time BMAi no WhatsApp.',
+      'form.submit':  'Enviar para o time da BMAi',
+      'form.disclaim':'Ao enviar, o time da BMAi entrará em contato com você.',
+      'form.fb_ok':   'Recebido! O time da BMAi vai entrar em contato em até 24h.',
+      'form.fb_err':  'Não conseguimos enviar agora. Tente novamente em instantes ou chame o time da BMAi no WhatsApp.',
       'form.fb_wall': 'Preencha o campo destacado para enviar.',
       'form.fb_walm': 'Preencha os %n campos destacados para enviar.',
       'form.fb_mail': 'Verifique o e-mail e os campos destacados.',
@@ -123,7 +123,7 @@
       /* CTA FINAL */
       'cta.title': 'Crescer sem eficiência é crescer com <span style="color:var(--orange)">prazo de validade.</span>',
       'cta.sub':   'Até quando você vai continuar postergando a escala do seu negócio?',
-      'cta.btn':   'Fale com o time BMAi',
+      'cta.btn':   'Fale com o time da BMAi',
 
       /* FOOTER */
       'footer.kind':    'Engenharia de inteligência aplicada.',
