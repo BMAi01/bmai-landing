@@ -3634,53 +3634,75 @@ html { scroll-padding-top: 84px; }
   position: relative;
   z-index: 1;
 }
-.pilar-bar {
-  position: relative;
-  width: 44px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--orange) 0%, var(--orange-l) 100%);
-  border-radius: 2px;
-  margin-bottom: 22px;
-  box-shadow: 0 0 12px rgba(255, 107, 26, .55);
-}
-.pilar-bar::after {
+
+/* Símbolo BMAi como watermark decorativo no canto */
+.card-content::before {
   content: '';
   position: absolute;
-  left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--orange-l);
-  box-shadow: 0 0 12px rgba(255, 167, 102, .9);
+  top: -12px;
+  right: -16px;
+  width: 112px;
+  height: 112px;
+  background: url('../assets/images/simbolo-laranja.svg') no-repeat center / contain;
+  opacity: .05;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(-8deg);
 }
+
 .card-content h3 {
-  font-family: var(--ff);
-  font-size: 1.75rem;
+  position: relative;
+  z-index: 1;
+  font-family: var(--fd);
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
   font-weight: 700;
   color: var(--white);
-  margin: 0 0 18px;
-  line-height: 1.18;
-  letter-spacing: -.02em;
+  margin: 0 0 26px;
+  line-height: 1.02;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
 }
+.card-content h3 span {
+  text-shadow: 0 0 32px rgba(255, 107, 26, .28);
+}
+
 .card-content p {
-  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+  font-size: 1.02rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, .72);
+  color: rgba(255, 255, 255, .78);
   margin: 0;
-  max-width: 52ch;
+  max-width: 54ch;
   font-weight: 400;
   letter-spacing: -.005em;
 }
 
+/* Drop cap editorial — primeira letra do parágrafo */
+.card-content p::first-letter {
+  font-family: var(--fd);
+  font-size: 3.4em;
+  font-weight: 800;
+  line-height: .85;
+  color: var(--orange);
+  float: left;
+  padding: 4px 12px 0 0;
+  letter-spacing: -.04em;
+  text-shadow: 0 0 24px rgba(255, 107, 26, .35);
+}
+
 @media (max-width: 900px) {
   .card-unificado { padding: 40px 32px; }
-  .card-content h3 { font-size: 1.55rem; }
+  .card-content::before { width: 88px; height: 88px; top: -8px; right: -10px; }
+  .card-content h3 { font-size: clamp(1.75rem, 6.5vw, 2.25rem); margin-bottom: 22px; }
+  .card-content p::first-letter { font-size: 3em; padding-right: 10px; }
 }
 @media (max-width: 560px) {
   .card-unificado { padding: 32px 22px; border-radius: 16px; }
-  .card-content h3 { font-size: 1.35rem; margin-bottom: 14px; }
-  .card-content p { font-size: .95rem; line-height: 1.6; }
-  .pilar-bar { width: 38px; margin-bottom: 18px; }
+  .card-content::before { width: 72px; height: 72px; opacity: .04; }
+  .card-content h3 { font-size: clamp(1.55rem, 8.5vw, 2rem); margin-bottom: 18px; letter-spacing: -.02em; }
+  .card-content p { font-size: .96rem; line-height: 1.65; }
+  .card-content p::first-letter { font-size: 2.8em; padding-right: 8px; }
 }
 
 /* ── Palco ── */
