@@ -559,180 +559,73 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   SCROLL HIJACK — lock físico (overflow:hidden no html)
-   Desktop only. Força o user a scrollar a animação inteira antes de liberar.
-   ============================================ */
-(function() {
-  if (IS_TOUCH || PREFERS_REDUCE) return;
-
-  const configs = [
-    { sel: '.qs-pinned',     stack: '.card-stack', distance: 1400 },
-    { sel: '.metodo-pinned', nodes: '.aria-node',  distance: 1600 },
-  ];
-  const targets = configs
-    .map(c => ({ ...c, node: document.querySelector(c.sel) }))
-    .filter(c => c.node);
-  if (!targets.length) return;
-
-  const html = document.documentElement;
-  let lock = null;
-
-  function lockBody(anchor) {
-    /* Snap pra posição ancorada e trava o overflow do html */
-    window.scrollTo(0, anchor);
-    html.classList.add('scroll-locked');
-  }
-  function unlockBody() {
-    html.classList.remove('scroll-locked');
-  }
-
-  function tryAcquire(deltaY) {
-    if (lock) return;
-    const vh = window.innerHeight;
-    for (const t of targets) {
-      const rect = t.node.getBoundingClientRect();
-      /* Zona de captura ampla: section encosta no topo da viewport */
-      const enteringFromTop    = deltaY > 0 && rect.top <= 40 && rect.top > -100;
-      const enteringFromBottom = deltaY < 0 && rect.bottom >= vh - 40 && rect.bottom < vh + 100;
-      if (enteringFromTop || enteringFromBottom) {
-        const anchorY = window.scrollY + rect.top;
-        lock = {
-          target: t,
-          progress: enteringFromTop ? 0 : t.distance,
-          anchorY,
-          lastIdx: -1,
-        };
-        t.node.classList.add('lock-active');
-        lockBody(anchorY);
-        applyProgress();
-        return;
-      }
-    }
-  }
-
-  function releaseLock(direction) {
-    if (!lock) return;
-    const section = lock.target.node;
-    const h = section.offsetHeight;
-    const anchorY = lock.anchorY;
-    section.classList.remove('lock-active');
-    lock = null;
-    unlockBody();
-    /* Pequeno offset pra sair da zona de captura (evita recapturar na mesma direção) */
-    if (direction > 0) window.scrollTo(0, anchorY + h + 8);
-    else window.scrollTo(0, anchorY - 16);
-  }
-
-  function applyProgress() {
-    if (!lock) return;
-    const t = Math.max(0, Math.min(1, lock.progress / lock.target.distance));
-
-    if (lock.target.stack) {
-      const stack = lock.target.node.querySelector(lock.target.stack);
-      if (stack) stack.style.setProperty('--progress', t.toFixed(3));
-    }
-    if (lock.target.nodes) {
-      const ns = lock.target.node.querySelectorAll(lock.target.nodes);
-      if (ns.length) {
-        const idx = Math.min(ns.length - 1, Math.floor(t * ns.length));
-        if (idx !== lock.lastIdx) {
-          lock.lastIdx = idx;
-          document.dispatchEvent(new CustomEvent('metodo:set', { detail: { index: idx } }));
-        }
-      }
-    }
-  }
-
-  /* Wheel: se lock, consome delta e bloqueia scroll nativo.
-     Sem lock: tenta captura se entrar na zona. */
-  addEventListener('wheel', (e) => {
-    if (!lock) { tryAcquire(e.deltaY); if (!lock) return; }
-    e.preventDefault();
-    e.stopPropagation();
-    lock.progress += e.deltaY;
-    if (lock.progress < 0)                 return releaseLock(-1);
-    if (lock.progress >= lock.target.distance) return releaseLock(1);
-    applyProgress();
-  }, { passive: false });
-
-  /* Escape válvulas — a11y */
-  addEventListener('keydown', (e) => {
-    if (!lock) return;
-    const advance = ['PageDown', 'End', 'ArrowDown', ' ', 'Enter'];
-    const back    = ['PageUp', 'Home', 'ArrowUp', 'Escape', 'Tab'];
-    if (advance.includes(e.key)) { e.preventDefault(); releaseLock(1); }
-    else if (back.includes(e.key)) { e.preventDefault(); releaseLock(-1); }
-  });
-
-  /* Safety: nunca deixar a página travada se o user sair via anchor / history */
-  addEventListener('hashchange', () => { if (lock) releaseLock(1); });
-  addEventListener('popstate',   () => { if (lock) releaseLock(1); });
-
-  /* Rede de segurança: scroll rápido (trackpad, barra lateral) pode pular a
-     janela do wheel. Se detectarmos que a section top cruzou o viewport sem
-     o hijack ter pego, snapa de volta e tranca. */
-  let prevY = window.scrollY;
-  addEventListener('scroll', () => {
-    if (lock) return;
-    const y = window.scrollY;
-    const goingDown = y > prevY;
-    prevY = y;
-    for (const t of targets) {
-      const rect = t.node.getBoundingClientRect();
-      if (rect.top <= 0 && rect.bottom > 80 && goingDown) {
-        const anchorY = y + rect.top;
-        lock = { target: t, progress: 0, anchorY, lastIdx: -1 };
-        t.node.classList.add('lock-active');
-        lockBody(anchorY);
-        applyProgress();
-        return;
-      }
-    }
-  }, { passive: true });
-})();
-
-/* ============================================
-   CARD STACK — swap on scroll progress (fallback pra touch/reduce-motion
-   e pra quando o scroll-hijack ainda não capturou o lock)
+   SCROLL-LINKED PROGRESS — Algarys/Framer pattern
+   O usuário rola NORMAL. A section é alta (400vh) + pin sticky 100vh.
+   O progresso do scroll dentro da section dirige a animação 1:1.
+   Obriga o user a rolar pela seção inteira pra ver todos os cards,
+   sem travar o scroll.
    ============================================ */
 (function() {
   const stacks = document.querySelectorAll('.card-stack');
-  if (!stacks.length) return;
+  const metodoSection = document.querySelector('.metodo-pinned');
+  if (!stacks.length && !metodoSection) return;
 
-  function update() {
+  /* Mapeia [inMin, inMax] do progress → [0, 1] clampeado */
+  function zone(p, a, b) { return Math.max(0, Math.min(1, (p - a) / (b - a))); }
+
+  /* Computa progress 0..1 de uma section (pinned tall ou normal) */
+  function progressOf(section) {
     const vh = window.innerHeight || document.documentElement.clientHeight;
+    const rect = section.getBoundingClientRect();
+    const scrollable = rect.height - vh;
+    if (scrollable > 40) {
+      /* Sticky pin: 0 = top encostou, 1 = fim do pin */
+      return Math.max(0, Math.min(1, -rect.top / scrollable));
+    }
+    /* Section normal (sem pin) */
+    const total = rect.height + vh;
+    const passed = vh - rect.top;
+    return Math.max(0, Math.min(1, passed / total));
+  }
+
+  /* Atualiza QS: --progress do card-stack (card 1 → card 2) */
+  function updateStacks() {
     stacks.forEach(stack => {
-      const section = stack.closest('section') || stack.parentElement;
+      const section = stack.closest('section');
       if (!section) return;
-      const rect = section.getBoundingClientRect();
-      const scrollable = rect.height - vh;
-      let progress;
-      if (scrollable > 40) {
-        /* Pinned section: 0 = topo acabou de encostar, 1 = fim do pin */
-        progress = Math.max(0, Math.min(1, -rect.top / scrollable));
-      } else {
-        const total = rect.height + vh;
-        const passed = vh - rect.top;
-        progress = Math.max(0, Math.min(1, passed / total));
-      }
-      /* Zonas de scroll dentro do pin:
-           0.00 – 0.25: card 1 puro (trava na tela antes de nada acontecer)
-           0.25 – 0.60: transição card 1 → card 2
-           0.60 – 1.00: card 2 puro (segura preso antes de liberar scroll) */
-      const t = Math.max(0, Math.min(1, (progress - 0.25) / 0.35));
+      const p = progressOf(section);
+      /* 0–0.25 card 1 puro, 0.25–0.75 transição, 0.75–1 card 2 puro */
+      const t = zone(p, 0.25, 0.75);
       stack.style.setProperty('--progress', t.toFixed(3));
       stack.classList.toggle('flipped', t > 0.5);
     });
   }
 
+  /* Atualiza Método: cicla os 4 DEIA conforme progress */
+  let metodoLastIdx = -1;
+  function updateMetodo() {
+    if (!metodoSection) return;
+    const p = progressOf(metodoSection);
+    /* Obriga rolar pela seção pra passar pelos 4 */
+    const idx = Math.min(3, Math.floor(zone(p, 0.1, 0.95) * 4));
+    if (idx !== metodoLastIdx) {
+      metodoLastIdx = idx;
+      document.dispatchEvent(new CustomEvent('metodo:set', { detail: { index: idx } }));
+    }
+  }
+
   let raf = 0;
   function onScroll() {
     if (raf) return;
-    raf = requestAnimationFrame(() => { update(); raf = 0; });
+    raf = requestAnimationFrame(() => {
+      updateStacks();
+      updateMetodo();
+      raf = 0;
+    });
   }
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll, { passive: true });
-  update();
+  onScroll();
 })();
 
 /* ============================================

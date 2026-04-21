@@ -202,12 +202,8 @@ section {
 }
 .section { padding: 48px 0; }
 
-/* Scroll lock físico — aplicado pelo JS do hijack.
-   scrollbar-gutter: stable reserva o espaço da scrollbar sempre,
-   evita layout shift quando travamos overflow. */
+/* scrollbar-gutter: stable evita layout shift em qualquer contexto */
 html { scrollbar-gutter: stable; }
-html.scroll-locked,
-html.scroll-locked body { overflow: hidden !important; }
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 28px; }
 .section__title {
@@ -232,42 +228,39 @@ html.scroll-locked body { overflow: hidden !important; }
 
    Touch/reduced-motion (fallback): section 400vh + sticky 100vh — progress
    scroll-linked natural via IntersectionObserver no main.js. */
+/* Sticky-tall-section (Algarys/Framer style) — o user scrolla por uma
+   seção de 400vh enquanto o conteúdo fica pinned em 100vh. Progress
+   scroll-linked 1:1 dirige a animação (ver CARD STACK no main.js). */
 #quem-somos.qs-pinned,
 #metodo.metodo-pinned {
   position: relative;
-  min-height: 100vh;
-  height: auto;           /* nunca height fixo — evita conteúdo transbordar */
-  overflow: visible;
+  height: 400vh;
 }
 .qs-pin,
 .metodo-pin {
-  position: relative;
+  position: sticky;
   top: 0;
-  min-height: 100vh;
-  height: auto;
+  height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;       /* clip só faz sentido em sticky pin (mobile fallback) */
-  padding: 64px 0;
+  overflow: hidden;
+  padding: 0;
 }
 .qs-pin .container,
 .metodo-pin .container { width: 100%; }
 
-/* Fallback sticky pra quem não tem hijack (touch/reduce) */
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+/* Mobile: desliga pin (conteúdo vertical não cabe em 100vh) */
+@media (max-width: 900px) {
   #quem-somos.qs-pinned,
-  #metodo.metodo-pinned {
-    min-height: auto;
-    height: 400vh;
-  }
+  #metodo.metodo-pinned { height: auto; }
   .qs-pin,
   .metodo-pin {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
+    position: static;
+    height: auto;
+    overflow: visible;
+    padding: 48px 0;
   }
 }
 
