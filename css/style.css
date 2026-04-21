@@ -3697,17 +3697,17 @@ html { scroll-padding-top: 84px; }
 .card-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--fm);
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: .26em;
+  letter-spacing: .24em;
   text-transform: uppercase;
   color: var(--orange);
   margin: 0;
   position: relative;
   z-index: 2;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background: rgba(255, 107, 26, .08);
   border: 1px solid rgba(255, 107, 26, .22);
   border-radius: 999px;
@@ -3773,12 +3773,12 @@ html { scroll-padding-top: 84px; }
   position: relative;
   z-index: 1;
   font-family: var(--fd);
-  font-size: clamp(1.9rem, 2.8vw, 2.4rem);
+  font-size: clamp(1.4rem, 2vw, 1.75rem);
   font-weight: 700;
   color: var(--white);
   margin: 0;
-  line-height: 1.08;
-  letter-spacing: -.025em;
+  line-height: 1.1;
+  letter-spacing: -.02em;
   text-transform: none;
 }
 .card-content h3 br { display: none; }  /* remove quebra forçada — deixa fluir natural */
@@ -3789,13 +3789,13 @@ html { scroll-padding-top: 84px; }
 .card-content p {
   position: relative;
   z-index: 1;
-  font-size: 1rem;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, .75);
+  font-size: .88rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, .72);
   margin: 0;
-  max-width: 44ch;
+  max-width: 40ch;
   font-weight: 400;
-  letter-spacing: -.003em;
+  letter-spacing: -.002em;
   padding: 0;
   border: none;
   box-shadow: none;
@@ -3881,7 +3881,7 @@ html { scroll-padding-top: 84px; }
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 48px 48px;
+  padding: 32px 32px;
   overflow: visible;
   opacity: 1;
   transform: none;
@@ -3894,7 +3894,7 @@ html { scroll-padding-top: 84px; }
 .card-stack__item .card-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;                  /* rítmica consistente entre eyebrow → h3 → p */
+  gap: 14px;
 }
 .card-stack__item::before {
   /* Seta-losango laranja conectando Fase 01 → Fase 02 */
