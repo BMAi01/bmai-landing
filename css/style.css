@@ -535,6 +535,30 @@ html { scrollbar-gutter: stable; }
   align-items: flex-start;
   padding: calc(var(--hdr) + 60px) 0 96px;
   overflow: hidden;
+  /* Fundo multi-layer: overlay escuro na esquerda + top/bottom fade + imagem + cor base */
+  background:
+    linear-gradient(90deg,
+      rgba(13, 27, 42, .92) 0%,
+      rgba(13, 27, 42, .55) 38%,
+      rgba(13, 27, 42, 0)   68%),
+    linear-gradient(180deg,
+      rgba(13, 27, 42, .25) 0%,
+      transparent 25%,
+      transparent 75%,
+      rgba(13, 27, 42, .45) 100%),
+    url('../assets/images/hero-bg.png') center right / cover no-repeat,
+    #0d1b2a;
+}
+@media (max-width: 900px) {
+  .hero {
+    background:
+      linear-gradient(180deg,
+        rgba(13, 27, 42, .78) 0%,
+        rgba(13, 27, 42, .5)  45%,
+        rgba(13, 27, 42, .88) 100%),
+      url('../assets/images/hero-bg.png') 75% center / 180% auto no-repeat,
+      #0d1b2a;
+  }
 }
 #hero .container.hero__wrap {
   max-width: 100%;
