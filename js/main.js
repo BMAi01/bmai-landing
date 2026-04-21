@@ -583,27 +583,25 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   QS CARD STACK — HOVER slide + EXPLODE ao sair o cursor
+   QS CARD STACK — HOVER slide (esq→dir) + EXPLODE ao sair o cursor
    ============================================ */
-(function() {
+function _initCardStackFx() {
   const stack = document.querySelector('.card-stack');
-  if (!stack) return;
+  if (!stack || stack.dataset.fxInit === '1') return;
+  stack.dataset.fxInit = '1';
 
   if (IS_TOUCH) {
-    /* Touch: tap alterna */
     stack.addEventListener('click', () => {
       stack.classList.toggle('is-revealed');
     });
     return;
   }
 
-  /* Desktop: mouseleave detona animação explode */
   let explodeTimer = null;
   stack.addEventListener('mouseleave', () => {
     stack.classList.add('explode');
     clearTimeout(explodeTimer);
     explodeTimer = setTimeout(() => {
-      /* Snap pro estado hidden sem transição (evita slide de volta feio) */
       stack.classList.remove('explode');
       stack.classList.add('snap');
       requestAnimationFrame(() => {
@@ -612,12 +610,16 @@ document.querySelectorAll('section[id]').forEach(s => {
     }, 550);
   });
   stack.addEventListener('mouseenter', () => {
-    /* Cancela explode se o user voltar rapidamente */
     clearTimeout(explodeTimer);
     stack.classList.remove('explode');
     stack.classList.remove('snap');
   });
-})();
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _initCardStackFx);
+} else {
+  _initCardStackFx();
+}
 
 /* ============================================
    GSAP SCROLL FX
