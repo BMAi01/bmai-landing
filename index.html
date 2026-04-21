@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260421-integrando">
+  <link rel="stylesheet" href="css/style.css?v=20260421-i18n">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -48,33 +48,47 @@
         <span class="floatnav__icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </span>
-        <span class="floatnav__text">Método</span>
+        <span class="floatnav__text" data-i18n="nav.metodo">Método</span>
       </a>
 <a href="#para-quem" class="floatnav__item">
         <span class="floatnav__icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </span>
-        <span class="floatnav__text">Team</span>
+        <span class="floatnav__text" data-i18n="nav.team">Team</span>
       </a>
       <a href="#cases" class="floatnav__item">
         <span class="floatnav__icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         </span>
-        <span class="floatnav__text">Cases</span>
+        <span class="floatnav__text" data-i18n="nav.cases">Cases</span>
       </a>
       <a href="#faq" class="floatnav__item">
         <span class="floatnav__icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
         </span>
-        <span class="floatnav__text">FAQ</span>
+        <span class="floatnav__text" data-i18n="nav.faq">FAQ</span>
       </a>
       <span class="nav-sep"></span>
       <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener" class="floatnav__cta">
         <span class="floatnav__cta-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </span>
-        <span class="floatnav__cta-text">Falar com a Anna</span>
+        <span class="floatnav__cta-text" data-i18n="nav.cta">Falar com a Anna</span>
       </a>
+
+      <!-- Language switcher — desktop flutua no canto; mobile integra no drawer -->
+      <div class="lang-btn" id="lang-btn">
+        <button class="lang-trigger" id="lang-trigger" aria-label="Change language" aria-haspopup="listbox" aria-expanded="false">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+          <span id="lang-current">PT</span>
+          <svg class="lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown" role="listbox">
+          <button class="lang-opt active" data-lang="pt" role="option">🇧🇷 Português</button>
+          <button class="lang-opt" data-lang="en" role="option">🇺🇸 English</button>
+          <button class="lang-opt" data-lang="es" role="option">🇪🇸 Español</button>
+        </div>
+      </div>
     </nav>
     <button class="header__burger" id="burger" aria-label="Menu">
       <span></span><span></span>
@@ -95,16 +109,16 @@
       <div class="hero__content">
         <div class="hero__badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          +10.000 horas economizadas com IA
+          <span data-i18n="hero.badge">+10.000 horas economizadas com IA</span>
         </div>
-        <h1 class="hero__title" id="heroTitle">
+        <h1 class="hero__title" id="heroTitle" data-i18n="hero.title">
           <span class="h-line">IA não precisa ser complicada,</span>
           <span class="h-line">mas precisa dar <span class="hero-resultado">resultado</span></span>
         </h1>
-        <p class="hero__sub">DEVOLVEMOS O CONTROLE DO NEGÓCIO AO EMPREENDEDOR QUE DEIXA DE OPERAR NO IMPROVISO<br>E PASSA A TOMAR DECISÕES BASEADO EM DADOS.</p>
+        <p class="hero__sub" data-i18n="hero.sub">DEVOLVEMOS O CONTROLE DO NEGÓCIO AO EMPREENDEDOR QUE DEIXA DE OPERAR NO IMPROVISO<br>E PASSA A TOMAR DECISÕES BASEADO EM DADOS.</p>
         <div class="hero__ctas">
           <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener" class="btn btn--primary btn--lg">
-            Falar com a Anna
+            <span data-i18n="hero.cta">Falar com a Anna</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
@@ -114,17 +128,17 @@
       <div class="container hero__stats-row">
         <div class="hero__stat">
           <div class="hero__stat-value"><span data-count="50">0</span>+</div>
-          <div class="hero__stat-label">Projetos realizados</div>
+          <div class="hero__stat-label" data-i18n="hero.stat1">Projetos realizados</div>
         </div>
         <div class="hero__stat-sep"></div>
         <div class="hero__stat">
           <div class="hero__stat-value"><span data-count="60">0</span>%</div>
-          <div class="hero__stat-label">Aumento na conversão do WhatsApp</div>
+          <div class="hero__stat-label" data-i18n="hero.stat2">Aumento na conversão do WhatsApp</div>
         </div>
         <div class="hero__stat-sep"></div>
         <div class="hero__stat">
           <div class="hero__stat-value">20-35</div>
-          <div class="hero__stat-label">Dias de implementação média</div>
+          <div class="hero__stat-label" data-i18n="hero.stat3">Dias de implementação média</div>
         </div>
       </div>
     </div>
@@ -169,15 +183,15 @@
   <section class="section" id="quem-somos">
     <div class="container">
       <div class="section__center">
-        <h2 class="section__title">O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span></h2>
-        <p class="section__sub">Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.</p>
+        <h2 class="section__title" data-i18n="qs.title">O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span></h2>
+        <p class="section__sub" data-i18n="qs.sub">Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.</p>
       </div>
       <div class="qs__grid qs__grid--animated">
         <div class="card-unificado">
           <div class="card-top-line"></div>
           <div class="card-content">
-            <h3>Processo estruturado.<br><span style="color:var(--orange)">IA sob medida.</span></h3>
-            <p>Antes da tecnologia, organizamos o fluxo do seu negócio pra criar um terreno eficiente pra IA potencializar. Depois construímos a Inteligência sob medida pra função específica de cada operação — nada de solução genérica. A IA é moldada ao processo, não o contrário.</p>
+            <h3 data-i18n="qs.card_h3">Processo estruturado.<br><span style="color:var(--orange)">IA sob medida.</span></h3>
+            <p data-i18n="qs.card_p">Antes da tecnologia, organizamos o fluxo do seu negócio pra criar um terreno eficiente pra IA potencializar. Depois construímos a Inteligência sob medida pra função específica de cada operação — nada de solução genérica. A IA é moldada ao processo, não o contrário.</p>
           </div>
         </div>
 
@@ -505,7 +519,7 @@
                 <img src="assets/images/simbolo-laranja.svg" alt=""/>
               </div>
               <img src="assets/images/logo-laranja.svg" alt="BMAI" class="qs-brand__wordmark"/>
-              <div class="qs-brand__tag">integrando IA…</div>
+              <div class="qs-brand__tag" data-i18n="qs.brand_tag">integrando IA…</div>
             </div>
           </div>
         </div>
@@ -517,8 +531,8 @@
   <section id="metodo">
     <div class="container">
       <div class="aria-hdr">
-        <h2 class="section__title" style="text-align:center">Do diagnóstico<br><span style="color:var(--orange)">à escala real.</span></h2>
-        <p class="aria-sub">Enxergamos o seu negócio como ele realmente é — único. 4 fases sequenciais, cada uma construindo sobre a anterior. Nenhum passo é pulado.</p>
+        <h2 class="section__title" style="text-align:center" data-i18n="metodo.title">Do diagnóstico<br><span style="color:var(--orange)">à escala real.</span></h2>
+        <p class="aria-sub" data-i18n="metodo.sub">Enxergamos o seu negócio como ele realmente é — único. 4 fases sequenciais, cada uma construindo sobre a anterior. Nenhum passo é pulado.</p>
       </div>
 
       <div class="aria-flow" id="aria-flow">
@@ -591,8 +605,8 @@
   <!-- ========== CASES DE SUCESSO ========== -->
   <section id="cases" class="cs">
     <div class="container" style="text-align:center;">
-      <h2 class="cs__heading">Preferido pelas empresas que<br/><span style="color:var(--orange)">lideram com IA.</span></h2>
-      <p class="section__sub" style="max-width:720px;margin:12px auto 0;">"Eles viram nosso negócio como único, me trataram como parceiro e me senti visto e ouvido de verdade para desenvolver uma solução de IA para a minha empresa."</p>
+      <h2 class="cs__heading" data-i18n="cases.heading">Preferido pelas empresas que<br/><span style="color:var(--orange)">lideram com IA.</span></h2>
+      <p class="section__sub" style="max-width:720px;margin:12px auto 0;" data-i18n="cases.lead">"Eles viram nosso negócio como único, me trataram como parceiro e me senti visto e ouvido de verdade para desenvolver uma solução de IA para a minha empresa."</p>
     </div>
 
     <!-- HERO CARD — GastroObesi -->
@@ -600,28 +614,28 @@
       <div class="cs-hero" id="csHero">
         <div class="cs-hero__content">
           <div class="cs-hero__badge">
-            <span class="cs-hero__sector">Saúde</span>
+            <span class="cs-hero__sector" data-i18n="cs_hero.sector">Saúde</span>
           </div>
-          <blockquote class="cs-hero__quote">"O volume travava a clínica. 300 mensagens por dia chegando sem parar e tudo parava fora do horário comercial. A BMAI colocou IA no atendimento — hoje o paciente é respondido na hora, até de madrugada, e só chega pra gente o que realmente precisa de humano."</blockquote>
+          <blockquote class="cs-hero__quote" data-i18n="cs_hero.quote">"O volume travava a clínica. 300 mensagens por dia chegando sem parar e tudo parava fora do horário comercial. A BMAI colocou IA no atendimento — hoje o paciente é respondido na hora, até de madrugada, e só chega pra gente o que realmente precisa de humano."</blockquote>
           <div class="cs-hero__attr">
             <div class="cs-hero__avatar">T</div>
             <div>
               <strong>Dr. Tulio</strong>
-              <span>CEO na GastroObesi</span>
+              <span data-i18n="cs_hero.role">CEO na GastroObesi</span>
             </div>
           </div>
           <div class="cs-hero__stats">
             <div class="cs-hero__stat">
               <span class="cs-hero__stat-val">300</span>
-              <span class="cs-hero__stat-lbl">mensagens/dia respondidas com IA</span>
+              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s1">mensagens/dia respondidas com IA</span>
             </div>
             <div class="cs-hero__stat">
               <span class="cs-hero__stat-val">24/7</span>
-              <span class="cs-hero__stat-lbl">atendimento sem parar</span>
+              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s2">atendimento sem parar</span>
             </div>
             <div class="cs-hero__stat">
               <span class="cs-hero__stat-val">0</span>
-              <span class="cs-hero__stat-lbl">contratações extras necessárias</span>
+              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s3">contratações extras necessárias</span>
             </div>
           </div>
         </div>
@@ -644,14 +658,14 @@
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
               <span class="cs-card__logo-fb" style="display:none">Mataco</span>
             </div>
-            <span class="cs-card__sector">Marketing Digital</span>
+            <span class="cs-card__sector" data-i18n="cs1.sector">Marketing Digital</span>
           </div>
-          <p class="cs-card__result">Agente de prospecção rodando <span class="cs-card__metric">24h em 3 canais</span> — zero leads esquecidos, <span class="cs-card__metric">+4h/dia</span> devolvidas ao time</p>
-          <blockquote class="cs-card__quote">"Antes a gente perdia lead todo dia. Agora o agente nunca dorme — Instagram, WhatsApp, e-mail, tudo coberto."</blockquote>
+          <p class="cs-card__result" data-i18n="cs1.result">Agente de prospecção rodando <span class="cs-card__metric">24h em 3 canais</span> — zero leads esquecidos, <span class="cs-card__metric">+4h/dia</span> devolvidas ao time</p>
+          <blockquote class="cs-card__quote" data-i18n="cs1.quote">"Antes a gente perdia lead todo dia. Agora o agente nunca dorme — Instagram, WhatsApp, e-mail, tudo coberto."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
               <div class="cs-card__avatar">A</div>
-              <div><strong>Arthur</strong><span>CEO · Mataco</span></div>
+              <div><strong>Arthur</strong><span data-i18n="cs1.role">CEO · Mataco</span></div>
             </div>
           </div>
         </div>
@@ -665,14 +679,14 @@
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
               <span class="cs-card__logo-fb" style="display:none">Só Hydráulica</span>
             </div>
-            <span class="cs-card__sector">Material de Construção</span>
+            <span class="cs-card__sector" data-i18n="cs2.sector">Material de Construção</span>
           </div>
-          <p class="cs-card__result"><span class="cs-card__metric">400 atendimentos/dia</span> com IA — atendimento, prospecção e estoque resolvidos de uma vez</p>
-          <blockquote class="cs-card__quote">"Chegavam 400 mensagens sem controle e o estoque vivia no improviso. Hoje a operação inteira roda sozinha."</blockquote>
+          <p class="cs-card__result" data-i18n="cs2.result"><span class="cs-card__metric">400 atendimentos/dia</span> com IA — atendimento, prospecção e estoque resolvidos de uma vez</p>
+          <blockquote class="cs-card__quote" data-i18n="cs2.quote">"Chegavam 400 mensagens sem controle e o estoque vivia no improviso. Hoje a operação inteira roda sozinha."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
               <div class="cs-card__avatar">M</div>
-              <div><strong>Mariangela</strong><span>CEO · Só Hydráulica</span></div>
+              <div><strong>Mariangela</strong><span data-i18n="cs2.role">CEO · Só Hydráulica</span></div>
             </div>
           </div>
         </div>
@@ -686,14 +700,14 @@
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
               <span class="cs-card__logo-fb" style="display:none">O Canto</span>
             </div>
-            <span class="cs-card__sector">Restaurante</span>
+            <span class="cs-card__sector" data-i18n="cs3.sector">Restaurante</span>
           </div>
-          <p class="cs-card__result">Estoque no piloto automático — <span class="cs-card__metric">0 rupturas</span>, desperdício em queda e <span class="cs-card__metric">3 a 5 pessoas</span> liberadas do controle manual</p>
-          <blockquote class="cs-card__quote">"Antes era tudo no improviso. Compra errada toda semana, falta de produto na hora do serviço. A IA antecipa tudo agora."</blockquote>
+          <p class="cs-card__result" data-i18n="cs3.result">Estoque no piloto automático — <span class="cs-card__metric">0 rupturas</span>, desperdício em queda e <span class="cs-card__metric">3 a 5 pessoas</span> liberadas do controle manual</p>
+          <blockquote class="cs-card__quote" data-i18n="cs3.quote">"Antes era tudo no improviso. Compra errada toda semana, falta de produto na hora do serviço. A IA antecipa tudo agora."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
               <div class="cs-card__avatar">F</div>
-              <div><strong>Felipe</strong><span>CEO · O Canto</span></div>
+              <div><strong>Felipe</strong><span data-i18n="cs3.role">CEO · O Canto</span></div>
             </div>
           </div>
         </div>
@@ -701,7 +715,7 @@
       </div>
       <div class="section__center" style="margin-top:40px">
         <a href="#form" class="btn btn--primary btn--lg">
-          Quero ser o próximo case
+          <span data-i18n="cases.btn">Quero ser o próximo case</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
@@ -713,8 +727,8 @@
   <section id="para-quem">
     <!-- Cabeçalho -->
     <div class="container team-header">
-      <h2 class="section__title">Nosso time entende<br><span style="color:var(--orange)">o seu negócio.</span></h2>
-      <p class="team-scroll-hint mono">Role para conhecer o time →</p>
+      <h2 class="section__title" data-i18n="team.title">Nosso time entende<br><span style="color:var(--orange)">o seu negócio.</span></h2>
+      <p class="team-scroll-hint mono" data-i18n="team.scroll_hint">Role para conhecer o time →</p>
     </div>
 
     <!-- Container pinado pelo GSAP -->
@@ -728,18 +742,18 @@
               <img src="assets/images/team-matheus-resized.webp" alt="Matheus — Sócio Fundador da BMAI" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Matheus</h3>
-                <span>Sócio Fundador</span>
+                <span data-i18n="team.matheus.role">Sócio Fundador</span>
               </div>
             </div>
             <div class="tc-back">
               <div class="tc-back-grid"></div>
               <div class="tc-back-content">
                 <div class="tc-quotes">❝</div>
-                <p>Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura — o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.</p>
+                <p data-i18n="team.matheus.bio">Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura — o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.</p>
                 <div class="tc-back-footer">
                   <div class="tc-back-bar"></div>
                   <strong>Matheus</strong>
-                  <span>Sócio Fundador · BMAI</span>
+                  <span data-i18n="team.matheus.sig">Sócio Fundador · BMAI</span>
                 </div>
               </div>
             </div>
@@ -753,18 +767,18 @@
               <img src="assets/images/team-pedro-resized.webp" alt="Pedro — Sócio Fundador da BMAI" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Pedro</h3>
-                <span>Sócio Fundador</span>
+                <span data-i18n="team.pedro.role">Sócio Fundador</span>
               </div>
             </div>
             <div class="tc-back">
               <div class="tc-back-grid"></div>
               <div class="tc-back-content">
                 <div class="tc-quotes">❝</div>
-                <p>Acredito que gerar valor verdadeiro às pessoas e às empresas é a única forma de resultado real e sustentável. Cada solução que a BMAi entrega precisa gerar impacto real — tempo de volta pro dono, previsibilidade de receita e um negócio que cresce sem depender de improviso.</p>
+                <p data-i18n="team.pedro.bio">Acredito que gerar valor verdadeiro às pessoas e às empresas é a única forma de resultado real e sustentável. Cada solução que a BMAi entrega precisa gerar impacto real — tempo de volta pro dono, previsibilidade de receita e um negócio que cresce sem depender de improviso.</p>
                 <div class="tc-back-footer">
                   <div class="tc-back-bar"></div>
                   <strong>Pedro</strong>
-                  <span>Sócio Fundador · BMAI</span>
+                  <span data-i18n="team.pedro.sig">Sócio Fundador · BMAI</span>
                 </div>
               </div>
             </div>
@@ -778,18 +792,18 @@
               <img src="assets/images/team-thiago-resized.webp" alt="Thiago — COO & Diretor Operacional da BMAI" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Thiago</h3>
-                <span>COO · Diretor Operacional</span>
+                <span data-i18n="team.thiago.role">COO · Diretor Operacional</span>
               </div>
             </div>
             <div class="tc-back">
               <div class="tc-back-grid"></div>
               <div class="tc-back-content">
                 <div class="tc-quotes">❝</div>
-                <p>Operação boa é operação invisível. Quando tudo funciona sem ruído, sem retrabalho e sem depender de ninguém específico — aí sim o negócio está pronto para escalar. É isso que eu construo dentro de cada empresa que a BMAI atende.</p>
+                <p data-i18n="team.thiago.bio">Operação boa é operação invisível. Quando tudo funciona sem ruído, sem retrabalho e sem depender de ninguém específico — aí sim o negócio está pronto para escalar. É isso que eu construo dentro de cada empresa que a BMAI atende.</p>
                 <div class="tc-back-footer">
                   <div class="tc-back-bar"></div>
                   <strong>Thiago</strong>
-                  <span>COO · Diretor Operacional · BMAI</span>
+                  <span data-i18n="team.thiago.sig">COO · Diretor Operacional · BMAI</span>
                 </div>
               </div>
             </div>
@@ -804,18 +818,18 @@
               <img src="assets/images/anna-resized.webp?v=morena" alt="Anna" onerror="this.style.display='none'" loading="lazy"/>
               <div class="tc-front-info">
                 <h3>Anna</h3>
-                <span>Atendente</span>
+                <span data-i18n="team.anna.role">Atendente</span>
               </div>
             </div>
             <div class="tc-back">
               <div class="tc-back-grid"></div>
               <div class="tc-back-content">
                 <div class="tc-quotes">❝</div>
-                <p>Cada cliente que chega na BMAI tem uma história. Meu trabalho é ouvir essa história, entender o momento do negócio e garantir que a conversa certa aconteça com a pessoa certa. Relacionamento não é protocolo — é presença.</p>
+                <p data-i18n="team.anna.bio">Cada cliente que chega na BMAI tem uma história. Meu trabalho é ouvir essa história, entender o momento do negócio e garantir que a conversa certa aconteça com a pessoa certa. Relacionamento não é protocolo — é presença.</p>
                 <div class="tc-back-footer">
                   <div class="tc-back-bar"></div>
                   <strong>Anna</strong>
-                  <span>Atendente · BMAI</span>
+                  <span data-i18n="team.anna.sig">Atendente · BMAI</span>
                 </div>
               </div>
             </div>
@@ -834,14 +848,14 @@
       <div class="form-grid">
 
         <div class="form-copy">
-          <p class="tag">Fale com a Anna</p>
-          <h2 class="section__title">Pronto para estruturar<br><span style="color:var(--orange)">seu negócio de verdade?</span></h2>
-          <p class="form-copy__lead">Preencha o formulário. A Anna entra em contato em até 24h para entender o momento da sua empresa.</p>
+          <p class="tag" data-i18n="form.tag">Fale com a Anna</p>
+          <h2 class="section__title" data-i18n="form.title">Pronto para estruturar<br><span style="color:var(--orange)">seu negócio de verdade?</span></h2>
+          <p class="form-copy__lead" data-i18n="form.lead">Preencha o formulário. A Anna entra em contato em até 24h para entender o momento da sua empresa.</p>
           <ul class="form-bullets">
-            <li>Diagnóstico real do seu processo comercial</li>
-            <li>Identificação dos principais entraves operacionais</li>
-            <li>Proposta com método e cronograma em até 48h</li>
-            <li>Sem spam. Sem robô. Uma conversa real.</li>
+            <li data-i18n="form.b1">Diagnóstico real do seu processo comercial</li>
+            <li data-i18n="form.b2">Identificação dos principais entraves operacionais</li>
+            <li data-i18n="form.b3">Proposta com método e cronograma em até 48h</li>
+            <li data-i18n="form.b4">Sem spam. Sem robô. Uma conversa real.</li>
           </ul>
         </div>
 
@@ -850,47 +864,47 @@
             <div class="field-group">
               <div class="field">
                 <input type="text" id="f-nome" name="nome" placeholder=" " required autocomplete="name"/>
-                <label for="f-nome">Nome completo</label>
+                <label for="f-nome" data-i18n="form.p_nome">Nome completo</label>
               </div>
               <div class="field">
                 <input type="text" id="f-empresa" name="empresa" placeholder=" " required autocomplete="organization"/>
-                <label for="f-empresa">Nome da empresa</label>
+                <label for="f-empresa" data-i18n="form.p_emp">Nome da empresa</label>
               </div>
             </div>
 
             <div class="field-group">
               <div class="field">
                 <input type="email" id="f-email" name="email" placeholder=" " required autocomplete="email" inputmode="email" enterkeyhint="next"/>
-                <label for="f-email">E-mail corporativo</label>
+                <label for="f-email" data-i18n="form.p_mail">E-mail corporativo</label>
               </div>
               <div class="field">
                 <input type="tel" id="f-tel" name="telefone" placeholder=" " required autocomplete="tel" inputmode="tel" enterkeyhint="next"/>
-                <label for="f-tel">Telefone / WhatsApp</label>
+                <label for="f-tel" data-i18n="form.p_tel">Telefone / WhatsApp</label>
               </div>
             </div>
 
             <div class="field-group">
               <div class="field">
                 <input type="text" id="f-cargo" name="cargo" placeholder=" " required autocomplete="organization-title" enterkeyhint="next"/>
-                <label for="f-cargo">Cargo</label>
+                <label for="f-cargo" data-i18n="form.p_cargo">Cargo</label>
               </div>
               <div class="field">
                 <input type="text" id="f-segmento" name="segmento" placeholder=" " required autocomplete="off" enterkeyhint="next"/>
-                <label for="f-segmento">Segmento</label>
+                <label for="f-segmento" data-i18n="form.p_seg">Segmento</label>
               </div>
             </div>
 
             <div class="field">
               <input type="text" id="f-colab" name="colaboradores" placeholder=" " required inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="send"/>
-              <label for="f-colab">Número de colaboradores</label>
+              <label for="f-colab" data-i18n="form.p_col">Número de colaboradores</label>
             </div>
 
             <button type="submit" class="btn btn--primary form-submit">
-              Enviar para Anna
+              <span data-i18n="form.submit">Enviar para Anna</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
 
-            <p class="form-disclaimer">Ao enviar, a Anna entrará em contato com você.</p>
+            <p class="form-disclaimer" data-i18n="form.disclaim">Ao enviar, a Anna entrará em contato com você.</p>
 
             <div id="form-feedback" class="form-feedback" role="status" aria-live="polite" hidden></div>
           </form>
@@ -903,41 +917,41 @@
   <!-- ========== FAQ ========== -->
   <section class="section" id="faq">
     <div class="container section__center">
-      <h2 class="section__title">Perguntas frequentes.</h2>
+      <h2 class="section__title" data-i18n="faq.title">Perguntas frequentes.</h2>
     </div>
     <div class="container">
       <div class="faq__list">
         <div class="faq__item">
-          <button class="faq__q"><span>Vou precisar demitir minha equipe?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Não. A IA não substitui seu time — ela potencializa. Tira de cima dele o que é repetitivo, burocrático e trava resultado: responder as mesmas dúvidas, preencher planilha, atualizar CRM, dar follow-up. Com isso, o seu atendente vende, o seu gestor decide e o seu dono volta a pensar no negócio. A gente já viu equipes pequenas performarem como equipes 3x maiores depois da implementação.</p></div>
+          <button class="faq__q"><span data-i18n="faq.1.q">Vou precisar demitir minha equipe?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.1.a">Não. A IA não substitui seu time — ela potencializa. Tira de cima dele o que é repetitivo, burocrático e trava resultado: responder as mesmas dúvidas, preencher planilha, atualizar CRM, dar follow-up. Com isso, o seu atendente vende, o seu gestor decide e o seu dono volta a pensar no negócio. A gente já viu equipes pequenas performarem como equipes 3x maiores depois da implementação.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>Preciso ter conhecimento técnico?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Zero. Você nos conta como funciona a sua operação — nós traduzimos para IA. Toda parte técnica (prompt, integrações, infra, deploy, ajustes) fica com a BMAi. Seu trabalho é validar o que faz sentido para o seu negócio. É como contratar um diretor operacional que também é engenheiro — sem precisar ser um.</p></div>
+          <button class="faq__q"><span data-i18n="faq.2.q">Preciso ter conhecimento técnico?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.2.a">Zero. Você nos conta como funciona a sua operação — nós traduzimos para IA. Toda parte técnica (prompt, integrações, infra, deploy, ajustes) fica com a BMAi. Seu trabalho é validar o que faz sentido para o seu negócio. É como contratar um diretor operacional que também é engenheiro — sem precisar ser um.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>Funciona para o meu segmento?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Se o seu negócio tem atendimento, vendas, gestão de equipe ou processo repetitivo — funciona. Já rodamos em saúde, material de construção, restaurante, marketing, serviços, indústria. A diferença é que não aplicamos "solução de prateleira" — a análise é feita no seu contexto específico antes de qualquer ferramenta entrar em cena.</p></div>
+          <button class="faq__q"><span data-i18n="faq.3.q">Funciona para o meu segmento?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.3.a">Se o seu negócio tem atendimento, vendas, gestão de equipe ou processo repetitivo — funciona. Já rodamos em saúde, material de construção, restaurante, marketing, serviços, indústria. A diferença é que não aplicamos "solução de prateleira" — a análise é feita no seu contexto específico antes de qualquer ferramenta entrar em cena.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>E se as interações parecerem artificiais?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Esse é o medo legítimo de todo empresário — e o primeiro problema que a gente resolve. Nossos agentes são treinados com o tom da sua empresa, a linguagem do seu cliente e as nuances do seu processo. Fazemos testes em produção antes de liberar e ajustamos até o ponto em que o cliente não perceba a diferença. Se parecer robô, a culpa é nossa — e a gente refaz.</p></div>
+          <button class="faq__q"><span data-i18n="faq.4.q">E se as interações parecerem artificiais?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.4.a">Esse é o medo legítimo de todo empresário — e o primeiro problema que a gente resolve. Nossos agentes são treinados com o tom da sua empresa, a linguagem do seu cliente e as nuances do seu processo. Fazemos testes em produção antes de liberar e ajustamos até o ponto em que o cliente não perceba a diferença. Se parecer robô, a culpa é nossa — e a gente refaz.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>Não sei se é o momento certo para isso...</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Se o seu time está saturado, se você perde lead por falta de follow-up, se decisões demoram por falta de dado ou se você ainda responde WhatsApp às 22h — o momento é agora. Postergar implementação de IA é o custo invisível mais caro de 2026: seu concorrente já começou. Começamos pelo diagnóstico e você decide se faz sentido avançar.</p></div>
+          <button class="faq__q"><span data-i18n="faq.5.q">Não sei se é o momento certo para isso...</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.5.a">Se o seu time está saturado, se você perde lead por falta de follow-up, se decisões demoram por falta de dado ou se você ainda responde WhatsApp às 22h — o momento é agora. Postergar implementação de IA é o custo invisível mais caro de 2026: seu concorrente já começou. Começamos pelo diagnóstico e você decide se faz sentido avançar.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>Quanto custa?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Não trabalhamos com tabela. Cada projeto é precificado com base no diagnóstico real: escopo da operação, número de frentes que a IA vai atender, nível de integração com os sistemas que você já usa e complexidade dos fluxos. Solução sob medida não cabe em pacote fechado — e é exatamente por isso que o ROI aparece no primeiro mês. No diagnóstico inicial você sai com um orçamento claro e um mapa do que muda na sua operação.</p></div>
+          <button class="faq__q"><span data-i18n="faq.6.q">Quanto custa?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.6.a">Não trabalhamos com tabela. Cada projeto é precificado com base no diagnóstico real: escopo da operação, número de frentes que a IA vai atender, nível de integração com os sistemas que você já usa e complexidade dos fluxos. Solução sob medida não cabe em pacote fechado — e é exatamente por isso que o ROI aparece no primeiro mês. No diagnóstico inicial você sai com um orçamento claro e um mapa do que muda na sua operação.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>Quanto tempo leva para estar funcionando?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Entre 20 e 35 dias em média, dependendo do escopo. Análise leva 1-2 semanas, implementação 3-6 semanas. Por ser análise bem feita, o ROI aparece no primeiro mês — não é milagre, é personalização somada a método. Cronograma preciso é entregue na fase de Análise, com marcos semanais.</p></div>
+          <button class="faq__q"><span data-i18n="faq.7.q">Quanto tempo leva para estar funcionando?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.7.a">Entre 20 e 35 dias em média, dependendo do escopo. Análise leva 1-2 semanas, implementação 3-6 semanas. Por ser análise bem feita, o ROI aparece no primeiro mês — não é milagre, é personalização somada a método. Cronograma preciso é entregue na fase de Análise, com marcos semanais.</p></div>
         </div>
         <div class="faq__item">
-          <button class="faq__q"><span>E o suporte depois da implementação?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq__a"><p>Se a gente construiu, a gente mantém. Não te deixamos desamparado. O "A" final do AIRA é Acompanhamento: monitoramos os indicadores, ajustamos prompt e lógica conforme seu negócio evolui e te damos acesso ao nosso SaaS interno de acompanhamento de métricas. Cliente BMAi vira parceiro — não só mais um.</p></div>
+          <button class="faq__q"><span data-i18n="faq.8.q">E o suporte depois da implementação?</span><svg class="faq__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq__a"><p data-i18n="faq.8.a">Se a gente construiu, a gente mantém. Não te deixamos desamparado. O "A" final do AIRA é Acompanhamento: monitoramos os indicadores, ajustamos prompt e lógica conforme seu negócio evolui e te damos acesso ao nosso SaaS interno de acompanhamento de métricas. Cliente BMAi vira parceiro — não só mais um.</p></div>
         </div>
       </div>
     </div>
@@ -946,11 +960,11 @@
   <!-- ========== CTA ========== -->
   <section class="section section--alt cta" id="contato">
     <div class="container section__center">
-      <h2 class="section__title">Crescer sem eficiência é crescer com <span style="color:var(--orange)">prazo de validade.</span></h2>
-      <p class="section__sub">Até quando você vai continuar postergando a escala do seu negócio?</p>
+      <h2 class="section__title" data-i18n="cta.title">Crescer sem eficiência é crescer com <span style="color:var(--orange)">prazo de validade.</span></h2>
+      <p class="section__sub" data-i18n="cta.sub">Até quando você vai continuar postergando a escala do seu negócio?</p>
       <div class="cta__actions">
         <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener" class="btn btn--primary btn--xl">
-          Fale com a Anna
+          <span data-i18n="cta.btn">Fale com a Anna</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
@@ -966,22 +980,22 @@
           <img src="assets/images/simbolo-laranja.svg" alt="" class="footer__logo-symbol"/>
           <img src="assets/images/logo-laranja.svg" alt="BMAI" class="footer__logo-mark"/>
         </a>
-        <p class="footer__kind">Engenharia de inteligência aplicada.</p>
+        <p class="footer__kind" data-i18n="footer.kind">Engenharia de inteligência aplicada.</p>
       </div>
 
       <div class="footer__cols">
         <div class="footer__col">
-          <h3><span class="footer__col-dot"></span>Site</h3>
+          <h3><span class="footer__col-dot"></span><span data-i18n="footer.h_site">Site</span></h3>
           <ul>
-            <li><a href="#quem-somos">Quem somos</a></li>
-            <li><a href="#metodo">Método AIRA</a></li>
-            <li><a href="#cases">Cases</a></li>
-            <li><a href="#para-quem">Team</a></li>
-            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#quem-somos" data-i18n="footer.l_quem">Quem somos</a></li>
+            <li><a href="#metodo" data-i18n="footer.l_met">Método AIRA</a></li>
+            <li><a href="#cases" data-i18n="footer.l_cases">Cases</a></li>
+            <li><a href="#para-quem" data-i18n="footer.l_team">Team</a></li>
+            <li><a href="#faq" data-i18n="footer.l_faq">FAQ</a></li>
           </ul>
         </div>
         <div class="footer__col">
-          <h3><span class="footer__col-dot"></span>Contato</h3>
+          <h3><span class="footer__col-dot"></span><span data-i18n="footer.h_ctc">Contato</span></h3>
           <ul class="footer__social">
             <li>
               <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20Anna%2C%20tudo%20certo%3F" target="_blank" rel="noopener">
@@ -1014,8 +1028,8 @@
     </div>
 
     <div class="footer__bottom">
-      <p>© <span id="footerYear">2026</span> BMAi · Todos os direitos reservados</p>
-      <a href="#hero" class="footer__backtop">Voltar ao topo <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></a>
+      <p data-i18n="footer.copy">© <span id="footerYear">2026</span> BMAi · Todos os direitos reservados</p>
+      <a href="#hero" class="footer__backtop"><span data-i18n="footer.backtop">Voltar ao topo</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></a>
     </div>
   </footer>
 
@@ -1037,68 +1051,25 @@
     <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
-  <!-- ========== LANGUAGE SWITCHER ========== -->
-  <div class="lang-btn" id="lang-btn">
-    <button class="lang-trigger" id="lang-trigger" aria-label="Alterar idioma (atual: PT)" aria-haspopup="listbox" aria-expanded="false">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-      <span id="lang-current">PT</span>
-      <svg class="lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="lang-dropdown" id="lang-dropdown">
-      <button class="lang-opt active" data-lang="pt">🇧🇷 Português</button>
-      <button class="lang-opt" data-lang="en">🇺🇸 English</button>
-      <button class="lang-opt" data-lang="es">🇪🇸 Español</button>
-      <button class="lang-opt" data-lang="fr">🇫🇷 Français</button>
-      <button class="lang-opt" data-lang="de">🇩🇪 Deutsch</button>
-      <button class="lang-opt" data-lang="it">🇮🇹 Italiano</button>
-      <button class="lang-opt" data-lang="zh-CN">🇨🇳 中文</button>
-      <button class="lang-opt" data-lang="ja">🇯🇵 日本語</button>
-      <button class="lang-opt" data-lang="ar">🇸🇦 العربية</button>
-    </div>
-  </div>
-  <div id="google_translate_element" style="display:none"></div>
-
-  <script defer src="js/main.js?v=20260421-integrando"></script>
+  <script src="js/i18n.js?v=20260421-i18n"></script>
+  <script defer src="js/main.js?v=20260421-i18n"></script>
 
   <script>
-  // Lazy load Google Translate — só carrega se o user já tem cookie OU clicar em idioma ≠ PT
-  window.googleTranslateElementInit = function () {
-    new google.translate.TranslateElement({
-      pageLanguage: 'pt',
-      includedLanguages: 'en,es,fr,de,it,zh-CN,ja,ar',
-      autoDisplay: false,
-      layout: google.translate.TranslateElement.InlineLayout.NONE
-    }, 'google_translate_element');
-  };
-  window.loadGoogleTranslate = function () {
-    if (document.getElementById('gt-script')) return;
-    const s = document.createElement('script');
-    s.id = 'gt-script';
-    s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-    s.async = true;
-    document.head.appendChild(s);
-  };
-  // Se já tem cookie de tradução ativa, carrega na inicialização
-  if (/googtrans=\/pt\/[\w-]+/.test(document.cookie)) {
-    window.loadGoogleTranslate();
-  }
-  </script>
-
-  <script>
+  /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */
   (function () {
     const btn = document.getElementById('lang-btn');
     const trigger = document.getElementById('lang-trigger');
     const dropdown = document.getElementById('lang-dropdown');
     const curLabel = document.getElementById('lang-current');
     const opts = document.querySelectorAll('.lang-opt');
-    if (!btn || !trigger) return;
+    if (!btn || !trigger || !window.I18N) return;
 
-    const labels = { pt:'PT', en:'EN', es:'ES', fr:'FR', de:'DE', it:'IT', 'zh-CN':'ZH', ja:'JP', ar:'AR' };
+    const LABELS = { pt: 'PT', en: 'EN', es: 'ES' };
 
     trigger.addEventListener('click', e => {
       e.stopPropagation();
       const isOpen = dropdown.classList.toggle('open');
-      trigger.setAttribute('aria-expanded', isOpen);
+      trigger.setAttribute('aria-expanded', String(isOpen));
     });
     document.addEventListener('click', e => {
       if (!btn.contains(e.target)) {
@@ -1113,57 +1084,26 @@
       }
     });
 
-    function translateTo(lang) {
-      document.body.classList.add('translating');
-      setTimeout(() => document.body.classList.remove('translating'), 400);
-
-      if (lang === 'pt') {
-        document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        document.cookie = `googtrans=; path=/; domain=${location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        location.reload();
-        return;
-      }
-      document.body.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-      document.cookie = `googtrans=/pt/${lang};path=/`;
-      document.cookie = `googtrans=/pt/${lang};path=/;domain=${location.hostname}`;
-
-      // Se o widget ainda não foi carregado, injeta e recarrega (single-shot)
-      if (typeof window.loadGoogleTranslate === 'function' && !document.getElementById('gt-script')) {
-        window.loadGoogleTranslate();
-        location.reload();
-        return;
-      }
-
-      const select = document.querySelector('.goog-te-combo');
-      if (select) {
-        select.value = lang;
-        select.dispatchEvent(new Event('change'));
-      } else {
-        location.reload();
-      }
-    }
-
     opts.forEach(opt => {
       opt.addEventListener('click', () => {
         const lang = opt.dataset.lang;
-        opts.forEach(o => o.classList.remove('active'));
-        opt.classList.add('active');
-        const lbl = labels[lang] || lang.toUpperCase();
-        curLabel.textContent = lbl;
-        trigger.setAttribute('aria-label', `Alterar idioma (atual: ${lbl})`);
+        opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+        curLabel.textContent = LABELS[lang] || lang.toUpperCase();
+        trigger.setAttribute('aria-label', `Language: ${LABELS[lang]}`);
         dropdown.classList.remove('open');
         trigger.setAttribute('aria-expanded', 'false');
-        translateTo(lang);
+        window.I18N.set(lang);
       });
     });
 
-    // Restaurar estado visual baseado no cookie atual
-    const m = document.cookie.match(/googtrans=\/pt\/([\w-]+)/);
-    if (m && labels[m[1]]) {
-      curLabel.textContent = labels[m[1]];
-      trigger.setAttribute('aria-label', `Alterar idioma (atual: ${labels[m[1]]})`);
-      opts.forEach(o => o.classList.toggle('active', o.dataset.lang === m[1]));
-    }
+    // Sincroniza estado visual inicial com idioma já aplicado pelo I18N
+    const applyUI = () => {
+      const l = window.I18N.lang;
+      curLabel.textContent = LABELS[l] || 'PT';
+      opts.forEach(o => o.classList.toggle('active', o.dataset.lang === l));
+    };
+    applyUI();
+    window.addEventListener('i18n:change', applyUI);
   })();
   </script>
 </body>

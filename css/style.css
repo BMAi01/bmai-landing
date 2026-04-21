@@ -2313,8 +2313,32 @@ body[dir="rtl"] { direction: rtl; }
 .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
 body { top: 0 !important; }
 
+/* Mobile: integra lang-btn no drawer do menu (3 barrinhas) */
 @media (max-width: 768px) {
-  .lang-btn { top: 14px; right: 70px; }
+  /* Fora do drawer ativo, esconde o lang-btn em mobile */
+  .lang-btn { position: static; top: auto; right: auto; display: none; }
+  .floatnav.active .lang-btn {
+    display: block;
+    width: 100%;
+    order: 4;
+    margin-top: 4px;
+  }
+  .floatnav.active .lang-trigger {
+    width: 100%;
+    justify-content: space-between;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+  .floatnav.active .lang-dropdown {
+    position: static;
+    top: auto; right: auto;
+    width: 100%;
+    min-width: 0;
+    margin-top: 6px;
+    transform: none;
+    transform-origin: top center;
+  }
+  .floatnav.active .lang-dropdown.open { transform: none; }
 }
 
 /* ============================================
@@ -3270,7 +3294,7 @@ section h2.shimmer-active::after,
   .wpp-float { width: 52px !important; height: 52px !important; bottom: 16px !important; right: 16px !important; }
 
   /* Language switcher — à esquerda do burger sem colidir */
-  .lang-btn { top: 14px !important; right: 68px !important; }
+  /* legado: lang-btn agora está dentro do drawer — sem override fixo necessário */
   .lang-trigger { padding: 10px 12px !important; font-size: 12px !important; min-height: 44px; border-radius: 12px !important; }
 
   /* Section dots escondem (só desktop) */
@@ -3374,7 +3398,7 @@ html { scroll-padding-top: 84px; }
   /* Safe-area iOS em elementos fixados */
   .header { padding-top: env(safe-area-inset-top) !important; }
   .header__burger { top: calc(14px + env(safe-area-inset-top)) !important; }
-  .lang-btn { top: calc(14px + env(safe-area-inset-top)) !important; }
+  /* legado: safe-area do lang-btn não se aplica mais em mobile */
   .footer__bottom { padding-bottom: max(20px, env(safe-area-inset-bottom)) !important; }
 
   /* Touch targets mínimos */

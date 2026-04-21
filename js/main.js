@@ -5,8 +5,9 @@
 const IS_MOBILE = matchMedia('(max-width: 768px), (max-height: 500px) and (orientation: landscape)').matches;
 const IS_TOUCH  = matchMedia('(hover: none), (pointer: coarse)').matches;
 const PREFERS_REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* Mobile normal roda animações iguais ao desktop. LOW_MOTION só em a11y. */
-const LOW_MOTION = PREFERS_REDUCE;
+/* Mobile tem animações pesadas desligadas (cena Quem Somos ciclo, particles
+   canvas, counters animados etc). Desktop roda full. a11y reduce = sempre off. */
+const LOW_MOTION = IS_MOBILE || PREFERS_REDUCE;
 
 /* ============================================
    PRELOADER
