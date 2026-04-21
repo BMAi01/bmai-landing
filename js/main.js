@@ -583,42 +583,130 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   QS CARD STACK — HOVER slide (esq→dir) + EXPLODE ao sair o cursor
+   QS CARD STACK — SCROLL-HIJACK
+   Desktop: trava o scroll quando seção encosta no topo.
+   Wheel dirige progress 0→1 (card 2 aparece deslizando da esquerda).
+   Só libera após 100% ou se voltar ao início scrollando pra cima.
+   Touch/reduce: já começa com card 2 visível (sem lock).
    ============================================ */
-function _initCardStackFx() {
+function _initCardStackScrollFx() {
   const stack = document.querySelector('.card-stack');
-  if (!stack || stack.dataset.fxInit === '1') return;
+  const section = document.getElementById('quem-somos');
+  if (!stack || !section) return;
+  if (stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  if (IS_TOUCH) {
-    stack.addEventListener('click', () => {
-      stack.classList.toggle('is-revealed');
-    });
+  if (IS_TOUCH || PREFERS_REDUCE) {
+    stack.style.setProperty('--progress', '1');
     return;
   }
 
-  let explodeTimer = null;
-  stack.addEventListener('mouseleave', () => {
-    stack.classList.add('explode');
-    clearTimeout(explodeTimer);
-    explodeTimer = setTimeout(() => {
-      stack.classList.remove('explode');
-      stack.classList.add('snap');
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => stack.classList.remove('snap'));
-      });
-    }, 550);
+  const DISTANCE = 700;
+  const body = document.body;
+  let lock = null;
+  let completed = false;
+  let savedY = 0;
+
+  function apply() {
+    const raw = Math.max(0, Math.min(1, lock.progress / DISTANCE));
+    const t = raw * raw * (3 - 2 * raw);
+    stack.style.setProperty('--progress', t.toFixed(3));
+  }
+
+  function acquire(fromTop) {
+    const rect = section.getBoundingClientRect();
+    savedY = window.scrollY + rect.top;
+    lock = { progress: fromTop ? 0 : DISTANCE };
+    window.scrollTo(0, savedY);
+    body.style.setProperty('--lock-top', `-${savedY}px`);
+    body.classList.add('scroll-locked');
+    apply();
+  }
+
+  function release(direction) {
+    if (!lock) return;
+    const h = section.offsetHeight;
+    lock = null;
+    body.classList.remove('scroll-locked');
+    body.style.removeProperty('--lock-top');
+    if (direction > 0) {
+      window.scrollTo(0, savedY + h + 8);
+      stack.style.setProperty('--progress', '1');
+      completed = true;
+    } else {
+      window.scrollTo(0, Math.max(0, savedY - 16));
+      stack.style.setProperty('--progress', '0');
+      completed = false;
+    }
+  }
+
+  addEventListener('wheel', (e) => {
+    if (!lock) {
+      const rect = section.getBoundingClientRect();
+      const vh = innerHeight;
+      if (!completed && e.deltaY > 0 && rect.top <= 40 && rect.top > -60) {
+        e.preventDefault();
+        acquire(true);
+        return;
+      }
+      if (completed && e.deltaY < 0 && rect.bottom >= vh - 40 && rect.bottom < vh + 60) {
+        e.preventDefault();
+        acquire(false);
+        return;
+      }
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    lock.progress += e.deltaY;
+    if (lock.progress < 0)          return release(-1);
+    if (lock.progress >= DISTANCE)  return release(1);
+    apply();
+  }, { passive: false });
+
+  addEventListener('keydown', (e) => {
+    if (!lock) return;
+    const adv = ['PageDown','End','ArrowDown',' ','Enter'];
+    const back = ['PageUp','Home','ArrowUp'];
+    if (adv.includes(e.key)) {
+      e.preventDefault();
+      lock.progress += 160;
+      if (lock.progress >= DISTANCE) return release(1);
+      apply();
+    } else if (back.includes(e.key)) {
+      e.preventDefault();
+      lock.progress -= 160;
+      if (lock.progress < 0) return release(-1);
+      apply();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      release(1);
+    }
   });
-  stack.addEventListener('mouseenter', () => {
-    clearTimeout(explodeTimer);
-    stack.classList.remove('explode');
-    stack.classList.remove('snap');
-  });
+
+  addEventListener('touchmove', (e) => {
+    if (lock) e.preventDefault();
+  }, { passive: false });
+
+  addEventListener('hashchange', () => { if (lock) release(1); });
+
+  /* Safety net: scroll rápido que escapou da janela do wheel */
+  let prevY = window.scrollY;
+  addEventListener('scroll', () => {
+    if (lock || completed) { prevY = window.scrollY; return; }
+    const y = window.scrollY;
+    const goingDown = y > prevY;
+    prevY = y;
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= 0 && rect.bottom > 120 && goingDown) {
+      acquire(true);
+    }
+  }, { passive: true });
 }
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', _initCardStackFx);
+  document.addEventListener('DOMContentLoaded', _initCardStackScrollFx);
 } else {
-  _initCardStackFx();
+  _initCardStackScrollFx();
 }
 
 /* ============================================

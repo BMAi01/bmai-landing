@@ -4009,11 +4009,10 @@ html { scroll-padding-top: 84px; }
 .card-stack__item--2 {
   z-index: 2;
   opacity: 1;
-  transform: translate3d(-14px, 6px, 0) scale(.96);
-  clip-path: inset(0 100% 0 0 round 24px);
-  transition:
-    transform .8s cubic-bezier(.4, 0, .2, 1),
-    clip-path .75s cubic-bezier(.25, 0.8, .35, 1);
+  transform:
+    translate3d(calc((1 - var(--progress)) * -14px), calc((1 - var(--progress)) * 6px), 0)
+    scale(calc(.96 + var(--progress) * .04));
+  clip-path: inset(0 calc((1 - var(--progress)) * 100%) 0 0 round 24px);
   pointer-events: auto;
 
   /* Paleta invertida — branco creme + laranja */
@@ -4048,17 +4047,16 @@ html { scroll-padding-top: 84px; }
   opacity: 1;
 }
 
-/* Hover reveal — só em devices com cursor de verdade */
-@media (hover: hover) and (pointer: fine) {
-  .card-stack:hover .card-stack__item--2 {
-    transform: translate3d(0, 0, 0) scale(1);
-    clip-path: inset(0 0 0 0 round 24px);
-  }
-}
-/* Touch: tap alterna via classe .revealed */
-.card-stack.is-revealed .card-stack__item--2 {
-  transform: translate3d(0, 0, 0) scale(1);
-  clip-path: inset(0 0 0 0 round 24px);
+/* scroll-locked lock do body */
+body.scroll-locked {
+  position: fixed !important;
+  top: var(--lock-top, 0);
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 /* EXPLODE — detona card 2 quando o cursor sai (classe setada via JS) */
