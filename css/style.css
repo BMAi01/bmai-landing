@@ -2244,6 +2244,17 @@ li, label, input, textarea {
   /* transitions de hover desnecessárias em touch */
   .btn, .floatnav__cta, .cs-card { transition-duration: .2s !important; }
 }
+@media (max-width: 768px) {
+  /* Mobile: esconde 6 das 14 notifs (mini/med internas) — sobram 8 nas bordas */
+  .qs-scene .qs-notif--mini,
+  .qs-stage > .qs-notif[data-tilt="center-bottom"],
+  .qs-stage > .qs-notif[data-tilt="mild-left"],
+  .qs-stage > .qs-notif[data-tilt="mild-right"] {
+    display: none !important;
+  }
+  /* Brand card fica mais proeminente (ocupa mais espaço já que sobra área) */
+  .qs-brand { width: min(70%, 300px); padding: 24px 22px 22px; }
+}
 
 /* ============================================
    SECTION DOTS — navegação lateral
