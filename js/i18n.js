@@ -26,12 +26,12 @@
       /* QUEM SOMOS */
       'qs.title':     'O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span>',
       'qs.sub':       'Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.',
-      'qs.card1_eyebrow': 'Fase 01 · Estrutura',
+      'qs.card1_eyebrow': 'Fase 01 · Processo',
       'qs.card1_h3':      'Estruturamos<br><span style="color:var(--orange)">o processo.</span>',
-      'qs.card1_p':       'Preparamos um terreno eficiente pra IA potencializar. Mapeamos fluxos, identificamos gargalos e organizamos a operação — antes de qualquer IA entrar em cena.',
+      'qs.card1_p':       'Preparamos um terreno eficiente para a IA potencializar.',
       'qs.card2_eyebrow': 'Fase 02 · Inteligência',
       'qs.card2_h3':      'Construímos<br><span style="color:var(--orange)">IA sob medida.</span>',
-      'qs.card2_p':       'Inteligências Artificiais personalizadas pra função específica. Nada de genérico — cada agente é moldado ao processo que acabou de ser estruturado.',
+      'qs.card2_p':       'Inteligências Artificiais personalizadas para a função específica.',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
