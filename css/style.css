@@ -213,36 +213,45 @@ section { position: relative; z-index: 1; display: block; }
 #quem-somos { padding: 0; }
 #quem-somos .section__center { margin-bottom: 32px; }
 
-/* Pinned section (Algarys/Framer style) — com scroll-hijack real em desktop.
-   Em mobile/reduced-motion volta pro sticky tall. */
+/* Pinned section — 2 padrões mutuamente exclusivos por device:
+
+   Desktop (hover + pointer fine): section 100vh fixo, scroll-hijack via JS
+   trata a "trava" — sem sticky, sem tall-section (evita layout shift).
+
+   Touch/reduced-motion (fallback): section 400vh + sticky 100vh — progress
+   scroll-linked natural via IntersectionObserver no main.js. */
 #quem-somos.qs-pinned,
 #metodo.metodo-pinned {
   position: relative;
-  height: 400vh;
+  height: 100vh;
 }
 .qs-pin,
 .metodo-pin {
-  position: sticky;
+  position: relative;
   top: 0;
   height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 56px 0 40px;
+  padding: 40px 0;
 }
 .qs-pin .container,
 .metodo-pin .container { width: 100%; }
 
-/* Quando o scroll-hijack está ativo, a section fica com altura == 100vh
-   e seu conteúdo permanece estático; a progressão é controlada por wheel */
-#quem-somos.qs-pinned.lock-active,
-#metodo.metodo-pinned.lock-active {
-  height: 100vh;
+/* Fallback sticky pra quem não tem hijack (touch/reduce) */
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  #quem-somos.qs-pinned,
+  #metodo.metodo-pinned { height: 400vh; }
+  .qs-pin,
+  .metodo-pin {
+    position: sticky;
+    top: 0;
+  }
 }
 
+/* Mobile muito estreito: desliga pin totalmente, conteúdo vertical cresce */
 @media (max-width: 900px) {
-  /* Mobile: desliga pin (conteúdo vertical não cabe em 100vh) */
   #quem-somos.qs-pinned,
   #metodo.metodo-pinned { height: auto; }
   .qs-pin,
@@ -250,7 +259,7 @@ section { position: relative; z-index: 1; display: block; }
     position: static;
     height: auto;
     overflow: visible;
-    padding: 64px 0;
+    padding: 48px 0;
   }
 }
 #quem-somos .section__title {
