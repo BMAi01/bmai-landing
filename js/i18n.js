@@ -158,16 +158,16 @@
 
       'qs.title':     'Process comes first.<br><span style="color:var(--orange)">AI comes second.</span>',
       'qs.sub':       'Intelligence on top of chaos only multiplies chaos. That\'s why we structure your business flow first — and only then build the AI, shaped to the operation.',
-      'qs.card1_eyebrow': 'Phase 01 · Structure',
+      'qs.card1_eyebrow': 'Phase 01 · Process',
       'qs.card1_h3':      'We structure<br><span style="color:var(--orange)">the process.</span>',
-      'qs.card1_p':       'We prepare fertile ground for AI to amplify. We map flows, identify bottlenecks and organize operations — before any AI enters the scene.',
+      'qs.card1_p':       'We prepare fertile ground for AI to amplify.',
       'qs.card2_eyebrow': 'Phase 02 · Intelligence',
       'qs.card2_h3':      'We build<br><span style="color:var(--orange)">tailored AI.</span>',
-      'qs.card2_p':       'Artificial Intelligences customized for the specific function. Nothing generic — each agent is molded to the process we just structured.',
+      'qs.card2_p':       'Artificial Intelligences customized for the specific function.',
       'qs.brand_tag': 'integrating AI…',
 
       'metodo.title': 'From diagnosis<br><span style="color:var(--orange)">to real scale.</span>',
-      'metodo.sub':   'We see your business for what it really is — unique. 4 sequential phases, each building on the last. No step is skipped.',
+      'metodo.sub':   'Four phases, one logic: understand, organize, build, sustain. None is skipped — each builds on the last.',
 
       'cases.heading': 'Chosen by companies that<br/><span style="color:var(--orange)">lead with AI.</span>',
       'cases.lead':    '"They saw our business as unique, treated me as a partner, and I felt truly seen and heard in building an AI solution for my company."',
@@ -283,16 +283,16 @@
 
       'qs.title':     'El proceso viene primero.<br><span style="color:var(--orange)">La IA viene después.</span>',
       'qs.sub':       'Inteligencia sobre caos solo multiplica el caos. Por eso estructuramos el flujo de tu negocio primero — y solo después construimos la IA, moldeada a la operación.',
-      'qs.card1_eyebrow': 'Fase 01 · Estructura',
+      'qs.card1_eyebrow': 'Fase 01 · Proceso',
       'qs.card1_h3':      'Estructuramos<br><span style="color:var(--orange)">el proceso.</span>',
-      'qs.card1_p':       'Preparamos un terreno eficiente para que la IA potencie. Mapeamos flujos, identificamos cuellos de botella y organizamos la operación — antes de que cualquier IA entre en escena.',
+      'qs.card1_p':       'Preparamos un terreno eficiente para que la IA potencie.',
       'qs.card2_eyebrow': 'Fase 02 · Inteligencia',
       'qs.card2_h3':      'Construimos<br><span style="color:var(--orange)">IA a medida.</span>',
-      'qs.card2_p':       'Inteligencias Artificiales personalizadas para la función específica. Nada de genérico — cada agente se adapta al proceso que acabamos de estructurar.',
+      'qs.card2_p':       'Inteligencias Artificiales personalizadas para la función específica.',
       'qs.brand_tag': 'integrando IA…',
 
       'metodo.title': 'Del diagnóstico<br><span style="color:var(--orange)">a la escala real.</span>',
-      'metodo.sub':   'Vemos tu negocio como realmente es — único. 4 fases secuenciales, cada una construyendo sobre la anterior. Ningún paso se salta.',
+      'metodo.sub':   'Cuatro fases, una lógica: entender, organizar, construir, sostener. Ninguna se salta — cada una se construye sobre la anterior.',
 
       'cases.heading': 'Preferido por empresas que<br/><span style="color:var(--orange)">lideran con IA.</span>',
       'cases.lead':    '"Vieron nuestro negocio como único, me trataron como socio y me sentí realmente visto y escuchado para desarrollar una solución de IA para mi empresa."',
