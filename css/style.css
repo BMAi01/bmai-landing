@@ -3743,11 +3743,11 @@ html { scroll-padding-top: 84px; }
   align-items: center;
   gap: 14px;
   font-family: var(--fm);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .2em;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .22em;
   text-transform: uppercase;
-  color: rgba(255, 107, 26, .9);
+  color: rgba(255, 107, 26, .95);
   margin: 0;
   position: relative;
   z-index: 2;
@@ -3824,12 +3824,12 @@ html { scroll-padding-top: 84px; }
   position: relative;
   z-index: 1;
   font-family: var(--fd);
-  font-size: clamp(1.7rem, 2.4vw, 2.1rem);
-  font-weight: 700;
+  font-size: clamp(2.1rem, 3vw, 2.75rem);
+  font-weight: 800;
   color: var(--white);
   margin: 0;
-  line-height: 1.08;
-  letter-spacing: -.025em;
+  line-height: 1.05;
+  letter-spacing: -.03em;
   text-transform: none;
 }
 .card-content h3 br { display: initial; }  /* preserva quebra de linha (Estruturamos / o processo) */
@@ -3840,11 +3840,11 @@ html { scroll-padding-top: 84px; }
 .card-content p {
   position: relative;
   z-index: 1;
-  font-size: .95rem;
+  font-size: 1.1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, .68);
+  color: rgba(255, 255, 255, .72);
   margin: 0;
-  max-width: 38ch;
+  max-width: 42ch;
   font-weight: 400;
   letter-spacing: -.003em;
   padding: 0;
