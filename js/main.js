@@ -120,10 +120,11 @@ reveal('.aria__card', true);
 reveal('.resultados__item', true);
 reveal('.personas__card', true);
 reveal('.faq__item', true);
-reveal('.card-stack', false);
-reveal('.qs-scene-wrap', false);
 reveal('.team-card-wrap', true);
 reveal('.cs-card', true);
+/* NUNCA aplicar reveal em .card-stack ou .qs-scene-wrap — elas ficam dentro
+   de section com scroll-lock; opacity:0 sem trigger deixa o card invisível
+   enquanto o user está preso pela trava. */
 
 /* ============================================
    HERO TITLE — simple fade in
@@ -666,6 +667,28 @@ document.querySelectorAll('section[id]').forEach(s => {
   /* Safety: nunca deixar a página travada se o user sair via anchor / history */
   addEventListener('hashchange', () => { if (lock) releaseLock(1); });
   addEventListener('popstate',   () => { if (lock) releaseLock(1); });
+
+  /* Rede de segurança: scroll rápido (trackpad, barra lateral) pode pular a
+     janela do wheel. Se detectarmos que a section top cruzou o viewport sem
+     o hijack ter pego, snapa de volta e tranca. */
+  let prevY = window.scrollY;
+  addEventListener('scroll', () => {
+    if (lock) return;
+    const y = window.scrollY;
+    const goingDown = y > prevY;
+    prevY = y;
+    for (const t of targets) {
+      const rect = t.node.getBoundingClientRect();
+      if (rect.top <= 0 && rect.bottom > 80 && goingDown) {
+        const anchorY = y + rect.top;
+        lock = { target: t, progress: 0, anchorY, lastIdx: -1 };
+        t.node.classList.add('lock-active');
+        lockBody(anchorY);
+        applyProgress();
+        return;
+      }
+    }
+  }, { passive: true });
 })();
 
 /* ============================================
