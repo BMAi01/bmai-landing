@@ -242,9 +242,16 @@ section { position: relative; z-index: 1; display: block; }
 }
 
 @media (max-width: 900px) {
-  #quem-somos.qs-pinned { height: 340vh; }
-  #metodo.metodo-pinned { height: 340vh; }
-  .qs-pin, .metodo-pin { padding: 40px 0 32px; }
+  /* Mobile: desliga pin (conteúdo vertical não cabe em 100vh) */
+  #quem-somos.qs-pinned,
+  #metodo.metodo-pinned { height: auto; }
+  .qs-pin,
+  .metodo-pin {
+    position: static;
+    height: auto;
+    overflow: visible;
+    padding: 64px 0;
+  }
 }
 #quem-somos .section__title {
   font-size: clamp(2.25rem, 3.8vw, 3.2rem);
@@ -3625,17 +3632,18 @@ html { scroll-padding-top: 84px; }
 }
 
 .qs__grid--animated {
-  grid-template-columns: 1fr;
-  gap: 32px;
-  justify-items: center;
-  max-width: 680px;
-  margin: 0 auto;
-  width: 100%;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 48px;
+  align-items: stretch;
 }
-.qs__grid--animated > .card-stack,
-.qs__grid--animated > .qs-scene-wrap {
-  width: 100%;
-  max-width: 680px;
+@media (max-width: 900px) {
+  .qs__grid--animated {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    justify-items: center;
+    max-width: 680px;
+    margin: 0 auto;
+  }
 }
 
 /* ── Card unificado com 2 pilares (lado esquerdo) — polido ── */
