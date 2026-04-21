@@ -3615,8 +3615,8 @@ html { scroll-padding-top: 84px; }
 }
 
 .qs__grid--animated {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);  /* card mais largo que o motion */
+  gap: 56px;
   align-items: stretch;
 }
 @media (max-width: 900px) {
@@ -3821,7 +3821,7 @@ html { scroll-padding-top: 84px; }
   grid-template-columns: 1fr 1fr;
   gap: 0;
   width: 100%;
-  min-height: 460px;                /* presença visual: card robusto */
+  min-height: 0;
   background:
     radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(255, 107, 26, .12) 0%, transparent 55%),
     radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 107, 26, .1)  0%, transparent 60%),
@@ -3874,13 +3874,13 @@ html { scroll-padding-top: 84px; }
   box-shadow: 0 0 16px rgba(255, 107, 26, .5);
   pointer-events: none;
 }
-/* Painéis — transparentes, sem borda própria, padding generoso */
+/* Painéis — transparentes, sem borda própria, padding balanceado */
 .card-stack__item {
   position: relative;
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 72px 56px;
+  padding: 40px 44px;
   overflow: visible;
   opacity: 1;
   transform: none;
