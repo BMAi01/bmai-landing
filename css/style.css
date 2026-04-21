@@ -522,10 +522,10 @@ section { position: relative; z-index: 1; display: block; }
 /* Imagem 3D close-up — lado direito do hero */
 .hero-visual {
   position: absolute;
-  right: -4%;
+  right: -8%;
   top: 50%;
   transform: translateY(-50%);
-  width: min(56vw, 720px);
+  width: min(75vw, 960px);
   z-index: 0;
   pointer-events: none;
   will-change: transform;
@@ -3256,7 +3256,10 @@ section h2.shimmer-active::after,
   .faq__q { font-size: 15px !important; padding: 18px 16px !important; gap: 12px; }
   .faq__q span { line-height: 1.35; }
   .faq__a p { font-size: 14px !important; line-height: 1.6 !important; }
-  .faq__a { padding: 0 16px 18px !important; }
+  /* padding-bottom só quando ativo — se aplicar sempre, o padding-bottom
+     mantém 18px visível mesmo com max-height:0 (border-box quirk) */
+  .faq__a { padding: 0 16px !important; }
+  .faq__item.active .faq__a { padding: 0 16px 18px !important; }
 
   /* Form */
   #form { padding: 60px 0 !important; }
