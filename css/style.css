@@ -234,12 +234,17 @@ html { scrollbar-gutter: stable; }
    Touch/reduced-motion (fallback): section 400vh + sticky 100vh — progress
    scroll-linked natural via IntersectionObserver no main.js. */
 /* Sticky-tall-section (Algarys/Framer style) — o user scrolla por uma
-   seção de 400vh enquanto o conteúdo fica pinned em 100vh. Progress
-   scroll-linked 1:1 dirige a animação (ver CARD STACK no main.js). */
+   seção de 250vh enquanto o conteúdo fica pinned em 100vh. Progress
+   scroll-linked 1:1 dirige a animação (ver CARD STACK no main.js).
+
+   CRÍTICO: padding ZERO na section pinned — qualquer padding extra vira
+   faixa vazia antes/depois do pin, o que parecia "tela em branco". */
 #quem-somos.qs-pinned,
 #metodo.metodo-pinned {
   position: relative;
-  height: 400vh;
+  height: 250vh;
+  padding: 0 !important;  /* sobrescreve .section { padding: 96px 0 } */
+  min-height: 0;
 }
 .qs-pin,
 .metodo-pin {
@@ -252,6 +257,7 @@ html { scrollbar-gutter: stable; }
   justify-content: center;
   overflow: hidden;
   padding: 0;
+  margin: 0;
 }
 .qs-pin .container,
 .metodo-pin .container { width: 100%; }
