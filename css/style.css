@@ -546,7 +546,7 @@ html { scrollbar-gutter: stable; }
       transparent 25%,
       transparent 75%,
       rgba(13, 27, 42, .45) 100%),
-    url('../assets/images/hero-bg.png') center right / cover no-repeat,
+    url('../assets/images/hero-bg.jpg') center right / cover no-repeat,
     #0d1b2a;
 }
 @media (max-width: 900px) {
@@ -556,7 +556,7 @@ html { scrollbar-gutter: stable; }
         rgba(13, 27, 42, .78) 0%,
         rgba(13, 27, 42, .5)  45%,
         rgba(13, 27, 42, .88) 100%),
-      url('../assets/images/hero-bg.png') 75% center / 180% auto no-repeat,
+      url('../assets/images/hero-bg.jpg') 75% center / 180% auto no-repeat,
       #0d1b2a;
   }
 }
