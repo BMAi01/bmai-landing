@@ -558,7 +558,100 @@ document.querySelectorAll('section[id]').forEach(s => {
   }
 })();
 
-/* Scroll-linked progress removido — seções QS/Método viraram fluxo normal. */
+/* ============================================
+   SCROLL HIJACK — QS card stack (card 2 sobrepõe card 1)
+   Desktop: trava o scroll da página até a animação chegar a 100%.
+   Touch/reduce: animação imediata (sem lock).
+   ============================================ */
+(function() {
+  const stack = document.querySelector('.card-stack');
+  const section = document.getElementById('quem-somos');
+  if (!stack || !section) return;
+
+  if (IS_TOUCH || PREFERS_REDUCE) {
+    stack.style.setProperty('--progress', '1');
+    return;
+  }
+
+  const DISTANCE = 1200;             /* px de wheel a acumular pra completar */
+  const html = document.documentElement;
+  let lock = null;
+
+  function apply(t) {
+    stack.style.setProperty('--progress', t.toFixed(3));
+  }
+
+  function acquire(fromTop) {
+    const rect = section.getBoundingClientRect();
+    const anchorY = window.scrollY + rect.top;
+    lock = { anchorY, progress: fromTop ? 0 : DISTANCE };
+    html.classList.add('scroll-locked');
+    window.scrollTo(0, anchorY);
+    apply(lock.progress / DISTANCE);
+  }
+
+  function release(direction) {
+    if (!lock) return;
+    const anchorY = lock.anchorY;
+    const h = section.offsetHeight;
+    lock = null;
+    html.classList.remove('scroll-locked');
+    if (direction > 0) window.scrollTo(0, anchorY + h + 8);
+    else               window.scrollTo(0, anchorY - 16);
+  }
+
+  addEventListener('wheel', (e) => {
+    if (!lock) {
+      const rect = section.getBoundingClientRect();
+      const vh = innerHeight;
+      /* Captura quando a seção está enquadrada no viewport */
+      if (e.deltaY > 0 && rect.top <= 40 && rect.top > -100) {
+        e.preventDefault();
+        acquire(true);
+        return;
+      }
+      if (e.deltaY < 0 && rect.bottom >= vh - 40 && rect.bottom < vh + 100) {
+        e.preventDefault();
+        acquire(false);
+        return;
+      }
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    lock.progress += e.deltaY;
+    if (lock.progress < 0)          return release(-1);
+    if (lock.progress >= DISTANCE)  return release(1);
+    apply(lock.progress / DISTANCE);
+  }, { passive: false });
+
+  addEventListener('keydown', (e) => {
+    if (!lock) return;
+    const advance = ['PageDown','End','ArrowDown',' ','Enter'];
+    const back    = ['PageUp','Home','ArrowUp','Escape','Tab'];
+    if (advance.includes(e.key)) { e.preventDefault(); release(1); }
+    else if (back.includes(e.key)) { e.preventDefault(); release(-1); }
+  });
+
+  addEventListener('hashchange', () => { if (lock) release(1); });
+
+  /* Safety net: scroll rápido que escapou da janela de wheel */
+  let prevY = window.scrollY;
+  addEventListener('scroll', () => {
+    if (lock) return;
+    const y = window.scrollY;
+    const goingDown = y > prevY;
+    prevY = y;
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= 0 && rect.bottom > 80 && goingDown) {
+      const anchorY = y + rect.top;
+      lock = { anchorY, progress: 0 };
+      html.classList.add('scroll-locked');
+      window.scrollTo(0, anchorY);
+      apply(0);
+    }
+  }, { passive: true });
+})();
 
 /* ============================================
    GSAP SCROLL FX

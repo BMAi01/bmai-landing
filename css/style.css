@@ -209,6 +209,9 @@ section {
 
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
 html { scrollbar-gutter: stable; }
+/* Lock físico: ativado pelo scroll-hijack enquanto a animação do card roda */
+html.scroll-locked,
+html.scroll-locked body { overflow: hidden !important; }
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 28px; }
 .section__title {
@@ -3847,152 +3850,87 @@ html { scroll-padding-top: 84px; }
 }
 
 /* ───────────────────────────────────────────
-   Card Stack — 2 painéis unificados num card só, com divisor animado
+   Card Stack — card 2 atras do card 1, scroll-hijack traz por cima
    ─────────────────────────────────────────── */
 .card-stack {
+  --progress: 0;
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
   width: 100%;
-  min-height: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(255, 107, 26, .12) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 107, 26, .1)  0%, transparent 60%),
-    linear-gradient(180deg, rgba(18, 28, 44, .96) 0%, rgba(10, 18, 30, .96) 100%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
-  backdrop-filter: blur(22px) saturate(150%);
-  border: 1.5px solid rgba(255, 107, 26, .28);
-  border-radius: 28px;
-  overflow: hidden;
-  box-shadow:
-    0 40px 80px -24px rgba(0, 0, 0, .65),
-    0 12px 24px -8px rgba(0, 0, 0, .35),
-    0 0 72px -16px rgba(255, 107, 26, .22),  /* glow laranja ao redor */
-    inset 0 1px 0 rgba(255, 255, 255, .08);
+  min-height: 380px;
+  perspective: 1400px;
 }
-/* Fresnel laranja na borda (gradiente animável) */
-.card-stack::before {
+/* Cada item = card completo, absolute inset pra empilhar */
+.card-stack__item {
+  position: absolute;
+  inset: 0;
+  padding: 44px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(255, 107, 26, .1) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 107, 26, .08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(18, 28, 44, .96) 0%, rgba(10, 18, 30, .96) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1.5px solid rgba(255, 107, 26, .26);
+  border-radius: 24px;
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, .55),
+    0 8px 20px -6px rgba(0, 0, 0, .3),
+    0 0 48px -16px rgba(255, 107, 26, .2),
+    inset 0 1px 0 rgba(255, 255, 255, .06);
+  transform-origin: center top;
+  will-change: transform, opacity;
+}
+.card-stack__item::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(135deg,
-    rgba(255, 107, 26, .45) 0%,
-    rgba(255, 107, 26, .1) 35%,
+    rgba(255, 107, 26, .4) 0%,
+    rgba(255, 107, 26, .08) 35%,
     transparent 55%,
-    rgba(255, 107, 26, .1) 70%,
-    rgba(255, 107, 26, .4) 100%);
+    rgba(255, 107, 26, .08) 70%,
+    rgba(255, 107, 26, .35) 100%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
 }
-/* Divisor vertical central — gradiente estático + flow laranja animado */
-.card-stack::after {
-  content: '';
-  position: absolute;
-  top: 12%;
-  bottom: 12%;
-  left: 50%;
-  width: 1px;
-  transform: translateX(-50%);
-  background: linear-gradient(180deg,
-    transparent 0%,
-    rgba(255, 107, 26, .4) 15%,
-    rgba(255, 107, 26, .85) 50%,
-    rgba(255, 107, 26, .4) 85%,
-    transparent 100%);
-  box-shadow: 0 0 16px rgba(255, 107, 26, .5);
-  pointer-events: none;
-}
-/* Painéis — transparentes, rítmica vertical limpa */
-.card-stack__item {
-  position: relative;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 40px 36px;
-  overflow: visible;
-  opacity: 1;
-  transform: none;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0;
-}
 .card-stack__item .card-content {
   display: flex;
   flex-direction: column;
   gap: 18px;
-}
-.card-stack__item::before {
-  /* Seta-losango laranja conectando Fase 01 → Fase 02 */
-  content: '';
-  display: none;
-}
-.card-stack__item--2::before {
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: -14px;
-  width: 28px;
-  height: 28px;
-  transform: translateY(-50%) rotate(45deg);
-  background: linear-gradient(135deg, #ff6b1a 0%, #db5500 100%);
-  border: 3px solid rgba(13, 27, 42, 1);
-  border-radius: 5px;
-  box-shadow: 0 0 16px rgba(255, 107, 26, .55);
-  z-index: 4;
-  animation: connectPulse 2.6s ease-in-out infinite;
-}
-@keyframes connectPulse {
-  0%, 100% {
-    box-shadow: 0 0 12px rgba(255, 107, 26, .45), 0 0 4px rgba(255, 107, 26, .8);
-    transform: translateY(-50%) rotate(45deg) scale(1);
-  }
-  50% {
-    box-shadow: 0 0 26px rgba(255, 107, 26, .9), 0 0 8px rgba(255, 107, 26, 1);
-    transform: translateY(-50%) rotate(45deg) scale(1.08);
-  }
+  position: relative;
+  z-index: 2;
 }
 
-/* Mobile: empilha vertical, divisor horizontal, seta aponta pra baixo */
+/* Card 1 sempre visível atrás. Card 2 entra por cima conforme --progress */
+.card-stack__item--1 {
+  z-index: 1;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.card-stack__item--2 {
+  z-index: 2;
+  opacity: var(--progress);
+  transform:
+    translate3d(0, calc((1 - var(--progress)) * 60px), 0)
+    scale(calc(.96 + var(--progress) * .04));
+  pointer-events: auto;
+}
+/* Mobile */
 @media (max-width: 768px) {
-  .card-stack { grid-template-columns: 1fr; }
-  .card-stack::after {
-    top: 50%; bottom: auto;
-    left: 12%; right: 12%; width: auto;
-    height: 1px;
-    transform: translateY(-50%);
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 107, 26, .4) 15%,
-      rgba(255, 107, 26, .85) 50%,
-      rgba(255, 107, 26, .4) 85%,
-      transparent 100%);
-  }
-  .card-stack__item--2::before {
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-  }
-  @keyframes connectPulse {
-    0%, 100% { transform: translateX(-50%) rotate(45deg) scale(1); }
-    50%      { transform: translateX(-50%) rotate(45deg) scale(1.08); }
-  }
-  .card-stack__item { padding: 44px 32px; }
+  .card-stack { min-height: 340px; }
+  .card-stack__item { padding: 36px 28px; border-radius: 20px; }
 }
 @media (max-width: 560px) {
-  .card-stack__item { padding: 36px 24px; }
-  .card-stack { border-radius: 18px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card-stack__item--2::before { animation: none; }
+  .card-stack { min-height: 320px; }
+  .card-stack__item { padding: 28px 22px; border-radius: 18px; }
 }
 
 /* ── Palco ── */
