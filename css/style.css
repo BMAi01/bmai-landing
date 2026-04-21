@@ -2207,6 +2207,38 @@ li, label, input, textarea {
 /* #cur-trail removido — sem bola de cursor */
 #cur-trail { display: none !important; }
 
+/* ===========================================================
+   MOBILE PERFORMANCE GATE — reduz efeitos caros em devices
+   pequenos / touch. Mantém visual intacto em desktop.
+   =========================================================== */
+@media (max-width: 768px) {
+  /* backdrop-filter blur é caro no Safari mobile — reduz pra 10px */
+  .hero__stats-row,
+  .card-stack,
+  .card-stack__item,
+  .team-card,
+  .cs-hero {
+    -webkit-backdrop-filter: blur(10px) !important;
+            backdrop-filter: blur(10px) !important;
+  }
+  /* Box-shadows complexas → consolida em 1 camada */
+  .card-stack,
+  .card-stack__item {
+    box-shadow: 0 16px 32px -12px rgba(0, 0, 0, .55) !important;
+  }
+  /* heroFloat anima transform 60fps em elemento grande — off */
+  .hero-visual { animation: none !important; }
+  /* will-change só em elementos realmente animados */
+  .reveal:not(.revealed) { will-change: opacity, transform; }
+}
+@media (hover: none), (pointer: coarse) {
+  /* Touch devices: desliga animações contínuas caras */
+  .qs-ring,
+  .qs-stage { animation: none !important; }
+  /* transitions de hover desnecessárias em touch */
+  .btn, .floatnav__cta, .cs-card { transition-duration: .2s !important; }
+}
+
 /* ============================================
    SECTION DOTS — navegação lateral
    ============================================ */
