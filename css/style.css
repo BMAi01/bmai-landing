@@ -551,13 +551,19 @@ html { scrollbar-gutter: stable; }
 }
 @media (max-width: 900px) {
   .hero {
+    /* Mobile: overlay vertical mais forte (texto precisa ser 100% legível),
+       imagem posicionada pra mostrar o símbolo 3D na parte superior direita */
     background:
       linear-gradient(180deg,
-        rgba(13, 27, 42, .78) 0%,
-        rgba(13, 27, 42, .5)  45%,
-        rgba(13, 27, 42, .88) 100%),
-      url('../assets/images/hero-bg.jpg') 75% 35% / 180% auto no-repeat,
+        rgba(13, 27, 42, .88) 0%,
+        rgba(13, 27, 42, .6)  40%,
+        rgba(13, 27, 42, .92) 100%),
+      url('../assets/images/hero-bg.jpg') 75% 25% / 200% auto no-repeat,
       #0d1b2a;
+    /* Safe-area pra notch/rounded corners de iOS */
+    padding-left:  max(env(safe-area-inset-left), 0);
+    padding-right: max(env(safe-area-inset-right), 0);
+    padding-bottom: max(72px, env(safe-area-inset-bottom));
   }
 }
 #hero .container.hero__wrap {
