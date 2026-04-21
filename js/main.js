@@ -21,8 +21,27 @@ window.addEventListener('load', () => {
    ============================================ */
 const burger = document.getElementById('burger');
 const nav = document.getElementById('nav');
-burger.addEventListener('click', () => { burger.classList.toggle('active'); nav.classList.toggle('active'); });
-nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { burger.classList.remove('active'); nav.classList.remove('active'); }));
+const langBtn = document.getElementById('lang-btn');
+const langHome = langBtn?.parentElement; // lembra onde o lang-btn vivia (body/header)
+
+function syncLangPosition(active) {
+  if (!langBtn) return;
+  // Ao abrir o drawer mobile, empurra o lang-btn pra dentro do nav
+  // (pra aparecer como último item); ao fechar, devolve pro home original.
+  if (active && nav && !nav.contains(langBtn)) nav.appendChild(langBtn);
+  else if (!active && langHome && !langHome.contains(langBtn)) langHome.appendChild(langBtn);
+}
+
+burger.addEventListener('click', () => {
+  burger.classList.toggle('active');
+  const active = nav.classList.toggle('active');
+  syncLangPosition(active);
+});
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  burger.classList.remove('active');
+  nav.classList.remove('active');
+  syncLangPosition(false);
+}));
 
 /* ============================================
    HEADER
