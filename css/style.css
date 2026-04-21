@@ -539,14 +539,14 @@ section { position: relative; z-index: 1; display: block; }
 .hero-visual::before {
   content: '';
   position: absolute;
-  top: 50%; left: 50%;
-  width: 70%; height: 70%;
+  top: 50%; left: 65%;
+  width: 52%; height: 52%;
   transform: translate(-50%, -50%);
   background: radial-gradient(circle,
-    rgba(219,85,0,.45) 0%,
-    rgba(219,85,0,.18) 35%,
-    rgba(219,85,0,.05) 60%,
-    transparent 75%);
+    rgba(219,85,0,.28) 0%,
+    rgba(219,85,0,.1) 40%,
+    rgba(219,85,0,.02) 65%,
+    transparent 78%);
   z-index: 0;
   pointer-events: none;
   animation: heroGlow 4s ease-in-out infinite;
