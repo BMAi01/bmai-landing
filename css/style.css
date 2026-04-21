@@ -3697,16 +3697,21 @@ html { scroll-padding-top: 84px; }
 .card-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-family: var(--fm);
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: .24em;
+  letter-spacing: .26em;
   text-transform: uppercase;
   color: var(--orange);
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   position: relative;
   z-index: 2;
+  padding: 8px 14px;
+  background: rgba(255, 107, 26, .08);
+  border: 1px solid rgba(255, 107, 26, .22);
+  border-radius: 999px;
+  align-self: flex-start;
 }
 .card-eyebrow::before {
   content: '';
@@ -3768,12 +3773,12 @@ html { scroll-padding-top: 84px; }
   position: relative;
   z-index: 1;
   font-family: var(--fd);
-  font-size: clamp(2rem, 3.2vw, 2.75rem);
-  font-weight: 700;
+  font-size: clamp(2.35rem, 3.8vw, 3.1rem);
+  font-weight: 800;
   color: var(--white);
-  margin: 0 0 26px;
+  margin: 0 0 30px;
   line-height: 1.02;
-  letter-spacing: -.025em;
+  letter-spacing: -.03em;
   text-transform: uppercase;
 }
 .card-content h3 span {
@@ -3783,18 +3788,16 @@ html { scroll-padding-top: 84px; }
 .card-content p {
   position: relative;
   z-index: 1;
-  font-size: 1.02rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, .78);
+  font-size: 1.12rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, .82);
   margin: 0;
-  max-width: 54ch;
+  max-width: 48ch;
   font-weight: 400;
   letter-spacing: -.005em;
-  /* Barra vertical laranja leading — peso editorial sóbrio sem brilho
-     exagerado do drop cap anterior */
-  padding-left: 20px;
-  border-left: 2px solid var(--orange);
-  box-shadow: -2px 0 14px -4px rgba(255, 107, 26, .35);
+  padding-left: 22px;
+  border-left: 3px solid var(--orange);
+  box-shadow: -3px 0 18px -4px rgba(255, 107, 26, .4);
 }
 
 @media (max-width: 900px) {
@@ -3818,19 +3821,21 @@ html { scroll-padding-top: 84px; }
   grid-template-columns: 1fr 1fr;
   gap: 0;
   width: 100%;
+  min-height: 460px;                /* presença visual: card robusto */
   background:
-    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(255, 107, 26, .08) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 107, 26, .06) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(16, 24, 38, .94) 0%, rgba(11, 18, 30, .94) 100%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255, 107, 26, .22);
-  border-radius: 24px;
+    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(255, 107, 26, .12) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 107, 26, .1)  0%, transparent 60%),
+    linear-gradient(180deg, rgba(18, 28, 44, .96) 0%, rgba(10, 18, 30, .96) 100%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
+  border: 1.5px solid rgba(255, 107, 26, .28);
+  border-radius: 28px;
   overflow: hidden;
   box-shadow:
-    0 24px 48px -18px rgba(0, 0, 0, .5),
-    0 4px 12px rgba(0, 0, 0, .22),
-    inset 0 1px 0 rgba(255, 255, 255, .05);
+    0 40px 80px -24px rgba(0, 0, 0, .65),
+    0 12px 24px -8px rgba(0, 0, 0, .35),
+    0 0 72px -16px rgba(255, 107, 26, .22),  /* glow laranja ao redor */
+    inset 0 1px 0 rgba(255, 255, 255, .08);
 }
 /* Fresnel laranja na borda (gradiente animável) */
 .card-stack::before {
@@ -3869,17 +3874,20 @@ html { scroll-padding-top: 84px; }
   box-shadow: 0 0 16px rgba(255, 107, 26, .5);
   pointer-events: none;
 }
-/* Painéis — transparentes, sem borda própria */
+/* Painéis — transparentes, sem borda própria, padding generoso */
 .card-stack__item {
   position: relative;
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 52px 44px;
+  padding: 72px 56px;
   overflow: visible;
   opacity: 1;
   transform: none;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .card-stack__item::before {
   /* Seta-losango laranja conectando Fase 01 → Fase 02 */
