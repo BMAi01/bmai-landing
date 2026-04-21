@@ -4247,3 +4247,96 @@ html { scroll-padding-top: 84px; }
   .faq__a { transition-duration: .4s !important; }
 }
 
+/* ============================================
+   TECH AMBIENT — orbs flutuantes + grid sutil
+   (só desktop; off em mobile via gate de performance)
+   ============================================ */
+.tech-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  contain: strict;
+  will-change: transform;
+}
+
+.tech-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+.tech-orb--1 {
+  top: -8%;
+  left: -6%;
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle,
+    rgba(255, 107, 26, .28) 0%,
+    rgba(255, 107, 26, .08) 32%,
+    transparent 65%);
+  animation: techOrb1 36s cubic-bezier(.45, .05, .55, .95) infinite;
+}
+.tech-orb--2 {
+  top: 38%;
+  right: -10%;
+  width: 640px;
+  height: 640px;
+  background: radial-gradient(circle,
+    rgba(22, 48, 98, .42) 0%,
+    rgba(22, 48, 98, .16) 35%,
+    transparent 65%);
+  animation: techOrb2 44s cubic-bezier(.45, .05, .55, .95) infinite;
+}
+.tech-orb--3 {
+  bottom: -12%;
+  left: 30%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle,
+    rgba(255, 107, 26, .18) 0%,
+    rgba(255, 107, 26, .05) 34%,
+    transparent 65%);
+  animation: techOrb3 52s cubic-bezier(.45, .05, .55, .95) infinite;
+}
+
+@keyframes techOrb1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(60px, 80px, 0) scale(1.08); }
+  66%      { transform: translate3d(30px, -40px, 0) scale(.95); }
+}
+@keyframes techOrb2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  40%      { transform: translate3d(-80px, -60px, 0) scale(1.1); }
+  75%      { transform: translate3d(-50px, 50px, 0) scale(.92); }
+}
+@keyframes techOrb3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  45%      { transform: translate3d(-40px, -90px, 0) scale(1.06); }
+  80%      { transform: translate3d(70px, -30px, 0) scale(.96); }
+}
+
+/* Grid sutil tipo tela tech (CSS radial pattern, GPU-friendly) */
+.tech-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, #000 10%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, #000 10%, transparent 85%);
+  opacity: .6;
+  pointer-events: none;
+}
+
+/* body precisa estar acima do tech-bg */
+body > *:not(.tech-bg) { position: relative; z-index: 1; }
+
+/* Desabilita em mobile / reduced-motion pra preservar performance */
+@media (max-width: 768px),
+       (max-height: 500px) and (orientation: landscape),
+       (prefers-reduced-motion: reduce) {
+  .tech-bg { display: none !important; }
+}
+

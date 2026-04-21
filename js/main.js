@@ -473,6 +473,14 @@ addEventListener('load', function () {
     return;
   }
 
+  // Normaliza scroll: uniformiza wheel/trackpad/touch num único easing curve.
+  // Deixa o scroll com momentum mais consistente e menos "solavancos"
+  // entre devices diferentes.
+  try {
+    ScrollTrigger.normalizeScroll(true);
+    ScrollTrigger.config({ ignoreMobileResize: true });
+  } catch (e) {}
+
   // Word-reveal helper (desktop only)
   const wordStyle = document.createElement('style');
   wordStyle.textContent = `.word-wrap{display:inline-block;overflow:hidden;vertical-align:bottom}.word{display:inline-block;will-change:transform}`;
