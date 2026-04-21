@@ -558,75 +558,7 @@ document.querySelectorAll('section[id]').forEach(s => {
   }
 })();
 
-/* ============================================
-   SCROLL-LINKED PROGRESS — Algarys/Framer pattern
-   O usuário rola NORMAL. A section é alta (400vh) + pin sticky 100vh.
-   O progresso do scroll dentro da section dirige a animação 1:1.
-   Obriga o user a rolar pela seção inteira pra ver todos os cards,
-   sem travar o scroll.
-   ============================================ */
-(function() {
-  const stacks = document.querySelectorAll('.card-stack');
-  const metodoSection = document.querySelector('.metodo-pinned');
-  if (!stacks.length && !metodoSection) return;
-
-  /* Mapeia [inMin, inMax] do progress → [0, 1] clampeado */
-  function zone(p, a, b) { return Math.max(0, Math.min(1, (p - a) / (b - a))); }
-
-  /* Computa progress 0..1 de uma section (pinned tall ou normal) */
-  function progressOf(section) {
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    const rect = section.getBoundingClientRect();
-    const scrollable = rect.height - vh;
-    if (scrollable > 40) {
-      /* Sticky pin: 0 = top encostou, 1 = fim do pin */
-      return Math.max(0, Math.min(1, -rect.top / scrollable));
-    }
-    /* Section normal (sem pin) */
-    const total = rect.height + vh;
-    const passed = vh - rect.top;
-    return Math.max(0, Math.min(1, passed / total));
-  }
-
-  /* Atualiza QS: --progress do card-stack (card 1 → card 2) */
-  function updateStacks() {
-    stacks.forEach(stack => {
-      const section = stack.closest('section');
-      if (!section) return;
-      const p = progressOf(section);
-      /* 0–0.25 card 1 puro, 0.25–0.75 transição, 0.75–1 card 2 puro */
-      const t = zone(p, 0.25, 0.75);
-      stack.style.setProperty('--progress', t.toFixed(3));
-      stack.classList.toggle('flipped', t > 0.5);
-    });
-  }
-
-  /* Atualiza Método: cicla os 4 DEIA conforme progress */
-  let metodoLastIdx = -1;
-  function updateMetodo() {
-    if (!metodoSection) return;
-    const p = progressOf(metodoSection);
-    /* Obriga rolar pela seção pra passar pelos 4 */
-    const idx = Math.min(3, Math.floor(zone(p, 0.1, 0.95) * 4));
-    if (idx !== metodoLastIdx) {
-      metodoLastIdx = idx;
-      document.dispatchEvent(new CustomEvent('metodo:set', { detail: { index: idx } }));
-    }
-  }
-
-  let raf = 0;
-  function onScroll() {
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      updateStacks();
-      updateMetodo();
-      raf = 0;
-    });
-  }
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll, { passive: true });
-  onScroll();
-})();
+/* Scroll-linked progress removido — seções QS/Método viraram fluxo normal. */
 
 /* ============================================
    GSAP SCROLL FX

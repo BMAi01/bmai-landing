@@ -233,68 +233,7 @@ html { scrollbar-gutter: stable; }
 
    Touch/reduced-motion (fallback): section 400vh + sticky 100vh — progress
    scroll-linked natural via IntersectionObserver no main.js. */
-/* Sticky-tall-section (Algarys/Framer style) — o user scrolla por uma
-   seção de 250vh enquanto o conteúdo fica pinned em 100vh. Progress
-   scroll-linked 1:1 dirige a animação (ver CARD STACK no main.js).
-
-   CRÍTICO: padding ZERO na section pinned — qualquer padding extra vira
-   faixa vazia antes/depois do pin, o que parecia "tela em branco". */
-#quem-somos.qs-pinned,
-#metodo.metodo-pinned {
-  position: relative;
-  height: 160vh;          /* curto: pin trava 60vh + 100vh de saída */
-  padding: 0 !important;
-  min-height: 0;
-}
-/* Respiros explícitos: afasta QS do ticker e Método do QS */
-#quem-somos.qs-pinned { margin: 120px 0 96px; }
-/* Método: empurrado forte pra baixo, sem grudar no Cases */
-#metodo.metodo-pinned { margin: 240px 0 120px; }
-@media (max-width: 768px) {
-  #quem-somos.qs-pinned { margin: 72px 0 64px; }
-  #metodo.metodo-pinned { margin: 120px 0 72px; }
-}
-.qs-pin,
-.metodo-pin {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;    /* conteúdo centralizado na viewport */
-  justify-content: center;
-  overflow: hidden;
-  padding: 0;
-  margin: 0;
-}
-.qs-pin .container,
-.metodo-pin .container { width: 100%; }
-
-/* Mobile: desliga pin (conteúdo vertical não cabe em 100vh) */
-@media (max-width: 900px) {
-  #quem-somos.qs-pinned,
-  #metodo.metodo-pinned { height: auto; }
-  .qs-pin,
-  .metodo-pin {
-    position: static;
-    height: auto;
-    overflow: visible;
-    padding: 48px 0;
-  }
-}
-
-/* Mobile muito estreito: desliga pin totalmente, conteúdo vertical cresce */
-@media (max-width: 900px) {
-  #quem-somos.qs-pinned,
-  #metodo.metodo-pinned { height: auto; }
-  .qs-pin,
-  .metodo-pin {
-    position: static;
-    height: auto;
-    overflow: visible;
-    padding: 48px 0;
-  }
-}
+/* QS e Método: seções normais, height auto, padding padrão do .section */
 #quem-somos .section__title {
   font-size: clamp(2.25rem, 3.8vw, 3.2rem);
   letter-spacing: -.035em;
@@ -3871,19 +3810,19 @@ html { scroll-padding-top: 84px; }
 }
 
 /* ───────────────────────────────────────────
-   Card Stack — 2 cards empilhados que alternam no scroll
+   Card Stack — 2 cards lado a lado (simples, sem scroll-linked)
    ─────────────────────────────────────────── */
 .card-stack {
-  --progress: 0;
-  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
   width: 100%;
-  min-height: 560px;
-  perspective: 1400px;
-  transform-style: preserve-3d;
+}
+@media (max-width: 768px) {
+  .card-stack { grid-template-columns: 1fr; }
 }
 .card-stack__item {
-  position: absolute;
-  inset: 0;
+  position: relative;
   background:
     radial-gradient(ellipse 80% 60% at 0% 0%, rgba(255, 107, 26, .06) 0%, transparent 55%),
     radial-gradient(ellipse 70% 50% at 100% 100%, rgba(255, 107, 26, .05) 0%, transparent 60%),
@@ -3920,29 +3859,17 @@ html { scroll-padding-top: 84px; }
   opacity: .85;
 }
 
-/* Scroll-linked — tudo interpolado em função de --progress (0..1) */
-.card-stack__item--1 {
-  z-index: 1;
-  /* Card 1 fica no lugar; some suavemente só no fim */
-  opacity: calc(1 - var(--progress) * .15);
-  transform: translate3d(0, calc(var(--progress) * -8px), 0);
-}
+/* 2 cards lado a lado — sem overlap, sem progress */
+.card-stack__item--1,
 .card-stack__item--2 {
-  z-index: 2;
-  /* Card 2 entra de baixo, cobrindo o card 1 */
-  opacity: var(--progress);
-  transform:
-    translate3d(0, calc((1 - var(--progress)) * 80px), 0)
-    scale(calc(.96 + var(--progress) * .04));
-  pointer-events: auto;
+  opacity: 1;
+  transform: none;
 }
 
 @media (max-width: 900px) {
-  .card-stack { min-height: 500px; }
   .card-stack__item { padding: 40px 32px; }
 }
 @media (max-width: 560px) {
-  .card-stack { min-height: 440px; }
   .card-stack__item { padding: 32px 22px; border-radius: 16px; }
 }
 
