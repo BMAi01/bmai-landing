@@ -3810,71 +3810,141 @@ html { scroll-padding-top: 84px; }
 }
 
 /* ───────────────────────────────────────────
-   Card Stack — 2 cards lado a lado (simples, sem scroll-linked)
+   Card Stack — 2 painéis unificados num card só, com divisor animado
    ─────────────────────────────────────────── */
 .card-stack {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 0;
   width: 100%;
-}
-@media (max-width: 768px) {
-  .card-stack { grid-template-columns: 1fr; }
-}
-.card-stack__item {
-  position: relative;
   background:
-    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(255, 107, 26, .06) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 50% at 100% 100%, rgba(255, 107, 26, .05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(255, 107, 26, .08) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 107, 26, .06) 0%, transparent 60%),
     linear-gradient(180deg, rgba(16, 24, 38, .94) 0%, rgba(11, 18, 30, .94) 100%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255, 107, 26, .18);
-  border-radius: 20px;
-  padding: 48px 40px;
+  border: 1px solid rgba(255, 107, 26, .22);
+  border-radius: 24px;
   overflow: hidden;
-  transform-origin: center top;
-  /* Sem transition — scroll-linked 1:1 (padrão Framer Motion) */
   box-shadow:
-    0 24px 48px -18px rgba(0, 0, 0, .45),
-    0 4px 12px rgba(0, 0, 0, .2),
+    0 24px 48px -18px rgba(0, 0, 0, .5),
+    0 4px 12px rgba(0, 0, 0, .22),
     inset 0 1px 0 rgba(255, 255, 255, .05);
-  will-change: transform, opacity;
 }
-.card-stack__item::before {
+/* Fresnel laranja na borda (gradiente animável) */
+.card-stack::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(160deg,
-    rgba(255, 107, 26, .35) 0%,
-    rgba(255, 107, 26, .08) 30%,
-    transparent 60%);
+  background: linear-gradient(135deg,
+    rgba(255, 107, 26, .45) 0%,
+    rgba(255, 107, 26, .1) 35%,
+    transparent 55%,
+    rgba(255, 107, 26, .1) 70%,
+    rgba(255, 107, 26, .4) 100%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
-  opacity: .85;
 }
-
-/* 2 cards lado a lado — sem overlap, sem progress */
-.card-stack__item--1,
-.card-stack__item--2 {
+/* Divisor vertical central — gradiente estático + flow laranja animado */
+.card-stack::after {
+  content: '';
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(255, 107, 26, .4) 15%,
+    rgba(255, 107, 26, .85) 50%,
+    rgba(255, 107, 26, .4) 85%,
+    transparent 100%);
+  box-shadow: 0 0 16px rgba(255, 107, 26, .5);
+  pointer-events: none;
+}
+/* Painéis — transparentes, sem borda própria */
+.card-stack__item {
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 52px 44px;
+  overflow: visible;
   opacity: 1;
   transform: none;
+  z-index: 1;
+}
+.card-stack__item::before {
+  /* Seta-losango laranja conectando Fase 01 → Fase 02 */
+  content: '';
+  display: none;
+}
+.card-stack__item--2::before {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: -14px;
+  width: 28px;
+  height: 28px;
+  transform: translateY(-50%) rotate(45deg);
+  background: linear-gradient(135deg, #ff6b1a 0%, #db5500 100%);
+  border: 3px solid rgba(13, 27, 42, 1);
+  border-radius: 5px;
+  box-shadow: 0 0 16px rgba(255, 107, 26, .55);
+  z-index: 4;
+  animation: connectPulse 2.6s ease-in-out infinite;
+}
+@keyframes connectPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(255, 107, 26, .45), 0 0 4px rgba(255, 107, 26, .8);
+    transform: translateY(-50%) rotate(45deg) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(255, 107, 26, .9), 0 0 8px rgba(255, 107, 26, 1);
+    transform: translateY(-50%) rotate(45deg) scale(1.08);
+  }
 }
 
-@media (max-width: 900px) {
-  .card-stack__item { padding: 40px 32px; }
+/* Mobile: empilha vertical, divisor horizontal, seta aponta pra baixo */
+@media (max-width: 768px) {
+  .card-stack { grid-template-columns: 1fr; }
+  .card-stack::after {
+    top: 50%; bottom: auto;
+    left: 12%; right: 12%; width: auto;
+    height: 1px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 107, 26, .4) 15%,
+      rgba(255, 107, 26, .85) 50%,
+      rgba(255, 107, 26, .4) 85%,
+      transparent 100%);
+  }
+  .card-stack__item--2::before {
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+  }
+  @keyframes connectPulse {
+    0%, 100% { transform: translateX(-50%) rotate(45deg) scale(1); }
+    50%      { transform: translateX(-50%) rotate(45deg) scale(1.08); }
+  }
+  .card-stack__item { padding: 44px 32px; }
 }
 @media (max-width: 560px) {
-  .card-stack__item { padding: 32px 22px; border-radius: 16px; }
+  .card-stack__item { padding: 36px 24px; }
+  .card-stack { border-radius: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card-stack__item { transition: none !important; }
+  .card-stack__item--2::before { animation: none; }
 }
 
 /* ── Palco ── */
