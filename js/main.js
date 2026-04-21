@@ -5,7 +5,8 @@
 const IS_MOBILE = matchMedia('(max-width: 768px), (max-height: 500px) and (orientation: landscape)').matches;
 const IS_TOUCH  = matchMedia('(hover: none), (pointer: coarse)').matches;
 const PREFERS_REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const LOW_MOTION = IS_MOBILE || PREFERS_REDUCE;
+/* Mobile normal roda animações iguais ao desktop. LOW_MOTION só em a11y. */
+const LOW_MOTION = PREFERS_REDUCE;
 
 /* ============================================
    PRELOADER
@@ -468,10 +469,6 @@ addEventListener('load', function () {
   const isMobile = matchMedia('(max-width: 768px)').matches;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce) return;
-  if (isMobile) {
-    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.getAll().forEach(t => t.kill());
-    return;
-  }
 
   // Normaliza scroll: uniformiza wheel/trackpad/touch num único easing curve.
   // Deixa o scroll com momentum mais consistente e menos "solavancos"
@@ -502,9 +499,9 @@ addEventListener('load', function () {
     });
   }
 
-  // 1) Hero — entrada da imagem (slide da esquerda) + parallax
+  // 1) Hero — entrada da imagem (slide da esquerda) + parallax (desktop + mobile)
   const heroVisual = document.querySelector('.hero-visual');
-  if (heroVisual && !isMobile) {
+  if (heroVisual) {
     gsap.fromTo(heroVisual,
       { xPercent: -130, opacity: 0 },
       {
@@ -512,8 +509,6 @@ addEventListener('load', function () {
         onComplete: () => heroVisual.classList.add('entered')
       }
     );
-  } else if (heroVisual) {
-    heroVisual.classList.add('entered');
   }
 
   // 2) ARIA slides — sem GSAP de entrada (CSS classes controlam tudo, evita jitter no hover)

@@ -4292,13 +4292,10 @@ html { scroll-padding-top: 84px; }
 }
 
 /* ============================================
-   PERFORMANCE MOBILE — kill animations pesadas
-   Cobre: <=768, landscape mobile baixo, reduced-motion
-   Preserva: hero-resultado pulse-glow, FAQ, menu, accordion
+   A11Y — respeita prefers-reduced-motion do usuário
+   (mobile normal agora roda animações iguais ao desktop)
    ============================================ */
-@media (max-width: 768px),
-       (max-height: 500px) and (orientation: landscape),
-       (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
 
   /* Kill global de animações exceto whitelist */
   *, *::before, *::after {
