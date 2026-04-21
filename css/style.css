@@ -246,6 +246,11 @@ html { scrollbar-gutter: stable; }
   padding: 0 !important;  /* sobrescreve .section { padding: 96px 0 } */
   min-height: 0;
 }
+/* Respiro antes do Método (separa do fim do QS) */
+#metodo.metodo-pinned { margin-top: 120px; }
+@media (max-width: 768px) {
+  #metodo.metodo-pinned { margin-top: 64px; }
+}
 .qs-pin,
 .metodo-pin {
   position: sticky;
