@@ -566,15 +566,32 @@ document.querySelectorAll('section[id]').forEach(s => {
   /* lock = { target, progress, anchorY } */
 
   function tryAcquireLock(deltaY) {
-    if (lock || deltaY <= 0) return;
+    if (lock) return;
+    const vh = window.innerHeight;
     for (const t of targets) {
       const rect = t.node.getBoundingClientRect();
-      /* Section encostou no topo da viewport (±4px) */
-      if (rect.top <= 4 && rect.top > -50) {
-        lock = { target: t, progress: 0, anchorY: window.scrollY + rect.top };
-        t.node.classList.add('lock-active');
-        window.scrollTo(0, lock.anchorY);
-        return;
+      /* Captura quando a section ocupa bem a tela: top <= 10 e ainda tem
+         pelo menos 60% de bottom visível. Alargado pra não perder scroll rápido. */
+      if (rect.top <= 10 && rect.bottom > vh * 0.6) {
+        if (deltaY > 0 && rect.top > -30) {
+          /* Entrada por cima: snap no topo da section */
+          lock = { target: t, progress: 0, anchorY: window.scrollY + rect.top };
+          t.node.classList.add('lock-active');
+          window.scrollTo(0, lock.anchorY);
+          return;
+        }
+        if (deltaY < 0 && rect.top < -30) {
+          /* Entrada por baixo (scroll reverso): snap no topo tb mas com
+             progress no máximo pra começar a regredir */
+          lock = {
+            target: t,
+            progress: t.distance,
+            anchorY: window.scrollY + rect.top,
+          };
+          t.node.classList.add('lock-active');
+          window.scrollTo(0, lock.anchorY);
+          return;
+        }
       }
     }
   }
