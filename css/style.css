@@ -2256,6 +2256,50 @@ li, label, input, textarea {
   .qs-brand { width: min(70%, 300px); padding: 24px 22px 22px; }
 }
 
+/* ===========================================================
+   A11Y MOBILE — touch targets, focus rings, reduced-motion
+   =========================================================== */
+@media (pointer: coarse) {
+  /* Mínimo 44×44px pra todos os alvos touch (WCAG 2.5.5) */
+  .btn,
+  .floatnav__item,
+  .floatnav__cta,
+  .faq__q,
+  .header__burger,
+  .lang-btn,
+  .team-card-wrap,
+  .aria-node,
+  a[href^="http"],
+  a[href^="#"],
+  button:not([hidden]) {
+    min-height: 44px;
+  }
+  /* Formulário: inputs touch-friendly */
+  .form input, .form textarea, .form select { min-height: 48px; font-size: 16px; }
+}
+/* Focus-visible universal — acessibilidade de teclado */
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.btn:focus-visible,
+.floatnav__cta:focus-visible {
+  outline-offset: 4px;
+}
+/* prefers-reduced-motion — respeito global expandido */
+@media (prefers-reduced-motion: reduce) {
+  .qs-ring, .qs-stage, .qs-brand,
+  .hero-visual,
+  .aria-detail-progress__bar,
+  .card-stack__item,
+  .reveal, .manifesto__line {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
 /* ============================================
    SECTION DOTS — navegação lateral
    ============================================ */
