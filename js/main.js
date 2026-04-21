@@ -1074,11 +1074,13 @@ const CASES_DATA = [
   const stage   = scene.querySelector('.qs-stage');
   const notifs  = Array.from(scene.querySelectorAll('.qs-notif'));
   const rings   = Array.from(scene.querySelectorAll('.qs-ring'));
+  const brand   = document.getElementById('qsBrand');
   if (!notifs.length) return;
 
   // Mobile / reduced-motion: mostra estado final estático, sem ciclo
   if (LOW_MOTION) {
     notifs.forEach(n => { n.classList.add('qs--in', 'qs--done'); });
+    brand?.classList.add('qs--in');
     return;
   }
 
@@ -1111,6 +1113,7 @@ const CASES_DATA = [
   function resetScene() {
     notifs.forEach(n => n.classList.remove('qs--in', 'qs--flash', 'qs--done', 'qs--unstamp'));
     rings.forEach(r => r.classList.remove('qs--go'));
+    brand?.classList.remove('qs--in', 'qs--out');
     stage?.classList.remove('qs-stage--chaos');
   }
 
@@ -1139,6 +1142,9 @@ const CASES_DATA = [
     // ── Phase 2 — CHAOS ACALMA (2.5s) ──
     after(2500, () => stage?.classList.remove('qs-stage--chaos'));
 
+    // ── BRAND CARD entra (~3.0s, depois de todas as notifs popparem) ──
+    after(3000, () => brand?.classList.add('qs--in'));
+
     // ── Phase 3 — READING RINGS (4.0 → 5.5s) — BMAi processando em massa ──
     after(4000, () => rings[0]?.classList.add('qs--go'));
     after(4150, () => rings[1]?.classList.add('qs--go'));
@@ -1160,7 +1166,9 @@ const CASES_DATA = [
     // ── Phase 5 — RESOLVED (9.0 → 10.5s) ──
     // calm — já está no estado desejado
 
-    // ── Phase 6 — REVERSE LOOP (10.5 → 12.0s) ──
+    // ── Phase 6 — REVERSE LOOP (10.3 → 12.0s) ──
+    // Brand sai primeiro
+    after(10300, () => brand?.classList.add('qs--out'));
     // un-stamp staggered
     const unshuffled = shuffle(notifs);
     unshuffled.forEach((n, i) => {
