@@ -242,14 +242,10 @@ html { scrollbar-gutter: stable; }
 #quem-somos.qs-pinned,
 #metodo.metodo-pinned {
   position: relative;
-  height: 250vh;
-  padding: 0 !important;  /* sobrescreve .section { padding: 96px 0 } */
+  height: 160vh;          /* curto: pin trava 60vh + 100vh de saída */
+  padding: 0 !important;
   min-height: 0;
-}
-/* Respiro antes do Método (separa do fim do QS) */
-#metodo.metodo-pinned { margin-top: 120px; }
-@media (max-width: 768px) {
-  #metodo.metodo-pinned { margin-top: 64px; }
+  margin: 0;
 }
 .qs-pin,
 .metodo-pin {
@@ -258,7 +254,7 @@ html { scrollbar-gutter: stable; }
   height: 100vh;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: center;    /* conteúdo centralizado na viewport */
   justify-content: center;
   overflow: hidden;
   padding: 0;
