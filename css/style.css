@@ -687,6 +687,31 @@ html { scrollbar-gutter: stable; }
   letter-spacing: .005em;
   animation: fadeUp .6s var(--ease) .5s both;
 }
+/* Sub em exatamente 2 linhas: cada span é uma linha que não quebra */
+.hero__sub--2lines {
+  max-width: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: .72rem;
+  letter-spacing: .04em;
+}
+.hero__sub-line {
+  display: block;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .hero__sub--2lines {
+    font-size: .65rem;
+    letter-spacing: .02em;
+  }
+}
+@media (max-width: 640px) {
+  .hero__sub--2lines {
+    font-size: 2.4vw;     /* escala proporcional pra caber em 2 linhas no mobile */
+    letter-spacing: 0;
+  }
+}
 .hero__ctas { display: flex; gap: 12px; justify-content: flex-start; animation: fadeUp .6s var(--ease) .7s both; }
 
 /* Stats — pill centralizada (no fluxo) */
