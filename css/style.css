@@ -572,7 +572,7 @@ html { scrollbar-gutter: stable; }
 .hero-visual {
   position: absolute;
   right: -8%;
-  top: 50%;
+  top: 42%;                  /* subido de 50% pra 42% — 8% de offset pra cima */
   transform: translateY(-50%);
   width: min(75vw, 960px);
   z-index: 0;
