@@ -36,7 +36,7 @@
 
       /* MÉTODO */
       'metodo.title': 'Do diagnóstico<br><span style="color:var(--orange)">à escala real.</span>',
-      'metodo.sub':   'Enxergamos o seu negócio como ele realmente é — único. 4 fases sequenciais, cada uma construindo sobre a anterior. Nenhum passo é pulado.',
+      'metodo.sub':   'Quatro fases, uma lógica: entender, organizar, construir, sustentar. Nenhuma é pulada — cada uma constrói em cima da anterior.',
 
       /* CASES */
       'cases.heading': 'Preferido pelas empresas que<br/><span style="color:var(--orange)">lideram com IA.</span>',

@@ -354,64 +354,63 @@ document.querySelectorAll('section[id]').forEach(s => {
   const ARIA_DATA = [
     {
       num: '01 / 04', letter: 'D', title: 'Diagnóstico',
-      subtitle: 'Enxergar antes de construir.',
-      desc: 'Mapeamos o seu negócio como ele realmente é — único. Identificamos entraves, perdas invisíveis e oportunidades reais. Nada é configurado antes de entender o contexto completo.',
+      subtitle: 'Entender antes de agir.',
+      desc: 'Mapeamos fluxos reais, medimos onde a operação sangra e identificamos onde a IA vai gerar tração. Sem contexto, toda tecnologia vira custo — por isso nada é configurado antes desse passo.',
       bullets: [
         'Mapeamento do processo comercial',
         'Identificação de perdas invisíveis',
         'Entrevistas com time e gestão',
-        'Relatório de oportunidades prioritárias',
-        'Priorização por impacto e viabilidade'
+        'Priorização por impacto e viabilidade',
+        'Mapa de oportunidades acionáveis'
       ],
       time: '⏱ 1 a 2 semanas',
-      tag: 'Sem diagnóstico, não há solução real.',
-      result: 'Entregável: documento de diagnóstico completo'
+      tag: 'Contexto antes de ferramenta.',
+      result: 'Entregável: mapa de oportunidades priorizadas'
     },
     {
       num: '02 / 04', letter: 'E', title: 'Estruturação',
-      subtitle: 'Projeto da solução — arquitetura, KPIs e plano de ação.',
-      desc: 'Desenhamos a arquitetura dos agentes e integrações, definimos KPIs mensuráveis e projetamos ROI por frente. É o blueprint completo antes de uma linha de código entrar em produção.',
+      subtitle: 'Preparamos o terreno antes de plantar inteligência.',
+      desc: 'Reorganizamos processos, definimos KPIs mensuráveis e desenhamos a arquitetura dos agentes. IA em cima de caos é caos acelerado — por isso estruturamos primeiro.',
       bullets: [
         'Arquitetura dos agentes e fluxos',
-        'Definição de KPIs e metas mensuráveis',
-        'Projeção de ROI por frente de atuação',
+        'KPIs mensuráveis e metas concretas',
+        'Projeção de ROI por frente',
         'Escolha de stack e integrações',
         'Cronograma com marcos semanais'
       ],
       time: '⏱ 1 a 2 semanas',
-      tag: 'Plano antes da execução.',
+      tag: 'Processo antes de inteligência.',
       result: 'Entregável: blueprint técnico + plano de resultados'
     },
     {
       num: '03 / 04', letter: 'I', title: 'Implementação',
-      subtitle: 'IA onde gera resultado, não onde impressiona.',
-      desc: 'Construímos e integramos as soluções nos pontos validados. Cada etapa é testada em produção e ajustada com o time antes de ir para escala. É aqui que começam as primeiras mudanças na cultura e no modo de pensar da empresa.',
+      subtitle: 'Inteligência integrada onde gera impacto.',
+      desc: 'Construímos agentes sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado — nada lançado no escuro.',
       bullets: [
-        'Construção sob medida dos agentes e fluxos',
-        'Integração com as ferramentas que você já usa',
-        'Testes em produção antes da escala',
+        'Construção sob medida dos agentes',
+        'Integração com as ferramentas já em uso',
+        'Validação em produção antes da escala',
         'Treinamento e onboarding do time',
-        'Primeiras mudanças de cultura operacional'
+        'ROI visível já no 1º mês'
       ],
       time: '⏱ 3 a 6 semanas',
-      tag: 'IA integrada ao processo real.',
+      tag: 'Execução onde dá resultado.',
       result: 'Entregável: sistema funcionando em produção'
     },
     {
       num: '04 / 04', letter: 'A', title: 'Acompanhamento',
-      subtitle: 'Não vamos te deixar desamparado. Se construímos, vamos manter.',
-      desc: 'Monitoramos indicadores, ajustamos prompt e lógica conforme o negócio evolui e garantimos que o resultado se sustente no longo prazo. Você ainda tem acesso ao nosso SaaS interno de acompanhamento de métricas — fechou com a BMAi, vira parceiro, não só mais um cliente.',
+      subtitle: 'Cliente BMAi vira parceiro — não só mais um.',
+      desc: 'Monitoramos indicadores, ajustamos prompts e lógica conforme o negócio evolui e você tem acesso ao nosso SaaS interno de métricas. Se a gente construiu, a gente mantém.',
       bullets: [
-        'Monitoramento de indicadores mensais',
-        'Melhorias contínuas de prompt e lógica',
-        'Ajustes conforme o negócio evolui',
-        'Suporte contínuo ao time',
+        'Monitoramento contínuo de indicadores',
+        'Ajuste de prompts conforme o negócio evolui',
+        'Suporte direto ao time',
         'Acesso ao SaaS interno da BMAi',
         'Expansão gradual das soluções'
       ],
       time: '⏱ Contínuo',
-      tag: 'Crescimento de longo prazo.',
-      result: 'Entregável: relatório mensal de performance + SaaS de acompanhamento'
+      tag: 'Se construímos, sustentamos.',
+      result: 'Entregável: dashboard mensal + acesso ao SaaS BMAi'
     }
   ];
 
