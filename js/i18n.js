@@ -25,6 +25,15 @@
 
       /* QUEM SOMOS */
       'qs.title':     'O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span>',
+
+      /* Section seals */
+      'seal.qs':     'Quem somos',
+      'seal.metodo': 'Método DEIA',
+      'seal.cases':  'Cases',
+      'seal.team':   'Time BMAi',
+      'seal.form':   'Contato',
+      'seal.faq':    'FAQ',
+      'seal.cta':    'Próximo passo',
       'qs.sub':       'Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.',
       'qs.card1_eyebrow': 'Fase 01 · Processo',
       'qs.card1_h3':      'Estruturamos<br><span style="color:var(--orange)">o processo.</span>',
@@ -157,6 +166,15 @@
       'hero.stat3': 'Average implementation days',
 
       'qs.title':     'Process comes first.<br><span style="color:var(--orange)">AI comes second.</span>',
+
+      /* Section seals */
+      'seal.qs':     'About us',
+      'seal.metodo': 'DEIA Method',
+      'seal.cases':  'Cases',
+      'seal.team':   'BMAi Team',
+      'seal.form':   'Contact',
+      'seal.faq':    'FAQ',
+      'seal.cta':    'Next step',
       'qs.sub':       'Intelligence on top of chaos only multiplies chaos. That\'s why we structure your business flow first — and only then build the AI, shaped to the operation.',
       'qs.card1_eyebrow': 'Phase 01 · Process',
       'qs.card1_h3':      'We structure<br><span style="color:var(--orange)">the process.</span>',
@@ -282,6 +300,15 @@
       'hero.stat3': 'Días promedio de implementación',
 
       'qs.title':     'El proceso viene primero.<br><span style="color:var(--orange)">La IA viene después.</span>',
+
+      /* Section seals */
+      'seal.qs':     'Quiénes somos',
+      'seal.metodo': 'Método DEIA',
+      'seal.cases':  'Cases',
+      'seal.team':   'Equipo BMAi',
+      'seal.form':   'Contacto',
+      'seal.faq':    'FAQ',
+      'seal.cta':    'Próximo paso',
       'qs.sub':       'Inteligencia sobre caos solo multiplica el caos. Por eso estructuramos el flujo de tu negocio primero — y solo después construimos la IA, moldeada a la operación.',
       'qs.card1_eyebrow': 'Fase 01 · Proceso',
       'qs.card1_h3':      'Estructuramos<br><span style="color:var(--orange)">el proceso.</span>',
