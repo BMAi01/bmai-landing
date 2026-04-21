@@ -5,9 +5,10 @@
 const IS_MOBILE = matchMedia('(max-width: 768px), (max-height: 500px) and (orientation: landscape)').matches;
 const IS_TOUCH  = matchMedia('(hover: none), (pointer: coarse)').matches;
 const PREFERS_REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* Mobile tem animações pesadas desligadas (cena Quem Somos ciclo, particles
-   canvas, counters animados etc). Desktop roda full. a11y reduce = sempre off. */
-const LOW_MOTION = IS_MOBILE || PREFERS_REDUCE;
+/* LOW_MOTION só em a11y. Mobile roda versão leve das animações (ver main
+   QUEM SOMOS — ciclo mobile simplificado). Particles canvas/counters/cursor
+   trail continuam gated por IS_MOBILE separadamente. */
+const LOW_MOTION = PREFERS_REDUCE;
 
 /* ============================================
    PRELOADER
@@ -77,7 +78,8 @@ const revealObs = new IntersectionObserver(entries => {
 }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
 
 function reveal(sel, stagger) {
-  if (LOW_MOTION) {
+  // Mobile + reduced-motion: conteúdo já visível (economiza IO + transitions)
+  if (LOW_MOTION || IS_MOBILE) {
     document.querySelectorAll(sel).forEach(el => el.classList.add('reveal', 'revealed'));
     return;
   }
@@ -107,7 +109,7 @@ reveal('.faq__item', true);
 /* ============================================
    COUNTERS — em mobile vai direto pro número final
    ============================================ */
-if (LOW_MOTION) {
+if (LOW_MOTION || IS_MOBILE) {
   document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count; });
 } else {
   const cObs = new IntersectionObserver(entries => {
@@ -128,7 +130,7 @@ if (LOW_MOTION) {
 /* ============================================
    MANIFESTO — staggered reveal (instant em mobile)
    ============================================ */
-if (LOW_MOTION) {
+if (LOW_MOTION || IS_MOBILE) {
   document.querySelectorAll('.manifesto__line').forEach(l => l.classList.add('revealed'));
 } else {
   const mObs = new IntersectionObserver(entries => {
@@ -808,7 +810,7 @@ const CASES_DATA = [
 
 /* Partículas flutuantes globais — OFF em mobile/reduced-motion */
 (function() {
-  if (LOW_MOTION) return;
+  if (LOW_MOTION || IS_MOBILE) return;
   const canvas = document.createElement('canvas');
   canvas.style.cssText = `
     position: fixed;
@@ -998,7 +1000,7 @@ const CASES_DATA = [
    CURSOR TRAIL — ring com lerp
    ============================================ */
 (function() {
-  if (LOW_MOTION || IS_TOUCH) return;
+  if (LOW_MOTION || IS_TOUCH || IS_MOBILE) return;
   const trail = document.getElementById('cur-trail');
   if (!trail) return;
 
@@ -1217,12 +1219,41 @@ const CASES_DATA = [
     after(12000, playCycle);
   }
 
+  /* Mobile: ciclo leve — evita travamento. Sem rings, sem backdrop dark,
+     sem camera jitter, menos stamps, ciclo mais curto. */
+  function playCycleMobile() {
+    resetScene();
+    // Pop-in rápido de todas (stagger 60ms — parece "enxurrada" mas sem waves)
+    const order = shuffle(notifs);
+    order.forEach((n, i) => {
+      after(80 + i * 60, () => {
+        n.classList.add('qs--in', 'qs--flash');
+        after(200, () => n.classList.remove('qs--flash'));
+      });
+    });
+    // Brand entra após todas as notifs aparecerem
+    after(1800, () => brand?.classList.add('qs--in'));
+    // ~8 notifs recebem check (pra sentir resolução, sem todas)
+    const toStamp = shuffle(notifs).slice(0, 8);
+    toStamp.forEach((n, i) => after(3000 + i * 160, () => n.classList.add('qs--done')));
+    // Reverse: brand sai + un-stamp
+    after(6500, () => brand?.classList.add('qs--out'));
+    toStamp.forEach((n, i) => {
+      after(6800 + i * 40, () => {
+        n.classList.add('qs--unstamp');
+        after(400, () => n.classList.remove('qs--done', 'qs--unstamp'));
+      });
+    });
+    // Restart em 8s
+    after(8000, playCycleMobile);
+  }
+
   let running = false;
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting && !running) {
         running = true;
-        playCycle();
+        (IS_MOBILE ? playCycleMobile : playCycle)();
       } else if (!e.isIntersecting && running) {
         running = false;
         clearAll();
