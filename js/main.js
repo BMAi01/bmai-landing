@@ -546,19 +546,53 @@ document.querySelectorAll('section[id]').forEach(s => {
     });
   });
 
+  /* Auto-cycle: cicla os 4 DEIA a cada 2.3s quando a seção tá visível.
+     Abre o detail no load e só pausa se usuário tiver prefers-reduced-motion. */
+  let cycleIdx = 0;
+  let cycleTimer = null;
+  const CYCLE_MS = 2300;
+
+  function stepCycle() {
+    cycleIdx = (cycleIdx + 1) % nodes.length;
+    activate(cycleIdx, { noToggle: true, force: true });
+    syncPressed();
+  }
+  function startCycle() {
+    if (cycleTimer || LOW_MOTION) return;
+    cycleTimer = setInterval(stepCycle, CYCLE_MS);
+  }
+  function stopCycle() {
+    if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
+  }
+
   const io = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      setTimeout(() => { activate(0); syncPressed(); }, 400);
-      io.disconnect();
-    }
-  }, { threshold: 0.4 });
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        activate(cycleIdx, { noToggle: true, force: true });
+        syncPressed();
+        startCycle();
+      } else {
+        stopCycle();
+      }
+    });
+  }, { threshold: 0.3 });
   io.observe(document.getElementById('metodo'));
 
-  /* Trigger externo (ex: scroll-hijack) — nunca fecha, só troca */
+  /* Trigger externo — nunca fecha, só troca */
   document.addEventListener('metodo:set', (e) => {
     const i = e.detail && e.detail.index;
-    if (typeof i === 'number') { activate(i, { noToggle: true, force: true }); syncPressed(); }
+    if (typeof i === 'number') {
+      cycleIdx = i;
+      activate(i, { noToggle: true, force: true });
+      syncPressed();
+    }
   });
+
+  /* Respeita reduced-motion: mostra só o primeiro card, sem auto-cycle */
+  if (LOW_MOTION) {
+    activate(0, { noToggle: true, force: true });
+    syncPressed();
+  }
 
   /* Swipe horizontal pra navegar entre as 4 etapas DEIA (touch devices) */
   const metodoSection = document.getElementById('metodo');

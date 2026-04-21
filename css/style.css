@@ -996,6 +996,12 @@ html { scrollbar-gutter: stable; }
 }
 .aria-hdr { position: relative; }
 .aria-hdr { text-align: center; margin-bottom: 36px; }
+
+/* Método: esconde os 4 nodes DEIA pequenos — cards auto-ciclam sem navegação manual */
+.aria-flow { display: none !important; }
+
+/* Garante que o detail panel fique sempre aberto (o JS cicla o conteúdo) */
+#metodo .aria-detail { max-height: none !important; opacity: 1 !important; }
 .aria-sub {
   font-size: 15px;
   color: #888;
