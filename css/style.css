@@ -210,8 +210,8 @@ section { position: relative; z-index: 1; display: block; }
 /* ============================================
    QUEM SOMOS — dois pilares
    ============================================ */
-#quem-somos { padding: 88px 0; }
-#quem-somos .section__center { margin-bottom: 56px; }
+#quem-somos { padding: 140px 0 160px; }
+#quem-somos .section__center { margin-bottom: 72px; }
 #quem-somos .section__title {
   font-size: clamp(2.25rem, 3.8vw, 3.2rem);
   letter-spacing: -.035em;
@@ -3780,7 +3780,7 @@ html { scroll-padding-top: 84px; }
 .card-stack {
   position: relative;
   width: 100%;
-  min-height: 440px;
+  min-height: 560px;
   perspective: 1400px;
   transform-style: preserve-3d;
 }
@@ -3850,11 +3850,11 @@ html { scroll-padding-top: 84px; }
 }
 
 @media (max-width: 900px) {
-  .card-stack { min-height: 400px; }
+  .card-stack { min-height: 500px; }
   .card-stack__item { padding: 40px 32px; }
 }
 @media (max-width: 560px) {
-  .card-stack { min-height: 360px; }
+  .card-stack { min-height: 440px; }
   .card-stack__item { padding: 32px 22px; border-radius: 16px; }
 }
 
@@ -3867,7 +3867,7 @@ html { scroll-padding-top: 84px; }
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 480px;
+  min-height: 620px;
   align-self: stretch;
   /* Isola paint/layout do resto da página durante animações internas */
   contain: layout paint;
