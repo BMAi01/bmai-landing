@@ -201,6 +201,13 @@ section {
   scroll-margin-top: 80px;  /* header fixo não cobre âncoras */
 }
 .section { padding: 48px 0; }
+
+/* Scroll lock físico — aplicado pelo JS do hijack.
+   scrollbar-gutter: stable reserva o espaço da scrollbar sempre,
+   evita layout shift quando travamos overflow. */
+html { scrollbar-gutter: stable; }
+html.scroll-locked,
+html.scroll-locked body { overflow: hidden !important; }
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 28px; }
 .section__title {

@@ -558,52 +558,53 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   SCROLL HIJACK — lock de verdade estilo Framer
-   Desktop only. Touch/reduced-motion caem no fallback sticky+progress.
+   SCROLL HIJACK — lock físico (overflow:hidden no html)
+   Desktop only. Força o user a scrollar a animação inteira antes de liberar.
    ============================================ */
 (function() {
   if (IS_TOUCH || PREFERS_REDUCE) return;
 
   const configs = [
-    { sel: '.qs-pinned',     stack: '.card-stack', distance: 1600 },
-    { sel: '.metodo-pinned', nodes: '.aria-node',  distance: 1800 },
+    { sel: '.qs-pinned',     stack: '.card-stack', distance: 1400 },
+    { sel: '.metodo-pinned', nodes: '.aria-node',  distance: 1600 },
   ];
-
   const targets = configs
     .map(c => ({ ...c, node: document.querySelector(c.sel) }))
     .filter(c => c.node);
   if (!targets.length) return;
 
+  const html = document.documentElement;
   let lock = null;
-  /* lock = { target, progress, anchorY } */
 
-  function tryAcquireLock(deltaY) {
+  function lockBody(anchor) {
+    /* Snap pra posição ancorada e trava o overflow do html */
+    window.scrollTo(0, anchor);
+    html.classList.add('scroll-locked');
+  }
+  function unlockBody() {
+    html.classList.remove('scroll-locked');
+  }
+
+  function tryAcquire(deltaY) {
     if (lock) return;
     const vh = window.innerHeight;
     for (const t of targets) {
       const rect = t.node.getBoundingClientRect();
-      /* Captura quando a section ocupa bem a tela: top <= 10 e ainda tem
-         pelo menos 60% de bottom visível. Alargado pra não perder scroll rápido. */
-      if (rect.top <= 10 && rect.bottom > vh * 0.6) {
-        if (deltaY > 0 && rect.top > -30) {
-          /* Entrada por cima: snap no topo da section */
-          lock = { target: t, progress: 0, anchorY: window.scrollY + rect.top };
-          t.node.classList.add('lock-active');
-          window.scrollTo(0, lock.anchorY);
-          return;
-        }
-        if (deltaY < 0 && rect.top < -30) {
-          /* Entrada por baixo (scroll reverso): snap no topo tb mas com
-             progress no máximo pra começar a regredir */
-          lock = {
-            target: t,
-            progress: t.distance,
-            anchorY: window.scrollY + rect.top,
-          };
-          t.node.classList.add('lock-active');
-          window.scrollTo(0, lock.anchorY);
-          return;
-        }
+      /* Zona de captura ampla: section encosta no topo da viewport */
+      const enteringFromTop    = deltaY > 0 && rect.top <= 40 && rect.top > -100;
+      const enteringFromBottom = deltaY < 0 && rect.bottom >= vh - 40 && rect.bottom < vh + 100;
+      if (enteringFromTop || enteringFromBottom) {
+        const anchorY = window.scrollY + rect.top;
+        lock = {
+          target: t,
+          progress: enteringFromTop ? 0 : t.distance,
+          anchorY,
+          lastIdx: -1,
+        };
+        t.node.classList.add('lock-active');
+        lockBody(anchorY);
+        applyProgress();
+        return;
       }
     }
   }
@@ -611,13 +612,14 @@ document.querySelectorAll('section[id]').forEach(s => {
   function releaseLock(direction) {
     if (!lock) return;
     const section = lock.target.node;
-    const sectionHeight = section.offsetHeight;
-    section.classList.remove('lock-active');
+    const h = section.offsetHeight;
     const anchorY = lock.anchorY;
+    section.classList.remove('lock-active');
     lock = null;
-    /* Solta no começo da próxima seção (sem pular conteúdo nem deixar gap) */
-    if (direction > 0) window.scrollTo(0, anchorY + sectionHeight + 2);
-    else window.scrollTo(0, anchorY - 8);
+    unlockBody();
+    /* Pequeno offset pra sair da zona de captura (evita recapturar na mesma direção) */
+    if (direction > 0) window.scrollTo(0, anchorY + h + 8);
+    else window.scrollTo(0, anchorY - 16);
   }
 
   function applyProgress() {
@@ -628,9 +630,7 @@ document.querySelectorAll('section[id]').forEach(s => {
       const stack = lock.target.node.querySelector(lock.target.stack);
       if (stack) stack.style.setProperty('--progress', t.toFixed(3));
     }
-
     if (lock.target.nodes) {
-      /* Mapeia progress pra um dos 4 nodes DEIA */
       const ns = lock.target.node.querySelectorAll(lock.target.nodes);
       if (ns.length) {
         const idx = Math.min(ns.length - 1, Math.floor(t * ns.length));
@@ -642,28 +642,30 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   }
 
+  /* Wheel: se lock, consome delta e bloqueia scroll nativo.
+     Sem lock: tenta captura se entrar na zona. */
   addEventListener('wheel', (e) => {
-    /* Sem lock ativo: tenta capturar quando a section encosta */
-    if (!lock) { tryAcquireLock(e.deltaY); if (!lock) return; }
-
+    if (!lock) { tryAcquire(e.deltaY); if (!lock) return; }
     e.preventDefault();
+    e.stopPropagation();
     lock.progress += e.deltaY;
-
-    if (lock.progress < 0) { releaseLock(-1); return; }
-    if (lock.progress >= lock.target.distance) { releaseLock(1); return; }
-
-    /* Mantém a página congelada no ponto de ancoragem */
-    window.scrollTo(0, lock.anchorY);
+    if (lock.progress < 0)                 return releaseLock(-1);
+    if (lock.progress >= lock.target.distance) return releaseLock(1);
     applyProgress();
   }, { passive: false });
 
-  /* Libera lock se o user apertar tecla, clicar ou mexer em hash */
+  /* Escape válvulas — a11y */
   addEventListener('keydown', (e) => {
     if (!lock) return;
-    if (['Escape','Tab','Home','End','PageUp','PageDown','ArrowUp','ArrowDown',' '].includes(e.key)) {
-      releaseLock(e.key === 'PageUp' || e.key === 'Home' || e.key === 'ArrowUp' ? -1 : 1);
-    }
+    const advance = ['PageDown', 'End', 'ArrowDown', ' ', 'Enter'];
+    const back    = ['PageUp', 'Home', 'ArrowUp', 'Escape', 'Tab'];
+    if (advance.includes(e.key)) { e.preventDefault(); releaseLock(1); }
+    else if (back.includes(e.key)) { e.preventDefault(); releaseLock(-1); }
   });
+
+  /* Safety: nunca deixar a página travada se o user sair via anchor / history */
+  addEventListener('hashchange', () => { if (lock) releaseLock(1); });
+  addEventListener('popstate',   () => { if (lock) releaseLock(1); });
 })();
 
 /* ============================================
