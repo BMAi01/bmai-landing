@@ -210,8 +210,32 @@ section { position: relative; z-index: 1; display: block; }
 /* ============================================
    QUEM SOMOS — dois pilares
    ============================================ */
-#quem-somos { padding: 140px 0 160px; }
-#quem-somos .section__center { margin-bottom: 72px; }
+#quem-somos { padding: 0; }
+#quem-somos .section__center { margin-bottom: 56px; }
+
+/* Pinned section estilo Algarys — a viewport trava enquanto o usuário
+   rola os cards; ao fim da altura da section, destrava naturalmente. */
+#quem-somos.qs-pinned {
+  position: relative;
+  height: 260vh;
+}
+.qs-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 56px 0 40px;
+}
+.qs-pin .container {
+  width: 100%;
+}
+@media (max-width: 900px) {
+  #quem-somos.qs-pinned { height: 240vh; }
+  .qs-pin { padding: 40px 0 32px; }
+}
 #quem-somos .section__title {
   font-size: clamp(2.25rem, 3.8vw, 3.2rem);
   letter-spacing: -.035em;

@@ -560,11 +560,20 @@ document.querySelectorAll('section[id]').forEach(s => {
       const section = stack.closest('section') || stack.parentElement;
       if (!section) return;
       const rect = section.getBoundingClientRect();
-      const total = rect.height + vh;
-      const passed = vh - rect.top;
-      const progress = Math.max(0, Math.min(1, passed / total));
-      const flipped = progress > 0.55;
-      stack.classList.toggle('flipped', flipped);
+      const scrollable = rect.height - vh;
+      let progress;
+      if (scrollable > 40) {
+        /* Pinned section: progresso = quanto a seção já subiu do viewport.
+           0 = topo da seção acabou de encostar no topo da viewport.
+           1 = bottom da seção encostou no topo (fim do pin). */
+        progress = Math.max(0, Math.min(1, -rect.top / scrollable));
+      } else {
+        /* Fallback pra seções comuns (não pinned) */
+        const total = rect.height + vh;
+        const passed = vh - rect.top;
+        progress = Math.max(0, Math.min(1, passed / total));
+      }
+      stack.classList.toggle('flipped', progress > 0.5);
     });
   }
 
