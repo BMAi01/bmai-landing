@@ -201,10 +201,19 @@ section {
   isolation: isolate;       /* cada section tem seu próprio stacking context — evita overlay entre elas */
   scroll-margin-top: 80px;  /* header fixo não cobre âncoras */
 }
-/* Padding vertical padronizado — respira sem criar vazio */
-.section { padding: 96px 0; }
+/* Padding vertical padronizado — respira generoso entre seções */
+.section { padding: 128px 0; }
 @media (max-width: 768px) {
-  .section { padding: 64px 0; }
+  .section { padding: 80px 0; }
+}
+/* Margem extra entre seções consecutivas — evita visual colado */
+section + section,
+section + .section,
+.section + section { margin-top: 32px; }
+@media (max-width: 768px) {
+  section + section,
+  section + .section,
+  .section + section { margin-top: 16px; }
 }
 
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
@@ -946,7 +955,7 @@ html { scrollbar-gutter: stable; }
    ARIA METHOD — flow diagram
    ============================================ */
 #metodo {
-  padding: 0;          /* padding controlado pelo .metodo-pin interno */
+  padding: 128px 0;
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -1853,7 +1862,7 @@ html { scrollbar-gutter: stable; }
    FORMULÁRIO BMAI
    ============================================ */
 #form {
-  padding: 96px 0;
+  padding: 128px 0;
   background: var(--bg2);
   border-top: 1px solid var(--glass-border);
 }
@@ -2575,7 +2584,7 @@ h1, h2, h3, p, span, li, a {
    CASES — 3D Tabs (Aceternity inspired)
    ============================================ */
 #cases {
-  padding: 96px 0;
+  padding: 128px 0;
   position: relative;
   z-index: 1;
 }
