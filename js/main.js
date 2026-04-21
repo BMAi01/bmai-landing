@@ -120,6 +120,10 @@ reveal('.aria__card', true);
 reveal('.resultados__item', true);
 reveal('.personas__card', true);
 reveal('.faq__item', true);
+reveal('.card-stack', false);
+reveal('.qs-scene-wrap', false);
+reveal('.team-card-wrap', true);
+reveal('.cs-card', true);
 
 /* ============================================
    HERO TITLE — simple fade in
@@ -606,13 +610,14 @@ document.querySelectorAll('section[id]').forEach(s => {
 
   function releaseLock(direction) {
     if (!lock) return;
-    lock.target.node.classList.remove('lock-active');
+    const section = lock.target.node;
+    const sectionHeight = section.offsetHeight;
+    section.classList.remove('lock-active');
     const anchorY = lock.anchorY;
-    const vh = window.innerHeight;
     lock = null;
-    /* Nudge pra sair do zone de captura na direção certa */
-    if (direction > 0) window.scrollTo(0, anchorY + vh + 2);
-    else window.scrollTo(0, anchorY - 2);
+    /* Solta no começo da próxima seção (sem pular conteúdo nem deixar gap) */
+    if (direction > 0) window.scrollTo(0, anchorY + sectionHeight + 2);
+    else window.scrollTo(0, anchorY - 8);
   }
 
   function applyProgress() {

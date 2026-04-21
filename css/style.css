@@ -194,7 +194,12 @@ ul { list-style: none; }
 /* ============================================
    SECTION
    ============================================ */
-section { position: relative; z-index: 1; display: block; }
+section {
+  position: relative;
+  z-index: 1;
+  display: block;
+  scroll-margin-top: 80px;  /* header fixo não cobre âncoras */
+}
 .section { padding: 48px 0; }
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 28px; }
@@ -223,18 +228,22 @@ section { position: relative; z-index: 1; display: block; }
 #quem-somos.qs-pinned,
 #metodo.metodo-pinned {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;           /* nunca height fixo — evita conteúdo transbordar */
+  overflow: visible;
 }
 .qs-pin,
 .metodo-pin {
   position: relative;
   top: 0;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   width: 100%;
   display: flex;
   align-items: center;
-  overflow: hidden;
-  padding: 40px 0;
+  justify-content: center;
+  overflow: visible;       /* clip só faz sentido em sticky pin (mobile fallback) */
+  padding: 64px 0;
 }
 .qs-pin .container,
 .metodo-pin .container { width: 100%; }
@@ -242,11 +251,16 @@ section { position: relative; z-index: 1; display: block; }
 /* Fallback sticky pra quem não tem hijack (touch/reduce) */
 @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
   #quem-somos.qs-pinned,
-  #metodo.metodo-pinned { height: 400vh; }
+  #metodo.metodo-pinned {
+    min-height: auto;
+    height: 400vh;
+  }
   .qs-pin,
   .metodo-pin {
     position: sticky;
     top: 0;
+    height: 100vh;
+    overflow: hidden;
   }
 }
 
