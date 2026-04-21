@@ -201,7 +201,11 @@ section {
   isolation: isolate;       /* cada section tem seu próprio stacking context — evita overlay entre elas */
   scroll-margin-top: 80px;  /* header fixo não cobre âncoras */
 }
-.section { padding: 48px 0; }
+/* Padding vertical padronizado — respira sem criar vazio */
+.section { padding: 96px 0; }
+@media (max-width: 768px) {
+  .section { padding: 64px 0; }
+}
 
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
 html { scrollbar-gutter: stable; }
@@ -567,7 +571,7 @@ html { scrollbar-gutter: stable; }
   min-height: 100vh; min-height: min(100svh, 100vh);
   display: flex; flex-direction: column; justify-content: center;
   align-items: flex-start;
-  padding: calc(var(--hdr) + 60px) 0 50px;
+  padding: calc(var(--hdr) + 60px) 0 96px;  /* espaço maior entre stats e ticker */
   overflow: hidden;
 }
 #hero .container.hero__wrap {
@@ -739,7 +743,8 @@ html { scrollbar-gutter: stable; }
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 56px;
+  margin-top: 48px;
+  margin-bottom: 0;
 }
 #hero .container.hero__stats-row {
   pointer-events: auto;
@@ -806,8 +811,9 @@ html { scrollbar-gutter: stable; }
    ============================================ */
 .ticker {
   border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);
-  padding: 20px 0; overflow: hidden; position: relative;
+  padding: 28px 0; overflow: hidden; position: relative;
   contain: layout paint; /* isola repaint do scroll infinito */
+  margin: 0;             /* ticker compacto — logos já têm respiração própria */
 }
 .ticker::before, .ticker::after { content: ''; position: absolute; top: 0; bottom: 0; width: 100px; z-index: 2; pointer-events: none; }
 .ticker::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
@@ -951,7 +957,7 @@ html { scrollbar-gutter: stable; }
    ARIA METHOD — flow diagram
    ============================================ */
 #metodo {
-  padding: 48px 0 56px;
+  padding: 0;          /* padding controlado pelo .metodo-pin interno */
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -1858,7 +1864,7 @@ html { scrollbar-gutter: stable; }
    FORMULÁRIO BMAI
    ============================================ */
 #form {
-  padding: 64px 0;
+  padding: 96px 0;
   background: var(--bg2);
   border-top: 1px solid var(--glass-border);
 }
@@ -2580,7 +2586,7 @@ h1, h2, h3, p, span, li, a {
    CASES — 3D Tabs (Aceternity inspired)
    ============================================ */
 #cases {
-  padding: 48px 0 56px;
+  padding: 96px 0;
   position: relative;
   z-index: 1;
 }
