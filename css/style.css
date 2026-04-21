@@ -516,10 +516,10 @@ section { position: relative; z-index: 1; display: block; }
 /* Imagem 3D close-up — lado direito do hero */
 .hero-visual {
   position: absolute;
-  right: -8%;
+  right: -10%;
   top: 50%;
   transform: translateY(-50%);
-  width: min(75vw, 960px);
+  width: min(48vw, 620px);
   z-index: 0;
   pointer-events: none;
   will-change: transform;
@@ -565,10 +565,10 @@ section { position: relative; z-index: 1; display: block; }
   pointer-events: none;
   background: linear-gradient(to right,
     #0d1b2a 0%,
-    #0d1b2a 22%,
-    rgba(13,27,42,.55) 38%,
-    rgba(13,27,42,.08) 58%,
-    transparent 70%);
+    #0d1b2a 40%,
+    rgba(13,27,42,.85) 55%,
+    rgba(13,27,42,.3) 72%,
+    transparent 88%);
 }
 /* Fade vertical sutil (topo + base) */
 .hero-visual::after {
@@ -3652,22 +3652,80 @@ html { scroll-padding-top: 84px; }
 
 .card-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* Símbolo BMAi como watermark decorativo no canto */
+/* === Tech accents === */
+
+/* Eyebrow monospace — 'MÉTODO · BMAi' com dot laranja leading */
+.card-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--fm);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+}
+.card-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 10px rgba(255, 107, 26, .8);
+}
+
+/* Corner brackets — [ ] em cada canto */
+.card-corner {
+  position: absolute;
+  width: 16px; height: 16px;
+  border: 1.5px solid rgba(255, 107, 26, .55);
+  pointer-events: none;
+  z-index: 3;
+}
+.card-corner--tl { top: 14px;    left: 14px;    border-right: 0; border-bottom: 0; border-top-left-radius: 4px; }
+.card-corner--tr { top: 14px;    right: 14px;   border-left: 0;  border-bottom: 0; border-top-right-radius: 4px; }
+.card-corner--bl { bottom: 14px; left: 14px;    border-right: 0; border-top: 0;    border-bottom-left-radius: 4px; }
+.card-corner--br { bottom: 14px; right: 14px;   border-left: 0;  border-top: 0;    border-bottom-right-radius: 4px; }
+
+/* Scan line laranja que atravessa o card verticalmente a cada ~9s */
+.card-scan {
+  position: absolute;
+  left: 8%; right: 8%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 167, 102, .9) 50%, transparent);
+  box-shadow: 0 0 12px rgba(255, 107, 26, .45);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  animation: cardScan 9s linear infinite;
+}
+@keyframes cardScan {
+  0%   { transform: translateY(0);      opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translateY(100%);   opacity: 0; }
+}
+
+/* Grid pattern tech mais presente (substitui watermark do símbolo) */
 .card-content::before {
   content: '';
   position: absolute;
-  top: -12px;
-  right: -16px;
-  width: 112px;
-  height: 112px;
-  background: url('../assets/images/simbolo-laranja.svg') no-repeat center / contain;
-  opacity: .05;
+  inset: -48px -40px;
+  background-image:
+    linear-gradient(rgba(255, 107, 26, .04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 107, 26, .04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 80% 90% at 50% 50%, #000 30%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 90% at 50% 50%, #000 30%, transparent 85%);
   pointer-events: none;
   z-index: 0;
-  transform: rotate(-8deg);
 }
 
 .card-content h3 {

@@ -26,8 +26,9 @@
       /* QUEM SOMOS */
       'qs.title':     'O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span>',
       'qs.sub':       'Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.',
-      'qs.card_h3':   'Engenharia antes.<br><span style="color:var(--orange)">Inteligência depois.</span>',
-      'qs.card_p':    'Cada sistema nasce de um diagnóstico próprio. Mapeamos o processo, desenhamos o fluxo e só então construímos a IA — moldada ponto a ponto ao seu contexto. Nada de solução de prateleira. Arquitetura sob medida, da origem ao deploy.',
+      'qs.card_eyebrow': 'Método · BMAi',
+      'qs.card_h3':   'Processo estruturado.<br><span style="color:var(--orange)">IA sob medida.</span>',
+      'qs.card_p':    'Antes da tecnologia, organizamos o fluxo do seu negócio pra criar um terreno eficiente pra IA potencializar. Depois construímos a Inteligência sob medida pra função específica de cada operação — nada de solução genérica. A IA é moldada ao processo, não o contrário.',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
@@ -157,8 +158,9 @@
 
       'qs.title':     'Process comes first.<br><span style="color:var(--orange)">AI comes second.</span>',
       'qs.sub':       'Intelligence on top of chaos only multiplies chaos. That\'s why we structure your business flow first — and only then build the AI, shaped to the operation.',
-      'qs.card_h3':   'Engineering first.<br><span style="color:var(--orange)">Intelligence after.</span>',
-      'qs.card_p':    'Every system is born from its own diagnosis. We map the process, design the flow and only then build the AI — shaped point by point to your context. No off-the-shelf solutions. Tailored architecture, from source to deploy.',
+      'qs.card_eyebrow': 'Method · BMAi',
+      'qs.card_h3':   'Structured process.<br><span style="color:var(--orange)">Tailored AI.</span>',
+      'qs.card_p':    'Before the technology, we organize your business flow to create fertile ground for AI to amplify. Then we build Intelligence tailored to the specific function of each operation — no off-the-shelf solutions. The AI adapts to the process, not the other way around.',
       'qs.brand_tag': 'integrating AI…',
 
       'metodo.title': 'From diagnosis<br><span style="color:var(--orange)">to real scale.</span>',
@@ -281,8 +283,9 @@
 
       'qs.title':     'El proceso viene primero.<br><span style="color:var(--orange)">La IA viene después.</span>',
       'qs.sub':       'Inteligencia sobre caos solo multiplica el caos. Por eso estructuramos el flujo de tu negocio primero — y solo después construimos la IA, moldeada a la operación.',
-      'qs.card_h3':   'Ingeniería antes.<br><span style="color:var(--orange)">Inteligencia después.</span>',
-      'qs.card_p':    'Cada sistema nace de un diagnóstico propio. Mapeamos el proceso, diseñamos el flujo y solo entonces construimos la IA — moldeada punto por punto a tu contexto. Nada de solución de estantería. Arquitectura a medida, desde el origen hasta el deploy.',
+      'qs.card_eyebrow': 'Método · BMAi',
+      'qs.card_h3':   'Proceso estructurado.<br><span style="color:var(--orange)">IA a medida.</span>',
+      'qs.card_p':    'Antes de la tecnología, organizamos el flujo de tu negocio para crear un terreno eficiente donde la IA potencie. Después construimos la Inteligencia a medida para la función específica de cada operación — nada de solución genérica. La IA se adapta al proceso, no al revés.',
       'qs.brand_tag': 'integrando IA…',
 
       'metodo.title': 'Del diagnóstico<br><span style="color:var(--orange)">a la escala real.</span>',
