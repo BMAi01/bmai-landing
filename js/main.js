@@ -559,19 +559,40 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   QS CARD STACK — reveal por HOVER (desktop) ou TAP (touch)
-   Sem scroll-lock. Card 2 só aparece quando o cursor passa sobre o card.
+   QS CARD STACK — HOVER slide + EXPLODE ao sair o cursor
    ============================================ */
 (function() {
   const stack = document.querySelector('.card-stack');
   if (!stack) return;
 
-  /* Touch: tap alterna entre card 1 e card 2 (hover não existe) */
   if (IS_TOUCH) {
+    /* Touch: tap alterna */
     stack.addEventListener('click', () => {
       stack.classList.toggle('is-revealed');
     });
+    return;
   }
+
+  /* Desktop: mouseleave detona animação explode */
+  let explodeTimer = null;
+  stack.addEventListener('mouseleave', () => {
+    stack.classList.add('explode');
+    clearTimeout(explodeTimer);
+    explodeTimer = setTimeout(() => {
+      /* Snap pro estado hidden sem transição (evita slide de volta feio) */
+      stack.classList.remove('explode');
+      stack.classList.add('snap');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => stack.classList.remove('snap'));
+      });
+    }, 550);
+  });
+  stack.addEventListener('mouseenter', () => {
+    /* Cancela explode se o user voltar rapidamente */
+    clearTimeout(explodeTimer);
+    stack.classList.remove('explode');
+    stack.classList.remove('snap');
+  });
 })();
 
 /* ============================================

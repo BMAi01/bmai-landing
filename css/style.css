@@ -524,9 +524,20 @@ html { scrollbar-gutter: stable; }
   min-height: 100vh; min-height: min(100svh, 100vh);
   display: flex; flex-direction: column; justify-content: center;
   align-items: flex-start;
-  padding: calc(var(--hdr) + 60px) 0 96px;  /* espaço maior entre stats e ticker */
+  padding: calc(var(--hdr) + 60px) 0 96px;
   overflow: hidden;
 }
+/* Canvas WebGL do gradient-bg — camada de fundo interativa */
+#gradient-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: auto;
+  opacity: .55;                  /* sutil pra não competir com o 3D */
+  mix-blend-mode: screen;
+}
+#gradient-bg canvas { display: block; width: 100%; height: 100%; }
+.hero > *:not(#gradient-bg) { position: relative; z-index: 2; }
 #hero .container.hero__wrap {
   max-width: 100%;
   width: 100%;
@@ -3913,6 +3924,25 @@ html { scroll-padding-top: 84px; }
           mask-composite: exclude;
   pointer-events: none;
 }
+/* Símbolo BMAi semi-transparente no canto superior direito */
+.card-stack__item::after {
+  content: '';
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 58px;
+  height: 58px;
+  background: url('../assets/images/simbolo-laranja.svg') center / contain no-repeat;
+  opacity: .09;
+  pointer-events: none;
+  z-index: 3;
+}
+.card-stack__item--2::after {
+  opacity: .14;   /* card branco — símbolo precisa um pouco mais de presença */
+}
+@media (max-width: 560px) {
+  .card-stack__item::after { top: 16px; right: 16px; width: 42px; height: 42px; }
+}
 .card-stack__item .card-content {
   display: flex;
   flex-direction: column;
@@ -3928,16 +3958,17 @@ html { scroll-padding-top: 84px; }
   transform: translate3d(0, 0, 0);
 }
 
-/* Card 2 DESLIZA de baixo ao PASSAR O CURSOR sobre o card.
-   Sem scroll-lock, sem progress JS — CSS hover puro com transição .7s. */
+/* Card 2 EMERGE DE TRÁS DO MOTION (lado esquerdo do card-stack = lado do motion).
+   Começa invisível via clip-path(0 100% 0 0) — wipe revelado esquerda→direita.
+   Leve translateY+scale pra dar sensação de card saindo de trás. */
 .card-stack__item--2 {
   z-index: 2;
   opacity: 1;
-  transform: translate3d(0, 100%, 0);
-  clip-path: inset(100% 0 0 0 round 24px);
+  transform: translate3d(-14px, 6px, 0) scale(.96);
+  clip-path: inset(0 100% 0 0 round 24px);
   transition:
-    transform .7s cubic-bezier(.4, 0, .2, 1),
-    clip-path .7s cubic-bezier(.4, 0, .2, 1);
+    transform .8s cubic-bezier(.4, 0, .2, 1),
+    clip-path .75s cubic-bezier(.25, 0.8, .35, 1);
   pointer-events: auto;
 
   /* Paleta invertida — branco creme + laranja */
@@ -3975,14 +4006,53 @@ html { scroll-padding-top: 84px; }
 /* Hover reveal — só em devices com cursor de verdade */
 @media (hover: hover) and (pointer: fine) {
   .card-stack:hover .card-stack__item--2 {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(1);
     clip-path: inset(0 0 0 0 round 24px);
   }
 }
-/* Touch: tap pra alternar via classe .revealed (JS setta) */
+/* Touch: tap alterna via classe .revealed */
 .card-stack.is-revealed .card-stack__item--2 {
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0) scale(1);
   clip-path: inset(0 0 0 0 round 24px);
+}
+
+/* EXPLODE — detona card 2 quando o cursor sai (classe setada via JS) */
+.card-stack.explode .card-stack__item--2 {
+  transition: none !important;
+  animation: cardExplode .55s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}
+/* Snap: pós-explosão, snapar o card 2 pro estado hidden sem transição */
+.card-stack.snap .card-stack__item--2 {
+  transition: none !important;
+}
+
+@keyframes cardExplode {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0);
+    clip-path: inset(0 round 24px);
+    opacity: 1;
+    filter: brightness(1.25) blur(0);
+    box-shadow:
+      0 30px 60px -20px rgba(0, 0, 0, .55),
+      0 0 56px -16px rgba(219, 85, 0, .3);
+  }
+  30% {
+    transform: translate3d(0, 0, 0) scale(1.08) rotate(.4deg);
+    clip-path: inset(0 round 24px);
+    opacity: 1;
+    filter: brightness(1.7) blur(0);
+    box-shadow:
+      0 30px 60px -20px rgba(0, 0, 0, .55),
+      0 0 160px rgba(219, 85, 0, 1),
+      0 0 60px rgba(255, 220, 180, .9);
+  }
+  100% {
+    transform: translate3d(20%, -12px, 0) scale(1.3) rotate(1.5deg);
+    clip-path: inset(0 round 24px);
+    opacity: 0;
+    filter: brightness(.4) blur(16px);
+    box-shadow: 0 0 0 rgba(219, 85, 0, 0);
+  }
 }
 /* Mobile */
 @media (max-width: 768px) {
