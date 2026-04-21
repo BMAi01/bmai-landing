@@ -195,12 +195,6 @@ ul { list-style: none; }
    SECTION
    ============================================ */
 section { position: relative; z-index: 1; display: block; }
-/* Perf: browser pula layout/paint de seções fora da viewport (60fps scroll).
-   intrinsic-size = estimativa da altura pra evitar saltos no scrollbar. */
-#metodo, #cases, #para-quem, #form, #faq, #contato {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 800px;
-}
 .section { padding: 64px 0; }
 .section--alt { background: var(--bg2); }
 .section__center { text-align: center; margin-bottom: 40px; }
