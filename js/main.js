@@ -810,7 +810,7 @@ const CASES_DATA = [
     H = canvas.height = innerHeight;
   }, { passive: true });
 
-  const N = window.matchMedia('(max-width:768px)').matches ? 15 : 30;
+  const N = IS_MOBILE ? 10 : 24;
   const pts = Array.from({ length: N }, () => ({
     x:  Math.random() * W,
     y:  Math.random() * H,

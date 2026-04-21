@@ -745,6 +745,7 @@ section { position: relative; z-index: 1; display: block; }
 .ticker {
   border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);
   padding: 20px 0; overflow: hidden; position: relative;
+  contain: layout paint; /* isola repaint do scroll infinito */
 }
 .ticker::before, .ticker::after { content: ''; position: absolute; top: 0; bottom: 0; width: 100px; z-index: 2; pointer-events: none; }
 .ticker::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
@@ -1243,6 +1244,7 @@ section { position: relative; z-index: 1; display: block; }
   align-items: center;
   justify-content: center;
   padding: 12px 0 48px;
+  contain: layout; /* isola layout — scroll-triggered flips dos cards */
 }
 .team-grid {
   display: grid;
@@ -3712,6 +3714,8 @@ html { scroll-padding-top: 84px; }
   height: 100%;
   min-height: 480px;
   align-self: stretch;
+  /* Isola paint/layout do resto da página durante animações internas */
+  contain: layout paint;
 }
 .qs-scene {
   position: absolute;
@@ -4255,6 +4259,8 @@ html { scroll-padding-top: 84px; }
 }
 @media (max-width: 560px) {
   .qs-scene-wrap { max-height: 440px; aspect-ratio: 1 / 1; height: auto; min-height: 0; }
+  /* Camera jitter infinita do stage pausada em telas estreitas — economia de GPU */
+  .qs-stage { animation: none !important; }
   .qs-brand { width: 70%; padding: 18px 14px 14px; border-radius: 18px; }
   .qs-brand__logo { width: 38px; height: 38px; margin-bottom: 8px; }
   .qs-brand__wordmark { height: 26px; margin-bottom: 6px; }
