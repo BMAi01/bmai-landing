@@ -3802,6 +3802,7 @@ html { scroll-padding-top: 84px; }
    Card Stack — 2 cards empilhados que alternam no scroll
    ─────────────────────────────────────────── */
 .card-stack {
+  --progress: 0;
   position: relative;
   width: 100%;
   min-height: 560px;
@@ -3822,11 +3823,7 @@ html { scroll-padding-top: 84px; }
   padding: 48px 40px;
   overflow: hidden;
   transform-origin: center top;
-  transition:
-    transform .8s cubic-bezier(.22, .61, .36, 1),
-    opacity .6s ease,
-    filter .6s ease,
-    box-shadow .6s ease;
+  /* Sem transition — scroll-linked 1:1 (padrão Framer Motion) */
   box-shadow:
     0 24px 48px -18px rgba(0, 0, 0, .45),
     0 4px 12px rgba(0, 0, 0, .2),
@@ -3851,26 +3848,21 @@ html { scroll-padding-top: 84px; }
   opacity: .85;
 }
 
-/* Estado inicial: card 1 visível; card 2 oculto, aguardando entrar por cima */
+/* Scroll-linked — tudo interpolado em função de --progress (0..1) */
 .card-stack__item--1 {
   z-index: 1;
-  transform: translate3d(0, 0, 0);
-  opacity: 1;
+  /* Card 1 fica no lugar; some suavemente só no fim */
+  opacity: calc(1 - var(--progress) * .15);
+  transform: translate3d(0, calc(var(--progress) * -8px), 0);
 }
 .card-stack__item--2 {
-  z-index: 2;                                  /* sempre na frente quando visível */
-  transform: translate3d(0, 56px, 0) scale(.98);
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-
-/* Scroll passa do threshold → card 2 sobrepõe o card 1 */
-.card-stack.flipped .card-stack__item--2 {
-  transform: translate3d(0, 0, 0) scale(1);
-  opacity: 1;
+  z-index: 2;
+  /* Card 2 entra de baixo, cobrindo o card 1 */
+  opacity: var(--progress);
+  transform:
+    translate3d(0, calc((1 - var(--progress)) * 80px), 0)
+    scale(calc(.96 + var(--progress) * .04));
   pointer-events: auto;
-  visibility: visible;
 }
 
 @media (max-width: 900px) {

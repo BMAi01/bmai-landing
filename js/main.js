@@ -563,17 +563,18 @@ document.querySelectorAll('section[id]').forEach(s => {
       const scrollable = rect.height - vh;
       let progress;
       if (scrollable > 40) {
-        /* Pinned section: progresso = quanto a seção já subiu do viewport.
-           0 = topo da seção acabou de encostar no topo da viewport.
-           1 = bottom da seção encostou no topo (fim do pin). */
+        /* Pinned section: 0 = topo acabou de encostar, 1 = fim do pin */
         progress = Math.max(0, Math.min(1, -rect.top / scrollable));
       } else {
-        /* Fallback pra seções comuns (não pinned) */
         const total = rect.height + vh;
         const passed = vh - rect.top;
         progress = Math.max(0, Math.min(1, passed / total));
       }
-      stack.classList.toggle('flipped', progress > 0.5);
+      /* Concentra a animação no meio do scroll: 0 até .3 é "card 1 puro",
+         .3 a .7 é a transição, .7+ é "card 2 puro" */
+      const t = Math.max(0, Math.min(1, (progress - 0.3) / 0.4));
+      stack.style.setProperty('--progress', t.toFixed(3));
+      stack.classList.toggle('flipped', t > 0.5);
     });
   }
 
