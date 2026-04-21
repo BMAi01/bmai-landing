@@ -467,8 +467,10 @@ document.querySelectorAll('section[id]').forEach(s => {
           </ul>
           <div class="aria-detail-footer">
             <span class="aria-detail-tag">${d.tag}</span>
-            <span class="aria-detail-time">${d.time}</span>
             <span class="aria-detail-result">${d.result}</span>
+          </div>
+          <div class="aria-detail-progress" aria-hidden="true">
+            <div class="aria-detail-progress__bar"></div>
           </div>
         </div>
       </div>
