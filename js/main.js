@@ -1215,3 +1215,9 @@ const CASES_DATA = [
   }, { threshold: 0.2 });
   io.observe(scene);
 })();
+
+/* Footer: ano dinâmico */
+(function () {
+  const y = document.getElementById('footerYear');
+  if (y) y.textContent = new Date().getFullYear();
+})();
