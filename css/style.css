@@ -3754,33 +3754,23 @@ html { scroll-padding-top: 84px; }
   max-width: 54ch;
   font-weight: 400;
   letter-spacing: -.005em;
-}
-
-/* Drop cap editorial — primeira letra do parágrafo */
-.card-content p::first-letter {
-  font-family: var(--fd);
-  font-size: 3.4em;
-  font-weight: 800;
-  line-height: .85;
-  color: var(--orange);
-  float: left;
-  padding: 4px 12px 0 0;
-  letter-spacing: -.04em;
-  text-shadow: 0 0 24px rgba(255, 107, 26, .35);
+  /* Barra vertical laranja leading — peso editorial sóbrio sem brilho
+     exagerado do drop cap anterior */
+  padding-left: 20px;
+  border-left: 2px solid var(--orange);
+  box-shadow: -2px 0 14px -4px rgba(255, 107, 26, .35);
 }
 
 @media (max-width: 900px) {
   .card-unificado { padding: 40px 32px; }
   .card-content::before { width: 88px; height: 88px; top: -8px; right: -10px; }
   .card-content h3 { font-size: clamp(1.75rem, 6.5vw, 2.25rem); margin-bottom: 22px; }
-  .card-content p::first-letter { font-size: 3em; padding-right: 10px; }
+  .card-content p { padding-left: 18px; }
 }
 @media (max-width: 560px) {
   .card-unificado { padding: 32px 22px; border-radius: 16px; }
-  .card-content::before { width: 72px; height: 72px; opacity: .04; }
   .card-content h3 { font-size: clamp(1.55rem, 8.5vw, 2rem); margin-bottom: 18px; letter-spacing: -.02em; }
-  .card-content p { font-size: .96rem; line-height: 1.65; }
-  .card-content p::first-letter { font-size: 2.8em; padding-right: 8px; }
+  .card-content p { font-size: .96rem; line-height: 1.65; padding-left: 16px; }
 }
 
 /* ── Palco ── */
