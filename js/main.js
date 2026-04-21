@@ -1073,14 +1073,12 @@ const CASES_DATA = [
   if (!scene) return;
   const stage   = scene.querySelector('.qs-stage');
   const notifs  = Array.from(scene.querySelectorAll('.qs-notif'));
-  const agent   = scene.querySelector('.qs-agent');
   const rings   = Array.from(scene.querySelectorAll('.qs-ring'));
-  if (!notifs.length || !agent) return;
+  if (!notifs.length) return;
 
   // Mobile / reduced-motion: mostra estado final estático, sem ciclo
   if (LOW_MOTION) {
     notifs.forEach(n => { n.classList.add('qs--in', 'qs--done'); });
-    agent.classList.add('qs--in', 'qs--glow', 'qs--chips-in');
     return;
   }
 
@@ -1112,7 +1110,6 @@ const CASES_DATA = [
 
   function resetScene() {
     notifs.forEach(n => n.classList.remove('qs--in', 'qs--flash', 'qs--done', 'qs--unstamp'));
-    agent.classList.remove('qs--in', 'qs--glow', 'qs--chips-in');
     rings.forEach(r => r.classList.remove('qs--go'));
     stage?.classList.remove('qs-stage--chaos');
   }
@@ -1139,16 +1136,10 @@ const CASES_DATA = [
     const wC = shuffle(wave3);
     wC.forEach((n, i) => popIn(n, 1700 + i * 175 + Math.random() * 100));
 
-    // ── Phase 2 — AGENT RISES (2.5 → 4.0s) ──
-    after(2500, () => {
-      stage?.classList.remove('qs-stage--chaos');
-      agent.classList.add('qs--in');
-    });
-    after(2800, () => agent.classList.add('qs--glow'));
-    // Chip stack reveal
-    after(3100, () => agent.classList.add('qs--chips-in'));
+    // ── Phase 2 — CHAOS ACALMA (2.5s) ──
+    after(2500, () => stage?.classList.remove('qs-stage--chaos'));
 
-    // ── Phase 3 — READING RINGS (4.0 → 5.5s) ──
+    // ── Phase 3 — READING RINGS (4.0 → 5.5s) — BMAi processando em massa ──
     after(4000, () => rings[0]?.classList.add('qs--go'));
     after(4150, () => rings[1]?.classList.add('qs--go'));
     after(4300, () => rings[2]?.classList.add('qs--go'));

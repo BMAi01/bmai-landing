@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260420-techcelebs">
+  <link rel="stylesheet" href="css/style.css?v=20260421-semagent">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -386,26 +386,126 @@
                 <span class="qs-notif__check">✓</span>
               </div>
 
-              <!-- AGENT (centro, dominante) -->
-              <div class="qs-agent" id="qsAgent">
-                <div class="qs-agent__glow"></div>
-                <div class="qs-agent__fresnel"></div>
-                <div class="qs-agent__head">
-                  <span class="qs-agent__dot"></span>
-                  <span class="qs-agent__title">BMAi Agente</span>
-                  <span class="qs-agent__pill">EM AÇÃO</span>
-                </div>
-                <p class="qs-agent__body">Respondendo <span class="qs-agent__highlight">+47 clientes</span> em paralelo, cada um no seu contexto e padrão.</p>
-                <div class="qs-agent__foot">
-                  <div class="qs-agent__stack">
-                    <span class="qs-chip" style="--c:#00E5FF">S</span>
-                    <span class="qs-chip" style="--c:#FAC775">E</span>
-                    <span class="qs-chip" style="--c:#7F77DD">B</span>
-                    <span class="qs-chip" style="--c:#ED93B1">M</span>
-                    <span class="qs-chip qs-chip--plus">+</span>
+              <!-- +10 notifs extras (centro livre sem agent) -->
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="top:8%;right:42%" data-tilt="center-top" data-wave="2">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">agora</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#F0997B">AN</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Andrew Ng</span><span class="qs-notif__msg">Dataset atrasou</span></div>
                   </div>
-                  <span class="qs-agent__count">43 ativos agora</span>
                 </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="top:35%;left:28%" data-tilt="mild-left" data-wave="2">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">1 min</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#378ADD">RH</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Reed Hastings</span><span class="qs-notif__msg">Revisão agora</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--med" data-tier="med" style="top:42%;left:36%" data-tilt="mild-right" data-wave="3">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">agora</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#5DCAA5">BC</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Brian Chesky</span><span class="qs-notif__msg qs-notif__msg--urgent">Urgente!</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="top:35%;right:28%" data-tilt="mild-right" data-wave="3">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">2 min</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#FAC775">ES</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Evan Spiegel</span><span class="qs-notif__msg">Feed quebrado</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="top:50%;left:24%" data-tilt="center-bottom" data-wave="1">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">agora</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#1D9E75">DE</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Daniel Ek</span><span class="qs-notif__msg qs-notif__msg--urgent">Streaming off!</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="top:50%;right:24%" data-tilt="center-bottom" data-wave="2">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">1 min</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#ED93B1">SS</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Sheryl Sandberg</span><span class="qs-notif__msg">Reunião urgente</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="top:14%;right:36%" data-tilt="center-top" data-wave="3">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">3 min</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#7F77DD">JD</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Jack Dorsey</span><span class="qs-notif__msg">API travada</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="bottom:24%;left:4%" data-tilt="left" data-wave="3">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">4 min</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#00E5FF">PC</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Patrick Collison</span><span class="qs-notif__msg">Pagto recusado</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="bottom:24%;right:4%" data-tilt="right" data-wave="2">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">agora</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#F09595">TK</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Travis Kalanick</span><span class="qs-notif__msg qs-notif__msg--urgent">Motorista sumiu</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
+              </div>
+
+              <div class="qs-notif qs-notif--mini" data-tier="mini" style="bottom:22%;left:42%" data-tilt="center-bottom" data-wave="1">
+                <div class="qs-notif__icon"><svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg></div>
+                <div class="qs-notif__body">
+                  <div class="qs-notif__meta"><span class="qs-notif__app">BMAi</span><span class="qs-notif__time">2 min</span></div>
+                  <div class="qs-notif__row">
+                    <div class="qs-notif__avatar" style="--c:#FFD28A">YL</div>
+                    <div class="qs-notif__text"><span class="qs-notif__name">Yann LeCun</span><span class="qs-notif__msg">Modelo travou</span></div>
+                  </div>
+                </div>
+                <span class="qs-notif__check">✓</span>
               </div>
 
             </div>
@@ -951,7 +1051,7 @@
   </div>
   <div id="google_translate_element" style="display:none"></div>
 
-  <script defer src="js/main.js?v=20260420-mobperf"></script>
+  <script defer src="js/main.js?v=20260421-semagent"></script>
 
   <script>
   // Lazy load Google Translate — só carrega se o user já tem cookie OU clicar em idioma ≠ PT
