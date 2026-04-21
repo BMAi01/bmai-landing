@@ -4019,24 +4019,25 @@ html { scroll-padding-top: 84px; }
   will-change: transform, opacity;
 }
 
-/* Backdrop escurecedor pesado (sólido quase opaco no centro) */
-.qs-stage.qs--brand-on::after,
-.qs-stage.qs--brand-off::after {
+/* Backdrop escurecedor — aplicado no .qs-scene (fora do preserve-3d) */
+.qs-scene.qs--brand-on::after,
+.qs-scene.qs--brand-off::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(3, 6, 14, .96) 0%, rgba(3, 6, 14, .88) 45%, rgba(3, 6, 14, .55) 75%, rgba(3, 6, 14, .2) 100%);
-  z-index: 90;
+    radial-gradient(ellipse 75% 65% at 50% 50%, rgba(3, 6, 14, .96) 0%, rgba(3, 6, 14, .9) 50%, rgba(3, 6, 14, .6) 78%, rgba(3, 6, 14, .25) 100%);
+  z-index: 50;
   pointer-events: none;
   opacity: 0;
   transition: opacity .55s ease;
+  border-radius: inherit;
 }
-.qs-stage.qs--brand-on::after { opacity: 1; }
+.qs-scene.qs--brand-on::after { opacity: 1; }
 
-/* Notifs: só opacity (leve) — filter blur em 25 elementos causa jank */
-.qs-stage.qs--brand-on .qs-notif {
-  opacity: .12;
+/* Notifs: só opacity (leve) — filter em 25 elementos causa jank */
+.qs-scene.qs--brand-on .qs-notif {
+  opacity: .1;
   transition: opacity .5s ease;
 }
 .qs-brand__halo {
