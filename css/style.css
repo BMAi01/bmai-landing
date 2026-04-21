@@ -3650,23 +3650,20 @@ html { scroll-padding-top: 84px; }
   75%      { transform: translate3d(.1%, -.05%, 0) rotateY(-.18deg); }
 }
 
-/* ── Notificações (estilo iOS) ── */
+/* ── Notificações (estilo iOS) — sem backdrop-filter pra manter fluidez ── */
 .qs-notif {
   position: absolute;
   display: flex;
   flex-direction: column;
   gap: 5px;
   padding: 9px 11px 9px 10px;
-  background: rgba(28, 28, 30, .58);
-  border: 0.5px solid rgba(255, 255, 255, .08);
+  background: rgba(22, 28, 40, .94);
+  border: 0.5px solid rgba(255, 255, 255, .1);
   border-radius: 16px;
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  backdrop-filter: blur(32px) saturate(180%);
   box-shadow:
-    0 14px 34px -10px rgba(0, 0, 0, .75),
-    0 4px 12px rgba(0, 0, 0, .35),
-    inset 0 .5px 0 rgba(255, 255, 255, .12),
-    inset 0 0 0 .5px rgba(255, 255, 255, .04);
+    0 12px 28px -10px rgba(0, 0, 0, .7),
+    0 3px 8px rgba(0, 0, 0, .3),
+    inset 0 .5px 0 rgba(255, 255, 255, .1);
   transform-origin: center;
   opacity: 0;
   transform: scale(0);
@@ -3674,7 +3671,6 @@ html { scroll-padding-top: 84px; }
   color: var(--qs-text-1);
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', var(--ff);
   z-index: 2;
-  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
 }
 .qs-notif--hero { width: 194px; }
@@ -4009,92 +4005,64 @@ html { scroll-padding-top: 84px; }
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0);
   opacity: 0;
-  width: min(58%, 340px);
+  width: min(60%, 340px);
   padding: 32px 28px 28px;
-  background: rgba(13, 27, 42, .95);
+  background: #0D1B2A;
   border: 1px solid rgba(255, 107, 26, .5);
   border-radius: 24px;
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  backdrop-filter: blur(32px) saturate(200%);
   box-shadow:
-    0 0 80px rgba(255, 107, 26, .35),
-    0 40px 100px -20px rgba(0, 0, 0, .85),
-    inset 0 1px 0 rgba(255, 255, 255, .12);
+    0 0 70px rgba(255, 107, 26, .3),
+    0 30px 80px -20px rgba(0, 0, 0, .8);
   text-align: center;
   z-index: 100;
   font-family: var(--ff);
+  will-change: transform, opacity;
 }
 
-/* Backdrop — escurece + desfoca as notifs atrás do brand */
-.qs-stage.qs--brand-on::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(4, 8, 18, .85) 0%, rgba(4, 8, 18, .55) 45%, rgba(4, 8, 18, .15) 75%, transparent 100%);
-  z-index: 90;
-  pointer-events: none;
-  animation: qsBackdropIn .6s ease forwards;
-}
+/* Backdrop escurecedor pesado (sólido quase opaco no centro) */
+.qs-stage.qs--brand-on::after,
 .qs-stage.qs--brand-off::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(4, 8, 18, .85) 0%, rgba(4, 8, 18, .55) 45%, rgba(4, 8, 18, .15) 75%, transparent 100%);
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(3, 6, 14, .96) 0%, rgba(3, 6, 14, .88) 45%, rgba(3, 6, 14, .55) 75%, rgba(3, 6, 14, .2) 100%);
   z-index: 90;
   pointer-events: none;
-  animation: qsBackdropOut .5s ease forwards;
+  opacity: 0;
+  transition: opacity .55s ease;
 }
-@keyframes qsBackdropIn {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
-}
-@keyframes qsBackdropOut {
-  0%   { opacity: 1; }
-  100% { opacity: 0; }
-}
+.qs-stage.qs--brand-on::after { opacity: 1; }
 
-/* Notifs desfocam/ficam embaçadas quando brand entra */
+/* Notifs: só opacity (leve) — filter blur em 25 elementos causa jank */
 .qs-stage.qs--brand-on .qs-notif {
-  filter: blur(1.5px) saturate(.7) brightness(.7);
-  transition: filter .6s ease;
-}
-.qs-stage.qs--brand-off .qs-notif {
-  filter: none;
-  transition: filter .5s ease;
+  opacity: .12;
+  transition: opacity .5s ease;
 }
 .qs-brand__halo {
   position: absolute;
-  inset: -50px;
-  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255, 107, 26, .3), transparent 70%);
-  filter: blur(26px);
+  inset: -40px;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255, 107, 26, .28), transparent 70%);
   z-index: -1;
   opacity: 0;
   transition: opacity .8s ease;
+  pointer-events: none;
 }
-.qs-brand.qs--in .qs-brand__halo {
-  opacity: 1;
-  animation: qsBrandBreath 3.4s ease-in-out infinite;
-}
-@keyframes qsBrandBreath {
-  0%, 100% { opacity: .85; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.08); }
-}
+.qs-brand.qs--in .qs-brand__halo { opacity: 1; }
 .qs-brand.qs--in {
-  animation: qsBrandIn 1.2s cubic-bezier(.22, 1.25, .36, 1) forwards;
+  animation: qsBrandIn 1s cubic-bezier(.22, 1.25, .36, 1) forwards;
 }
 @keyframes qsBrandIn {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.4); filter: blur(6px); }
-  60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.08); filter: blur(0); }
-  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.5); }
+  60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 .qs-brand.qs--out {
-  animation: qsBrandOut .55s ease-in forwards;
+  animation: qsBrandOut .5s ease-in forwards;
 }
 @keyframes qsBrandOut {
   0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(.75); filter: blur(4px); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(.8); }
 }
 
 .qs-brand__logo {
