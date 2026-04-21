@@ -536,17 +536,6 @@ html { scrollbar-gutter: stable; }
   padding: calc(var(--hdr) + 60px) 0 96px;
   overflow: hidden;
 }
-/* Canvas WebGL do gradient-bg — camada de fundo interativa */
-#gradient-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: auto;
-  opacity: .55;                  /* sutil pra não competir com o 3D */
-  mix-blend-mode: screen;
-}
-#gradient-bg canvas { display: block; width: 100%; height: 100%; }
-.hero > *:not(#gradient-bg) { position: relative; z-index: 2; }
 #hero .container.hero__wrap {
   max-width: 100%;
   width: 100%;
