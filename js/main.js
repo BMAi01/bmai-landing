@@ -415,133 +415,108 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   ];
 
-  const nodes  = document.querySelectorAll('.aria-node');
-  const detail = document.getElementById('aria-detail');
-  const inner  = document.getElementById('aria-detail-inner');
-  if (!nodes.length || !detail || !inner) return;
+  const nodes = document.querySelectorAll('.aria-node');
+  const stack = document.getElementById('metodoStack');
+  const metodoSection = document.getElementById('metodo');
+  if (!nodes.length || !stack || !metodoSection) return;
 
-  let current = -1;
-  let animating = false;
-
-  function renderDetail(d) {
-    return `
-      <div class="aria-detail-grid">
-        <div class="aria-detail-left">
-          <div class="aria-detail-num">${d.num}</div>
-          <div class="aria-detail-letter">${d.letter}</div>
-          <h3 class="aria-detail-title">${d.title}</h3>
-          <div class="aria-detail-subtitle">${d.subtitle}</div>
-          <p class="aria-detail-desc">${d.desc}</p>
+  /* Renderiza os 4 cards empilhados a partir do ARIA_DATA */
+  stack.innerHTML = ARIA_DATA.map((d, i) => `
+    <article class="metodo-stack__item" data-step="${i}" style="--i:${i}">
+      <div class="card-top-line"></div>
+      <span class="card-corner card-corner--tl" aria-hidden="true"></span>
+      <span class="card-corner card-corner--tr" aria-hidden="true"></span>
+      <span class="card-corner card-corner--bl" aria-hidden="true"></span>
+      <span class="card-corner card-corner--br" aria-hidden="true"></span>
+      <span class="card-scan" aria-hidden="true"></span>
+      <div class="metodo-stack__content">
+        <div class="metodo-stack__head">
+          <span class="metodo-stack__num">${d.num}</span>
+          <span class="metodo-stack__letter">${d.letter}</span>
         </div>
-        <div class="aria-detail-right">
-          <ul class="aria-detail-bullets">
-            ${d.bullets.map(b => `<li>${b}</li>`).join('')}
-          </ul>
-          <div class="aria-detail-footer">
-            <span class="aria-detail-tag">${d.tag}</span>
-            <span class="aria-detail-time">${d.time}</span>
-            <span class="aria-detail-result">${d.result}</span>
-          </div>
+        <h3 class="metodo-stack__title">${d.title}</h3>
+        <p class="metodo-stack__subtitle">${d.subtitle}</p>
+        <p class="metodo-stack__desc">${d.desc}</p>
+        <ul class="metodo-stack__bullets">
+          ${d.bullets.map(b => `<li>${b}</li>`).join('')}
+        </ul>
+        <div class="metodo-stack__footer">
+          <span class="metodo-stack__tag">${d.tag}</span>
+          <span class="metodo-stack__time">${d.time}</span>
         </div>
       </div>
-    `;
-  }
+    </article>
+  `).join('');
 
-  function activate(index) {
-    if (animating) return;
-    if (index === current) {
-      nodes[index].classList.remove('active');
-      detail.classList.remove('open');
-      current = -1;
-      return;
-    }
-    animating = true;
+  const items = stack.querySelectorAll('.metodo-stack__item');
+  let current = 0;
+
+  function setActive(index) {
+    index = Math.max(0, Math.min(items.length - 1, index));
+    if (index === current) return;
     current = index;
-    nodes.forEach((n, i) => n.classList.toggle('active', i === index));
-
-    if (detail.classList.contains('open')) {
-      inner.style.opacity = '0';
-      inner.style.transform = 'translateY(12px)';
-      setTimeout(() => {
-        inner.innerHTML = renderDetail(ARIA_DATA[index]);
-        inner.style.opacity = '';
-        inner.style.transform = '';
-        animating = false;
-      }, 300);
-    } else {
-      inner.innerHTML = renderDetail(ARIA_DATA[index]);
-      detail.classList.add('open');
-      setTimeout(() => { animating = false; }, 600);
-    }
+    stack.dataset.active = String(index);
+    items.forEach((item, i) => {
+      const diff = (i - index + items.length) % items.length;
+      item.style.setProperty('--diff', diff);
+      item.style.zIndex = String(items.length - diff);
+    });
+    nodes.forEach((n, i) => {
+      n.classList.toggle('active', i === index);
+      n.setAttribute('aria-pressed', i === index ? 'true' : 'false');
+    });
   }
 
-  // ARIA + semantic role
+  /* Inicializa estado base */
+  items.forEach((item, i) => {
+    item.style.setProperty('--diff', i);
+    item.style.zIndex = String(items.length - i);
+  });
+  nodes[0].classList.add('active');
+
+  /* Click / keyboard nos nodes DEIA */
   nodes.forEach((node, i) => {
     node.setAttribute('role', 'button');
     node.setAttribute('tabindex', '0');
-    node.setAttribute('aria-pressed', 'false');
-    node.setAttribute('aria-controls', 'aria-detail');
-  });
-  function syncPressed() {
-    nodes.forEach((n, i) => n.setAttribute('aria-pressed', i === current ? 'true' : 'false'));
-  }
-
-  // Touch detection
-  const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
-  let enterTimer = null;
-
-  nodes.forEach((node, i) => {
-    if (!isTouch) {
-      node.addEventListener('mouseenter', () => {
-        clearTimeout(enterTimer);
-        enterTimer = setTimeout(() => { activate(i); syncPressed(); }, 120);
-      });
-      node.addEventListener('mouseleave', () => clearTimeout(enterTimer));
-      node.addEventListener('focus', () => {
-        clearTimeout(enterTimer);
-        if (current !== i) { activate(i); syncPressed(); }
-      });
-    }
-    // Click funciona sempre (desktop bypass delay, touch único gatilho)
-    node.addEventListener('click', () => {
-      clearTimeout(enterTimer);
-      activate(i); syncPressed();
-    });
+    node.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    node.setAttribute('aria-controls', 'metodoStack');
+    node.addEventListener('click', () => setActive(i));
     node.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        clearTimeout(enterTimer);
-        activate(i); syncPressed();
-      }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActive(i); }
     });
   });
 
-  const io = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      setTimeout(() => { activate(0); syncPressed(); }, 400);
-      io.disconnect();
-    }
-  }, { threshold: 0.4 });
-  io.observe(document.getElementById('metodo'));
+  /* Scroll-linked: conforme a seção avança, troca o card na frente */
+  let raf = 0;
+  function onScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      const rect = metodoSection.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const total = rect.height + vh * 0.5;
+      const passed = vh * 0.9 - rect.top;
+      const progress = Math.max(0, Math.min(0.999, passed / total));
+      const index = Math.floor(progress * items.length);
+      setActive(index);
+      raf = 0;
+    });
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll, { passive: true });
+  onScroll();
 
-  /* Swipe horizontal pra navegar entre as 4 etapas DEIA (touch devices) */
-  const metodoSection = document.getElementById('metodo');
-  if (metodoSection && IS_TOUCH) {
+  /* Swipe horizontal em touch devices pra pular entre cards */
+  if (IS_TOUCH) {
     let sx = 0, sy = 0;
     metodoSection.addEventListener('touchstart', e => {
-      const t = e.changedTouches[0];
-      sx = t.clientX; sy = t.clientY;
+      const t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY;
     }, { passive: true });
     metodoSection.addEventListener('touchend', e => {
       const t = e.changedTouches[0];
       const dx = t.clientX - sx;
       const dy = t.clientY - sy;
-      // threshold 60px + dominante horizontal (não interfere em scroll vertical)
       if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
-      const dir = dx < 0 ? 1 : -1; // swipe left → next, right → prev
-      const n = (current + dir + nodes.length) % nodes.length;
-      activate(n);
-      syncPressed();
+      setActive(current + (dx < 0 ? 1 : -1));
     }, { passive: true });
   }
 })();
