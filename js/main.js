@@ -574,12 +574,11 @@ document.querySelectorAll('section[id]').forEach(s => {
   }
 
   const DISTANCE = 700;      /* px de wheel a acumular pra completar 100% */
-  const html = document.documentElement;
+  const body = document.body;
   let lock = null;
 
   function apply() {
     const raw = Math.max(0, Math.min(1, lock.progress / DISTANCE));
-    /* Easing smoothstep */
     const t = raw * raw * (3 - 2 * raw);
     stack.style.setProperty('--progress', t.toFixed(3));
   }
@@ -588,8 +587,10 @@ document.querySelectorAll('section[id]').forEach(s => {
     const rect = section.getBoundingClientRect();
     const anchorY = window.scrollY + rect.top;
     lock = { anchorY, progress: fromTop ? 0 : DISTANCE };
-    html.classList.add('scroll-locked');
+    /* Trava REAL via position:fixed no body (funciona em todos browsers) */
     window.scrollTo(0, anchorY);
+    body.style.setProperty('--lock-top', `-${anchorY}px`);
+    body.classList.add('scroll-locked');
     apply();
   }
 
@@ -598,9 +599,11 @@ document.querySelectorAll('section[id]').forEach(s => {
     const anchorY = lock.anchorY;
     const h = section.offsetHeight;
     lock = null;
-    html.classList.remove('scroll-locked');
+    body.classList.remove('scroll-locked');
+    body.style.removeProperty('--lock-top');
+    /* Restaura scroll position e move pra destino */
     if (direction > 0) window.scrollTo(0, anchorY + h + 8);
-    else               window.scrollTo(0, anchorY - 16);
+    else               window.scrollTo(0, Math.max(0, anchorY - 16));
   }
 
   addEventListener('wheel', (e) => {
