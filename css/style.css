@@ -3625,9 +3625,17 @@ html { scroll-padding-top: 84px; }
 }
 
 .qs__grid--animated {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: 48px;
-  align-items: stretch;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  justify-items: center;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+.qs__grid--animated > .card-stack,
+.qs__grid--animated > .qs-scene-wrap {
+  width: 100%;
+  max-width: 680px;
 }
 
 /* ── Card unificado com 2 pilares (lado esquerdo) — polido ── */
