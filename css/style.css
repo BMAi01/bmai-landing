@@ -4281,10 +4281,19 @@ html { scroll-padding-top: 84px; }
   .qs-notif--med  { width: 144px; }
   .qs-notif--mini { width: 128px; }
 }
+@media (max-width: 768px) {
+  /* Kill agressivo de animações infinitas da cena em mobile — LOW_MOTION mostra
+     estado estático via JS, mas as infinitas de CSS puro continuavam rodando
+     (qsCamJitter, dot pulses, ring glows etc) causando jitter. */
+  .qs-stage { animation: none !important; }
+  .qs-agent__dot,
+  .qs-dot-agent,
+  .qs-dot-live,
+  .qs-card__glow,
+  .qs-ring { animation: none !important; }
+}
 @media (max-width: 560px) {
   .qs-scene-wrap { max-height: 440px; aspect-ratio: 1 / 1; height: auto; min-height: 0; }
-  /* Camera jitter infinita do stage pausada em telas estreitas — economia de GPU */
-  .qs-stage { animation: none !important; }
   .qs-brand { width: 70%; padding: 18px 14px 14px; border-radius: 18px; }
   .qs-brand__logo { width: 38px; height: 38px; margin-bottom: 8px; }
   .qs-brand__wordmark { height: 26px; margin-bottom: 6px; }

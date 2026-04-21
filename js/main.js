@@ -1100,11 +1100,13 @@ const CASES_DATA = [
   const brand   = document.getElementById('qsBrand');
   if (!notifs.length) return;
 
-  // Mobile / reduced-motion: mostra estado final estático, sem ciclo
+  // Mobile / reduced-motion: estado estático — notifs visíveis + brand.
+  // Sem 'qs--done' (evita mostrar todos com check verde, confunde a
+  // narrativa) e sem 'qs--brand-on' (evita overlay dark que apagava as
+  // notifs e deixava só o brand no meio do nada).
   if (LOW_MOTION) {
-    notifs.forEach(n => { n.classList.add('qs--in', 'qs--done'); });
+    notifs.forEach(n => n.classList.add('qs--in'));
     brand?.classList.add('qs--in');
-    scene.classList.add('qs--brand-on');
     return;
   }
 
