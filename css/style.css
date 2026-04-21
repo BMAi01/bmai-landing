@@ -198,6 +198,7 @@ section {
   position: relative;
   z-index: 1;
   display: block;
+  isolation: isolate;       /* cada section tem seu próprio stacking context — evita overlay entre elas */
   scroll-margin-top: 80px;  /* header fixo não cobre âncoras */
 }
 .section { padding: 48px 0; }
