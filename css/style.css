@@ -3697,17 +3697,17 @@ html { scroll-padding-top: 84px; }
 .card-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-family: var(--fm);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .26em;
   text-transform: uppercase;
   color: var(--orange);
-  margin-bottom: 32px;
+  margin: 0;
   position: relative;
   z-index: 2;
-  padding: 8px 14px;
+  padding: 6px 12px;
   background: rgba(255, 107, 26, .08);
   border: 1px solid rgba(255, 107, 26, .22);
   border-radius: 999px;
@@ -3773,14 +3773,15 @@ html { scroll-padding-top: 84px; }
   position: relative;
   z-index: 1;
   font-family: var(--fd);
-  font-size: clamp(2.35rem, 3.8vw, 3.1rem);
-  font-weight: 800;
+  font-size: clamp(1.9rem, 2.8vw, 2.4rem);
+  font-weight: 700;
   color: var(--white);
-  margin: 0 0 30px;
-  line-height: 1.02;
-  letter-spacing: -.03em;
-  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+  text-transform: none;
 }
+.card-content h3 br { display: none; }  /* remove quebra forçada — deixa fluir natural */
 .card-content h3 span {
   text-shadow: 0 0 32px rgba(255, 107, 26, .28);
 }
@@ -3788,16 +3789,16 @@ html { scroll-padding-top: 84px; }
 .card-content p {
   position: relative;
   z-index: 1;
-  font-size: 1.12rem;
+  font-size: 1rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, .82);
+  color: rgba(255, 255, 255, .75);
   margin: 0;
-  max-width: 48ch;
+  max-width: 44ch;
   font-weight: 400;
-  letter-spacing: -.005em;
-  padding-left: 22px;
-  border-left: 3px solid var(--orange);
-  box-shadow: -3px 0 18px -4px rgba(255, 107, 26, .4);
+  letter-spacing: -.003em;
+  padding: 0;
+  border: none;
+  box-shadow: none;
 }
 
 @media (max-width: 900px) {
@@ -3874,13 +3875,13 @@ html { scroll-padding-top: 84px; }
   box-shadow: 0 0 16px rgba(255, 107, 26, .5);
   pointer-events: none;
 }
-/* Painéis — transparentes, sem borda própria, padding balanceado */
+/* Painéis — transparentes, rítmica vertical limpa */
 .card-stack__item {
   position: relative;
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 40px 44px;
+  padding: 48px 48px;
   overflow: visible;
   opacity: 1;
   transform: none;
@@ -3888,6 +3889,12 @@ html { scroll-padding-top: 84px; }
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 0;
+}
+.card-stack__item .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;                  /* rítmica consistente entre eyebrow → h3 → p */
 }
 .card-stack__item::before {
   /* Seta-losango laranja conectando Fase 01 → Fase 02 */
