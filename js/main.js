@@ -122,6 +122,30 @@ reveal('.personas__card', true);
 reveal('.faq__item', true);
 reveal('.team-card-wrap:not(:has(#tc-1))', true);  /* Pedro (#tc-1) sem fade-in de entrada */
 reveal('.cs-card', true);
+
+/* ============================================
+   QS CARD STACK — reveal suave on scroll (equivalente whileInView, once)
+   IntersectionObserver com rootMargin -50px pra disparar um pouco antes.
+   Fade + slide horizontal leve (x: 40 → 0) — GPU-only (transform + opacity).
+   ============================================ */
+(function() {
+  const stack = document.querySelector('.card-stack');
+  if (!stack) return;
+  if (LOW_MOTION) {
+    stack.classList.add('card-stack--reveal', 'card-stack--revealed');
+    return;
+  }
+  stack.classList.add('card-stack--reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('card-stack--revealed');
+        io.unobserve(entry.target);  /* once: true */
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+  io.observe(stack);
+})();
 /* NUNCA aplicar reveal em .card-stack ou .qs-scene-wrap — elas ficam dentro
    de section com scroll-lock; opacity:0 sem trigger deixa o card invisível
    enquanto o user está preso pela trava. */

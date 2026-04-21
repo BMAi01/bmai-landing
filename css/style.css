@@ -3891,6 +3891,29 @@ html { scroll-padding-top: 84px; }
   min-height: 320px;
   perspective: 1400px;
 }
+
+/* Scroll-reveal suave — fade + slide horizontal sutil (x:40→0).
+   GPU-only (transform + opacity). once via IO.unobserve no main.js. */
+.card-stack--reveal {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition:
+    opacity .6s cubic-bezier(.25, .1, .25, 1),
+    transform .6s cubic-bezier(.25, .1, .25, 1);
+  will-change: transform, opacity;
+}
+.card-stack--reveal.card-stack--revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-stack--reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 /* Cada item = card completo, absolute inset pra empilhar */
 .card-stack__item {
   position: absolute;
