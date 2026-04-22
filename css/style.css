@@ -5016,8 +5016,7 @@ html { scroll-padding-top: 84px; }
     border-radius: 10px !important;
   }
 
-  /* ---------- HERO: mobile espelha composicao do desktop
-     texto + CTA no topo, pedestal 3D nitido abaixo, stats bar no fim ---------- */
+  /* ---------- HERO: mobile IDENTICO ao desktop — pedestal nitido e vibrante ---------- */
   .hero {
     position: relative !important;
     min-height: auto !important;
@@ -5025,22 +5024,20 @@ html { scroll-padding-top: 84px; }
     background: #0d1b2a !important;
     overflow: hidden !important;
   }
-  /* Pedestal 3D integro embaixo, glow preservado.
-     bg-size 150% auto + bg-position 75% 100% enquadra o pedestal
-     inteiro no terco inferior da hero. Overlay escuro so por cima do texto,
-     transparente no pedestal pra o laranja vibrar igual desktop. */
+  /* Mesma imagem/posicionamento do desktop (cover + right 70%).
+     Overlay bem mais leve no pedestal pra o laranja brilhar igual à foto. */
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
     background:
       linear-gradient(180deg,
-        rgba(13, 27, 42, .94) 0%,
-        rgba(13, 27, 42, .82) 28%,
-        rgba(13, 27, 42, .35) 48%,
-        rgba(13, 27, 42, .1)  70%,
-        rgba(13, 27, 42, .85) 100%),
-      url('../assets/images/hero-bg.jpg') 75% 100% / 150% auto no-repeat;
+        rgba(13, 27, 42, .92) 0%,
+        rgba(13, 27, 42, .72) 22%,
+        rgba(13, 27, 42, .08) 55%,
+        rgba(13, 27, 42, .02) 78%,
+        rgba(13, 27, 42, .6)  100%),
+      url('../assets/images/hero-bg.jpg') right 70% / cover no-repeat;
     pointer-events: none;
     z-index: 0;
   }
