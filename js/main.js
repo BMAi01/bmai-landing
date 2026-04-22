@@ -25,11 +25,12 @@ const nav = document.getElementById('nav');
 const langBtn = document.getElementById('lang-btn');
 const langHome = langBtn?.parentElement; // lembra onde o lang-btn vivia (body/header)
 
-function syncLangPosition(_active) {
-  // Mobile: lang-btn agora fica fixo no topo direito ao lado do burger,
-  // fora do drawer — não precisa mais ser movido no DOM.
-  if (!langBtn || !langHome) return;
-  if (!langHome.contains(langBtn)) langHome.appendChild(langBtn);
+function syncLangPosition(active) {
+  if (!langBtn) return;
+  // Mobile: ao abrir o drawer, move o lang-btn pra dentro como última opção.
+  // Ao fechar, devolve pro home original (body).
+  if (active && nav && !nav.contains(langBtn)) nav.appendChild(langBtn);
+  else if (!active && langHome && !langHome.contains(langBtn)) langHome.appendChild(langBtn);
 }
 
 burger.addEventListener('click', () => {

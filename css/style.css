@@ -2547,54 +2547,82 @@ body[dir="rtl"] { direction: rtl; }
 .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
 body { top: 0 !important; }
 
-/* Mobile: lang-btn fica ao lado do burger como botão compacto fixo */
+/* Mobile: lang-btn só aparece DENTRO do drawer hambúrguer como opção */
 @media (max-width: 768px) {
+  /* Fora do drawer, lang-btn escondido */
   .lang-btn {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    display: none !important;
+  }
+  /* Dentro do drawer fullscreen aberto */
+  .floatnav.active .lang-btn {
     display: block !important;
-    position: fixed !important;
-    top: 14px !important;
-    right: 68px !important;
-    z-index: 1001 !important;
+    width: 100% !important;
+    order: 500 !important;
+    margin-top: 18px !important;
+    padding-top: 16px !important;
+    border-top: 1px solid rgba(255, 255, 255, .08) !important;
+    position: relative !important;
+    opacity: 0;
+    animation: navItemIn .5s cubic-bezier(.22, 1, .36, 1) .28s forwards;
   }
-  .lang-trigger {
-    width: 44px !important;
-    min-height: 44px !important;
-    height: 44px !important;
-    padding: 0 6px !important;
-    background: rgba(13, 27, 42, .85) !important;
-    border: 1px solid rgba(255, 255, 255, .12) !important;
-    border-radius: 12px !important;
-    -webkit-backdrop-filter: blur(18px);
-            backdrop-filter: blur(18px);
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 4px !important;
-    font-size: 11px !important;
-    font-weight: 700 !important;
+  .floatnav.active .lang-trigger {
+    width: 100% !important;
+    justify-content: space-between !important;
+    padding: 16px 12px !important;
+    min-height: 56px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
     color: var(--white) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    gap: 16px !important;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
   }
-  .lang-trigger svg:first-child,
-  .lang-trigger .lang-chevron { display: none !important; }
-  .lang-trigger #lang-current { font-size: 12px !important; }
-  .lang-dropdown {
-    position: absolute !important;
-    top: calc(100% + 6px) !important;
-    right: 0 !important;
-    left: auto !important;
-    width: 148px !important;
-    min-width: 148px !important;
-    background: rgba(13, 27, 42, .96) !important;
-    border: 1px solid rgba(255, 255, 255, .1) !important;
-    border-radius: 12px !important;
+  .floatnav.active .lang-trigger svg:first-child {
+    display: block !important;
+    width: 22px !important;
+    height: 22px !important;
+    color: var(--orange) !important;
+    flex-shrink: 0;
+  }
+  .floatnav.active .lang-trigger #lang-current {
+    flex: 1;
+    text-align: left;
+    margin-left: 2px;
+    font-size: 18px !important;
+    letter-spacing: -.01em;
+  }
+  .floatnav.active .lang-trigger .lang-chevron {
+    display: block !important;
+    transition: transform .3s ease;
+  }
+  .floatnav.active .lang-btn[aria-expanded="true"] .lang-chevron,
+  .floatnav.active .lang-trigger[aria-expanded="true"] .lang-chevron {
+    transform: rotate(180deg);
+  }
+  /* Dropdown fica inline abaixo do trigger, como sub-menu */
+  .floatnav.active .lang-dropdown {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 8px 0 0 !important;
     padding: 6px !important;
-    -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, .04) !important;
+    border: 1px solid rgba(255, 255, 255, .06) !important;
+    border-radius: 14px !important;
+    transform: none !important;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
   }
-  .lang-opt {
-    padding: 12px 14px !important;
-    font-size: 13px !important;
-    border-radius: 8px !important;
+  .floatnav.active .lang-opt {
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
     width: 100% !important;
     text-align: left !important;
   }
