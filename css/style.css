@@ -5125,7 +5125,8 @@ html { scroll-padding-top: 84px; }
   }
   #hero .hero__content { text-align: left !important; }
 
-  /* Pedestal mobile — edge-to-edge, pedestal centralizado, altura compacta */
+  /* Pedestal mobile — edge-to-edge, zoom leve pra dar jogo de posicionamento,
+     pedestal deslocado ligeiramente pra esquerda e mais pra cima */
   .hero__pedestal {
     width: 100vw !important;
     max-width: none !important;
@@ -5135,8 +5136,8 @@ html { scroll-padding-top: 84px; }
     margin-bottom: 10px !important;
     aspect-ratio: 5 / 4 !important;
     background-image: url('../assets/images/hero-bg-mobile.jpg?v=1') !important;
-    background-size: cover !important;
-    background-position: center 58% !important;
+    background-size: 118% auto !important;
+    background-position: 68% 75% !important;
   }
   /* .hero-visual legacy oculto (usamos .hero__pedestal agora) */
   .hero-visual { display: none !important; }
