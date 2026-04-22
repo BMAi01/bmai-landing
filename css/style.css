@@ -4253,12 +4253,15 @@ html { scroll-padding-top: 84px; }
    Leve translateY+scale pra dar sensação de card saindo de trás. */
 .card-stack__item--2 {
   z-index: 2;
-  opacity: 1;
-  transform: translate3d(-14px, 6px, 0) scale(.96);
-  clip-path: inset(0 100% 0 0 round 24px);
+  /* Depth of field inicial: card 2 está "atrás", escondido, desfocado */
+  opacity: 0;
+  transform: scale(.94) translateZ(0);
+  filter: blur(12px) brightness(.85);
+  clip-path: none;
   transition:
-    transform .8s cubic-bezier(.4, 0, .2, 1),
-    clip-path .75s cubic-bezier(.25, 0.8, .35, 1);
+    opacity .55s cubic-bezier(.22, 1, .36, 1),
+    transform .7s cubic-bezier(.22, 1, .36, 1),
+    filter .55s cubic-bezier(.22, 1, .36, 1);
   pointer-events: auto;
 
   /* Paleta invertida — branco creme + laranja */
@@ -4293,27 +4296,43 @@ html { scroll-padding-top: 84px; }
   opacity: 1;
 }
 
-/* Hover reveal — só em devices com cursor de verdade */
+/* ========== DEPTH OF FIELD reveal (Apple-style) ==========
+   Hover: card 1 recua (scale .92 + blur 6px + opacity .5),
+   card 2 avança do fundo (scale .94 → 1 + unblur + opacity 1). */
+.card-stack__item--1 {
+  transition:
+    transform .6s cubic-bezier(.22, 1, .36, 1),
+    opacity .55s cubic-bezier(.22, 1, .36, 1),
+    filter .6s cubic-bezier(.22, 1, .36, 1);
+}
 @media (hover: hover) and (pointer: fine) {
+  .card-stack:hover .card-stack__item--1 {
+    transform: scale(.92) translateZ(0);
+    opacity: .5;
+    filter: blur(6px);
+  }
   .card-stack:hover .card-stack__item--2 {
-    transform: translate3d(0, 0, 0) scale(1);
-    clip-path: inset(0 0 0 0 round 24px);
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    filter: blur(0) brightness(1);
   }
 }
-/* Touch: tap alterna via classe .revealed */
+/* Touch: tap alterna via classe .is-revealed */
+.card-stack.is-revealed .card-stack__item--1 {
+  transform: scale(.92) translateZ(0);
+  opacity: .5;
+  filter: blur(6px);
+}
 .card-stack.is-revealed .card-stack__item--2 {
-  transform: translate3d(0, 0, 0) scale(1);
-  clip-path: inset(0 0 0 0 round 24px);
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+  filter: blur(0) brightness(1);
 }
 
-/* EXPLODE — detona card 2 quando o cursor sai (classe setada via JS) */
-.card-stack.explode .card-stack__item--2 {
-  transition: none !important;
-  animation: cardExplode .55s cubic-bezier(.34, 1.56, .64, 1) forwards;
-}
-/* Snap: pós-explosão, snapar o card 2 pro estado hidden sem transição */
+/* EXPLODE desligado — transição depth-of-field já é suave nos dois sentidos */
+.card-stack.explode .card-stack__item--2,
 .card-stack.snap .card-stack__item--2 {
-  transition: none !important;
+  animation: none !important;
 }
 
 @keyframes cardExplode {

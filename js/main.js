@@ -688,23 +688,7 @@ function _initCardStackFx() {
     return;
   }
 
-  let explodeTimer = null;
-  stack.addEventListener('mouseleave', () => {
-    stack.classList.add('explode');
-    clearTimeout(explodeTimer);
-    explodeTimer = setTimeout(() => {
-      stack.classList.remove('explode');
-      stack.classList.add('snap');
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => stack.classList.remove('snap'));
-      });
-    }, 550);
-  });
-  stack.addEventListener('mouseenter', () => {
-    clearTimeout(explodeTimer);
-    stack.classList.remove('explode');
-    stack.classList.remove('snap');
-  });
+  /* Desktop: depth-of-field via hover puro CSS (sem JS de explode/snap) */
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _initCardStackFx);
