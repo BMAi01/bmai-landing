@@ -5015,7 +5015,7 @@ html { scroll-padding-top: 84px; }
     border-radius: 10px !important;
   }
 
-  /* ---------- HERO: símbolo ATRÁS do texto, bem centralizado ---------- */
+  /* ---------- HERO: hero-bg.jpg com pedestal CENTRALIZADO atras do texto ---------- */
   .hero {
     position: relative !important;
     min-height: auto !important;
@@ -5023,37 +5023,29 @@ html { scroll-padding-top: 84px; }
     background: #0d1b2a !important;
     overflow: hidden !important;
   }
-  /* Símbolo laranja centralizado atrás do conteúdo — não usa hero-bg.jpg
-     (que tem o pedestal no canto, descentralizado). Usa o .svg laranja
-     como mask gigante, com glow atrás, opacidade baixa pra não atrapalhar. */
+  /* bg-size 200% + bg-position-x 100% = o pedestal (que fica em ~75%
+     da imagem) alinha exatamente no centro do hero mobile.
+     Gradiente escuro por cima garante legibilidade do texto. */
   .hero::before {
     content: '';
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 78vw;
-    height: 78vw;
-    max-width: 520px;
-    max-height: 520px;
+    inset: 0;
     background:
-      radial-gradient(circle at center,
-        rgba(219, 85, 0, .28) 0%,
-        rgba(219, 85, 0, .10) 32%,
-        transparent 58%),
-      url('../assets/images/simbolo-laranja.svg') center / 55% 55% no-repeat;
-    opacity: .22;
+      linear-gradient(180deg,
+        rgba(13, 27, 42, .88) 0%,
+        rgba(13, 27, 42, .58) 42%,
+        rgba(13, 27, 42, .38) 62%,
+        rgba(13, 27, 42, .78) 100%),
+      url('../assets/images/hero-bg.jpg') 100% 55% / 200% auto no-repeat;
     pointer-events: none;
     z-index: 0;
-    filter: blur(.3px);
   }
-  /* Conteúdo sempre em cima do símbolo */
+  /* Conteúdo sempre em cima */
   #hero .container.hero__wrap,
   #hero .hero__stats {
     position: relative;
     z-index: 2;
   }
-  /* Garante legibilidade do texto mesmo em cima do glow */
   #hero .hero__content { text-align: left !important; }
   #hero .hero__stats { margin-top: 40px !important; }
   /* Sem paper-cut empilhado */
