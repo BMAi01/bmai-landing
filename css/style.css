@@ -5008,7 +5008,7 @@ html { scroll-padding-top: 84px; }
 
   /* Lang-btn fica fixo no topo direito ao lado do burger, fora do drawer */
 
-  /* ---------- HERO: pedestal 3D como peça central entre o CTA e a stats bar ---------- */
+  /* ---------- HERO: pedestal 3D bem contido entre CTA e stats, sem vazar ---------- */
   .hero {
     position: relative !important;
     display: flex !important;
@@ -5018,24 +5018,18 @@ html { scroll-padding-top: 84px; }
     background: #0d1b2a !important;
     overflow: hidden !important;
   }
-  /* Bg limpo atrás — só um glow laranja sutil no centro */
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 90% 45% at 50% 58%, rgba(219, 85, 0, .08), transparent 68%);
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* Sem glow global de fundo — cada bloco tem sua própria presença */
+  .hero::before { display: none !important; }
+
   #hero .container.hero__wrap,
   #hero .hero-visual,
   #hero .hero__stats {
     position: relative;
-    z-index: 2;
+    z-index: 1;
   }
   #hero .hero__content { text-align: left !important; }
 
-  /* Pedestal 3D como peça central (hero-bg.jpg focado no pedestal) */
+  /* Pedestal 3D — bloco sólido, contido, com respiro grande acima e abaixo */
   .hero-visual,
   .hero-visual[hidden] {
     display: block !important;
@@ -5046,44 +5040,25 @@ html { scroll-padding-top: 84px; }
     transform: none !important;
     width: 100% !important;
     max-width: 100% !important;
-    margin: 28px 0 28px !important;
+    margin: 36px 0 36px !important;
     aspect-ratio: 16 / 10 !important;
     opacity: 1 !important;
-    overflow: visible !important;
-    /* bg-size 200% + bg-position-x 100% centraliza o pedestal
-       horizontalmente (pedestal fica em ~75% da imagem) */
+    overflow: hidden !important;
+    border-radius: 16px !important;
+    /* Pedestal centralizado dentro do bloco (bg-size 200% + pos 100% 55%) */
     background:
       url('../assets/images/hero-bg.jpg') 100% 55% / 200% auto no-repeat !important;
-    animation: pedestalFloat 6s ease-in-out infinite !important;
-  }
-  @keyframes pedestalFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
+    animation: none !important;
   }
   /* Oculta o <picture>/<img> interno (simbolo-3d-close) — usamos bg-image */
   .hero-visual picture,
   .hero-visual img { display: none !important; }
-  .hero-visual-fade,
+  .hero-visual-fade { display: none !important; }
+  /* Nenhum pseudo vaza pra fora do bloco */
+  .hero-visual::before,
   .hero-visual::after { display: none !important; }
-  /* Glow laranja pulsante atrás do pedestal */
-  .hero-visual::before {
-    content: '' !important;
-    position: absolute !important;
-    left: 60% !important;
-    top: 50% !important;
-    width: 55% !important;
-    height: 70% !important;
-    transform: translate(-50%, -50%) !important;
-    background: radial-gradient(circle,
-      rgba(219, 85, 0, .35) 0%,
-      rgba(219, 85, 0, .15) 35%,
-      transparent 70%) !important;
-    filter: blur(30px) !important;
-    z-index: -1 !important;
-    pointer-events: none !important;
-  }
 
-  #hero .hero__stats { margin-top: 12px !important; }
+  #hero .hero__stats { margin-top: 0 !important; }
   /* Stats row com bg sólido pra destacar */
   #hero .container.hero__stats-row {
     background: linear-gradient(180deg, rgba(15, 26, 42, 1) 0%, rgba(8, 16, 28, 1) 100%) !important;
