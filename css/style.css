@@ -2222,15 +2222,16 @@ li, label, input, textarea {
    =========================================================== */
 @media (max-width: 768px) {
   /* backdrop-filter blur é caro no Safari mobile — reduz pra 10px
-     (excluímos .team-card: backdrop-filter quebra preserve-3d no iOS Safari
-     e impede que a face de trás do flip apareça) */
-  .hero__stats-row,
+     (excluímos .team-card: backdrop-filter quebra preserve-3d no iOS Safari.
+     Excluímos .hero__stats-row: o bg do hero por tras eh a hero-bg.jpg
+     muito intensa, o blur deixa os numeros ilegiveis — queremos bg solido) */
   .card-stack,
   .card-stack__item,
   .cs-hero {
     -webkit-backdrop-filter: blur(10px) !important;
             backdrop-filter: blur(10px) !important;
   }
+  .hero__stats-row,
   .team-card {
     -webkit-backdrop-filter: none !important;
             backdrop-filter: none !important;
@@ -5048,6 +5049,15 @@ html { scroll-padding-top: 84px; }
   }
   #hero .hero__content { text-align: left !important; }
   #hero .hero__stats { margin-top: 40px !important; }
+  /* Stats row com bg sólido pra destacar dos valores atrás do hero-bg */
+  #hero .container.hero__stats-row {
+    background: linear-gradient(180deg, rgba(15, 26, 42, .98) 0%, rgba(8, 16, 28, 1) 100%) !important;
+    border: 1px solid rgba(219, 85, 0, .22) !important;
+    box-shadow:
+      0 20px 50px -12px rgba(0, 0, 0, .8),
+      0 0 40px -8px rgba(219, 85, 0, .18),
+      inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+  }
   /* Sem paper-cut empilhado */
   .hero-visual { display: none !important; }
 
