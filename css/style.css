@@ -5125,8 +5125,8 @@ html { scroll-padding-top: 84px; }
   }
   #hero .hero__content { text-align: left !important; }
 
-  /* Pedestal mobile — edge-to-edge (bleed pra fora do container)
-     (mantém hero-bg.jpg original no mobile; desktop usa hero-bg-desktop.jpg) */
+  /* Pedestal mobile — nova imagem portrait (hero-bg-mobile.jpg) com pedestal
+     já centralizado e circuitos radiantes; edge-to-edge */
   .hero__pedestal {
     width: 100vw !important;
     max-width: none !important;
@@ -5134,10 +5134,10 @@ html { scroll-padding-top: 84px; }
     margin-right: calc(50% - 50vw) !important;
     margin-top: 14px !important;
     margin-bottom: 22px !important;
-    aspect-ratio: 16 / 11 !important;
-    background-image: url('../assets/images/hero-bg.jpg?v=2') !important;
-    background-size: 125% auto !important;
-    background-position: 80% 58% !important;
+    aspect-ratio: 3 / 4 !important;
+    background-image: url('../assets/images/hero-bg-mobile.jpg?v=1') !important;
+    background-size: cover !important;
+    background-position: center 45% !important;
   }
   /* .hero-visual legacy oculto (usamos .hero__pedestal agora) */
   .hero-visual { display: none !important; }
