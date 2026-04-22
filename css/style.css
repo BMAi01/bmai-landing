@@ -5283,21 +5283,9 @@ html { scroll-padding-top: 84px; }
     justify-content: space-between !important;
     align-items: center !important;
     gap: 4px !important;
-    padding: 14px 12px 18px !important;
-    margin: 0 -4px 0 !important;
+    padding: 0 8px 22px !important;
+    margin: 0 -4px 8px !important;
     overflow: visible !important;
-    /* Sticky no topo pra ficar visível durante o scroll-pin */
-    position: sticky !important;
-    top: 12px !important;
-    z-index: 4 !important;
-    background: linear-gradient(180deg, rgba(13, 27, 42, .96) 80%, rgba(13, 27, 42, 0) 100%);
-    -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
-    border-radius: 18px;
-  }
-  /* Detail sticky abaixo dos pills */
-  #metodo.metodo--scrollspy .aria-detail {
-    top: 130px !important;
   }
   #metodo .aria-node {
     flex: 0 0 auto !important;
@@ -5346,19 +5334,11 @@ html { scroll-padding-top: 84px; }
   }
   #metodo .aria-connector-svg { display: none !important; }
 
-  /* Scroll-pin trail — 140vh extras de padding-bottom pro "trilho" de scroll
-     (35vh por card × 4). Detail fica sticky enquanto o usuário rola por cima. */
-  #metodo.metodo--scrollspy {
-    padding-bottom: 140vh !important;
-  }
-  /* Detail mobile: sticky no topo, card único scroll-driven, transição fade+slide */
+  /* Detail mobile: card único auto-cycle, transição fade+slide, progress bar */
   #metodo .aria-detail {
-    position: sticky !important;
-    top: 80px !important;
     margin-top: 8px !important;
     max-height: none !important;
     overflow: visible !important;
-    z-index: 3;
   }
   #metodo .aria-detail-inner {
     padding: 26px 22px !important;
@@ -5407,9 +5387,28 @@ html { scroll-padding-top: 84px; }
   .aria-detail-tag { font-size: 10px !important; }
   .aria-detail-result { font-size: 10.5px !important; }
 
-  /* Mobile: scroll-driven — progress bar interna do card escondida
-     (pills D/E/I/A no topo já indicam o progresso) */
-  .aria-detail-progress { display: none !important; }
+  /* Progress bar 2.3s (auto-cycle) */
+  .aria-detail-progress {
+    display: block !important;
+    margin-top: 18px !important;
+    height: 3px !important;
+    background: rgba(255, 107, 26, .14) !important;
+    border-radius: 100px !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  .aria-detail-progress__bar {
+    height: 100% !important;
+    width: 0 !important;
+    background: linear-gradient(90deg, #db5500, #ff7a2a) !important;
+    border-radius: 100px !important;
+    box-shadow: 0 0 8px rgba(219, 85, 0, .5);
+    animation: ariaProgressFill 2.3s linear infinite !important;
+  }
+  @keyframes ariaProgressFill {
+    0%   { width: 0; }
+    100% { width: 100%; }
+  }
   .aria-detail-letter {
     position: absolute !important;
     top: 12px !important;

@@ -546,8 +546,8 @@ document.querySelectorAll('section[id]').forEach(s => {
   const metodoSection = document.getElementById('metodo');
 
   if (IS_MOBILE) {
-    // Mobile: seção "trava" o usuário — detail sticky, 4 zonas de scroll curtas
-    // dentro do padding-bottom extra. Cada 25% do scroll avança 1 card (D→E→I→A).
+    // Mobile: scroll-driven. Usuário arrasta pra baixo → cards trocam (D→E→I→A).
+    // Detail card fica sticky no topo enquanto 4 zonas de scroll passam.
     metodoSection.classList.add('metodo--scrollspy');
     let currentSpy = -1;
     let ticking = false;
@@ -569,18 +569,6 @@ document.querySelectorAll('section[id]').forEach(s => {
       ticking = true;
       requestAnimationFrame(() => { updateBySpot(); ticking = false; });
     }, { passive: true });
-    // Pills clicáveis rolam pra posição scroll correspondente (em vez de só ativar)
-    nodes.forEach((node, i) => {
-      node.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const rect = metodoSection.getBoundingClientRect();
-        const scrollStart = scrollY + rect.top;
-        const total = rect.height - innerHeight;
-        const target = scrollStart + (i / 4) * total + 10;
-        scrollTo({ top: target, behavior: 'smooth' });
-      }, true);
-    });
     // Primeira ativação
     activate(0, { noToggle: true, force: true });
     syncPressed();
