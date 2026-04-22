@@ -5016,50 +5016,101 @@ html { scroll-padding-top: 84px; }
     border-radius: 10px !important;
   }
 
-  /* ---------- HERO: mobile IDENTICO ao desktop — pedestal nitido e vibrante ---------- */
+  /* ---------- HERO: pedestal 3D como peça central entre o CTA e a stats bar ---------- */
   .hero {
     position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
     min-height: auto !important;
-    padding: 110px 0 56px !important;
+    padding: 110px 0 48px !important;
     background: #0d1b2a !important;
     overflow: hidden !important;
   }
-  /* Mesma imagem/posicionamento do desktop (cover + right 70%).
-     Overlay bem mais leve no pedestal pra o laranja brilhar igual à foto. */
+  /* Bg limpo atrás — só um glow laranja sutil no centro */
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(180deg,
-        rgba(13, 27, 42, .92) 0%,
-        rgba(13, 27, 42, .72) 22%,
-        rgba(13, 27, 42, .08) 55%,
-        rgba(13, 27, 42, .02) 78%,
-        rgba(13, 27, 42, .6)  100%),
-      url('../assets/images/hero-bg.jpg') right 70% / cover no-repeat;
+    background: radial-gradient(ellipse 90% 45% at 50% 58%, rgba(219, 85, 0, .08), transparent 68%);
     pointer-events: none;
     z-index: 0;
   }
-  /* Conteúdo sempre em cima */
   #hero .container.hero__wrap,
+  #hero .hero-visual,
   #hero .hero__stats {
     position: relative;
     z-index: 2;
   }
   #hero .hero__content { text-align: left !important; }
-  #hero .hero__stats { margin-top: 40px !important; }
-  /* Stats row com bg sólido pra destacar dos valores atrás do hero-bg */
-  #hero .container.hero__stats-row {
-    background: linear-gradient(180deg, rgba(15, 26, 42, .98) 0%, rgba(8, 16, 28, 1) 100%) !important;
-    border: 1px solid rgba(219, 85, 0, .22) !important;
-    box-shadow:
-      0 20px 50px -12px rgba(0, 0, 0, .8),
-      0 0 40px -8px rgba(219, 85, 0, .18),
-      inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+
+  /* Pedestal 3D como peça central (hero-bg.jpg focado no pedestal) */
+  .hero-visual,
+  .hero-visual[hidden] {
+    display: block !important;
+    position: relative !important;
+    right: auto !important;
+    left: 0 !important;
+    top: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 28px 0 28px !important;
+    aspect-ratio: 16 / 10 !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    /* bg-size 200% + bg-position-x 100% centraliza o pedestal
+       horizontalmente (pedestal fica em ~75% da imagem) */
+    background:
+      url('../assets/images/hero-bg.jpg') 100% 55% / 200% auto no-repeat !important;
+    animation: pedestalFloat 6s ease-in-out infinite !important;
   }
-  /* Sem paper-cut empilhado */
-  .hero-visual { display: none !important; }
+  @keyframes pedestalFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+  /* Oculta o <picture>/<img> interno (simbolo-3d-close) — usamos bg-image */
+  .hero-visual picture,
+  .hero-visual img { display: none !important; }
+  .hero-visual-fade,
+  .hero-visual::after { display: none !important; }
+  /* Glow laranja pulsante atrás do pedestal */
+  .hero-visual::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 60% !important;
+    top: 50% !important;
+    width: 55% !important;
+    height: 70% !important;
+    transform: translate(-50%, -50%) !important;
+    background: radial-gradient(circle,
+      rgba(219, 85, 0, .35) 0%,
+      rgba(219, 85, 0, .15) 35%,
+      transparent 70%) !important;
+    filter: blur(30px) !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+  }
+
+  #hero .hero__stats { margin-top: 12px !important; }
+  /* Stats row com bg sólido pra destacar */
+  #hero .container.hero__stats-row {
+    background: linear-gradient(180deg, rgba(15, 26, 42, 1) 0%, rgba(8, 16, 28, 1) 100%) !important;
+    border: 1px solid rgba(219, 85, 0, .28) !important;
+    box-shadow:
+      0 20px 50px -12px rgba(0, 0, 0, .85),
+      0 0 40px -8px rgba(219, 85, 0, .22),
+      inset 0 1px 0 rgba(255, 255, 255, .08) !important;
+  }
+  /* Números e labels mais vivos — evita look "apagado" */
+  #hero .hero__stat-value {
+    color: #ff8533 !important;
+    text-shadow: 0 0 14px rgba(219, 85, 0, .35) !important;
+    font-weight: 800 !important;
+  }
+  #hero .hero__stat-label {
+    color: rgba(255, 255, 255, .82) !important;
+  }
+  #hero .hero__stat-sep { background: rgba(219, 85, 0, .25) !important; }
 
   /* ---------- Cards — garantir stack + reveal suave ---------- */
   .qs__grid,
@@ -5132,18 +5183,70 @@ html { scroll-padding-top: 84px; }
   }
   #metodo .aria-connector-svg { display: none !important; }
 
-  /* Detail card polido + gradient header laranja */
-  #metodo .aria-detail { margin-top: 8px !important; }
-  .aria-detail-inner {
-    padding: 24px 20px !important;
-    border-radius: 20px !important;
-    background:
-      radial-gradient(ellipse 100% 60% at 50% 0%, rgba(219, 85, 0, .1), transparent 70%),
-      linear-gradient(180deg, #162534 0%, #0d1b2a 100%) !important;
+  /* Detail: 4 cards empilhados de uma vez no mobile */
+  #metodo .aria-detail {
+    margin-top: 8px !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
+  #metodo #aria-detail-inner {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+  #metodo #aria-detail-inner::before { display: none !important; }
+  /* Cada card individual do mobile */
+  .aria-detail-card {
+    position: relative;
+    padding: 22px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(219, 85, 0, .22);
+    background:
+      radial-gradient(ellipse 100% 55% at 50% 0%, rgba(219, 85, 0, .12), transparent 70%),
+      linear-gradient(180deg, #162534 0%, #0d1b2a 100%);
+    box-shadow:
+      0 16px 36px -16px rgba(0, 0, 0, .55),
+      0 0 30px -10px rgba(219, 85, 0, .18),
+      inset 0 1px 0 rgba(255, 255, 255, .04);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: ariaCardIn .55s cubic-bezier(.22, 1, .36, 1) forwards;
+  }
+  .aria-detail-card:nth-child(1) { animation-delay: .05s; }
+  .aria-detail-card:nth-child(2) { animation-delay: .15s; }
+  .aria-detail-card:nth-child(3) { animation-delay: .25s; }
+  .aria-detail-card:nth-child(4) { animation-delay: .35s; }
+  @keyframes ariaCardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .aria-detail-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(219,85,0,.7) 30%, #ff7a2a 50%, rgba(219,85,0,.7) 70%, transparent);
+    box-shadow: 0 0 10px rgba(219, 85, 0, .4);
+  }
+  .aria-detail-card .aria-detail-inner {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    margin-top: 0 !important;
+  }
+  .aria-detail-card .aria-detail-inner::before { display: none !important; }
+  .aria-detail-card .aria-detail-progress { display: none !important; }
   .aria-detail-grid {
     grid-template-columns: 1fr !important;
-    gap: 20px !important;
+    gap: 16px !important;
   }
   .aria-detail-letter {
     position: absolute !important;

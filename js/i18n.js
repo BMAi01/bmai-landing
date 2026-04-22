@@ -105,6 +105,8 @@
       'cases.lead':    '"Eles viram nosso negócio como único, me trataram como parceiro e me senti visto e ouvido de verdade para desenvolver uma solução de IA para a minha empresa."',
       'cases.btn':     'Quero ser o próximo case',
 
+      'cs0.result':    '<span class="cs-card__metric">300 mensagens/dia</span> respondidas com IA — atendimento <span class="cs-card__metric">24/7</span> sem contratações extras',
+
       'cs_hero.sector': 'Saúde',
       'cs_hero.quote':  '"O volume travava a clínica. 300 mensagens por dia chegando sem parar e tudo parava fora do horário comercial. A BMAI colocou IA no atendimento — hoje o paciente é respondido na hora, até de madrugada, e só chega pra gente o que realmente precisa de humano."',
       'cs_hero.role':   'CEO na GastroObesi',
@@ -296,6 +298,8 @@
       'cases.lead':    '"They saw our business as unique, treated me as a partner, and I felt truly seen and heard in building an AI solution for my company."',
       'cases.btn':     'I want to be the next case',
 
+      'cs0.result':    '<span class="cs-card__metric">300 messages/day</span> answered with AI — <span class="cs-card__metric">24/7</span> support with no extra hires',
+
       'cs_hero.sector': 'Healthcare',
       'cs_hero.quote':  '"Volume was strangling the clinic. 300 messages a day pouring in non-stop, and everything ground to a halt outside business hours. BMAI put AI into support — today the patient gets a response instantly, even at 3am, and only what truly needs a human reaches us."',
       'cs_hero.role':   'CEO at GastroObesi',
@@ -481,6 +485,8 @@
       'cases.heading': 'Preferido por empresas que<br/><span style="color:var(--orange)">lideran con IA.</span>',
       'cases.lead':    '"Vieron nuestro negocio como único, me trataron como socio y me sentí realmente visto y escuchado para desarrollar una solución de IA para mi empresa."',
       'cases.btn':     'Quiero ser el próximo caso',
+
+      'cs0.result':    '<span class="cs-card__metric">300 mensajes/día</span> respondidos con IA — atención <span class="cs-card__metric">24/7</span> sin contrataciones extras',
 
       'cs_hero.sector': 'Salud',
       'cs_hero.quote':  '"El volumen estrangulaba la clínica. 300 mensajes por día llegando sin parar y todo se frenaba fuera del horario comercial. BMAI puso IA en la atención — hoy el paciente recibe respuesta al instante, incluso de madrugada, y solo llega a nosotros lo que realmente necesita un humano."',

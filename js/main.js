@@ -464,10 +464,21 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   }
 
-  // Recarrega dados e re-renderiza o card atual ao trocar idioma
+  // Mobile: renderiza os 4 cards DEIA de uma vez (sem auto-cycle)
+  function renderAllMobile() {
+    inner.innerHTML = ARIA_DATA.map((d, i) =>
+      `<div class="aria-detail-card" data-idx="${i}">${renderDetail(d)}</div>`
+    ).join('');
+    detail.classList.add('open');
+    nodes.forEach(n => n.classList.add('active'));
+  }
+
+  // Recarrega dados e re-renderiza ao trocar idioma
   window.addEventListener('i18n:change', () => {
     ARIA_DATA = getAriaData();
-    if (current >= 0 && detail.classList.contains('open')) {
+    if (IS_MOBILE) {
+      renderAllMobile();
+    } else if (current >= 0 && detail.classList.contains('open')) {
       inner.innerHTML = renderDetail(ARIA_DATA[current]);
     }
   });
@@ -532,18 +543,23 @@ document.querySelectorAll('section[id]').forEach(s => {
     if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
   }
 
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        activate(cycleIdx, { noToggle: true, force: true });
-        syncPressed();
-        startCycle();
-      } else {
-        stopCycle();
-      }
-    });
-  }, { threshold: 0.3 });
-  io.observe(document.getElementById('metodo'));
+  if (IS_MOBILE) {
+    // Mobile: render all 4 cards de uma vez, sem auto-cycle
+    renderAllMobile();
+  } else {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          activate(cycleIdx, { noToggle: true, force: true });
+          syncPressed();
+          startCycle();
+        } else {
+          stopCycle();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(document.getElementById('metodo'));
+  }
 
   /* Trigger externo — nunca fecha, só troca */
   document.addEventListener('metodo:set', (e) => {
