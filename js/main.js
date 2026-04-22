@@ -464,20 +464,66 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   }
 
-  // Mobile: renderiza os 4 cards DEIA de uma vez (sem auto-cycle)
-  function renderAllMobile() {
-    inner.innerHTML = ARIA_DATA.map((d, i) =>
-      `<div class="aria-detail-card" data-idx="${i}">${renderDetail(d)}</div>`
-    ).join('');
+  // Mobile: renderiza os 4 cards como ACCORDION (primeiro aberto, restante colapsado)
+  function renderAccordion() {
+    inner.innerHTML = ARIA_DATA.map((d, i) => `
+      <div class="aria-acc-item${i === 0 ? ' aria-acc-item--open' : ''}" data-idx="${i}">
+        <button class="aria-acc-head" type="button" aria-expanded="${i === 0}">
+          <span class="aria-acc-letter">${d.letter}</span>
+          <span class="aria-acc-head-text">
+            <span class="aria-acc-num">0${i + 1} / 04</span>
+            <span class="aria-acc-title">${d.title}</span>
+          </span>
+          <svg class="aria-acc-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="aria-acc-body">
+          <div class="aria-acc-body-inner">
+            <div class="aria-detail-subtitle">${d.subtitle}</div>
+            <p class="aria-detail-desc">${d.desc}</p>
+            <ul class="aria-detail-bullets">${d.bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+            <div class="aria-detail-footer">
+              <span class="aria-detail-tag">${d.tag}</span>
+              <span class="aria-detail-result">${d.result}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
     detail.classList.add('open');
-    nodes.forEach(n => n.classList.add('active'));
+    // Sync pills: primeiro ativo
+    nodes.forEach((n, i) => n.classList.toggle('active', i === 0));
+    bindAccordion();
+  }
+
+  function bindAccordion() {
+    const items = inner.querySelectorAll('.aria-acc-item');
+    items.forEach(item => {
+      const head = item.querySelector('.aria-acc-head');
+      head.addEventListener('click', () => {
+        const alreadyOpen = item.classList.contains('aria-acc-item--open');
+        items.forEach(it => {
+          it.classList.remove('aria-acc-item--open');
+          const h = it.querySelector('.aria-acc-head');
+          if (h) h.setAttribute('aria-expanded', 'false');
+        });
+        if (!alreadyOpen) {
+          item.classList.add('aria-acc-item--open');
+          head.setAttribute('aria-expanded', 'true');
+          // Sync pills com card aberto
+          const idx = parseInt(item.dataset.idx);
+          nodes.forEach((n, i) => n.classList.toggle('active', i === idx));
+        } else {
+          nodes.forEach(n => n.classList.remove('active'));
+        }
+      });
+    });
   }
 
   // Recarrega dados e re-renderiza ao trocar idioma
   window.addEventListener('i18n:change', () => {
     ARIA_DATA = getAriaData();
     if (IS_MOBILE) {
-      renderAllMobile();
+      renderAccordion();
     } else if (current >= 0 && detail.classList.contains('open')) {
       inner.innerHTML = renderDetail(ARIA_DATA[current]);
     }
@@ -546,32 +592,23 @@ document.querySelectorAll('section[id]').forEach(s => {
   const metodoSection = document.getElementById('metodo');
 
   if (IS_MOBILE) {
-    // Mobile: scroll-driven. Usuário arrasta pra baixo → cards trocam (D→E→I→A).
-    // Detail card fica sticky no topo enquanto 4 zonas de scroll passam.
-    metodoSection.classList.add('metodo--scrollspy');
-    let currentSpy = -1;
-    let ticking = false;
-    function updateBySpot() {
-      const rect = metodoSection.getBoundingClientRect();
-      const total = rect.height - innerHeight;
-      if (total <= 0) return;
-      const p = Math.max(0, Math.min(.999, -rect.top / total));
-      const idx = Math.floor(p * 4);
-      if (idx !== currentSpy) {
-        currentSpy = idx;
-        cycleIdx = idx;
-        activate(idx, { noToggle: true, force: true });
-        syncPressed();
-      }
-    }
-    window.addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => { updateBySpot(); ticking = false; });
-    }, { passive: true });
-    // Primeira ativação
-    activate(0, { noToggle: true, force: true });
-    syncPressed();
+    // Mobile: accordion com 4 items (primeiro aberto), sem auto-cycle
+    renderAccordion();
+    // Tap num pill D/E/I/A abre o item correspondente
+    nodes.forEach((node, i) => {
+      node.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const items = inner.querySelectorAll('.aria-acc-item');
+        items.forEach((it, j) => {
+          it.classList.toggle('aria-acc-item--open', j === i);
+          const h = it.querySelector('.aria-acc-head');
+          if (h) h.setAttribute('aria-expanded', String(j === i));
+        });
+        nodes.forEach((n, j) => n.classList.toggle('active', j === i));
+        items[i]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, true);
+    });
   } else {
     // Desktop: auto-cycle original
     const io = new IntersectionObserver(entries => {
