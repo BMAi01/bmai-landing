@@ -543,18 +543,50 @@ document.querySelectorAll('section[id]').forEach(s => {
     if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
   }
 
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        activate(cycleIdx, { noToggle: true, force: true });
+  const metodoSection = document.getElementById('metodo');
+
+  if (IS_MOBILE) {
+    // Mobile: scroll-driven. Usuário arrasta pra baixo → cards trocam (D→E→I→A).
+    // Detail card fica sticky no topo enquanto 4 zonas de scroll passam.
+    metodoSection.classList.add('metodo--scrollspy');
+    let currentSpy = -1;
+    let ticking = false;
+    function updateBySpot() {
+      const rect = metodoSection.getBoundingClientRect();
+      const total = rect.height - innerHeight;
+      if (total <= 0) return;
+      const p = Math.max(0, Math.min(.999, -rect.top / total));
+      const idx = Math.floor(p * 4);
+      if (idx !== currentSpy) {
+        currentSpy = idx;
+        cycleIdx = idx;
+        activate(idx, { noToggle: true, force: true });
         syncPressed();
-        startCycle();
-      } else {
-        stopCycle();
       }
-    });
-  }, { threshold: 0.3 });
-  io.observe(document.getElementById('metodo'));
+    }
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { updateBySpot(); ticking = false; });
+    }, { passive: true });
+    // Primeira ativação
+    activate(0, { noToggle: true, force: true });
+    syncPressed();
+  } else {
+    // Desktop: auto-cycle original
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          activate(cycleIdx, { noToggle: true, force: true });
+          syncPressed();
+          startCycle();
+        } else {
+          stopCycle();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(metodoSection);
+  }
 
   /* Trigger externo — nunca fecha, só troca */
   document.addEventListener('metodo:set', (e) => {
