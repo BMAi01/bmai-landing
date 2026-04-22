@@ -73,20 +73,21 @@
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Scrollbar — paleta BMAI */
-* { scrollbar-width: thin; scrollbar-color: #db5500 #0d1b2a; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0d1b2a; }
+/* Scrollbar — discreta, tom laranja sutil sobre fundo dark */
+* { scrollbar-width: thin; scrollbar-color: rgba(219,85,0,.35) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #db5500, #ff7a2a, #db5500);
+  background: rgba(219, 85, 0, .28);
+  border: 3px solid transparent;
+  background-clip: padding-box;
   border-radius: 100px;
-  box-shadow: 0 0 8px rgba(219,85,0,.4);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #ff7a2a, #db5500);
-  box-shadow: 0 0 14px rgba(219,85,0,.7);
+  background: rgba(219, 85, 0, .55);
+  background-clip: padding-box;
 }
-::-webkit-scrollbar-corner { background: #0d1b2a; }
+::-webkit-scrollbar-corner { background: transparent; }
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
