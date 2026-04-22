@@ -382,68 +382,23 @@ document.querySelectorAll('section[id]').forEach(s => {
    ARIA METHOD — interactive flow diagram
    ============================================ */
 (function() {
-  const ARIA_DATA = [
-    {
-      num: '01 / 04', letter: 'D', title: 'Diagnóstico',
-      subtitle: 'Entender antes de agir.',
-      desc: 'Mapeamos fluxos reais, medimos onde a operação sangra e identificamos onde a IA vai gerar tração. Sem contexto, toda tecnologia vira custo — por isso nada é configurado antes desse passo.',
-      bullets: [
-        'Mapeamento do processo comercial',
-        'Identificação de perdas invisíveis',
-        'Entrevistas com time e gestão',
-        'Priorização por impacto e viabilidade',
-        'Mapa de oportunidades acionáveis'
-      ],
-      time: '⏱ 1 a 2 semanas',
-      tag: 'Contexto antes de ferramenta.',
-      result: 'Entregável: mapa de oportunidades priorizadas'
-    },
-    {
-      num: '02 / 04', letter: 'E', title: 'Estruturação',
-      subtitle: 'Preparamos o terreno antes de plantar inteligência.',
-      desc: 'Reorganizamos processos, definimos KPIs mensuráveis e desenhamos a arquitetura dos agentes. IA em cima de caos é caos acelerado — por isso estruturamos primeiro.',
-      bullets: [
-        'Arquitetura dos agentes e fluxos',
-        'KPIs mensuráveis e metas concretas',
-        'Projeção de ROI por frente',
-        'Escolha de stack e integrações',
-        'Cronograma com marcos semanais'
-      ],
-      time: '⏱ 1 a 2 semanas',
-      tag: 'Processo antes de inteligência.',
-      result: 'Entregável: blueprint técnico + plano de resultados'
-    },
-    {
-      num: '03 / 04', letter: 'I', title: 'Implementação',
-      subtitle: 'Inteligência integrada onde gera impacto.',
-      desc: 'Construímos agentes sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado — nada lançado no escuro.',
-      bullets: [
-        'Construção sob medida dos agentes',
-        'Integração com as ferramentas já em uso',
-        'Validação em produção antes da escala',
-        'Treinamento e onboarding do time',
-        'ROI visível já no 1º mês'
-      ],
-      time: '⏱ 3 a 6 semanas',
-      tag: 'Execução onde dá resultado.',
-      result: 'Entregável: sistema funcionando em produção'
-    },
-    {
-      num: '04 / 04', letter: 'A', title: 'Acompanhamento',
-      subtitle: 'Cliente BMAi vira parceiro — não só mais um.',
-      desc: 'Monitoramos indicadores, ajustamos prompts e lógica conforme o negócio evolui e você tem acesso ao nosso SaaS interno de métricas. Se a gente construiu, a gente mantém.',
-      bullets: [
-        'Monitoramento contínuo de indicadores',
-        'Ajuste de prompts conforme o negócio evolui',
-        'Suporte direto ao time',
-        'Acesso ao SaaS interno da BMAi',
-        'Expansão gradual das soluções'
-      ],
-      time: '⏱ Contínuo',
-      tag: 'Se construímos, sustentamos.',
-      result: 'Entregável: dashboard mensal + acesso ao SaaS BMAi'
-    }
-  ];
+  const ARIA_KEYS = ['d', 'e', 'i', 'a'];
+  const ARIA_LETTERS = { d: 'D', e: 'E', i: 'I', a: 'A' };
+  function getAriaData() {
+    const t = (window.I18N && window.I18N.t.bind(window.I18N)) || ((k) => k);
+    return ARIA_KEYS.map((k, idx) => ({
+      num: `0${idx + 1} / 04`,
+      letter: ARIA_LETTERS[k],
+      title:    t(`aria.${k}.title`),
+      subtitle: t(`aria.${k}.subtitle`),
+      desc:     t(`aria.${k}.desc`),
+      bullets:  [1, 2, 3, 4, 5].map(n => t(`aria.${k}.b${n}`)),
+      time:     t(`aria.${k}.time`),
+      tag:      t(`aria.${k}.tag`),
+      result:   t(`aria.${k}.result`)
+    }));
+  }
+  let ARIA_DATA = getAriaData();
 
   const nodes  = document.querySelectorAll('.aria-node');
   const detail = document.getElementById('aria-detail');
@@ -508,6 +463,14 @@ document.querySelectorAll('section[id]').forEach(s => {
       setTimeout(() => { animating = false; }, 600);
     }
   }
+
+  // Recarrega dados e re-renderiza o card atual ao trocar idioma
+  window.addEventListener('i18n:change', () => {
+    ARIA_DATA = getAriaData();
+    if (current >= 0 && detail.classList.contains('open')) {
+      inner.innerHTML = renderDetail(ARIA_DATA[current]);
+    }
+  });
 
   // ARIA + semantic role
   nodes.forEach((node, i) => {
