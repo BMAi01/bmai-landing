@@ -5016,7 +5016,8 @@ html { scroll-padding-top: 84px; }
     border-radius: 10px !important;
   }
 
-  /* ---------- HERO: hero-bg.jpg com pedestal CENTRALIZADO atras do texto ---------- */
+  /* ---------- HERO: mobile espelha composicao do desktop
+     texto + CTA no topo, pedestal 3D nitido abaixo, stats bar no fim ---------- */
   .hero {
     position: relative !important;
     min-height: auto !important;
@@ -5024,20 +5025,22 @@ html { scroll-padding-top: 84px; }
     background: #0d1b2a !important;
     overflow: hidden !important;
   }
-  /* bg-size 200% + bg-position-x 100% = o pedestal (que fica em ~75%
-     da imagem) alinha exatamente no centro do hero mobile.
-     Gradiente escuro por cima garante legibilidade do texto. */
+  /* Pedestal 3D integro embaixo, glow preservado.
+     bg-size 150% auto + bg-position 75% 100% enquadra o pedestal
+     inteiro no terco inferior da hero. Overlay escuro so por cima do texto,
+     transparente no pedestal pra o laranja vibrar igual desktop. */
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
     background:
       linear-gradient(180deg,
-        rgba(13, 27, 42, .88) 0%,
-        rgba(13, 27, 42, .58) 42%,
-        rgba(13, 27, 42, .38) 62%,
-        rgba(13, 27, 42, .78) 100%),
-      url('../assets/images/hero-bg.jpg') 100% 55% / 200% auto no-repeat;
+        rgba(13, 27, 42, .94) 0%,
+        rgba(13, 27, 42, .82) 28%,
+        rgba(13, 27, 42, .35) 48%,
+        rgba(13, 27, 42, .1)  70%,
+        rgba(13, 27, 42, .85) 100%),
+      url('../assets/images/hero-bg.jpg') 75% 100% / 150% auto no-repeat;
     pointer-events: none;
     z-index: 0;
   }
