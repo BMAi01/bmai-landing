@@ -5116,12 +5116,15 @@ html { scroll-padding-top: 84px; }
   }
   #hero .hero__content { text-align: left !important; }
 
-  /* Pedestal mobile — ocupa quase toda a largura pra ficar natural
+  /* Pedestal mobile — edge-to-edge (bleed pra fora do container)
      (mantém hero-bg.jpg original no mobile; desktop usa hero-bg-desktop.jpg) */
   .hero__pedestal {
-    max-width: 100% !important;
     width: 100vw !important;
-    margin: 14px -20px 22px !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    margin-top: 14px !important;
+    margin-bottom: 22px !important;
     aspect-ratio: 16 / 11 !important;
     background-image: url('../assets/images/hero-bg.jpg?v=2') !important;
     background-size: 125% auto !important;
