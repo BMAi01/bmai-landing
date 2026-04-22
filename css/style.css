@@ -574,7 +574,10 @@ html { scrollbar-gutter: stable; }
   padding-right: 0;
 }
 
-/* Imagem 3D close-up — lado direito do hero */
+/* Imagem 3D close-up — lado direito do hero (visível só em mobile, oculto em desktop) */
+@media (min-width: 769px) {
+  .hero-visual { display: none !important; }
+}
 .hero-visual {
   position: absolute;
   right: -8%;
@@ -3493,14 +3496,7 @@ section h2.shimmer-active::after,
    MOBILE — bugs específicos (efeitos e layout)
    ============================================ */
 @media (max-width: 768px) {
-  /* Hero visual (símbolo 3D) não pode cobrir o texto */
-  .hero-visual {
-    opacity: .10 !important;
-    transform: translate(25%, -50%) !important;
-    width: 140vw !important;
-    pointer-events: none;
-  }
-  .hero-visual img { filter: blur(1px); }
+  /* Hero visual: agora renderiza empilhado abaixo do texto (regras em bloco mais abaixo) */
 
   /* Team: destrava layout pinado do GSAP */
   .team-pin {
@@ -4968,6 +4964,41 @@ html { scroll-padding-top: 84px; }
   }
   body.nav-open { overflow: hidden !important; }
   body.nav-open .header__burger { background: transparent !important; border-color: transparent !important; }
+
+  /* Language switcher — integrado e destacado no fullscreen menu */
+  .floatnav.active .lang-btn {
+    display: block !important;
+    width: 100% !important;
+    order: 500 !important;
+    margin-top: 20px !important;
+    padding-top: 18px !important;
+    border-top: 1px solid rgba(255, 255, 255, .08) !important;
+    opacity: 0;
+    animation: navItemIn .5s cubic-bezier(.22, 1, .36, 1) .28s forwards;
+  }
+  .floatnav.active .lang-trigger {
+    width: 100% !important;
+    justify-content: space-between !important;
+    padding: 16px 18px !important;
+    font-size: 15px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, .04) !important;
+    border: 1px solid rgba(255, 255, 255, .08) !important;
+    min-height: 52px !important;
+  }
+  .floatnav.active .lang-dropdown {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 8px !important;
+    background: rgba(255, 255, 255, .04) !important;
+    border-radius: 14px !important;
+    padding: 6px !important;
+  }
+  .floatnav.active .lang-opt {
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
+  }
 
   /* ---------- HERO com símbolo 3D ABAIXO do texto ---------- */
   .hero {
