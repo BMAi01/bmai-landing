@@ -5015,25 +5015,49 @@ html { scroll-padding-top: 84px; }
     border-radius: 10px !important;
   }
 
-  /* ---------- HERO: usa hero-bg.jpg como fundo (mesma imagem do desktop) ---------- */
+  /* ---------- HERO: símbolo ATRÁS do texto, bem centralizado ---------- */
   .hero {
+    position: relative !important;
     min-height: auto !important;
-    padding: 104px 0 380px !important;
-    background:
-      linear-gradient(180deg,
-        rgba(13, 27, 42, .94) 0%,
-        rgba(13, 27, 42, .82) 38%,
-        rgba(13, 27, 42, .35) 60%,
-        rgba(13, 27, 42, .7)  88%,
-        rgba(13, 27, 42, .98) 100%),
-      url('../assets/images/hero-bg.jpg') 72% 85% / 180% auto no-repeat,
-      #0d1b2a !important;
+    padding: 110px 0 56px !important;
+    background: #0d1b2a !important;
+    overflow: hidden !important;
   }
-  /* Sem paper-cut empilhado — hero-bg.jpg já tem o símbolo */
-  .hero-visual { display: none !important; }
-  #hero .container.hero__wrap { padding: 0 20px !important; }
+  /* Símbolo laranja centralizado atrás do conteúdo — não usa hero-bg.jpg
+     (que tem o pedestal no canto, descentralizado). Usa o .svg laranja
+     como mask gigante, com glow atrás, opacidade baixa pra não atrapalhar. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 78vw;
+    height: 78vw;
+    max-width: 520px;
+    max-height: 520px;
+    background:
+      radial-gradient(circle at center,
+        rgba(219, 85, 0, .28) 0%,
+        rgba(219, 85, 0, .10) 32%,
+        transparent 58%),
+      url('../assets/images/simbolo-laranja.svg') center / 55% 55% no-repeat;
+    opacity: .22;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(.3px);
+  }
+  /* Conteúdo sempre em cima do símbolo */
+  #hero .container.hero__wrap,
+  #hero .hero__stats {
+    position: relative;
+    z-index: 2;
+  }
+  /* Garante legibilidade do texto mesmo em cima do glow */
   #hero .hero__content { text-align: left !important; }
   #hero .hero__stats { margin-top: 40px !important; }
+  /* Sem paper-cut empilhado */
+  .hero-visual { display: none !important; }
 
   /* ---------- Cards — garantir stack + reveal suave ---------- */
   .qs__grid,
