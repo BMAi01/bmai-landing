@@ -2221,14 +2221,19 @@ li, label, input, textarea {
    pequenos / touch. Mantém visual intacto em desktop.
    =========================================================== */
 @media (max-width: 768px) {
-  /* backdrop-filter blur é caro no Safari mobile — reduz pra 10px */
+  /* backdrop-filter blur é caro no Safari mobile — reduz pra 10px
+     (excluímos .team-card: backdrop-filter quebra preserve-3d no iOS Safari
+     e impede que a face de trás do flip apareça) */
   .hero__stats-row,
   .card-stack,
   .card-stack__item,
-  .team-card,
   .cs-hero {
     -webkit-backdrop-filter: blur(10px) !important;
             backdrop-filter: blur(10px) !important;
+  }
+  .team-card {
+    -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
   }
   /* Box-shadows complexas → consolida em 1 camada */
   .card-stack,
@@ -3418,6 +3423,16 @@ section h2.shimmer-active::after,
     padding: 0 16px !important;
   }
   .team-card-wrap { aspect-ratio: 3 / 4.4 !important; }
+  /* Fallback de flip — opacity + z-index (caso backface-visibility falhe no
+     Safari iOS) — garante que a face de trás com a frase apareça */
+  .team-card-wrap .tc-front,
+  .team-card-wrap .tc-back {
+    transition: opacity .35s ease .35s;
+  }
+  .team-card-wrap.flipped .tc-front { opacity: 0 !important; z-index: 1 !important; }
+  .team-card-wrap.flipped .tc-back  { opacity: 1 !important; z-index: 2 !important; }
+  .team-card-wrap .tc-front { opacity: 1; z-index: 2; }
+  .team-card-wrap .tc-back  { opacity: 0; z-index: 1; }
   .tc-front-info { padding: 16px 14px !important; }
   .tc-front-info h3 { font-size: 17px !important; margin-bottom: 2px !important; }
   .tc-front-info span { font-size: 9px !important; letter-spacing: .08em !important; }
