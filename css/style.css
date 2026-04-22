@@ -556,6 +556,14 @@ html { scrollbar-gutter: stable; }
 @media (min-width: 901px) {
   .hero__pedestal { display: none !important; }
 }
+
+/* Cases: Dr. Tulio no carrossel é só mobile (desktop já tem no .cs-hero) */
+@media (min-width: 769px) {
+  .cs-card--mobileonly { display: none !important; }
+}
+@media (max-width: 768px) {
+  .cs-hero-container { display: none !important; }
+}
 @media (max-width: 900px) {
   .hero {
     /* Mobile: sem imagem de fundo (o pedestal é o .hero__pedestal inline) */
