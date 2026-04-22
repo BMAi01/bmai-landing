@@ -36,11 +36,13 @@ function syncLangPosition(active) {
 burger.addEventListener('click', () => {
   burger.classList.toggle('active');
   const active = nav.classList.toggle('active');
+  document.body.classList.toggle('nav-open', active);
   syncLangPosition(active);
 });
 nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
   burger.classList.remove('active');
   nav.classList.remove('active');
+  document.body.classList.remove('nav-open');
   syncLangPosition(false);
 }));
 
