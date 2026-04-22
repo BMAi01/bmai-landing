@@ -585,8 +585,36 @@ function _initCardStackFx() {
   stack.dataset.fxInit = '1';
 
   if (IS_TOUCH) {
-    stack.addEventListener('click', () => {
+    // Mobile: auto-cycle alterna card 1 ↔ card 2 a cada 2.5s quando visível
+    let cycleTimer = null;
+    const CYCLE_MS = 2500;
+    function tickStack() {
       stack.classList.toggle('is-revealed');
+    }
+    function startStackCycle() {
+      if (cycleTimer || LOW_MOTION) return;
+      cycleTimer = setInterval(tickStack, CYCLE_MS);
+    }
+    function stopStackCycle() {
+      if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
+    }
+    const qsSection = document.getElementById('quem-somos');
+    if (qsSection) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) startStackCycle();
+          else stopStackCycle();
+        });
+      }, { threshold: 0.25 });
+      io.observe(qsSection);
+    } else {
+      startStackCycle();
+    }
+    // Tap também alterna manualmente (pausa/retoma o cycle)
+    stack.addEventListener('click', () => {
+      stopStackCycle();
+      stack.classList.toggle('is-revealed');
+      setTimeout(startStackCycle, 4000);
     });
     return;
   }

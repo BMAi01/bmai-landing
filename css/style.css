@@ -5230,6 +5230,50 @@ html { scroll-padding-top: 84px; }
   }
 
   /* ========================================================
+     QUEM SOMOS — card-stack mobile com auto-cycle suave + cue visual
+     ======================================================== */
+  .card-stack { min-height: 260px !important; cursor: pointer; }
+  .card-stack__item--2 {
+    transition:
+      transform .75s cubic-bezier(.4, 0, .2, 1) !important,
+      clip-path .7s cubic-bezier(.25, .8, .35, 1) !important,
+      filter .6s ease !important;
+  }
+  /* Micro-indicator 01 / 02 no topo do stack (pisca conforme o cycle) */
+  .card-stack::before {
+    content: '01 / 02';
+    position: absolute;
+    top: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--fm);
+    font-size: 9.5px;
+    letter-spacing: .2em;
+    color: rgba(219, 85, 0, .7);
+    padding: 4px 12px;
+    border: 1px solid rgba(219, 85, 0, .25);
+    border-radius: 100px;
+    background: rgba(13, 27, 42, .8);
+    z-index: 10;
+    pointer-events: none;
+    transition: color .4s ease, border-color .4s ease;
+  }
+  .card-stack.is-revealed::before {
+    content: '02 / 02';
+    color: #ff7a2a;
+    border-color: rgba(255, 122, 42, .55);
+    box-shadow: 0 0 12px rgba(219, 85, 0, .3);
+  }
+  /* Scale pulse leve no card ativo pra dar vida */
+  .card-stack__item--1 {
+    transition: transform .7s cubic-bezier(.4, 0, .2, 1), filter .5s ease !important;
+  }
+  .card-stack.is-revealed .card-stack__item--1 {
+    transform: translate3d(0, 0, 0) scale(.97);
+    filter: brightness(.7) blur(1px);
+  }
+
+  /* ========================================================
      MÉTODO mobile — pills dinâmicas D/E/I/A + detail polido
      ======================================================== */
   #metodo .aria-flow {
