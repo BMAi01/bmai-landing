@@ -543,23 +543,18 @@ document.querySelectorAll('section[id]').forEach(s => {
     if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
   }
 
-  if (IS_MOBILE) {
-    // Mobile: render all 4 cards de uma vez, sem auto-cycle
-    renderAllMobile();
-  } else {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          activate(cycleIdx, { noToggle: true, force: true });
-          syncPressed();
-          startCycle();
-        } else {
-          stopCycle();
-        }
-      });
-    }, { threshold: 0.3 });
-    io.observe(document.getElementById('metodo'));
-  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        activate(cycleIdx, { noToggle: true, force: true });
+        syncPressed();
+        startCycle();
+      } else {
+        stopCycle();
+      }
+    });
+  }, { threshold: 0.3 });
+  io.observe(document.getElementById('metodo'));
 
   /* Trigger externo — nunca fecha, só troca */
   document.addEventListener('metodo:set', (e) => {
@@ -577,26 +572,8 @@ document.querySelectorAll('section[id]').forEach(s => {
     syncPressed();
   }
 
-  /* Swipe horizontal pra navegar entre as 4 etapas DEIA (touch devices) */
-  const metodoSection = document.getElementById('metodo');
-  if (metodoSection && IS_TOUCH) {
-    let sx = 0, sy = 0;
-    metodoSection.addEventListener('touchstart', e => {
-      const t = e.changedTouches[0];
-      sx = t.clientX; sy = t.clientY;
-    }, { passive: true });
-    metodoSection.addEventListener('touchend', e => {
-      const t = e.changedTouches[0];
-      const dx = t.clientX - sx;
-      const dy = t.clientY - sy;
-      // threshold 60px + dominante horizontal (não interfere em scroll vertical)
-      if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
-      const dir = dx < 0 ? 1 : -1; // swipe left → next, right → prev
-      const n = (current + dir + nodes.length) % nodes.length;
-      activate(n);
-      syncPressed();
-    }, { passive: true });
-  }
+  /* Sem swipe horizontal — usuário interage via tap nos pills D/E/I/A.
+     Auto-cycle cuida da rotação automatica (2.3s por fase) em touch + desktop. */
 })();
 
 /* ============================================

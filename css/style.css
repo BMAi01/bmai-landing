@@ -5137,8 +5137,6 @@ html { scroll-padding-top: 84px; }
     position: relative;
     z-index: 1;
   }
-  #hero .hero__content { text-align: left !important; }
-
   /* Mobile: sem imagem de pedestal — símbolo BMAi como watermark atrás dos textos */
   .hero__pedestal { display: none !important; }
   .hero::before {
@@ -5172,12 +5170,31 @@ html { scroll-padding-top: 84px; }
     pointer-events: none !important;
     z-index: 0 !important;
   }
-  /* Conteúdo sempre em cima do símbolo/glow */
+  /* Conteúdo sempre em cima do símbolo/glow + centralizado */
   #hero .container.hero__wrap,
   #hero .hero__stats {
     position: relative;
     z-index: 2;
   }
+  #hero .hero__content {
+    text-align: center !important;
+    align-items: center !important;
+  }
+  #hero .hero__title,
+  #hero .hero__sub {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  #hero .hero__badge {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  #hero .hero__ctas {
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  #hero .hero__sub-line { display: block; }
   /* .hero-visual legacy oculto (usamos .hero__pedestal agora) */
   .hero-visual { display: none !important; }
 
@@ -5273,70 +5290,80 @@ html { scroll-padding-top: 84px; }
   }
   #metodo .aria-connector-svg { display: none !important; }
 
-  /* Detail: 4 cards empilhados de uma vez no mobile */
+  /* Detail mobile: card único auto-cycle, transição fade+slide, progress bar */
   #metodo .aria-detail {
     margin-top: 8px !important;
     max-height: none !important;
     overflow: visible !important;
   }
-  #metodo #aria-detail-inner {
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 14px !important;
-  }
-  #metodo #aria-detail-inner::before { display: none !important; }
-  /* Cada card individual do mobile */
-  .aria-detail-card {
-    position: relative;
-    padding: 22px 20px;
-    border-radius: 20px;
-    border: 1px solid rgba(219, 85, 0, .22);
+  #metodo .aria-detail-inner {
+    padding: 26px 22px !important;
+    border-radius: 22px !important;
+    border: 1px solid rgba(219, 85, 0, .28) !important;
     background:
-      radial-gradient(ellipse 100% 55% at 50% 0%, rgba(219, 85, 0, .12), transparent 70%),
-      linear-gradient(180deg, #162534 0%, #0d1b2a 100%);
+      radial-gradient(ellipse 100% 60% at 50% 0%, rgba(219, 85, 0, .16), transparent 70%),
+      linear-gradient(180deg, #162534 0%, #0d1b2a 100%) !important;
     box-shadow:
-      0 16px 36px -16px rgba(0, 0, 0, .55),
-      0 0 30px -10px rgba(219, 85, 0, .18),
-      inset 0 1px 0 rgba(255, 255, 255, .04);
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: ariaCardIn .55s cubic-bezier(.22, 1, .36, 1) forwards;
+      0 20px 40px -16px rgba(0, 0, 0, .6),
+      0 0 40px -12px rgba(219, 85, 0, .22),
+      inset 0 1px 0 rgba(255, 255, 255, .05) !important;
+    min-height: 420px !important;
+    transition:
+      opacity .45s cubic-bezier(.22, 1, .36, 1),
+      transform .5s cubic-bezier(.22, 1, .36, 1) !important;
   }
-  .aria-detail-card:nth-child(1) { animation-delay: .05s; }
-  .aria-detail-card:nth-child(2) { animation-delay: .15s; }
-  .aria-detail-card:nth-child(3) { animation-delay: .25s; }
-  .aria-detail-card:nth-child(4) { animation-delay: .35s; }
-  @keyframes ariaCardIn {
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .aria-detail-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 10%; right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(219,85,0,.7) 30%, #ff7a2a 50%, rgba(219,85,0,.7) 70%, transparent);
-    box-shadow: 0 0 10px rgba(219, 85, 0, .4);
-  }
-  .aria-detail-card .aria-detail-inner {
-    padding: 0 !important;
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    margin-top: 0 !important;
-  }
-  .aria-detail-card .aria-detail-inner::before { display: none !important; }
-  .aria-detail-card .aria-detail-progress { display: none !important; }
   .aria-detail-grid {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
+  }
+  /* Letra gigante translúcida como elemento decorativo no canto */
+  .aria-detail-letter {
+    position: absolute !important;
+    top: 6px !important;
+    right: 14px !important;
+    font-size: 120px !important;
+    color: rgba(219, 85, 0, .08) !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+    line-height: 1 !important;
+  }
+  .aria-detail-title { font-size: 26px !important; position: relative; z-index: 2; }
+  .aria-detail-subtitle { font-size: 12.5px !important; margin-bottom: 12px !important; }
+  .aria-detail-desc { font-size: 14px !important; line-height: 1.65 !important; }
+  .aria-detail-bullets {
+    gap: 8px !important;
+    margin: 4px 0 14px !important;
+  }
+  .aria-detail-bullets li { font-size: 13.5px !important; line-height: 1.45 !important; }
+  .aria-detail-footer {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .aria-detail-tag { font-size: 10px !important; }
+  .aria-detail-result { font-size: 10.5px !important; }
+
+  /* Progress bar 2.3s (auto-cycle) */
+  .aria-detail-progress {
+    display: block !important;
+    margin-top: 18px !important;
+    height: 3px !important;
+    background: rgba(255, 107, 26, .14) !important;
+    border-radius: 100px !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  .aria-detail-progress__bar {
+    height: 100% !important;
+    width: 0 !important;
+    background: linear-gradient(90deg, #db5500, #ff7a2a) !important;
+    border-radius: 100px !important;
+    box-shadow: 0 0 8px rgba(219, 85, 0, .5);
+    animation: ariaProgressFill 2.3s linear infinite !important;
+  }
+  @keyframes ariaProgressFill {
+    0%   { width: 0; }
+    100% { width: 100%; }
   }
   .aria-detail-letter {
     position: absolute !important;
