@@ -5066,10 +5066,182 @@ html { scroll-padding-top: 84px; }
   .problema__grid,
   .personas__grid,
   .versus__grid,
-  .cs-grid,
   .aria__grid {
     grid-template-columns: 1fr !important;
     gap: 14px !important;
+  }
+
+  /* ========================================================
+     MÉTODO mobile — pills dinâmicas D/E/I/A + detail polido
+     ======================================================== */
+  #metodo .aria-flow {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 0 8px 22px !important;
+    margin: 0 -4px 8px !important;
+    overflow: visible !important;
+  }
+  #metodo .aria-node {
+    flex: 0 0 auto !important;
+    cursor: pointer !important;
+    transition: transform .4s cubic-bezier(.22, 1, .36, 1) !important;
+  }
+  #metodo .aria-node.active { transform: scale(1.08) !important; }
+  #metodo .aria-node-inner {
+    width: 54px !important;
+    height: 54px !important;
+    border-radius: 14px !important;
+    border: 1.5px solid rgba(255, 107, 26, .18) !important;
+    background: linear-gradient(180deg, rgba(22, 37, 52, .9), rgba(13, 27, 42, .95)) !important;
+    transition: border-color .35s, box-shadow .35s, background .35s !important;
+  }
+  #metodo .aria-node.active .aria-node-inner {
+    border-color: var(--orange) !important;
+    background: linear-gradient(180deg, rgba(219, 85, 0, .22), rgba(219, 85, 0, .08)) !important;
+    box-shadow:
+      0 8px 24px -8px rgba(219, 85, 0, .5),
+      0 0 0 4px rgba(219, 85, 0, .12) !important;
+  }
+  #metodo .aria-node-letter {
+    font-size: 19px !important;
+    font-weight: 800 !important;
+    color: rgba(255, 255, 255, .55) !important;
+  }
+  #metodo .aria-node.active .aria-node-letter { color: var(--white) !important; }
+  #metodo .aria-node-num { font-size: 8px !important; color: var(--orange) !important; }
+  #metodo .aria-node-label {
+    font-size: 9.5px !important;
+    letter-spacing: .08em !important;
+    margin-top: 8px !important;
+    color: rgba(255, 255, 255, .45) !important;
+    text-align: center !important;
+  }
+  #metodo .aria-node.active .aria-node-label { color: var(--orange) !important; }
+  #metodo .aria-connector {
+    flex: 1 1 auto !important;
+    max-width: none !important;
+    min-width: 14px !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, rgba(219, 85, 0, .25), rgba(219, 85, 0, .08)) !important;
+    align-self: flex-start !important;
+    margin-top: 26px !important;
+  }
+  #metodo .aria-connector-svg { display: none !important; }
+
+  /* Detail card polido + gradient header laranja */
+  #metodo .aria-detail { margin-top: 8px !important; }
+  .aria-detail-inner {
+    padding: 24px 20px !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(ellipse 100% 60% at 50% 0%, rgba(219, 85, 0, .1), transparent 70%),
+      linear-gradient(180deg, #162534 0%, #0d1b2a 100%) !important;
+  }
+  .aria-detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .aria-detail-letter {
+    position: absolute !important;
+    top: 12px !important;
+    right: 16px !important;
+    font-size: 90px !important;
+    color: rgba(219, 85, 0, .10) !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+  }
+  .aria-detail-title { font-size: 26px !important; }
+  .aria-detail-subtitle { font-size: 12px !important; margin-bottom: 12px !important; }
+  .aria-detail-desc { font-size: 14px !important; line-height: 1.65 !important; }
+  .aria-detail-bullets li { font-size: 13.5px !important; line-height: 1.5 !important; }
+  .aria-detail-bullets li::before { margin-top: 2px !important; }
+  .aria-detail-footer {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .aria-detail-tag { font-size: 9.5px !important; }
+  .aria-detail-result { font-size: 10.5px !important; }
+
+  /* ========================================================
+     CASES mobile — carrossel horizontal com scroll-snap
+     ======================================================== */
+  /* Hero card de caso destaque (GastroObesi) */
+  .cs-hero {
+    grid-template-columns: 1fr !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+  }
+  .cs-hero__visual {
+    order: 1 !important;
+    min-height: 120px !important;
+    padding: 28px !important;
+    background: linear-gradient(180deg, rgba(219, 85, 0, .08), rgba(219, 85, 0, .02)) !important;
+    border-bottom: 1px solid rgba(219, 85, 0, .15) !important;
+  }
+  .cs-hero__content { order: 2 !important; padding: 24px 20px !important; }
+  .cs-hero__quote { font-size: 15px !important; line-height: 1.55 !important; }
+  .cs-hero__stats {
+    flex-direction: row !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    margin-top: 18px !important;
+  }
+  .cs-hero__stat { flex: 1 1 30% !important; min-width: 0 !important; }
+  .cs-hero__stat-val { font-size: 22px !important; }
+  .cs-hero__stat-lbl { font-size: 10px !important; line-height: 1.25 !important; }
+
+  /* Grid de 3 cases → carrossel horizontal snap */
+  #cases .cs-grid {
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 14px !important;
+    padding: 6px 20px 24px !important;
+    margin: 0 -20px !important;
+    scrollbar-width: none !important;
+  }
+  #cases .cs-grid::-webkit-scrollbar { display: none !important; }
+  #cases .cs-card {
+    flex: 0 0 86% !important;
+    min-width: 86% !important;
+    max-width: 320px !important;
+    scroll-snap-align: center !important;
+    scroll-snap-stop: always !important;
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 22px 20px !important;
+    border: 1px solid rgba(219, 85, 0, .15) !important;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(219, 85, 0, .06), transparent 60%),
+      rgba(255, 255, 255, .02) !important;
+  }
+  #cases .cs-card:hover { transform: none !important; }
+  #cases .cs-card__result { font-size: 14px !important; line-height: 1.5 !important; }
+  #cases .cs-card__quote { font-size: 13px !important; line-height: 1.55 !important; }
+
+  /* Hint visual pro usuário saber que rola — gradient fade nas bordas */
+  #cases .container:has(.cs-grid) {
+    position: relative;
+  }
+  #cases .container:has(.cs-grid)::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 0;
+    bottom: 24px;
+    width: 36px;
+    background: linear-gradient(270deg, #0d1b2a, transparent);
+    pointer-events: none;
+    z-index: 2;
   }
 }
 
