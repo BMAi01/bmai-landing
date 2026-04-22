@@ -535,32 +535,19 @@ html { scrollbar-gutter: stable; }
   align-items: flex-start;
   padding: calc(var(--hdr) + 60px) 0 96px;
   overflow: hidden;
-  /* Fundo multi-layer: overlay escuro na esquerda + top/bottom fade + imagem + cor base */
+  /* Fundo dark limpo — o pedestal agora é o .hero__pedestal inline entre sub e CTA */
   background:
-    linear-gradient(90deg,
-      rgba(13, 27, 42, .92) 0%,
-      rgba(13, 27, 42, .55) 38%,
-      rgba(13, 27, 42, 0)   68%),
     linear-gradient(180deg,
       rgba(13, 27, 42, .25) 0%,
       transparent 25%,
       transparent 75%,
       rgba(13, 27, 42, .45) 100%),
-    url('../assets/images/hero-bg.jpg?v=2') right 70% / cover no-repeat,
     #0d1b2a;
 }
 @media (max-width: 900px) {
   .hero {
-    /* Mobile: overlay vertical mais forte (texto precisa ser 100% legível),
-       imagem posicionada pra mostrar o símbolo 3D na parte superior direita */
-    background:
-      linear-gradient(180deg,
-        rgba(13, 27, 42, .88) 0%,
-        rgba(13, 27, 42, .6)  40%,
-        rgba(13, 27, 42, .92) 100%),
-      url('../assets/images/hero-bg.jpg?v=2') 75% 25% / 200% auto no-repeat,
-      #0d1b2a;
-    /* Safe-area pra notch/rounded corners de iOS */
+    /* Mobile: sem imagem de fundo (o pedestal é o .hero__pedestal inline) */
+    background: #0d1b2a;
     padding-left:  max(env(safe-area-inset-left), 0);
     padding-right: max(env(safe-area-inset-right), 0);
     padding-bottom: max(72px, env(safe-area-inset-bottom));
@@ -574,10 +561,67 @@ html { scrollbar-gutter: stable; }
   padding-right: 0;
 }
 
-/* Imagem 3D close-up — lado direito do hero (visível só em mobile, oculto em desktop) */
-@media (min-width: 769px) {
-  .hero-visual { display: none !important; }
+/* ============================================
+   HERO PEDESTAL — imagem integrada entre sub e CTA
+   (usada em desktop + mobile, substitui .hero-visual legacy)
+   ============================================ */
+.hero__pedestal {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  aspect-ratio: 16 / 9;
+  margin: 8px 0 20px;
+  background-image: url('../assets/images/hero-bg.jpg?v=2');
+  background-size: 200% auto;
+  background-position: 100% 55%;
+  background-repeat: no-repeat;
+  /* Fade radial nas bordas — dissolve no fundo sem look de caixa */
+  -webkit-mask-image: radial-gradient(ellipse 72% 70% at 72% 55%,
+    #000 0%,
+    rgba(0, 0, 0, .92) 38%,
+    rgba(0, 0, 0, .55) 65%,
+    rgba(0, 0, 0, .18) 82%,
+    transparent 100%);
+          mask-image: radial-gradient(ellipse 72% 70% at 72% 55%,
+    #000 0%,
+    rgba(0, 0, 0, .92) 38%,
+    rgba(0, 0, 0, .55) 65%,
+    rgba(0, 0, 0, .18) 82%,
+    transparent 100%);
+  opacity: 0;
+  transform: translateY(14px);
+  animation:
+    pedestalFadeIn .9s cubic-bezier(.22, 1, .36, 1) .35s forwards,
+    pedestalFloat 7s ease-in-out 1.4s infinite;
+  pointer-events: none;
 }
+.hero__pedestal-glow {
+  position: absolute;
+  inset: -18% -12%;
+  background: radial-gradient(ellipse 55% 45% at 72% 55%,
+    rgba(219, 85, 0, .28) 0%,
+    rgba(219, 85, 0, .12) 32%,
+    transparent 65%);
+  filter: blur(28px);
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  animation: pedestalFadeIn 1.1s ease-out .4s forwards;
+}
+@keyframes pedestalFadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pedestalFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__pedestal { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .hero__pedestal-glow { animation: none !important; opacity: 1 !important; }
+}
+
+/* Oculta .hero-visual legacy (usamos .hero__pedestal) */
+.hero-visual { display: none !important; }
 .hero-visual {
   position: absolute;
   right: -8%;
@@ -5029,34 +5073,14 @@ html { scroll-padding-top: 84px; }
   }
   #hero .hero__content { text-align: left !important; }
 
-  /* Pedestal 3D — bloco sólido, contido, com respiro grande acima e abaixo */
-  .hero-visual,
-  .hero-visual[hidden] {
-    display: block !important;
-    position: relative !important;
-    right: auto !important;
-    left: 0 !important;
-    top: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 36px 0 36px !important;
+  /* Pedestal mobile — menor e sem margens excessivas */
+  .hero__pedestal {
+    max-width: 420px !important;
     aspect-ratio: 16 / 10 !important;
-    opacity: 1 !important;
-    overflow: hidden !important;
-    border-radius: 16px !important;
-    /* Pedestal centralizado dentro do bloco (bg-size 200% + pos 100% 55%) */
-    background:
-      url('../assets/images/hero-bg.jpg?v=2') 100% 55% / 200% auto no-repeat !important;
-    animation: none !important;
+    margin: 12px auto 18px !important;
   }
-  /* Oculta o <picture>/<img> interno (simbolo-3d-close) — usamos bg-image */
-  .hero-visual picture,
-  .hero-visual img { display: none !important; }
-  .hero-visual-fade { display: none !important; }
-  /* Nenhum pseudo vaza pra fora do bloco */
-  .hero-visual::before,
-  .hero-visual::after { display: none !important; }
+  /* .hero-visual legacy oculto (usamos .hero__pedestal agora) */
+  .hero-visual { display: none !important; }
 
   #hero .hero__stats { margin-top: 0 !important; }
   /* Stats row com bg sólido pra destacar */
