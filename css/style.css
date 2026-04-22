@@ -5139,28 +5139,44 @@ html { scroll-padding-top: 84px; }
   }
   #hero .hero__content { text-align: left !important; }
 
-  /* Pedestal mobile — nova imagem com pedestal frontal centralizado;
-     cover + bg-position 50% 62% enquadra o pedestal no centro do bloco */
-  .hero__pedestal {
-    width: 100vw !important;
-    max-width: none !important;
-    margin-left: calc(50% - 50vw) !important;
-    margin-right: calc(50% - 50vw) !important;
-    margin-top: 6px !important;
-    margin-bottom: 14px !important;
-    aspect-ratio: 5 / 4 !important;
-    background-image: url('../assets/images/hero-bg-mobile.jpg?v=3') !important;
-    background-size: 140% auto !important;
-    background-position: 50% 62% !important;
+  /* Mobile: sem imagem de pedestal — símbolo BMAi como watermark atrás dos textos */
+  .hero__pedestal { display: none !important; }
+  .hero::before {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: url('../assets/images/simbolo-laranja.svg') center 52% / 70vw 70vw no-repeat !important;
+    opacity: .08 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    filter: blur(.4px);
   }
-  /* Glow mobile — alinhado ao pedestal centralizado pra dar mais destaque */
-  .hero__pedestal-glow {
-    inset: -25% -20% !important;
-    background: radial-gradient(ellipse 48% 42% at 50% 62%,
-      rgba(255, 133, 51, .42) 0%,
-      rgba(219, 85, 0, .2) 32%,
+  /* Glow laranja sutil pulsando atrás do símbolo pra dar vida */
+  .hero::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 52% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 78vw !important;
+    height: 78vw !important;
+    max-width: 520px !important;
+    max-height: 520px !important;
+    background: radial-gradient(circle,
+      rgba(219, 85, 0, .2) 0%,
+      rgba(219, 85, 0, .08) 35%,
       transparent 65%) !important;
-    filter: blur(42px) !important;
+    filter: blur(38px);
+    pointer-events: none !important;
+    z-index: 0 !important;
+  }
+  /* Conteúdo sempre em cima do símbolo/glow */
+  #hero .container.hero__wrap,
+  #hero .hero__stats {
+    position: relative;
+    z-index: 2;
   }
   /* .hero-visual legacy oculto (usamos .hero__pedestal agora) */
   .hero-visual { display: none !important; }
