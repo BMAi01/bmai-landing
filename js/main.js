@@ -544,31 +544,34 @@ document.querySelectorAll('section[id]').forEach(s => {
   const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
   let enterTimer = null;
 
-  nodes.forEach((node, i) => {
-    if (!isTouch) {
-      node.addEventListener('mouseenter', () => {
-        clearTimeout(enterTimer);
-        enterTimer = setTimeout(() => { activate(i); syncPressed(); }, 120);
-      });
-      node.addEventListener('mouseleave', () => clearTimeout(enterTimer));
-      node.addEventListener('focus', () => {
-        clearTimeout(enterTimer);
-        if (current !== i) { activate(i); syncPressed(); }
-      });
-    }
-    // Click funciona sempre (desktop bypass delay, touch único gatilho)
-    node.addEventListener('click', () => {
-      clearTimeout(enterTimer);
-      activate(i); syncPressed();
-    });
-    node.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
+  // Desktop: hover/click/keydown bindados ao activate (card único swap)
+  // Mobile: pills bindados separadamente no bloco IS_MOBILE abaixo (abre accordion)
+  if (!IS_MOBILE) {
+    nodes.forEach((node, i) => {
+      if (!isTouch) {
+        node.addEventListener('mouseenter', () => {
+          clearTimeout(enterTimer);
+          enterTimer = setTimeout(() => { activate(i); syncPressed(); }, 120);
+        });
+        node.addEventListener('mouseleave', () => clearTimeout(enterTimer));
+        node.addEventListener('focus', () => {
+          clearTimeout(enterTimer);
+          if (current !== i) { activate(i); syncPressed(); }
+        });
+      }
+      node.addEventListener('click', () => {
         clearTimeout(enterTimer);
         activate(i); syncPressed();
-      }
+      });
+      node.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          clearTimeout(enterTimer);
+          activate(i); syncPressed();
+        }
+      });
     });
-  });
+  }
 
   /* Auto-cycle: cicla os 4 DEIA a cada 2.3s quando a seção tá visível.
      Abre o detail no load e só pausa se usuário tiver prefers-reduced-motion. */
@@ -625,18 +628,20 @@ document.querySelectorAll('section[id]').forEach(s => {
     io.observe(metodoSection);
   }
 
-  /* Trigger externo — nunca fecha, só troca */
-  document.addEventListener('metodo:set', (e) => {
-    const i = e.detail && e.detail.index;
-    if (typeof i === 'number') {
-      cycleIdx = i;
-      activate(i, { noToggle: true, force: true });
-      syncPressed();
-    }
-  });
+  /* Trigger externo — nunca fecha, só troca (desktop only) */
+  if (!IS_MOBILE) {
+    document.addEventListener('metodo:set', (e) => {
+      const i = e.detail && e.detail.index;
+      if (typeof i === 'number') {
+        cycleIdx = i;
+        activate(i, { noToggle: true, force: true });
+        syncPressed();
+      }
+    });
+  }
 
-  /* Respeita reduced-motion: mostra só o primeiro card, sem auto-cycle */
-  if (LOW_MOTION) {
+  /* Respeita reduced-motion: desktop mostra só o primeiro card */
+  if (LOW_MOTION && !IS_MOBILE) {
     activate(0, { noToggle: true, force: true });
     syncPressed();
   }
