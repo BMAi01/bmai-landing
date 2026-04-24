@@ -205,6 +205,238 @@ reveal('.cs-card', true);
    enquanto o user está preso pela trava. */
 
 /* ============================================
+   HERO FX — composição tech em canvas (grid pontos + linhas circuito + pulsos)
+   Pausa fora do viewport. DPR cap 2. Respeita reduced-motion.
+   ============================================ */
+(function initHeroFx() {
+  const canvas = document.getElementById('heroFxCanvas');
+  const host   = document.getElementById('heroFx');
+  if (!canvas || !host) return;
+  const ctx = canvas.getContext('2d', { alpha: true });
+  if (!ctx) return;
+
+  const reduce = PREFERS_REDUCE;
+  const isMobile = matchMedia('(max-width: 768px)').matches;
+
+  let W = 0, H = 0, dpr = 1;
+  let dots = [];
+  let segments = [];
+  let nodes = [];
+  let pulses = [];
+  let raf = null;
+  let running = false;
+  let t0 = performance.now();
+
+  const GAP = isMobile ? 52 : 40;
+  const DOT_COUNT_PULSE_RATIO = 0.15;   // fração de pontos que pulsam
+  const LINE_COUNT = isMobile ? 6 : 11;
+
+  function resize() {
+    const rect = host.getBoundingClientRect();
+    if (rect.width < 2 || rect.height < 2) return;
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.floor(rect.width);
+    H = Math.floor(rect.height);
+    canvas.width  = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    buildScene();
+  }
+
+  function rng(seed) {
+    let s = seed | 0;
+    return function() {
+      s = (s * 1664525 + 1013904223) | 0;
+      return ((s >>> 0) % 10000) / 10000;
+    };
+  }
+
+  function buildScene() {
+    // Grid pontos
+    dots = [];
+    const cols = Math.ceil(W / GAP) + 1;
+    const rows = Math.ceil(H / GAP) + 1;
+    const rand = rng(42);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const pulse = rand() < DOT_COUNT_PULSE_RATIO;
+        dots.push({
+          x: c * GAP,
+          y: r * GAP,
+          pulse,
+          phase: rand() * Math.PI * 2
+        });
+      }
+    }
+
+    // Linhas de circuito ortogonais — 2 a 4 segmentos cada, grudadas no grid
+    segments = [];
+    nodes = [];
+    const r2 = rng(7);
+    for (let i = 0; i < LINE_COUNT; i++) {
+      const startC = Math.floor(r2() * cols);
+      const startR = Math.floor(r2() * rows);
+      let cx = startC, cy = startR;
+      const segCount = 2 + Math.floor(r2() * 3);
+      const linePts = [{ x: cx * GAP, y: cy * GAP }];
+      let lastDir = null;
+      for (let s = 0; s < segCount; s++) {
+        // Alterna eixo pra manter ortogonal sem recuo
+        const horizontal = lastDir === 'v' || (lastDir === null && r2() < .5);
+        lastDir = horizontal ? 'h' : 'v';
+        const len = 3 + Math.floor(r2() * 6);
+        const dir = r2() < .5 ? -1 : 1;
+        if (horizontal) cx = Math.max(0, Math.min(cols, cx + len * dir));
+        else            cy = Math.max(0, Math.min(rows, cy + len * dir));
+        linePts.push({ x: cx * GAP, y: cy * GAP });
+      }
+      // Cria segmentos em sequência + nós nas pontas
+      const lineSegs = [];
+      for (let s = 0; s < linePts.length - 1; s++) {
+        const a = linePts[s], b = linePts[s + 1];
+        lineSegs.push({ ax: a.x, ay: a.y, bx: b.x, by: b.y });
+      }
+      segments.push({ segs: lineSegs, opacity: 0.3 + r2() * 0.4 });
+      // Nós: primeiro e último da linha
+      nodes.push({ x: linePts[0].x, y: linePts[0].y, phase: r2() * Math.PI * 2 });
+      nodes.push({ x: linePts[linePts.length - 1].x, y: linePts[linePts.length - 1].y, phase: r2() * Math.PI * 2 });
+
+      // Pulso por linha
+      const totalLen = lineSegs.reduce((sum, s) => sum + Math.hypot(s.bx - s.ax, s.by - s.ay), 0);
+      pulses.push({
+        lineIdx: i,
+        t: r2() * 1,            // 0..1 posição atual
+        speed: (0.12 + r2() * 0.12) / 1000, // por ms
+        totalLen
+      });
+    }
+  }
+
+  function pulsePosition(line, t) {
+    let dist = t * line.segs.reduce((s, seg) => s + Math.hypot(seg.bx - seg.ax, seg.by - seg.ay), 0);
+    for (const s of line.segs) {
+      const len = Math.hypot(s.bx - s.ax, s.by - s.ay);
+      if (dist <= len) {
+        const k = dist / len;
+        return { x: s.ax + (s.bx - s.ax) * k, y: s.ay + (s.by - s.ay) * k };
+      }
+      dist -= len;
+    }
+    const last = line.segs[line.segs.length - 1];
+    return { x: last.bx, y: last.by };
+  }
+
+  function render(nowMs) {
+    ctx.clearRect(0, 0, W, H);
+    const tt = (nowMs - t0) / 1000;
+
+    // Camada 1: pontos do grid
+    for (const d of dots) {
+      let a = 0.08;
+      if (d.pulse && !reduce) {
+        a = 0.08 + (Math.sin(tt * 1.8 + d.phase) * 0.5 + 0.5) * 0.17;
+      }
+      ctx.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, 1.1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Camada 2: linhas de circuito
+    ctx.lineWidth = 1;
+    ctx.lineCap = 'round';
+    for (const line of segments) {
+      ctx.strokeStyle = `rgba(255,107,0,${line.opacity.toFixed(3)})`;
+      ctx.beginPath();
+      for (const s of line.segs) {
+        ctx.moveTo(s.ax, s.ay);
+        ctx.lineTo(s.bx, s.by);
+      }
+      ctx.stroke();
+    }
+
+    // Nós nas pontas
+    for (const n of nodes) {
+      const pulse = reduce ? .5 : (0.5 + 0.5 * Math.sin(tt * 2 + n.phase));
+      const r = 2 + pulse * 1.2;
+      ctx.fillStyle = '#ff6b00';
+      ctx.shadowColor = 'rgba(255,107,0,.85)';
+      ctx.shadowBlur = 8 + pulse * 6;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+
+    // Camada pulsos viajando nas linhas
+    if (!reduce) {
+      for (const p of pulses) {
+        p.t += p.speed * 16;
+        if (p.t > 1) p.t = 0;
+        const line = segments[p.lineIdx];
+        if (!line) continue;
+        const pos = pulsePosition(line, p.t);
+        const g = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 14);
+        g.addColorStop(0, 'rgba(255,165,92,.95)');
+        g.addColorStop(.4, 'rgba(255,107,0,.5)');
+        g.addColorStop(1, 'rgba(255,107,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 14, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function loop(now) {
+    if (!running) return;
+    render(now);
+    raf = requestAnimationFrame(loop);
+  }
+  function start() {
+    if (running) return;
+    running = true;
+    t0 = performance.now();
+    raf = requestAnimationFrame(loop);
+  }
+  function stop() {
+    running = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = null;
+  }
+
+  // Init + resize (debounced)
+  let resizeT = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { resize(); if (reduce) render(performance.now()); }, 140);
+  }, { passive: true });
+
+  resize();
+  if (reduce) {
+    render(performance.now());
+    return;
+  }
+
+  // Pausa fora do viewport
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0) start();
+      else stop();
+    });
+  }, { threshold: 0 });
+  io.observe(document.getElementById('hero') || host);
+
+  // Pausa em tab oculta
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else if (document.getElementById('hero')?.getBoundingClientRect().bottom > 0) start();
+  });
+})();
+
+/* ============================================
    HERO TITLE — simple fade in
    ============================================ */
 (function () {
