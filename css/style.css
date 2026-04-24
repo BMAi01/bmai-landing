@@ -1432,9 +1432,206 @@ html { scrollbar-gutter: stable; }
 }
 
 /* ============================================
-   MÉTODO CARROSSEL (D/E/I/A)
+   MÉTODO SCROLL-STACK (D/E/I/A) — efeito Algarys
+   GSAP ScrollTrigger pina cada card e empilha o próximo por cima.
+   ============================================ */
+.metodo {
+  position: relative;
+  isolation: isolate;
+  /* CRÍTICO: nenhum overflow:hidden aqui nem em ancestors — quebra position:sticky/pin */
+  overflow: visible;
+}
+.metodo__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.metodo__indicators {
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+  background: linear-gradient(180deg, rgba(13,27,42,.92) 0%, rgba(13,27,42,.7) 70%, transparent 100%);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  padding: 14px 16px 16px;
+  margin-bottom: 32px;
+}
+.metodo__stack-wrap {
+  position: relative;
+}
+.metodo__stack {
+  position: relative;
+  /* Cada .metodo__card vira um pin do GSAP — o JS controla altura via pinSpacing */
+}
+.metodo__card {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  padding: 48px;
+  border-radius: 24px;
+  border: 1px solid rgba(219,85,0,.22);
+  background:
+    radial-gradient(ellipse 120% 60% at 0% 0%, rgba(255,107,0,.08) 0%, transparent 60%),
+    linear-gradient(135deg, rgba(20,20,26,.96) 0%, rgba(36,28,22,.96) 100%);
+  box-shadow:
+    0 24px 60px -20px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.04);
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity, filter;
+  overflow: hidden;
+}
+.metodo__card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(219,85,0,.7) 30%, #ff7a2a 50%, rgba(219,85,0,.7) 70%, transparent);
+  box-shadow: 0 0 12px rgba(219,85,0,.4);
+  pointer-events: none;
+}
+.metodo__card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.metodo__card-letter {
+  font-family: var(--fd);
+  font-size: clamp(96px, 12vw, 140px);
+  font-weight: 700;
+  color: rgba(219,85,0,.1);
+  line-height: 1;
+  letter-spacing: -.04em;
+  margin-bottom: -8px;
+  user-select: none;
+}
+.metodo__card-num {
+  font-family: var(--fm);
+  font-size: 11px;
+  color: var(--orange);
+  letter-spacing: .14em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.metodo__card-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(219,85,0,.3), transparent);
+}
+.metodo__card-title {
+  font-family: var(--fd);
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  color: var(--white);
+  line-height: 1.05;
+  margin: 0 0 8px;
+}
+.metodo__card-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--orange);
+  letter-spacing: .03em;
+  margin: 0 0 18px;
+}
+.metodo__card-desc {
+  font-size: 15px;
+  color: #999;
+  line-height: 1.75;
+  margin: 0 0 18px;
+}
+.metodo__card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.metodo__card-list li {
+  font-size: 14px;
+  color: #c9c9c9;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+.metodo__card-list li::before {
+  content: '→';
+  color: var(--orange);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 4px;
+}
+.metodo__card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.metodo__card-tag {
+  font-family: var(--fm);
+  font-size: 11px;
+  color: var(--orange);
+  border: 1px solid rgba(219,85,0,.25);
+  border-radius: 6px;
+  padding: 6px 12px;
+  background: rgba(219,85,0,.06);
+}
+.metodo__card-result {
+  font-size: 13px;
+  color: #b8b8b8;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.metodo__card-result::before {
+  content: '✓';
+  color: var(--orange);
+  font-style: normal;
+  font-weight: 700;
+}
+
+@media (min-width: 1024px) {
+  .metodo__card { min-height: 60vh; max-height: 78vh; }
+}
+@media (max-width: 767px) {
+  .metodo__indicators { padding: 10px 12px 12px; margin-bottom: 18px; }
+  .metodo__card {
+    padding: 28px 22px;
+    min-height: 70vh;
+    border-radius: 18px;
+  }
+  .metodo__card-grid { grid-template-columns: 1fr; gap: 18px; }
+  .metodo__card-letter { font-size: clamp(72px, 22vw, 96px); }
+  .metodo__card-title  { font-size: clamp(24px, 7vw, 32px); }
+}
+
+/* Fallback prefers-reduced-motion: cards empilhados estáticos sem pin */
+@media (prefers-reduced-motion: reduce) {
+  .metodo__card {
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    will-change: auto;
+  }
+}
+
+/* ============================================
+   MÉTODO CARROSSEL (legado — escondido, mantém para JS warmup do i18n)
    ============================================ */
 .metodo-carousel {
+  display: none !important;
+}
+.metodo-carousel--legacy-keep {
   position: relative;
   margin-top: 24px;
   padding: 4px 0 8px;

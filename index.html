@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260423-herostats">
+  <link rel="stylesheet" href="css/style.css?v=20260423-stack">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -420,14 +420,17 @@
     </div>
   </section>
 
-  <!-- ========== MÉTODO DEIA ========== -->
-  <section id="metodo" class="section">
+  <!-- ========== MÉTODO DEIA — scroll-stack ========== -->
+  <section id="metodo" class="metodo">
     <div class="container">
-      <div class="aria-hdr">
+      <div class="aria-hdr metodo__header">
         <h2 class="section__title" style="text-align:center" data-i18n="metodo.title">Do diagnóstico<br><span style="color:var(--orange)">à escala real.</span></h2>
         <p class="aria-sub" data-i18n="metodo.sub">Quatro fases, uma lógica: entender, organizar, construir, sustentar. Nenhuma é pulada — cada uma constrói em cima da anterior.</p>
       </div>
+    </div>
 
+    <!-- Indicadores D/E/I/A pinados no topo durante o stack -->
+    <div class="metodo__indicators" id="metodoIndicators">
       <div class="aria-flow" id="aria-flow" role="tablist" aria-label="Fases do Método DEIA">
         <button type="button" class="aria-node" data-index="0">
           <div class="aria-node-inner">
@@ -458,31 +461,11 @@
           <span class="aria-node-label" data-i18n="aria.label.a">Acompanhamento</span>
         </button>
       </div>
+    </div>
 
-      <!-- Carrossel DEIA -->
-      <div class="metodo-carousel" id="metodoCarousel">
-        <button type="button" class="metodo-arrow metodo-arrow--prev" id="metodoPrev" aria-label="Fase anterior">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
-        <div class="metodo-viewport" id="metodoViewport" data-lenis-prevent>
-          <div class="metodo-track" id="metodoTrack" role="tabpanel"></div>
-        </div>
-        <button type="button" class="metodo-arrow metodo-arrow--next" id="metodoNext" aria-label="Próxima fase">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-        <div class="carousel-progress" id="metodoProgress" role="tablist" aria-label="Navegação do método">
-          <button type="button" class="carousel-progress__segment is-active" data-slide="0" aria-label="Fase 1 — Diagnóstico" aria-selected="true"></button>
-          <button type="button" class="carousel-progress__segment" data-slide="1" aria-label="Fase 2 — Estruturação" aria-selected="false"></button>
-          <button type="button" class="carousel-progress__segment" data-slide="2" aria-label="Fase 3 — Implementação" aria-selected="false"></button>
-          <button type="button" class="carousel-progress__segment" data-slide="3" aria-label="Fase 4 — Acompanhamento" aria-selected="false"></button>
-        </div>
-      </div>
-
-      <!-- Legacy detail - kept for JS compatibility (hidden by carrossel CSS) -->
-      <div class="aria-detail" id="aria-detail" hidden>
-        <div class="aria-detail-inner" id="aria-detail-inner"></div>
-      </div>
-
+    <!-- Stack de cards (preenchido pelo JS a partir de ARIA_DATA / i18n) -->
+    <div class="container metodo__stack-wrap">
+      <div class="metodo__stack" id="metodoStack" data-stack></div>
     </div>
   </section>
   <!-- ========== CASES DE SUCESSO ========== -->
@@ -955,8 +938,8 @@
     <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
-  <script src="js/i18n.js?v=20260423-herostats"></script>
-  <script defer src="js/main.js?v=20260423-herostats"></script>
+  <script src="js/i18n.js?v=20260423-stack"></script>
+  <script defer src="js/main.js?v=20260423-stack"></script>
 
   <script>
   /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */

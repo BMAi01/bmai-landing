@@ -121,20 +121,33 @@ let lenisInstance = null;
         gestureOrientation: 'vertical',
         infinite: false
       });
-      function raf(time) {
-        lenisInstance.raf(time);
-        requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
 
-      // Sync com ScrollTrigger (GSAP)
-      window.addEventListener('load', () => {
-        if (typeof ScrollTrigger !== 'undefined' && lenisInstance) {
+      // Integração Lenis ↔ GSAP ticker (1 RAF compartilhado, sem competir com scroll-stack do Método)
+      const startGsapTicker = () => {
+        if (typeof gsap === 'undefined' || !lenisInstance) return false;
+        gsap.ticker.add((time) => { lenisInstance.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+        if (typeof ScrollTrigger !== 'undefined') {
           lenisInstance.on('scroll', ScrollTrigger.update);
         }
-      });
+        return true;
+      };
+      let usingFallbackRaf = !startGsapTicker();
+      if (usingFallbackRaf) {
+        // Fallback rAF próprio até GSAP carregar; depois migra
+        function raf(time) {
+          if (!usingFallbackRaf) return;
+          lenisInstance.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+        const tryMigrate = () => {
+          if (startGsapTicker()) { usingFallbackRaf = false; return; }
+          setTimeout(tryMigrate, 80);
+        };
+        window.addEventListener('load', tryMigrate, { once: true });
+      }
 
-      // Expõe pra outros módulos (burger, etc.)
       window.__lenis = lenisInstance;
       return true;
     } catch (e) {
@@ -861,7 +874,9 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   MÉTODO DEIA — carrossel horizontal com snap + efeitos
+   MÉTODO DEIA — scroll-stack (efeito Algarys)
+   GSAP + ScrollTrigger pina cada card e empilha o próximo.
+   Integração com Lenis via gsap.ticker (ver bloco LENIS abaixo).
    ============================================ */
 (function() {
   const ARIA_KEYS = ['d', 'e', 'i', 'a'];
@@ -884,228 +899,191 @@ document.querySelectorAll('section[id]').forEach(s => {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 
-  const nodes    = document.querySelectorAll('#aria-flow .aria-node');
-  const viewport = document.getElementById('metodoViewport');
-  const track    = document.getElementById('metodoTrack');
-  const prevBtn  = document.getElementById('metodoPrev');
-  const nextBtn  = document.getElementById('metodoNext');
-  const progress = document.getElementById('metodoProgress');
-  const segments = progress ? Array.from(progress.querySelectorAll('.carousel-progress__segment')) : [];
-  const section  = document.getElementById('metodo');
-  if (!track || !viewport || !section) return;
+  const nodes   = document.querySelectorAll('#aria-flow .aria-node');
+  const stack   = document.getElementById('metodoStack');
+  const section = document.getElementById('metodo');
+  if (!stack || !section) return;
 
   let ARIA_DATA = getAriaData();
-  let current = 0;
-  let autoTimer = null;
-  let userInteracting = false;
-  let resumeTimer = null;
-  const AUTO_MS = 5000;
+  let stackTriggers = [];
 
   function cardHTML(d, i) {
     return `
-      <article class="metodo-card" data-idx="${i}" role="tab" aria-label="${escapeHtml(d.title)}" tabindex="0">
-        <div class="metodo-card-letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
-        <div class="metodo-card-num">${escapeHtml(d.num)}</div>
-        <h3 class="metodo-card-title">${escapeHtml(d.title)}</h3>
-        <div class="metodo-card-subtitle">${escapeHtml(d.subtitle)}</div>
-        <p class="metodo-card-desc">${escapeHtml(d.desc)}</p>
-        <ul class="metodo-card-bullets">${d.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
-        <div class="metodo-card-footer">
-          <span class="metodo-card-tag">${escapeHtml(d.tag)}</span>
-          <span class="metodo-card-result">${escapeHtml(d.result)}</span>
+      <article class="metodo__card" data-card="${i}" data-phase="${escapeHtml(d.letter)}">
+        <div class="metodo__card-grid">
+          <div>
+            <div class="metodo__card-letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
+            <div class="metodo__card-num">${escapeHtml(d.num)}</div>
+            <h3 class="metodo__card-title">${escapeHtml(d.title)}</h3>
+            <div class="metodo__card-subtitle">${escapeHtml(d.subtitle)}</div>
+            <p class="metodo__card-desc">${escapeHtml(d.desc)}</p>
+          </div>
+          <div>
+            <ul class="metodo__card-list">${d.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+            <div class="metodo__card-footer">
+              <span class="metodo__card-tag">${escapeHtml(d.tag)}</span>
+              <span class="metodo__card-result">${escapeHtml(d.result)}</span>
+            </div>
+          </div>
         </div>
       </article>
     `;
   }
 
-  function render() {
-    track.innerHTML = ARIA_DATA.map((d, i) => cardHTML(d, i)).join('');
-    bindCards();
-    bindSegments();
-    updateActive(0, { scroll: false });
+  function renderStack() {
+    stack.innerHTML = ARIA_DATA.map((d, i) => cardHTML(d, i)).join('');
   }
 
-  function bindCards() {
-    track.querySelectorAll('.metodo-card').forEach((card) => {
-      card.addEventListener('click', () => {
-        const idx = parseInt(card.dataset.idx, 10);
-        goTo(idx, { user: true });
-      });
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          const idx = parseInt(card.dataset.idx, 10);
-          goTo(idx, { user: true });
-        }
-      });
-    });
-  }
-
-  function bindSegments() {
-    segments.forEach((seg) => {
-      seg.addEventListener('click', () => {
-        const idx = parseInt(seg.dataset.slide, 10);
-        goTo(idx, { user: true });
-      });
-    });
-  }
-
-  function updateActive(idx, opts) {
-    opts = opts || {};
-    current = idx;
-    track.querySelectorAll('.metodo-card').forEach((c, i) => {
-      c.classList.toggle('is-active', i === idx);
-      c.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+  function setActiveIndicator(i) {
+    nodes.forEach((n, j) => {
+      n.classList.toggle('active', j === i);
+      n.setAttribute('aria-selected', j === i ? 'true' : 'false');
+      n.setAttribute('aria-pressed', j === i ? 'true' : 'false');
     });
     const flow = document.getElementById('aria-flow');
-    if (flow) flow.style.setProperty('--aria-progress', String(idx));
-    nodes.forEach((n, i) => {
-      n.classList.toggle('active', i === idx);
-      n.setAttribute('aria-selected', i === idx ? 'true' : 'false');
-      n.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
-    });
-    segments.forEach((s, i) => {
-      s.classList.toggle('is-active', i === idx);
-      s.setAttribute('aria-selected', i === idx ? 'true' : 'false');
-    });
-    updateArrows();
-    if (opts.scroll !== false) scrollToIndex(idx);
+    if (flow) flow.style.setProperty('--aria-progress', String(i));
   }
 
-  function scrollToIndex(idx) {
-    const card = track.children[idx];
-    if (!card) return;
-    const vpRect = viewport.getBoundingClientRect();
-    const cardRect = card.getBoundingClientRect();
-    const offset = (cardRect.left - vpRect.left) + viewport.scrollLeft
-                 - (viewport.clientWidth / 2 - card.clientWidth / 2);
-    viewport.scrollTo({
-      left: offset,
-      behavior: LOW_MOTION ? 'auto' : 'smooth'
-    });
+  function teardown() {
+    stackTriggers.forEach(t => t.kill());
+    stackTriggers = [];
   }
 
-  function updateArrows() {
-    if (!prevBtn || !nextBtn) return;
-    // Não desabilito — faço looping
-    prevBtn.setAttribute('aria-disabled', 'false');
-    nextBtn.setAttribute('aria-disabled', 'false');
-  }
+  function buildStack() {
+    teardown();
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const cards = gsap.utils.toArray('.metodo__card');
+    if (!cards.length) return;
 
-  function goTo(idx, opts) {
-    const n = ARIA_DATA.length;
-    const next = ((idx % n) + n) % n;
-    updateActive(next);
-    if (opts && opts.user) pauseAuto();
-  }
+    const isMobile = matchMedia('(max-width: 767px)').matches;
+    const headerH  = 80;
+    const scrollPerCard = isMobile ? 0.8 : 1.2;
+    const scaleDown     = isMobile ? 0.95 : 0.92;
+    const blurAmount    = isMobile ? 1 : 2;
 
-  function pauseAuto() {
-    userInteracting = true;
-    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-    if (resumeTimer) clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(() => {
-      userInteracting = false;
-      startAuto();
-    }, 8000);
-  }
+    cards.forEach((card, i) => {
+      const isLast = i === cards.length - 1;
 
-  function startAuto() {
-    if (autoTimer || LOW_MOTION || userInteracting) return;
-    autoTimer = setInterval(() => goTo(current + 1), AUTO_MS);
-  }
-  function stopAuto() {
-    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-  }
+      // Anim do card atual indo "pra trás" quando o próximo entra por cima
+      if (!isLast) {
+        const t = gsap.to(card, {
+          scale: scaleDown,
+          y: -40,
+          opacity: 0.6,
+          filter: `blur(${blurAmount}px)`,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: card,
+            start: `top ${headerH}px`,
+            end: `+=${window.innerHeight * scrollPerCard}`,
+            scrub: true
+          }
+        });
+        stackTriggers.push(t.scrollTrigger);
+      }
 
-  // Arrows
-  if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1, { user: true }));
-  if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1, { user: true }));
-
-  // Keyboard: setas navegam quando foco está no carrossel
-  viewport.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1, { user: true }); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1, { user: true }); }
-  });
-
-  // Detecta card central visível durante scroll manual
-  let scrollTimeout = null;
-  viewport.addEventListener('scroll', () => {
-    if (scrollTimeout) clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      const vpRect = viewport.getBoundingClientRect();
-      const vpCenter = vpRect.left + vpRect.width / 2;
-      let closest = 0, minDist = Infinity;
-      track.querySelectorAll('.metodo-card').forEach((c, i) => {
-        const r = c.getBoundingClientRect();
-        const center = r.left + r.width / 2;
-        const d = Math.abs(center - vpCenter);
-        if (d < minDist) { minDist = d; closest = i; }
+      // Pin do card
+      const pinTrigger = ScrollTrigger.create({
+        trigger: card,
+        start: `top ${headerH}px`,
+        end: isLast
+          ? `+=${window.innerHeight * 0.5}`
+          : `+=${window.innerHeight * scrollPerCard}`,
+        pin: true,
+        pinSpacing: !isLast,
+        anticipatePin: 1
       });
-      if (closest !== current) updateActive(closest, { scroll: false });
-    }, 90);
-  }, { passive: true });
+      stackTriggers.push(pinTrigger);
 
-  // Pills D/E/I/A navegam
+      // Sincroniza indicador D/E/I/A com card ativo
+      const indTrigger = ScrollTrigger.create({
+        trigger: card,
+        start: `top ${headerH + 20}px`,
+        end: `bottom ${headerH + 20}px`,
+        onEnter: () => setActiveIndicator(i),
+        onEnterBack: () => setActiveIndicator(i)
+      });
+      stackTriggers.push(indTrigger);
+    });
+
+    // Limpa will-change quando termina a sequência
+    ScrollTrigger.create({
+      trigger: stack,
+      start: 'top top',
+      end: 'bottom top',
+      onLeave: () => {
+        document.querySelectorAll('.metodo__card').forEach(c => { c.style.willChange = 'auto'; });
+      },
+      onEnterBack: () => {
+        document.querySelectorAll('.metodo__card').forEach(c => { c.style.willChange = 'transform, opacity, filter'; });
+      }
+    });
+
+    setActiveIndicator(0);
+  }
+
+  // Pills D/E/I/A: clicar pula pro card correspondente via Lenis
   nodes.forEach((node, i) => {
     node.setAttribute('role', 'tab');
     node.setAttribute('tabindex', '0');
-    node.setAttribute('aria-pressed', 'false');
-    node.setAttribute('aria-controls', 'metodoTrack');
     node.addEventListener('click', (e) => {
       e.preventDefault();
-      goTo(i, { user: true });
+      const card = stack.querySelector(`.metodo__card[data-card="${i}"]`);
+      if (!card) return;
+      const top = card.getBoundingClientRect().top + window.pageYOffset - 80;
+      if (window.__lenis) window.__lenis.scrollTo(top, { duration: 1.4 });
+      else window.scrollTo({ top, behavior: 'smooth' });
     });
     node.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        goTo(i, { user: true });
-      }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); node.click(); }
     });
   });
 
-  // Pause auto no hover/touch da viewport
-  ['mouseenter', 'touchstart', 'focusin'].forEach(ev => {
-    viewport.addEventListener(ev, () => pauseAuto(), { passive: true });
-  });
+  function init() {
+    if (PREFERS_REDUCE) {
+      // Fallback: cards aparecem empilhados estáticos sem pin
+      renderStack();
+      setActiveIndicator(0);
+      return;
+    }
+    renderStack();
+    // Espera GSAP/ScrollTrigger carregarem (script defer)
+    const tryBuild = () => {
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+        buildStack();
+        ScrollTrigger.refresh();
+      } else {
+        setTimeout(tryBuild, 50);
+      }
+    };
+    tryBuild();
+  }
 
   // i18n re-render
   window.addEventListener('i18n:change', () => {
     ARIA_DATA = getAriaData();
-    const prev = current;
-    render();
-    updateActive(prev, { scroll: false });
+    renderStack();
+    if (typeof ScrollTrigger !== 'undefined' && !PREFERS_REDUCE) {
+      buildStack();
+      ScrollTrigger.refresh();
+    }
   });
 
-  // Entrada no viewport → fade + translateY + inicia auto-play
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        track.querySelectorAll('.metodo-card').forEach((c, i) => {
-          setTimeout(() => c.classList.add('is-entered'), i * 80);
-        });
-        startAuto();
-        io.unobserve(e.target);
+  // Resize: recalcula triggers
+  let resizeT = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => {
+      if (typeof ScrollTrigger !== 'undefined' && !PREFERS_REDUCE) {
+        buildStack();
+        ScrollTrigger.refresh();
       }
-    });
-  }, { threshold: 0.2 });
-
-  // Pause quando sai da viewport
-  const ioPause = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) stopAuto();
-      else if (!userInteracting) startAuto();
-    });
-  }, { threshold: 0.2 });
-
-  render();
-  io.observe(section);
-  ioPause.observe(section);
-
-  // Trigger externo (section dots etc)
-  document.addEventListener('metodo:set', (e) => {
-    const i = e && e.detail && e.detail.index;
-    if (typeof i === 'number') goTo(i, { user: true });
+    }, 250);
   });
+
+  if (document.readyState === 'complete') init();
+  else window.addEventListener('load', init);
 })();
 
 /* ============================================
@@ -1170,11 +1148,10 @@ addEventListener('load', function () {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce) return;
 
-  // Normaliza scroll: uniformiza wheel/trackpad/touch num único easing curve.
-  // Deixa o scroll com momentum mais consistente e menos "solavancos"
-  // entre devices diferentes.
+  // Lenis cuida da normalização do scroll (wheel/trackpad). NÃO usar
+  // ScrollTrigger.normalizeScroll(true) junto — os dois competem e quebram
+  // o pin do scroll-stack do Método.
   try {
-    ScrollTrigger.normalizeScroll(true);
     ScrollTrigger.config({ ignoreMobileResize: true });
   } catch (e) {}
 
