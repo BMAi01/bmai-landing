@@ -1485,7 +1485,7 @@ html { scrollbar-gutter: stable; }
 .metodo__cards-wrapper {
   position: relative;
   width: 100%;
-  max-width: 920px;
+  max-width: 1260px;          /* largura ampliada — card respira no desktop */
   height: 70vh;
   margin-inline: auto;
   padding-inline: 24px;
@@ -1501,7 +1501,7 @@ html { scrollbar-gutter: stable; }
   margin: auto;
   width: auto;
   height: 100%;
-  padding: 48px 56px;
+  padding: 48px 64px;
 
   background: var(--bmai-navy-card);                    /* #162534 oficial */
   border: 1px solid rgba(219, 85, 0, 0.15);              /* laranja queimado 15% */
@@ -1520,15 +1520,15 @@ html { scrollbar-gutter: stable; }
   flex-direction: column;
 }
 
-/* Estrela watermark — símbolo oficial BMAi */
+/* Estrela watermark — alinhada com a coluna esquerda (onde fica a letra) */
 .metodo__star-watermark {
   position: absolute;
   top: 50%;
-  left: 50%;
-  width: 600px;
-  height: 600px;
+  left: 25%;
+  width: 720px;
+  height: 720px;
   transform: translate(-50%, -50%) rotate(-12deg);
-  opacity: 0.06;
+  opacity: 0.05;
   pointer-events: none;
   z-index: 0;
 }
@@ -1539,30 +1539,55 @@ html { scrollbar-gutter: stable; }
   filter: brightness(0) saturate(100%) invert(40%) sepia(85%) saturate(2200%) hue-rotate(5deg) brightness(95%) contrast(95%);
 }
 
-/* Conteúdo acima da watermark */
+/* Header do card — número (esq) + label da fase (dir) */
+.metodo__card-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.metodo__phase-label {
+  font-family: 'General Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--bmai-orange);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Conteúdo: 2 colunas (40% / 55%) */
 .metodo__card-grid {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 56px;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 64px;
   align-items: start;
   flex: 1;
   min-height: 0;
 }
 .metodo__col { display: flex; flex-direction: column; }
+.metodo__col--left  { gap: 16px; }
+.metodo__col--right {
+  gap: 24px;
+  padding-top: 80px;          /* alinha topo do conteúdo direito com início do texto à esquerda */
+}
 
-/* Número da fase: pequeno, cinza, espaçado */
+/* Número da fase: agora vive no header — sem margin-bottom */
 .metodo__phase-number {
+  font-family: 'General Sans', sans-serif;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.15em;
   color: var(--bmai-gray);
-  margin-bottom: 24px;
   font-variant-numeric: tabular-nums;
 }
 
-/* Letra gigante D/E/I/A — gradient branco → laranja */
+/* Letra gigante D/E/I/A — branco sólido + glow laranja externo */
 .metodo__letter {
   font-family: 'General Sans', sans-serif;
   font-size: clamp(140px, 18vw, 240px);
@@ -1570,18 +1595,10 @@ html { scrollbar-gutter: stable; }
   line-height: 0.85;
   letter-spacing: -0.03em;
   margin-bottom: 16px;
-
-  /* gradient on text */
-  background: linear-gradient(
-    180deg,
-    var(--bmai-white) 0%,
-    var(--bmai-white) 60%,
-    rgba(219, 85, 0, 0.85) 100%
-  );
-  -webkit-background-clip: text;
-          background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--bmai-white);   /* fallback caso bg-clip não suporte */
+  color: var(--bmai-white);
+  text-shadow:
+    0 0 40px rgba(219, 85, 0, 0.45),
+    0 0 80px rgba(219, 85, 0, 0.22);
   user-select: none;
 }
 
@@ -1685,10 +1702,14 @@ html { scrollbar-gutter: stable; }
 }
 
 @media (max-width: 1023px) {
-  .metodo__cards-wrapper { max-width: 720px; height: 76vh; }
+  .metodo__cards-wrapper { max-width: 760px; height: 78vh; }
   .metodo__card { padding: 40px 36px; }
-  .metodo__card-grid { grid-template-columns: 1fr; gap: 24px; }
-  .metodo__star-watermark { width: 480px; height: 480px; }
+  .metodo__card-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .metodo__col--right { padding-top: 0; }
+  .metodo__star-watermark { width: 500px; height: 500px; left: 50%; }
 }
 @media (max-width: 767px) {
   .metodo__scroll-container { height: 320vh; }
@@ -1699,13 +1720,19 @@ html { scrollbar-gutter: stable; }
     padding: 28px 22px;
     border-radius: 14px;
   }
-  .metodo__star-watermark { width: 360px; height: 360px; }
-  .metodo__phase-number { font-size: 12px; margin-bottom: 16px; }
-  .metodo__letter { font-size: clamp(96px, 26vw, 140px); margin-bottom: 8px; }
+  .metodo__star-watermark { width: 360px; height: 360px; opacity: 0.045; }
+  .metodo__card-header { margin-bottom: 22px; padding-bottom: 12px; }
+  .metodo__phase-number { font-size: 11px; }
+  .metodo__phase-label { font-size: 10px; letter-spacing: .14em; }
+  .metodo__letter {
+    font-size: clamp(96px, 26vw, 140px);
+    margin-bottom: 8px;
+    text-shadow: 0 0 24px rgba(219, 85, 0, 0.4), 0 0 48px rgba(219, 85, 0, 0.18);
+  }
   .metodo__title { font-size: clamp(26px, 7vw, 34px); }
-  .metodo__subtitle { font-size: 15px; margin-bottom: 22px; }
-  .metodo__description { font-size: 14.5px; margin-bottom: 22px; }
-  .metodo__list { margin-bottom: 22px; gap: 10px; }
+  .metodo__subtitle { font-size: 15px; margin-bottom: 18px; }
+  .metodo__description { font-size: 14.5px; margin-bottom: 18px; }
+  .metodo__list { margin-bottom: 18px; gap: 10px; }
   .metodo__list li { font-size: 13.5px; }
   .metodo__tag { font-size: 12px; padding: 7px 14px; }
 }

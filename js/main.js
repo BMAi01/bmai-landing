@@ -916,9 +916,12 @@ document.querySelectorAll('section[id]').forEach(s => {
         <div class="metodo__star-watermark" aria-hidden="true">
           <img src="assets/images/simbolo-laranja.svg" alt="" draggable="false"/>
         </div>
+        <header class="metodo__card-header">
+          <span class="metodo__phase-number">${escapeHtml(d.num)}</span>
+          <span class="metodo__phase-label">FASE · ${escapeHtml(d.title)}</span>
+        </header>
         <div class="metodo__card-grid">
           <div class="metodo__col metodo__col--left">
-            <div class="metodo__phase-number">${escapeHtml(d.num)}</div>
             <div class="metodo__letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
             <h3 class="metodo__title">${escapeHtml(d.title)}</h3>
             <p class="metodo__subtitle">${escapeHtml(d.subtitle)}</p>
