@@ -99,6 +99,8 @@ const progress = document.getElementById('scrollProgress');
 const HERO_EASING = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
 let lenisInstance = null;
 (function initLenis() {
+  // Mobile: scroll 100% nativo do iOS/Android. NUNCA instanciar Lenis no mobile.
+  if (matchMedia('(max-width: 768px)').matches) return;
   // Gate low-end device — pouca CPU/RAM cai pro scroll nativo
   const cores = navigator.hardwareConcurrency || 8;
   const mem   = navigator.deviceMemory || 8;
@@ -1050,46 +1052,25 @@ document.querySelectorAll('section[id]').forEach(s => {
     setActiveIndicator(0);
   }
 
-  // Progress mobile via IntersectionObserver — sem ScrollTrigger/pin.
-  // Detecta qual card esta mais visivel e atualiza .metodo__progress (fill + markers + labels).
+  // Mobile card reveal — fade-in suave quando card entra no viewport (estilo Framer).
+  // Sem ScrollTrigger, sem pin, sem progress: scroll 100% nativo.
   let mobileObserver = null;
-  function initMetodoProgressMobile() {
+  function initMobileCardReveal() {
     if (!matchMedia('(max-width: 768px)').matches) return;
     if (mobileObserver) { mobileObserver.disconnect(); mobileObserver = null; }
-    const cards = Array.from(document.querySelectorAll('.metodo__card'));
-    if (!cards.length || !progressEl) return;
-
-    let hideTimeout = null;
-    let activeIndex = -1;
-
-    const showProgress = () => {
-      progressEl.classList.add('is-visible');
-      if (hideTimeout) clearTimeout(hideTimeout);
-      hideTimeout = setTimeout(() => progressEl.classList.remove('is-visible'), 1500);
-    };
+    const cards = document.querySelectorAll('.metodo__card');
+    if (!cards.length) return;
 
     mobileObserver = new IntersectionObserver((entries) => {
-      // Pega a entry mais visivel entre as que cruzaram threshold
-      let bestIdx = activeIndex;
-      let bestRatio = 0;
       entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
-          bestRatio = entry.intersectionRatio;
-          bestIdx = cards.indexOf(entry.target);
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          mobileObserver.unobserve(entry.target);  // revela uma vez so
         }
       });
-      if (bestIdx !== -1 && bestIdx !== activeIndex) {
-        activeIndex = bestIdx;
-        const pct = ((activeIndex + 1) / cards.length) * 100;
-        if (fillEl) fillEl.style.width = `${pct}%`;
-        setActiveIndicator(activeIndex);
-        showProgress();
-      } else if (bestIdx !== -1) {
-        showProgress();
-      }
     }, {
-      threshold: [0.4, 0.6, 0.8],
-      rootMargin: '-80px 0px -40% 0px'  // zona ativa: abaixo do header, acima da metade da tela
+      threshold: 0.15,
+      rootMargin: '0px 0px -10% 0px'
     });
 
     cards.forEach(card => mobileObserver.observe(card));
@@ -1103,11 +1084,10 @@ document.querySelectorAll('section[id]').forEach(s => {
       return;
     }
     renderStack();
-    // Mobile: scroll-stack lite via CSS sticky + progress por IntersectionObserver
+    // Mobile: scroll nativo. Sem progress flutuante (escondido via CSS).
+    // Cards revelam com fade-in via IntersectionObserver (.is-visible).
     if (matchMedia('(max-width: 768px)').matches) {
-      setActiveIndicator(0);
-      // Espera o DOM dos cards estar pronto (renderStack acabou de rodar — innerHTML eh sincrono, ok)
-      initMetodoProgressMobile();
+      initMobileCardReveal();
       return;
     }
     // Desktop: aguarda GSAP/ScrollTrigger carregarem (script defer)
@@ -1128,9 +1108,8 @@ document.querySelectorAll('section[id]').forEach(s => {
     ARIA_DATA = getAriaData();
     renderStack();
     if (matchMedia('(max-width: 768px)').matches) {
-      // Mobile: cards foram recriados, religar IntersectionObserver
-      setActiveIndicator(0);
-      initMetodoProgressMobile();
+      // Mobile: cards foram recriados, religar IntersectionObserver de fade-in
+      initMobileCardReveal();
       return;
     }
     if (typeof ScrollTrigger !== 'undefined' && !PREFERS_REDUCE) {
