@@ -3822,23 +3822,60 @@ section h2.shimmer-active::after,
   .hero__ctas .btn { width: 100% !important; min-width: 0 !important; justify-content: center !important; padding: 15px 24px !important; }
   .hero__badge { font-size: 11px !important; padding: 6px 12px !important; }
 
-  /* Hero stats — 3-col compacto horizontal */
+  /* Hero stats mobile — 3 colunas balanceadas (número ~36-44px / label legível) */
   .hero__stats { margin-top: clamp(50px, 9vw, 64px) !important; }
   #hero .container.hero__stats-row {
-    display: flex !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr !important;
     flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
+    align-items: stretch !important;
+    justify-items: stretch !important;
+    column-gap: 0 !important;
     width: calc(100vw - 32px) !important;
     max-width: 100% !important;
-    padding: 14px 12px !important;
-    gap: 4px !important;
+    padding: 20px 12px !important;
     overflow: visible !important;
+    border-radius: 16px !important;
   }
-  .hero__stat { padding: 0 4px !important; flex: 1 1 0 !important; min-width: 0 !important; text-align: center !important; }
-  .hero__stat-value { font-size: 22px !important; line-height: 1.1 !important; }
-  .hero__stat-label { font-size: 9.5px !important; white-space: normal !important; text-align: center !important; line-height: 1.25 !important; letter-spacing: .04em !important; }
-  .hero__stat-sep { width: 1px !important; height: 30px !important; flex: 0 0 auto !important; }
+  .hero__stat {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    padding: 4px 8px !important;
+    text-align: center !important;
+    min-width: 0 !important;
+  }
+  .hero__stat-value {
+    font-size: clamp(2rem, 9vw, 2.75rem) !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: -.02em !important;
+    text-shadow: none !important;
+    margin-bottom: 0 !important;
+  }
+  .hero__stat-label {
+    font-size: clamp(0.75rem, 3vw, 0.875rem) !important;
+    font-weight: 500 !important;
+    line-height: 1.3 !important;
+    color: rgba(255, 255, 255, .75) !important;
+    letter-spacing: .01em !important;
+    text-transform: none !important;
+    max-width: 110px !important;
+    margin-inline: auto !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+  /* Separadores via grid track de 1px (alinhamento perfeito, sem desencontro) */
+  .hero__stat-sep {
+    width: 1px !important;
+    height: auto !important;
+    align-self: center !important;
+    margin: 12% 0 !important;
+    background: rgba(255, 107, 0, .22) !important;
+    flex: 0 0 auto !important;
+  }
 
   /* Ticker mobile — logos menores, animação ainda mais rápida */
   .ticker { padding: 14px 0 !important; }
@@ -3971,8 +4008,7 @@ section h2.shimmer-active::after,
 /* Extra-small (iPhone SE ~ 375px) */
 @media (max-width: 400px) {
   .hero__title { font-size: clamp(26px, 8.4vw, 36px) !important; }
-  .hero__stat-value { font-size: 26px !important; }
-  .hero__stats-row { padding: 14px 16px !important; }
+  /* hero__stat-value/.hero__stats-row já estão balanceados via clamp + grid acima */
   .ticker__logo { width: 130px !important; height: 46px !important; }
   .ticker__logo img { max-width: 100% !important; max-height: 100% !important; }
   .cs-hero__quote { font-size: 14px !important; }
@@ -4100,8 +4136,7 @@ html { scroll-padding-top: 84px; }
   .floatnav { padding: 4px 4px 4px 8px !important; }
   .floatnav__cta-text { font-size: 12px !important; margin: 0 12px 0 8px !important; }
   .nav-logo img { height: 18px !important; }
-  .hero__stat-value { font-size: 19px !important; }
-  .hero__stat-label { font-size: 8.5px !important; }
+  /* hero__stat-value/label: deixar herdar do clamp do bloco principal */
   .aria-node-inner { width: 46px !important; height: 46px !important; }
   .aria-node-letter { font-size: 16px !important; }
 }
@@ -4126,14 +4161,7 @@ html { scroll-padding-top: 84px; }
     padding: 14px 22px !important;
   }
 
-  /* Hero stats — label respirando sem quebrar em 5 linhas */
-  .hero__stat-label {
-    font-size: 10.5px !important;
-    max-width: 100px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.3 !important;
-  }
+  /* Hero stats label: já vem balanceado via clamp do bloco principal */
 
   /* Quem Somos — cards encaixam melhor em 320-375px */
   .qs__pillar { padding: 30px 22px 26px !important; }
@@ -4225,7 +4253,7 @@ html { scroll-padding-top: 84px; }
   .container { padding-left: 16px !important; padding-right: 16px !important; }
   .hero__title { font-size: clamp(22px, 8vw, 30px) !important; line-height: 1.1 !important; }
   .hero__sub { font-size: .96rem !important; }
-  .hero__stat-label { font-size: 9px !important; max-width: 80px; }
+  /* hero__stat-label já balanceado via clamp do bloco principal */
   .qs__num { font-size: 48px !important; }
   .qs__title { font-size: 1.12rem !important; }
   .qs__desc { font-size: .88rem !important; }

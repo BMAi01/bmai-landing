@@ -20,8 +20,8 @@
       'hero.sub':     'DEVOLVEMOS O CONTROLE DO NEGÓCIO AO EMPREENDEDOR QUE DEIXA DE OPERAR NO IMPROVISO<br>E PASSA A TOMAR DECISÕES BASEADO EM DADOS.',
       'hero.cta':     'Falar com o time da BMAi',
       'hero.stat1':   'Projetos realizados',
-      'hero.stat2':   'Aumento na conversão do WhatsApp',
-      'hero.stat3':   'Dias de implementação média',
+      'hero.stat2':   'Conversão no WhatsApp',
+      'hero.stat3':   'Dias de implementação',
 
       /* QUEM SOMOS */
       'qs.title':     'O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span>',
@@ -217,8 +217,8 @@
       'hero.sub':   'WE GIVE CONTROL OF THE BUSINESS BACK TO THE OWNER WHO STOPS OPERATING ON GUESSWORK<br>AND STARTS MAKING DECISIONS BASED ON DATA.',
       'hero.cta':   'Chat with the BMAi team',
       'hero.stat1': 'Projects delivered',
-      'hero.stat2': 'Increase in WhatsApp conversion',
-      'hero.stat3': 'Average implementation days',
+      'hero.stat2': 'WhatsApp conversion',
+      'hero.stat3': 'Days to implement',
 
       'qs.title':     'Process comes first.<br><span style="color:var(--orange)">AI comes second.</span>',
 
@@ -405,8 +405,8 @@
       'hero.sub':   'DEVOLVEMOS EL CONTROL DEL NEGOCIO AL EMPRENDEDOR QUE DEJA DE OPERAR POR INTUICIÓN<br>Y PASA A TOMAR DECISIONES BASADAS EN DATOS.',
       'hero.cta':   'Hablar con el equipo BMAi',
       'hero.stat1': 'Proyectos entregados',
-      'hero.stat2': 'Aumento en conversión de WhatsApp',
-      'hero.stat3': 'Días promedio de implementación',
+      'hero.stat2': 'Conversión en WhatsApp',
+      'hero.stat3': 'Días de implementación',
 
       'qs.title':     'El proceso viene primero.<br><span style="color:var(--orange)">La IA viene después.</span>',
 
