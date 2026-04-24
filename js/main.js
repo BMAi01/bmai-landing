@@ -559,7 +559,7 @@ document.querySelectorAll('section[id]').forEach(s => {
   if (!matchMedia('(max-width: 768px)').matches) return;
 
   const slides = Array.from(root.querySelectorAll('.team-mslide'));
-  const bars   = Array.from(root.querySelectorAll('.team-mbar'));
+  const bars   = Array.from(root.querySelectorAll('#teamMobileProgress .carousel-progress__segment'));
   const prevZ  = document.getElementById('teamMPrev');
   const nextZ  = document.getElementById('teamMNext');
   const hint   = document.getElementById('teamMobileHint');
@@ -617,7 +617,7 @@ document.querySelectorAll('section[id]').forEach(s => {
   // Bars (Stories) — clique pula slide
   bars.forEach((bar) => {
     bar.addEventListener('click', () => {
-      const idx = parseInt(bar.dataset.idx, 10);
+      const idx = parseInt(bar.dataset.slide, 10);
       goTo(idx);
     });
   });
@@ -889,7 +889,8 @@ document.querySelectorAll('section[id]').forEach(s => {
   const track    = document.getElementById('metodoTrack');
   const prevBtn  = document.getElementById('metodoPrev');
   const nextBtn  = document.getElementById('metodoNext');
-  const dotsWrap = document.getElementById('metodoDots');
+  const progress = document.getElementById('metodoProgress');
+  const segments = progress ? Array.from(progress.querySelectorAll('.carousel-progress__segment')) : [];
   const section  = document.getElementById('metodo');
   if (!track || !viewport || !section) return;
 
@@ -919,13 +920,8 @@ document.querySelectorAll('section[id]').forEach(s => {
 
   function render() {
     track.innerHTML = ARIA_DATA.map((d, i) => cardHTML(d, i)).join('');
-    if (dotsWrap) {
-      dotsWrap.innerHTML = ARIA_DATA.map((d, i) =>
-        `<button type="button" class="metodo-dot" role="tab" data-idx="${i}" aria-label="Ir para fase ${d.letter} — ${escapeHtml(d.title)}"></button>`
-      ).join('');
-    }
     bindCards();
-    bindDots();
+    bindSegments();
     updateActive(0, { scroll: false });
   }
 
@@ -945,11 +941,10 @@ document.querySelectorAll('section[id]').forEach(s => {
     });
   }
 
-  function bindDots() {
-    if (!dotsWrap) return;
-    dotsWrap.querySelectorAll('.metodo-dot').forEach((dot) => {
-      dot.addEventListener('click', () => {
-        const idx = parseInt(dot.dataset.idx, 10);
+  function bindSegments() {
+    segments.forEach((seg) => {
+      seg.addEventListener('click', () => {
+        const idx = parseInt(seg.dataset.slide, 10);
         goTo(idx, { user: true });
       });
     });
@@ -969,12 +964,10 @@ document.querySelectorAll('section[id]').forEach(s => {
       n.setAttribute('aria-selected', i === idx ? 'true' : 'false');
       n.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
     });
-    if (dotsWrap) {
-      dotsWrap.querySelectorAll('.metodo-dot').forEach((d, i) => {
-        d.classList.toggle('is-active', i === idx);
-        d.setAttribute('aria-selected', i === idx ? 'true' : 'false');
-      });
-    }
+    segments.forEach((s, i) => {
+      s.classList.toggle('is-active', i === idx);
+      s.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+    });
     updateArrows();
     if (opts.scroll !== false) scrollToIndex(idx);
   }

@@ -1629,34 +1629,7 @@ html { scrollbar-gutter: stable; }
   .metodo-arrow { display: none; }
 }
 
-/* Dots (mobile) */
-.metodo-dots {
-  display: none;
-  justify-content: center;
-  gap: 8px;
-  margin: 18px 0 6px;
-}
-.metodo-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  border: 0;
-  padding: 0;
-  background: rgba(255,255,255,.18);
-  cursor: pointer;
-  transition: width .3s cubic-bezier(0.22, 1, 0.36, 1), background .3s;
-}
-.metodo-dot.is-active {
-  width: 24px;
-  border-radius: 6px;
-  background: var(--orange);
-}
-.metodo-dot:focus-visible {
-  outline: 2px solid var(--orange);
-  outline-offset: 3px;
-}
-@media (hover: none), (pointer: coarse) {
-  .metodo-dots { display: flex; }
-}
+/* Indicadores antigos descartados — substituídos por .carousel-progress reutilizável */
 
 /* Flow pills (nav visível) */
 .aria-flow {
@@ -6075,41 +6048,8 @@ html { scroll-padding-top: 84px; }
     outline-offset: -6px;
   }
 
-  /* Barra segmentada estilo Stories — topo */
-  .team-mobile__bars {
-    position: absolute;
-    top: calc(env(safe-area-inset-top, 0) + 16px);
-    left: 0; right: 0;
-    display: flex;
-    gap: 6px;
-    padding: 0 16px;
-    z-index: 5;
-  }
-  .team-mbar {
-    flex: 1 1 0;
-    height: 3px;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, .25);
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: background .3s ease;
-  }
-  .team-mbar__fill {
-    position: absolute;
-    inset: 0 100% 0 0;
-    background: var(--orange);
-    border-radius: inherit;
-    transform-origin: left center;
-    transition: inset .35s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .team-mbar.is-active .team-mbar__fill { inset: 0 0 0 0; }
-  .team-mbar:focus-visible {
-    outline: 2px solid var(--orange);
-    outline-offset: 4px;
-  }
+  /* Indicadores Stories antigos descartados — agora usam .carousel-progress
+     posicionado em absolute via .carousel-progress--stories-top */
 
   /* Hint de arraste — some após 3s ou 1º swipe */
   .team-mobile__hint {
@@ -6175,7 +6115,6 @@ html { scroll-padding-top: 84px; }
   }
   .team-mslide.is-active .team-mslide__picture img { animation: none !important; }
   .team-mobile__hint { animation: none !important; }
-  .team-mbar__fill { transition: none !important; }
 }
 
 /* ============================================
@@ -6239,3 +6178,75 @@ html { scroll-padding-top: 84px; }
 @media (prefers-reduced-motion: reduce) {
   #para-quem .team-pin::after { animation: none !important; opacity: .5; }
 }
+
+/* ============================================
+   CAROUSEL PROGRESS — barra segmentada Stories (Método + Team)
+   Componente único reutilizável. Altura fixa com tripla guarda
+   (min/max/height) pra impossibilitar herança vertical estranha.
+   ============================================ */
+.carousel-progress {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  max-width: 320px;
+  margin: 24px auto 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+  flex-direction: row !important;
+  align-items: center;
+  list-style: none;
+}
+.carousel-progress__segment {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 3px;
+  min-height: 3px;
+  max-height: 3px;
+  border-radius: 2px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  font-size: 0;
+  line-height: 0;
+  box-sizing: border-box;
+  transition: background 300ms ease, box-shadow 300ms ease;
+}
+.carousel-progress__segment.is-active {
+  background: #FF6B00;
+  box-shadow: 0 0 8px rgba(255, 107, 0, 0.4);
+}
+.carousel-progress__segment:hover:not(.is-active) {
+  background: rgba(255, 255, 255, 0.4);
+}
+.carousel-progress__segment:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+
+/* Variante Stories: posicionada absoluta no topo (Team mobile full-screen) */
+.carousel-progress--stories-top {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  max-width: none;
+  z-index: 5;
+}
+
+@media (min-width: 1024px) {
+  .carousel-progress {
+    max-width: 200px;
+  }
+  .carousel-progress__segment {
+    height: 2px;
+    min-height: 2px;
+    max-height: 2px;
+  }
+}
+
