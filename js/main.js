@@ -401,7 +401,7 @@ reveal('.cs-card', true);
     for (const n of nodes) {
       const pulse = reduce ? .5 : (0.5 + 0.5 * Math.sin(tt * 2 + n.phase));
       const r = 2 + pulse * 1.2;
-      ctx.fillStyle = '#ff6b00';
+      ctx.fillStyle = 'var(--bmai-orange)';
       ctx.shadowColor = 'rgba(255,107,0,.85)';
       ctx.shadowBlur = 8 + pulse * 6;
       ctx.beginPath();
@@ -913,19 +913,24 @@ document.querySelectorAll('section[id]').forEach(s => {
   function cardHTML(d, i) {
     return `
       <article class="metodo__card" data-card="${i}" data-phase="${escapeHtml(d.letter)}">
+        <div class="metodo__star-watermark" aria-hidden="true">
+          <img src="assets/images/simbolo-laranja.svg" alt="" draggable="false"/>
+        </div>
         <div class="metodo__card-grid">
-          <div>
-            <div class="metodo__card-num">${escapeHtml(d.num)}</div>
-            <div class="metodo__card-letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
-            <h3 class="metodo__card-title">${escapeHtml(d.title)}</h3>
-            <div class="metodo__card-subtitle">${escapeHtml(d.subtitle)}</div>
-            <p class="metodo__card-desc">${escapeHtml(d.desc)}</p>
+          <div class="metodo__col metodo__col--left">
+            <div class="metodo__phase-number">${escapeHtml(d.num)}</div>
+            <div class="metodo__letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
+            <h3 class="metodo__title">${escapeHtml(d.title)}</h3>
+            <p class="metodo__subtitle">${escapeHtml(d.subtitle)}</p>
+            <p class="metodo__description">${escapeHtml(d.desc)}</p>
           </div>
-          <div>
-            <ul class="metodo__card-list">${d.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
-            <div class="metodo__card-footer">
-              <span class="metodo__card-tag">${escapeHtml(d.tag)}</span>
-              <span class="metodo__card-result">${escapeHtml(d.result)}</span>
+          <div class="metodo__col metodo__col--right">
+            <ul class="metodo__list">${d.bullets.map(b => `<li><span class="metodo__arrow" aria-hidden="true">→</span>${escapeHtml(b)}</li>`).join('')}</ul>
+            <hr class="metodo__divider"/>
+            <span class="metodo__tag">${escapeHtml(d.tag)}</span>
+            <div class="metodo__deliverable">
+              <span class="metodo__check" aria-hidden="true">✓</span>
+              <span class="metodo__deliverable-text"><em>${escapeHtml(d.result)}</em></span>
             </div>
           </div>
         </div>
