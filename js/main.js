@@ -535,12 +535,14 @@ document.querySelectorAll('section[id]').forEach(s => {
   if (!matchMedia('(max-width: 768px)').matches) return;
 
   const slides = Array.from(root.querySelectorAll('.team-mslide'));
-  const dots   = Array.from(root.querySelectorAll('.team-mdot'));
+  const bars   = Array.from(root.querySelectorAll('.team-mbar'));
   const prevZ  = document.getElementById('teamMPrev');
   const nextZ  = document.getElementById('teamMNext');
   const hint   = document.getElementById('teamMobileHint');
   const track  = document.getElementById('teamMobileTrack');
   if (!slides.length || !track) return;
+  const PARALLAX = 0.8;
+  const canVibrate = typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function';
 
   let current = 0;
   let dragging = false;
@@ -570,26 +572,28 @@ document.querySelectorAll('section[id]').forEach(s => {
       s.classList.toggle('is-active', active);
       s.classList.toggle('is-out', !active && i === current);
       s.setAttribute('aria-hidden', active ? 'false' : 'true');
-      s.style.transform = '';  // limpa drag residual
+      s.style.transform = '';
+      const pic = s.querySelector('.team-mslide__picture img');
+      if (pic) pic.style.transform = '';
     });
-    dots.forEach((d, i) => {
-      d.classList.toggle('is-active', i === next);
-      d.setAttribute('aria-selected', i === next ? 'true' : 'false');
+    bars.forEach((b, i) => {
+      b.classList.toggle('is-active', i === next);
+      b.setAttribute('aria-selected', i === next ? 'true' : 'false');
     });
     current = next;
     hideHint(true);
-
-    // Limpa will-change depois da transição pra liberar GPU
-    const cleanup = () => {
+    if (canVibrate && !PREFERS_REDUCE_LOCAL) {
+      try { navigator.vibrate(10); } catch (_) {}
+    }
+    setTimeout(() => {
       slides.forEach(s => { s.style.willChange = ''; });
-    };
-    setTimeout(cleanup, 700);
+    }, 500);
   }
 
-  // Dots
-  dots.forEach((dot) => {
-    dot.addEventListener('click', () => {
-      const idx = parseInt(dot.dataset.idx, 10);
+  // Bars (Stories) — clique pula slide
+  bars.forEach((bar) => {
+    bar.addEventListener('click', () => {
+      const idx = parseInt(bar.dataset.idx, 10);
       goTo(idx);
     });
   });
@@ -624,24 +628,34 @@ document.querySelectorAll('section[id]').forEach(s => {
     dragDx = dx;
     const w = root.clientWidth || 360;
     const pct = Math.max(-1, Math.min(1, dx / w));
-    // Move ativo com o dedo; próximo/anterior entra pelo lado oposto
+    // Move ativo com o dedo (slide 1x); foto interna move 0.8x = parallax
     const activeEl = slides[current];
     const nextEl   = slides[(current + 1) % slides.length];
     const prevEl   = slides[(current - 1 + slides.length) % slides.length];
     activeEl.style.transform = `translate3d(${dx}px, 0, 0) scale(1)`;
     activeEl.style.opacity   = String(1 - Math.abs(pct) * 0.4);
+    const activeImg = activeEl.querySelector('.team-mslide__picture img');
+    if (activeImg) activeImg.style.transform = `translate3d(${dx * (PARALLAX - 1)}px, 0, 0) scale(1.04)`;
     if (dx < 0) {
       nextEl.style.visibility = 'visible';
       nextEl.style.opacity    = String(Math.abs(pct));
       nextEl.style.transform  = `translate3d(${w + dx}px, 0, 0) scale(${1.05 - 0.05 * Math.abs(pct)})`;
+      const nImg = nextEl.querySelector('.team-mslide__picture img');
+      if (nImg) nImg.style.transform = `translate3d(${(w + dx) * (PARALLAX - 1)}px, 0, 0) scale(1.04)`;
       prevEl.style.transform  = '';
       prevEl.style.opacity    = '';
+      const pImg = prevEl.querySelector('.team-mslide__picture img');
+      if (pImg) pImg.style.transform = '';
     } else if (dx > 0) {
       prevEl.style.visibility = 'visible';
       prevEl.style.opacity    = String(Math.abs(pct));
       prevEl.style.transform  = `translate3d(${-w + dx}px, 0, 0) scale(${1.05 - 0.05 * Math.abs(pct)})`;
+      const pImg = prevEl.querySelector('.team-mslide__picture img');
+      if (pImg) pImg.style.transform = `translate3d(${(-w + dx) * (PARALLAX - 1)}px, 0, 0) scale(1.04)`;
       nextEl.style.transform  = '';
       nextEl.style.opacity    = '';
+      const nImg = nextEl.querySelector('.team-mslide__picture img');
+      if (nImg) nImg.style.transform = '';
     }
   }
   function onUp(e) {
@@ -651,11 +665,13 @@ document.querySelectorAll('section[id]').forEach(s => {
     try { root.releasePointerCapture(pointerId); } catch (_) {}
     pointerId = null;
 
-    // Limpa inline styles temporários de drag
+    // Limpa inline styles temporários de drag (slide + foto)
     slides.forEach(s => {
       s.style.transform  = '';
       s.style.opacity    = '';
       s.style.visibility = '';
+      const img = s.querySelector('.team-mslide__picture img');
+      if (img) img.style.transform = '';
     });
 
     if (dragLocked === 'x' && Math.abs(dragDx) > SWIPE_THRESHOLD) {

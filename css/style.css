@@ -5924,9 +5924,9 @@ html { scroll-padding-top: 84px; }
     pointer-events: none;
     transform: translate3d(20px, 0, 0) scale(1.05);
     transition:
-      opacity .55s cubic-bezier(0.22, 1, 0.36, 1),
-      transform .6s cubic-bezier(0.22, 1, 0.36, 1),
-      visibility 0s linear .6s;
+      opacity .4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform .42s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear .42s;
     will-change: transform, opacity;
   }
   .team-mslide.is-active {
@@ -5935,8 +5935,8 @@ html { scroll-padding-top: 84px; }
     pointer-events: auto;
     transform: translate3d(0, 0, 0) scale(1);
     transition:
-      opacity .55s cubic-bezier(0.22, 1, 0.36, 1),
-      transform .6s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity .4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform .42s cubic-bezier(0.22, 1, 0.36, 1),
       visibility 0s linear 0s;
   }
   .team-mslide.is-out {
@@ -5958,14 +5958,14 @@ html { scroll-padding-top: 84px; }
     display: block;
     transform: translate3d(0, 0, 0) scale(1);
   }
-  /* Ken Burns — só no slide ativo, loop alternado 8s */
+  /* Ken Burns pronunciado — só no slide ativo, 6s alternado */
   .team-mslide.is-active .team-mslide__picture img {
-    animation: teamKenBurns 12s ease-in-out infinite alternate;
+    animation: teamKenBurns 6s ease-in-out infinite alternate;
     will-change: transform;
   }
   @keyframes teamKenBurns {
     from { transform: scale(1) translate3d(0, 0, 0); }
-    to   { transform: scale(1.08) translate3d(-1%, -1%, 0); }
+    to   { transform: scale(1.12) translate3d(-1.5%, -1.5%, 0); }
   }
 
   .team-mslide__overlay {
@@ -6004,18 +6004,10 @@ html { scroll-padding-top: 84px; }
   .team-mslide__body {
     position: absolute;
     left: 0; right: 0;
-    bottom: calc(112px + env(safe-area-inset-bottom, 0)); /* deixa espaço pros dots */
-    padding: 0 28px;
+    bottom: calc(120px + env(safe-area-inset-bottom, 0));
+    padding: 0 24px;
     color: #fff;
-    transform: translate3d(0, 20px, 0);
-    opacity: 0;
-    transition:
-      opacity .5s cubic-bezier(0.22, 1, 0.36, 1) .2s,
-      transform .55s cubic-bezier(0.22, 1, 0.36, 1) .2s;
-  }
-  .team-mslide.is-active .team-mslide__body {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
+    text-align: left;
   }
   .team-mslide__role {
     display: block;
@@ -6025,33 +6017,40 @@ html { scroll-padding-top: 84px; }
     letter-spacing: .15em;
     text-transform: uppercase;
     color: var(--orange);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    /* Entrada stagger 1 */
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    transition:
+      opacity .4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform .4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .team-mslide__name {
     font-family: var(--fd);
-    font-size: clamp(2.5rem, 10vw, 3.5rem);
+    font-size: clamp(3rem, 12vw, 4.5rem);
     font-weight: 700;
     letter-spacing: -.02em;
     color: #fff;
-    margin: 0 0 14px;
-    line-height: 1;
-  }
-  .team-mslide__quote {
-    font-size: 1rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, .85);
     margin: 0;
-    max-height: 7.5em;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
-            mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    line-height: .95;
+    /* Entrada stagger 2 (150ms atraso extra) */
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+    transition:
+      opacity .5s cubic-bezier(0.22, 1, 0.36, 1) .15s,
+      transform .5s cubic-bezier(0.22, 1, 0.36, 1) .15s;
+  }
+  .team-mslide.is-active .team-mslide__role,
+  .team-mslide.is-active .team-mslide__name {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 
   /* Zonas de tap invisíveis nas laterais (fallback quando não arrasta) */
   .team-mobile__zone {
     position: absolute;
-    top: 15%;
-    bottom: calc(150px + env(safe-area-inset-bottom, 0));
+    top: 60px;     /* abaixo das barras Stories */
+    bottom: calc(140px + env(safe-area-inset-bottom, 0));
     width: 28%;
     background: transparent;
     border: 0;
@@ -6066,34 +6065,38 @@ html { scroll-padding-top: 84px; }
     outline-offset: -6px;
   }
 
-  /* Dots */
-  .team-mobile__dots {
+  /* Barra segmentada estilo Stories — topo */
+  .team-mobile__bars {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: calc(60px + env(safe-area-inset-bottom, 0));
+    top: calc(env(safe-area-inset-top, 0) + 16px);
+    left: 0; right: 0;
     display: flex;
-    gap: 10px;
-    z-index: 4;
+    gap: 6px;
+    padding: 0 16px;
+    z-index: 5;
   }
-  .team-mdot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+  .team-mbar {
+    flex: 1 1 0;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, .25);
     border: 0;
     padding: 0;
-    background: rgba(255, 255, 255, 0.3);
     cursor: pointer;
-    transition: background .3s cubic-bezier(0.22, 1, 0.36, 1),
-                transform .3s cubic-bezier(0.22, 1, 0.36, 1),
-                box-shadow .3s;
+    position: relative;
+    overflow: hidden;
+    transition: background .3s ease;
   }
-  .team-mdot.is-active {
+  .team-mbar__fill {
+    position: absolute;
+    inset: 0 100% 0 0;
     background: var(--orange);
-    transform: scale(1.2);
-    box-shadow: 0 0 12px rgba(219, 85, 0, .6);
+    border-radius: inherit;
+    transform-origin: left center;
+    transition: inset .35s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .team-mdot:focus-visible {
+  .team-mbar.is-active .team-mbar__fill { inset: 0 0 0 0; }
+  .team-mbar:focus-visible {
     outline: 2px solid var(--orange);
     outline-offset: 4px;
   }
@@ -6155,12 +6158,14 @@ html { scroll-padding-top: 84px; }
   .team-mslide,
   .team-mslide.is-active,
   .team-mslide.is-out,
-  .team-mslide__body {
+  .team-mslide__role,
+  .team-mslide__name {
     transition-duration: .2s !important;
     transform: none !important;
   }
   .team-mslide.is-active .team-mslide__picture img { animation: none !important; }
   .team-mobile__hint { animation: none !important; }
+  .team-mbar__fill { transition: none !important; }
 }
 
 /* ============================================
