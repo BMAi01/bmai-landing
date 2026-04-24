@@ -902,9 +902,13 @@ document.querySelectorAll('section[id]').forEach(s => {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 
-  const nodes   = document.querySelectorAll('#aria-flow .aria-node');
-  const stack   = document.getElementById('metodoStack');
-  const section = document.getElementById('metodo');
+  const stack       = document.getElementById('metodoStack');
+  const section     = document.getElementById('metodo');
+  const progressEl  = document.getElementById('metodoProgress');
+  const fillEl      = document.getElementById('metodoProgressFill');
+  const phaseLabel  = document.getElementById('metodoProgressPhase');
+  const countLabel  = document.getElementById('metodoProgressCount');
+  const markers     = progressEl ? Array.from(progressEl.querySelectorAll('.metodo__progress-marker')) : [];
   if (!stack || !section) return;
 
   let ARIA_DATA = getAriaData();
@@ -946,13 +950,13 @@ document.querySelectorAll('section[id]').forEach(s => {
   }
 
   function setActiveIndicator(i) {
-    nodes.forEach((n, j) => {
-      n.classList.toggle('active', j === i);
-      n.setAttribute('aria-selected', j === i ? 'true' : 'false');
-      n.setAttribute('aria-pressed', j === i ? 'true' : 'false');
+    markers.forEach((m, j) => {
+      m.classList.remove('is-active', 'is-past');
+      if (j === i)      m.classList.add('is-active');
+      else if (j < i)   m.classList.add('is-past');
     });
-    const flow = document.getElementById('aria-flow');
-    if (flow) flow.style.setProperty('--aria-progress', String(i));
+    if (phaseLabel && ARIA_DATA[i]) phaseLabel.textContent = ARIA_DATA[i].title;
+    if (countLabel) countLabel.textContent = `${String(i + 1).padStart(2, '0')} / 04`;
   }
 
   function teardown() {
@@ -1009,50 +1013,39 @@ document.querySelectorAll('section[id]').forEach(s => {
       }, segmentStart);
     });
 
-    // Indicador D/E/I/A: muda no meio do segmento de cada card
-    cards.forEach((card, i) => {
-      const t = ScrollTrigger.create({
-        trigger: container,
-        start: () => {
-          const total = container.offsetHeight - window.innerHeight;
-          const pct = i / cards.length;
-          return `top+=${total * pct} top`;
-        },
-        end: () => {
-          const total = container.offsetHeight - window.innerHeight;
-          const pct = (i + 1) / cards.length;
-          return `top+=${total * pct} top`;
-        },
-        onEnter:     () => setActiveIndicator(i),
-        onEnterBack: () => setActiveIndicator(i)
-      });
-      stackTriggers.push(t);
+    // Barra de progresso flutuante: 1 trigger único atualiza fill + ativa marker
+    // + auto-hide após 1.5s sem scroll
+    let hideTimeout = null;
+    const totalCards = cards.length;
+    const progressTrigger = ScrollTrigger.create({
+      trigger: container,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        const pct = self.progress;
+        if (fillEl) fillEl.style.width = `${pct * 100}%`;
+        const activeIdx = Math.min(Math.floor(pct * totalCards), totalCards - 1);
+        setActiveIndicator(activeIdx);
+        if (progressEl) progressEl.classList.add('is-visible');
+        if (hideTimeout) clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+          if (progressEl) progressEl.classList.remove('is-visible');
+        }, 1500);
+      },
+      onEnter: () => {
+        if (!progressEl) return;
+        progressEl.classList.add('is-visible');
+        if (hideTimeout) clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => progressEl.classList.remove('is-visible'), 1500);
+      },
+      onLeave:     () => { if (progressEl) progressEl.classList.remove('is-visible'); if (hideTimeout) clearTimeout(hideTimeout); },
+      onLeaveBack: () => { if (progressEl) progressEl.classList.remove('is-visible'); if (hideTimeout) clearTimeout(hideTimeout); }
     });
+    stackTriggers.push(progressTrigger);
+    stackTriggers.push({ kill: () => { if (hideTimeout) clearTimeout(hideTimeout); } });
 
     setActiveIndicator(0);
   }
-
-  // Pills D/E/I/A: clicar pula pro segmento correspondente do scroll-jack
-  nodes.forEach((node, i) => {
-    node.setAttribute('role', 'tab');
-    node.setAttribute('tabindex', '0');
-    node.addEventListener('click', (e) => {
-      e.preventDefault();
-      const container = document.getElementById('metodoScrollContainer');
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      const totalScroll = container.offsetHeight - window.innerHeight;
-      const cardCount = ARIA_DATA.length;
-      // Card 0 = início do scroll; card N = (N/cardCount) do scroll
-      const pct = i / cardCount;
-      const top = rect.top + window.pageYOffset + (totalScroll * pct);
-      if (window.__lenis) window.__lenis.scrollTo(top, { duration: 1.4 });
-      else window.scrollTo({ top, behavior: 'smooth' });
-    });
-    node.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); node.click(); }
-    });
-  });
 
   function init() {
     if (PREFERS_REDUCE) {

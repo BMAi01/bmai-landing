@@ -1457,15 +1457,83 @@ html { scrollbar-gutter: stable; }
   text-align: center;
   margin-bottom: 32px;
 }
-.metodo__indicators {
+/* === Barra de progresso flutuante (auto-hide) === */
+.metodo__progress {
+  position: fixed;
+  top: 88px;                /* abaixo do header + respiro */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: min(600px, calc(100vw - 48px));
+  opacity: 0;
+  pointer-events: none;     /* puramente decorativa */
+  transition: opacity 300ms ease, transform 300ms ease;
+  z-index: 50;
+  font-family: 'General Sans', sans-serif;
+}
+.metodo__progress.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.metodo__progress-track {
   position: relative;
-  z-index: 5;
-  pointer-events: auto;
-  background: linear-gradient(180deg, rgba(13,27,42,.92) 0%, rgba(13,27,42,.7) 70%, transparent 100%);
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-  padding: 14px 16px 16px;
-  margin-bottom: 32px;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1px;
+}
+.metodo__progress-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;                /* JS atualiza via ScrollTrigger */
+  background: linear-gradient(90deg, rgba(219, 85, 0, 0.6) 0%, var(--bmai-orange) 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 12px rgba(219, 85, 0, 0.4);
+  transition: none;         /* o scroll faz a interpolação naturalmente */
+}
+.metodo__progress-marker {
+  position: absolute;
+  top: 50%;
+  left: var(--pos);
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 200ms ease, width 200ms ease, height 200ms ease, box-shadow 200ms ease;
+}
+.metodo__progress-marker.is-active {
+  background: var(--bmai-orange);
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 0 3px rgba(219, 85, 0, 0.2);
+}
+.metodo__progress-marker.is-past {
+  background: rgba(219, 85, 0, 0.5);
+}
+.metodo__progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.metodo__progress-phase {
+  color: var(--bmai-orange);
+  font-weight: 600;
+}
+.metodo__progress-count {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 768px) {
+  .metodo__progress {
+    top: 72px;
+    width: calc(100vw - 32px);
+  }
 }
 /* === Scroll-stack: arquitetura scroll-container > sticky > cards-wrapper === */
 .metodo__scroll-container {
@@ -1713,7 +1781,7 @@ html { scrollbar-gutter: stable; }
 }
 @media (max-width: 767px) {
   .metodo__scroll-container { height: 320vh; }
-  .metodo__indicators { padding: 10px 12px 12px; margin-bottom: 14px; }
+  /* .metodo__indicators removido — substituído por .metodo__progress fixed */
   .metodo__cards-wrapper { height: 82vh; padding-inline: 12px; }
   .metodo__card {
     left: 12px; right: 12px;
