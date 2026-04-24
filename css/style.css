@@ -877,9 +877,9 @@ html { scrollbar-gutter: stable; }
   justify-content: center;
   gap: 0;
   width: max-content;
-  max-width: 92vw;
+  max-width: min(92vw, 920px);            /* cap absoluto pra row nao estourar em monitores ultrawide */
   margin: 0;
-  padding: 26px 60px;
+  padding: 26px clamp(28px, 4vw, 60px);   /* padding lateral fluido — antes 60px fixo apertava em 900-1100px */
   background:
     linear-gradient(180deg, rgba(20,34,54,.92) 0%, rgba(10,20,34,.96) 100%);
   border: 1px solid rgba(255,255,255,.06);
@@ -891,7 +891,8 @@ html { scrollbar-gutter: stable; }
 .hero__stat {
   display: flex; flex-direction: column; align-items: center;
   text-align: center;
-  padding: 0 44px;
+  padding: 0 clamp(20px, 2.6vw, 44px);    /* padding fluido — evita estouro em PT/EN com labels longos em viewports 769-1100px */
+  min-width: 0;
 }
 .hero__stat-value {
   font-family: var(--mono);
@@ -909,6 +910,17 @@ html { scrollbar-gutter: stable; }
   font-weight: 500;
   letter-spacing: .02em;
   white-space: nowrap;
+  max-width: 100%;
+}
+/* Tablet/desktop estreito (769-1100px): labels EN ("WhatsApp conversion", "Days to implement")
+   estouravam o max-content da row. Permite quebra controlada nesse range. */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .hero__stat-label {
+    white-space: normal;
+    line-height: 1.25;
+    max-width: 14ch;
+    overflow-wrap: break-word;
+  }
 }
 .hero__stat-sep { width: 1px; height: 56px; background: rgba(255,255,255,.12); flex-shrink: 0; }
 
@@ -2697,13 +2709,15 @@ html { scrollbar-gutter: stable; }
     50%      { transform: translate(50%, calc(-50% - 12px)); }
   }
   .hero__stats { position: relative; bottom: auto; padding: 24px 0 12px; }
+  /* Stats row mobile: layout final eh grid 3-cols na regra @media abaixo (linha ~4226).
+     NAO usar overflow-x:auto aqui — isso cria scroller horizontal que captura touches
+     verticais no mobile (scroll bloqueado). overflow:visible + touch-action:pan-y. */
   #hero .container.hero__stats-row {
     width: 100%; max-width: 100%;
     border-radius: 0; padding: 16px 20px;
-    overflow-x: auto; justify-content: flex-start;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
+    touch-action: pan-y;
   }
-  .hero__stat { padding: 0 20px; flex-shrink: 0; }
   .hero__stat-value { font-size: 24px; }
   .hero__stat-sep { height: 36px; }
   .hero__ctas { flex-direction: column; }
@@ -4223,10 +4237,13 @@ section h2.shimmer-active::after,
   .hero__badge { font-size: 11px !important; padding: 6px 12px !important; }
 
   /* Hero stats mobile — 3 colunas balanceadas (número ~36-44px / label legível) */
-  .hero__stats { margin-top: clamp(50px, 9vw, 64px) !important; }
+  .hero__stats {
+    margin-top: clamp(50px, 9vw, 64px) !important;
+    touch-action: pan-y !important;        /* garante que swipe vertical na area de stats nao seja capturado */
+  }
   #hero .container.hero__stats-row {
     display: grid !important;
-    grid-template-columns: 1fr 1px 1fr 1px 1fr !important;
+    grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr) 1px minmax(0, 1fr) !important;  /* minmax(0,1fr) impede grid blowout com palavras longas */
     flex-direction: row !important;
     align-items: stretch !important;
     justify-items: stretch !important;
@@ -4235,6 +4252,8 @@ section h2.shimmer-active::after,
     max-width: 100% !important;
     padding: 20px 12px !important;
     overflow: visible !important;
+    overflow-x: visible !important;        /* explicitamente revoga overflow-x:auto da regra @768px anterior */
+    touch-action: pan-y !important;        /* libera scroll vertical no container */
     border-radius: 16px !important;
   }
   .hero__stat {
@@ -4245,7 +4264,8 @@ section h2.shimmer-active::after,
     gap: 8px !important;
     padding: 4px 8px !important;
     text-align: center !important;
-    min-width: 0 !important;
+    min-width: 0 !important;               /* essencial pra grid item nao estourar com texto longo */
+    flex-shrink: 1 !important;             /* anula flex-shrink:0 herdado da regra @768px anterior */
   }
   .hero__stat-value {
     font-size: clamp(2rem, 9vw, 2.75rem) !important;
@@ -4262,9 +4282,12 @@ section h2.shimmer-active::after,
     color: rgba(255, 255, 255, .75) !important;
     letter-spacing: .01em !important;
     text-transform: none !important;
-    max-width: 110px !important;
+    max-width: 100% !important;            /* nunca exceder coluna do grid (era 110px fixo, estourava em telas <340px) */
     margin-inline: auto !important;
     white-space: normal !important;
+    overflow-wrap: break-word !important;  /* quebra palavras longas tipo "implementação" se preciso */
+    word-break: normal !important;
+    hyphens: auto !important;
     text-align: center !important;
   }
   /* Separadores via grid track de 1px (alinhamento perfeito, sem desencontro) */
@@ -5898,6 +5921,7 @@ html { scroll-padding-top: 84px; }
     padding: 110px 0 48px !important;
     background: #0d1b2a !important;
     overflow: hidden !important;
+    touch-action: pan-y !important;        /* mobile: garante que swipe vertical na seção do hero/stats nunca seja capturado */
   }
   /* Sem glow global de fundo — cada bloco tem sua própria presença */
   .hero::before { display: none !important; }
