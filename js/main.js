@@ -116,7 +116,10 @@ let lenisInstance = null;
         touchMultiplier: 1.8,
         smoothWheel: true,
         smoothTouch: false,
-        syncTouch: false,
+        // syncTouch:true faz o Lenis sincronizar scroll position em touch (sem suavizar)
+        // — necessário pro ScrollTrigger receber updates no mobile (scroll-stack do Método).
+        syncTouch: true,
+        syncTouchLerp: 0.075,
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         infinite: false
@@ -975,6 +978,16 @@ document.querySelectorAll('section[id]').forEach(s => {
       }
     });
     stackTriggers.push(tl.scrollTrigger);
+
+    // Defesa extra mobile: força update do ScrollTrigger durante touch scroll
+    // (caso o Lenis em algum browser mobile não emita scroll com regularidade)
+    const onTouchScroll = () => ScrollTrigger.update();
+    window.addEventListener('touchmove', onTouchScroll, { passive: true });
+    window.addEventListener('touchend',  onTouchScroll, { passive: true });
+    stackTriggers.push({ kill: () => {
+      window.removeEventListener('touchmove', onTouchScroll);
+      window.removeEventListener('touchend',  onTouchScroll);
+    }});
 
     // Cards 1..N sobem de 100vh → 0 em segmentos sequenciais da timeline
     cards.forEach((card, i) => {

@@ -6245,10 +6245,13 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .team-mobile { display: none; }
 @media (max-width: 768px) {
-  /* Esconde completamente desktop team no mobile */
-  #para-quem .team-header { padding: 56px 0 12px !important; }
-  #para-quem .team-scroll-hint { display: none !important; }
-  #para-quem .team-pin { display: none !important; }
+  /* Time inteiro removido do mobile (decisão UX 2026-04-23) */
+  #para-quem { display: none !important; }
+  .team-mobile { display: none !important; }
+  /* Esconde link "Team" do nav mobile e do section-dots */
+  .floatnav__item--team-desktop-only { display: none !important; }
+  #sdots [href="#para-quem"] { display: none !important; }
+  .footer__col [href="#para-quem"] { display: none !important; }
 
   .team-mobile {
     display: block;
