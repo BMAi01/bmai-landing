@@ -1074,10 +1074,10 @@ html { scrollbar-gutter: stable; }
   /* padding herda do section reset (--section-spacing-*) */
   position: relative;
   z-index: 1;
-  overflow: hidden;
-  isolation: isolate;
+  /* CRÍTICO: SEM overflow:hidden e SEM isolation — quebram o pin do GSAP scroll-stack */
+  overflow: visible;
 }
-#metodo > * { position: relative; z-index: 1; }
+#metodo > * { position: relative; }
 @keyframes ariaFloat {
   0%,100% { transform: translate(0,0) scale(1); opacity: .55; }
   50%     { transform: translate(30px,-20px) scale(1.08); opacity: .75; }
@@ -1437,10 +1437,14 @@ html { scrollbar-gutter: stable; }
    ============================================ */
 .metodo {
   position: relative;
-  isolation: isolate;
-  /* CRÍTICO: nenhum overflow:hidden aqui nem em ancestors — quebra position:sticky/pin */
+  /* CRÍTICO: sem isolation, sem transform, sem overflow:hidden em nenhum ancestor.
+     Tudo isso quebra o pin do GSAP (cria novo containing block). */
   overflow: visible;
 }
+/* Garante que ancestors do stack não criem containing block que quebre o pin */
+.metodo,
+.metodo__stack-wrap,
+.metodo__stack { overflow: visible; transform: none; }
 .metodo__header {
   text-align: center;
   margin-bottom: 32px;
@@ -1463,21 +1467,21 @@ html { scrollbar-gutter: stable; }
   /* Cada .metodo__card vira um pin do GSAP — o JS controla altura via pinSpacing */
 }
 .metodo__card {
+  /* SEM position: sticky — GSAP pin cuida disso. Sticky + pin causam conflito. */
   position: relative;
   width: 100%;
   max-width: 900px;
-  margin: 0 auto 24px;
+  margin: 0 auto;          /* ZERO margin entre cards — ocupam o mesmo "slot" no scroll */
   padding: 48px;
   border-radius: 24px;
   border: 1px solid rgba(219,85,0,.22);
   background:
     radial-gradient(ellipse 120% 60% at 0% 0%, rgba(255,107,0,.08) 0%, transparent 60%),
-    linear-gradient(135deg, rgba(20,20,26,.96) 0%, rgba(36,28,22,.96) 100%);
+    linear-gradient(135deg, rgba(20,20,26,.98) 0%, rgba(36,28,22,.98) 100%);
   box-shadow:
-    0 24px 60px -20px rgba(0,0,0,.6),
+    0 24px 60px -20px rgba(0,0,0,.7),
     inset 0 1px 0 rgba(255,255,255,.04);
-  transform: translate3d(0, 0, 0);
-  will-change: transform, opacity, filter;
+  /* z-index é setado por gsap.set() no JS — crescente (1, 2, 3, 4) */
   overflow: hidden;
 }
 .metodo__card::before {
@@ -1618,11 +1622,9 @@ html { scrollbar-gutter: stable; }
 /* Fallback prefers-reduced-motion: cards empilhados estáticos sem pin */
 @media (prefers-reduced-motion: reduce) {
   .metodo__card {
-    transform: none !important;
-    opacity: 1 !important;
-    filter: none !important;
-    will-change: auto;
+    margin-bottom: 24px !important;
   }
+  .metodo__card:last-child { margin-bottom: 0 !important; }
 }
 
 /* ============================================
@@ -3264,7 +3266,8 @@ body { font-family: var(--fp); }
    ============================================ */
 html { overflow-x: clip; }
 body { overflow-x: clip; }
-section, footer, nav, #tk { overflow-x: clip; }
+section:not(#metodo), footer, nav, #tk { overflow-x: clip; }
+#metodo { overflow: visible !important; }   /* scroll-stack do Método não pode ter clip */
 h1, h2, h3, p, span, li, a {
   max-width: 100%;
   word-break: break-word;

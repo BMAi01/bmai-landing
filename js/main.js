@@ -956,67 +956,38 @@ document.querySelectorAll('section[id]').forEach(s => {
     if (!cards.length) return;
 
     const isMobile = matchMedia('(max-width: 767px)').matches;
-    const headerH  = 80;
-    const scrollPerCard = isMobile ? 0.8 : 1.2;
-    const scaleDown     = isMobile ? 0.95 : 0.92;
-    const blurAmount    = isMobile ? 1 : 2;
+    const headerH = 80;
+    const pinDuration = window.innerHeight * (isMobile ? 0.9 : 1.2);
 
     cards.forEach((card, i) => {
       const isLast = i === cards.length - 1;
 
-      // Anim do card atual indo "pra trás" quando o próximo entra por cima
-      if (!isLast) {
-        const t = gsap.to(card, {
-          scale: scaleDown,
-          y: -40,
-          opacity: 0.6,
-          filter: `blur(${blurAmount}px)`,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: card,
-            start: `top ${headerH}px`,
-            end: `+=${window.innerHeight * scrollPerCard}`,
-            scrub: true
-          }
-        });
-        stackTriggers.push(t.scrollTrigger);
-      }
+      // Z-INDEX crescente: próximo SEMPRE cobre totalmente o anterior
+      gsap.set(card, { zIndex: i + 1, transform: 'translate3d(0,0,0)' });
 
-      // Pin do card
+      // PIN puro: card trava no top, próximo sobe POR CIMA via pinSpacing:false
       const pinTrigger = ScrollTrigger.create({
         trigger: card,
         start: `top ${headerH}px`,
-        end: isLast
-          ? `+=${window.innerHeight * 0.5}`
-          : `+=${window.innerHeight * scrollPerCard}`,
+        end: isLast ? `+=${window.innerHeight * 0.3}` : `+=${pinDuration}`,
         pin: true,
-        pinSpacing: !isLast,
-        anticipatePin: 1
+        pinSpacing: false,   // CRÍTICO: false → cards ocupam o mesmo "slot" e o próximo sobe por cima
+        anticipatePin: 1,
+        id: `metodo-pin-${i}`
       });
       stackTriggers.push(pinTrigger);
 
-      // Sincroniza indicador D/E/I/A com card ativo
+      // Indicador D/E/I/A ativo conforme card atual cobre os anteriores
       const indTrigger = ScrollTrigger.create({
         trigger: card,
         start: `top ${headerH + 20}px`,
-        end: `bottom ${headerH + 20}px`,
-        onEnter: () => setActiveIndicator(i),
+        end: isLast
+          ? `+=${window.innerHeight * 0.3}`
+          : `+=${pinDuration}`,
+        onEnter:     () => setActiveIndicator(i),
         onEnterBack: () => setActiveIndicator(i)
       });
       stackTriggers.push(indTrigger);
-    });
-
-    // Limpa will-change quando termina a sequência
-    ScrollTrigger.create({
-      trigger: stack,
-      start: 'top top',
-      end: 'bottom top',
-      onLeave: () => {
-        document.querySelectorAll('.metodo__card').forEach(c => { c.style.willChange = 'auto'; });
-      },
-      onEnterBack: () => {
-        document.querySelectorAll('.metodo__card').forEach(c => { c.style.willChange = 'transform, opacity, filter'; });
-      }
     });
 
     setActiveIndicator(0);
