@@ -113,13 +113,11 @@ let lenisInstance = null;
         easing: HERO_EASING,
         lerp: 0.08,
         wheelMultiplier: 0.8,
-        touchMultiplier: 1.8,
+        touchMultiplier: 1.5,
+        touchInertiaMultiplier: 35,
         smoothWheel: true,
         smoothTouch: false,
-        // syncTouch:true faz o Lenis sincronizar scroll position em touch (sem suavizar)
-        // — necessário pro ScrollTrigger receber updates no mobile (scroll-stack do Método).
-        syncTouch: true,
-        syncTouchLerp: 0.075,
+        syncTouch: false,
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         infinite: false
@@ -986,7 +984,9 @@ document.querySelectorAll('section[id]').forEach(s => {
         start: 'top top',
         end: 'bottom bottom',
         scrub: 1,
-        invalidateOnRefresh: true
+        invalidateOnRefresh: true,
+        fastScrollEnd: true,
+        preventOverlaps: true
       }
     });
     stackTriggers.push(tl.scrollTrigger);
@@ -1078,16 +1078,26 @@ document.querySelectorAll('section[id]').forEach(s => {
     }
   });
 
-  // Resize: recalcula triggers
+  // Resize: pequeno (URL bar) → debounce 250ms; grande (rotate) → imediato
   let resizeT = null;
+  let lastViewportHeight = window.innerHeight;
   window.addEventListener('resize', () => {
-    clearTimeout(resizeT);
-    resizeT = setTimeout(() => {
-      if (typeof ScrollTrigger !== 'undefined' && !PREFERS_REDUCE) {
-        buildStack();
+    if (typeof ScrollTrigger === 'undefined' || PREFERS_REDUCE) return;
+    const currentHeight = window.innerHeight;
+    const diff = Math.abs(currentHeight - lastViewportHeight);
+    if (diff >= 200) {
+      // Rotação ou resize grande — recompute imediato
+      buildStack();
+      ScrollTrigger.refresh();
+      lastViewportHeight = currentHeight;
+    } else if (diff > 10) {
+      // URL bar mobile aparecendo/sumindo — debounce
+      clearTimeout(resizeT);
+      resizeT = setTimeout(() => {
         ScrollTrigger.refresh();
-      }
-    }, 250);
+        lastViewportHeight = currentHeight;
+      }, 250);
+    }
   });
 
   if (document.readyState === 'complete') init();

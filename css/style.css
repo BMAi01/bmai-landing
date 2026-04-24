@@ -118,7 +118,7 @@ body {
   line-height: 1.6;
   color: var(--white);
   background: var(--bg);
-  overflow-x: hidden;
+  overflow-x: clip;       /* clip não cria containing block (ao contrário de hidden) → não atrapalha sticky/pin */
   overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
 }
@@ -1538,22 +1538,27 @@ html { scrollbar-gutter: stable; }
 /* === Scroll-stack: arquitetura scroll-container > sticky > cards-wrapper === */
 .metodo__scroll-container {
   position: relative;
-  height: 400vh;        /* 4 cards × 100vh — altura total do scroll-jack */
+  height: 400vh;
+  height: 400dvh;       /* moderno: lida com URL bar mobile; vh fallback */
 }
 .metodo__sticky {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;       /* dvh lida com URL bar do mobile; vh fallback */
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;     /* esconde card antes de subir / depois de empilhar */
 }
+@supports not (height: 100dvh) {
+  .metodo__sticky { height: 100vh; }
+}
 .metodo__cards-wrapper {
   position: relative;
   width: 100%;
-  max-width: 1260px;          /* largura ampliada — card respira no desktop */
+  max-width: 1260px;
   height: 70vh;
   margin-inline: auto;
   padding-inline: 24px;
