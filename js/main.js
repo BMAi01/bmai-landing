@@ -912,8 +912,8 @@ document.querySelectorAll('section[id]').forEach(s => {
       <article class="metodo__card" data-card="${i}" data-phase="${escapeHtml(d.letter)}">
         <div class="metodo__card-grid">
           <div>
-            <div class="metodo__card-letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
             <div class="metodo__card-num">${escapeHtml(d.num)}</div>
+            <div class="metodo__card-letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
             <h3 class="metodo__card-title">${escapeHtml(d.title)}</h3>
             <div class="metodo__card-subtitle">${escapeHtml(d.subtitle)}</div>
             <p class="metodo__card-desc">${escapeHtml(d.desc)}</p>
@@ -952,56 +952,79 @@ document.querySelectorAll('section[id]').forEach(s => {
   function buildStack() {
     teardown();
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const container = document.getElementById('metodoScrollContainer');
     const cards = gsap.utils.toArray('.metodo__card');
-    if (!cards.length) return;
+    if (!container || !cards.length) return;
 
-    const isMobile = matchMedia('(max-width: 767px)').matches;
-    const headerH = 80;
-    const pinDuration = window.innerHeight * (isMobile ? 0.9 : 1.2);
-
+    // Estado inicial: card 0 visível em y:0; demais empurrados pra baixo da tela
     cards.forEach((card, i) => {
-      const isLast = i === cards.length - 1;
-
-      // Z-INDEX crescente: próximo SEMPRE cobre totalmente o anterior
-      gsap.set(card, { zIndex: i + 1, transform: 'translate3d(0,0,0)' });
-
-      // PIN puro: card trava no top, próximo sobe POR CIMA via pinSpacing:false
-      const pinTrigger = ScrollTrigger.create({
-        trigger: card,
-        start: `top ${headerH}px`,
-        end: isLast ? `+=${window.innerHeight * 0.3}` : `+=${pinDuration}`,
-        pin: true,
-        pinSpacing: false,   // CRÍTICO: false → cards ocupam o mesmo "slot" e o próximo sobe por cima
-        anticipatePin: 1,
-        id: `metodo-pin-${i}`
+      gsap.set(card, {
+        y: i === 0 ? 0 : '100vh',
+        zIndex: i + 1            // crescente: próximo sempre cobre anterior
       });
-      stackTriggers.push(pinTrigger);
+    });
 
-      // Indicador D/E/I/A ativo conforme card atual cobre os anteriores
-      const indTrigger = ScrollTrigger.create({
-        trigger: card,
-        start: `top ${headerH + 20}px`,
-        end: isLast
-          ? `+=${window.innerHeight * 0.3}`
-          : `+=${pinDuration}`,
+    // Timeline ÚNICA controla todo o empilhamento via scrub
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    });
+    stackTriggers.push(tl.scrollTrigger);
+
+    // Cards 1..N sobem de 100vh → 0 em segmentos sequenciais da timeline
+    cards.forEach((card, i) => {
+      if (i === 0) return;
+      const segmentStart = (i - 0.5) / cards.length;
+      const segmentEnd   = i / cards.length;
+      tl.to(card, {
+        y: 0,
+        ease: 'power2.out',
+        duration: segmentEnd - segmentStart
+      }, segmentStart);
+    });
+
+    // Indicador D/E/I/A: muda no meio do segmento de cada card
+    cards.forEach((card, i) => {
+      const t = ScrollTrigger.create({
+        trigger: container,
+        start: () => {
+          const total = container.offsetHeight - window.innerHeight;
+          const pct = i / cards.length;
+          return `top+=${total * pct} top`;
+        },
+        end: () => {
+          const total = container.offsetHeight - window.innerHeight;
+          const pct = (i + 1) / cards.length;
+          return `top+=${total * pct} top`;
+        },
         onEnter:     () => setActiveIndicator(i),
         onEnterBack: () => setActiveIndicator(i)
       });
-      stackTriggers.push(indTrigger);
+      stackTriggers.push(t);
     });
 
     setActiveIndicator(0);
   }
 
-  // Pills D/E/I/A: clicar pula pro card correspondente via Lenis
+  // Pills D/E/I/A: clicar pula pro segmento correspondente do scroll-jack
   nodes.forEach((node, i) => {
     node.setAttribute('role', 'tab');
     node.setAttribute('tabindex', '0');
     node.addEventListener('click', (e) => {
       e.preventDefault();
-      const card = stack.querySelector(`.metodo__card[data-card="${i}"]`);
-      if (!card) return;
-      const top = card.getBoundingClientRect().top + window.pageYOffset - 80;
+      const container = document.getElementById('metodoScrollContainer');
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const totalScroll = container.offsetHeight - window.innerHeight;
+      const cardCount = ARIA_DATA.length;
+      // Card 0 = início do scroll; card N = (N/cardCount) do scroll
+      const pct = i / cardCount;
+      const top = rect.top + window.pageYOffset + (totalScroll * pct);
       if (window.__lenis) window.__lenis.scrollTo(top, { duration: 1.4 });
       else window.scrollTo({ top, behavior: 'smooth' });
     });
