@@ -38,12 +38,17 @@ burger.addEventListener('click', () => {
   const active = nav.classList.toggle('active');
   document.body.classList.toggle('nav-open', active);
   syncLangPosition(active);
+  if (window.__lenis) {
+    if (active) window.__lenis.stop();
+    else        window.__lenis.start();
+  }
 });
 nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
   burger.classList.remove('active');
   nav.classList.remove('active');
   document.body.classList.remove('nav-open');
   syncLangPosition(false);
+  if (window.__lenis) window.__lenis.start();
 }));
 
 /* ============================================
@@ -87,24 +92,33 @@ const progress = document.getElementById('scrollProgress');
 })();
 
 /* ============================================
-   SMOOTH SCROLL — Lenis (premium inertia) + fallback nativo
-   Lenis roda no desktop. Mobile: scroll nativo (smoothTouch: false).
-   Respeita prefers-reduced-motion.
+   SMOOTH SCROLL — Lenis "versão céu"
+   duration 1.4 / lerp .08 / wheelMult .8 / smoothTouch false.
+   Skip total em prefers-reduced-motion ou device low-end.
    ============================================ */
+const HERO_EASING = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
 let lenisInstance = null;
 (function initLenis() {
-  // Espera script do CDN carregar (script defer + init após DOMContentLoaded)
+  // Gate low-end device — pouca CPU/RAM cai pro scroll nativo
+  const cores = navigator.hardwareConcurrency || 8;
+  const mem   = navigator.deviceMemory || 8;
+  const isLowEnd = cores <= 4 && mem <= 4;
+  if (PREFERS_REDUCE || isLowEnd) return;
+
   const ready = () => {
-    if (PREFERS_REDUCE || typeof window.Lenis === 'undefined') return;
+    if (typeof window.Lenis === 'undefined') return false;
     try {
       lenisInstance = new window.Lenis({
-        lerp: 0.1,
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        duration: 1.4,
+        easing: HERO_EASING,
+        lerp: 0.08,
+        wheelMultiplier: 0.8,
+        touchMultiplier: 1.8,
         smoothWheel: true,
         smoothTouch: false,
-        wheelMultiplier: 1,
-        touchMultiplier: 1.5,
+        syncTouch: false,
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
         infinite: false
       });
       function raf(time) {
@@ -113,38 +127,48 @@ let lenisInstance = null;
       }
       requestAnimationFrame(raf);
 
-      // Sync com ScrollTrigger quando GSAP carrega
+      // Sync com ScrollTrigger (GSAP)
       window.addEventListener('load', () => {
         if (typeof ScrollTrigger !== 'undefined' && lenisInstance) {
           lenisInstance.on('scroll', ScrollTrigger.update);
         }
       });
+
+      // Expõe pra outros módulos (burger, etc.)
+      window.__lenis = lenisInstance;
+      return true;
     } catch (e) {
       console.warn('[lenis] init falhou, usando scroll nativo:', e);
       lenisInstance = null;
+      return false;
     }
   };
+
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    // Script defer pode ainda não ter rodado — tenta agora, e re-tenta após load
-    ready();
-    if (!lenisInstance) window.addEventListener('load', ready, { once: true });
+    if (!ready()) window.addEventListener('load', ready, { once: true });
   } else {
     document.addEventListener('DOMContentLoaded', ready, { once: true });
   }
 })();
 
-/* Anchor links — usa Lenis quando disponível, fallback scrollTo nativo */
+/* Anchor links — viagem mais longa pra navegação por menu */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const href = a.getAttribute('href');
     if (!href || href === '#') return;
-    const t = document.querySelector(href);
-    if (!t) return;
+    const target = document.querySelector(href);
+    if (!target) return;
     e.preventDefault();
     if (lenisInstance) {
-      lenisInstance.scrollTo(t, { offset: -56, duration: 1.2 });
+      // "Voltar ao topo" (#hero) ganha viagem mais longa de elevador
+      const isBackToTop = href === '#hero';
+      lenisInstance.scrollTo(target, {
+        offset: -80,
+        duration: isBackToTop ? 2.5 : 2,
+        easing: HERO_EASING
+      });
     } else {
-      scrollTo({ top: t.offsetTop - 56, behavior: 'smooth' });
+      window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
     }
   });
 });

@@ -89,7 +89,6 @@
 }
 ::-webkit-scrollbar-corner { background: transparent; }
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-padding-top: 84px;
@@ -104,9 +103,20 @@ body {
   overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
 }
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
+/* prefers-reduced-motion: scroll nativo do browser (Lenis fica off via JS) */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
+
+/* ============================================
+   Lenis (smooth scroll oficial)
+   ============================================ */
+html.lenis,
+html.lenis body { height: auto; }
+html.lenis.lenis-smooth { scroll-behavior: auto !important; }
+html.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+html.lenis.lenis-stopped { overflow: hidden; }
+html.lenis.lenis-smooth iframe { pointer-events: none; }
 img { max-width: 100%; height: auto; display: block; }
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
