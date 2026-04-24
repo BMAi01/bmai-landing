@@ -6493,58 +6493,65 @@ html { scroll-padding-top: 84px; }
 /* ============================================
    MOTION SEAMLESS — #quem-somos qs-scene colada no bg
    ============================================ */
-.qs-scene-wrap {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  overflow: hidden;           /* contém cards que passam -4% / -6% */
-  position: relative;
-  /* Fade 4 lados: cards saem/entram com alpha suave em vez de corte seco */
-  -webkit-mask-image:
-    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%),
-    linear-gradient(to right,  transparent 0%, black 6%, black 94%, transparent 100%);
-          mask-image:
-    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%),
-    linear-gradient(to right,  transparent 0%, black 6%, black 94%, transparent 100%);
-  -webkit-mask-composite: source-in;
-          mask-composite: intersect;
-  -webkit-mask-repeat: no-repeat;
-          mask-repeat: no-repeat;
-}
-.qs-scene {
+/* Wrapper: contém cards que passam -4%/-6% das bordas, sem rectangle visual */
+.qs-scene-wrap,
+#quem-somos .qs-scene-wrap {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
   border-radius: 0 !important;
-  overflow: hidden;           /* reforço: cards com left:-4% não vazam pro grid */
+  contain: none !important;        /* sobrescreve `contain: layout paint` antigo (criava containing block visível) */
+  overflow: hidden;
+  position: relative;
+  /* Fade radial ÚNICO — funciona em todos os browsers (sem mask-composite) */
+  -webkit-mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 55%, rgba(0,0,0,.55) 80%, transparent 100%);
+          mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 55%, rgba(0,0,0,.55) 80%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
 }
-.qs-scene::before {
-  /* Dot pattern sutil pra dar textura sem rectangle */
-  opacity: .18 !important;
+
+/* .qs-scene: zera TUDO que parecia card (bg, border, shadow inset/outset, radius) */
+.qs-scene,
+#quem-somos .qs-scene {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  overflow: hidden;
 }
-/* Grid QS: garante que motion (esquerda) e card-stack (direita) não se tocam */
+/* Glow radial laranja antigo (::after) e dot pattern (::before): mantém só sutil */
+.qs-scene::after,
+#quem-somos .qs-scene::after {
+  background: radial-gradient(ellipse at 50% 60%, rgba(255,107,26,.08) 0%, transparent 70%) !important;
+  filter: blur(28px) !important;
+}
+.qs-scene::before,
+#quem-somos .qs-scene::before {
+  opacity: .12 !important;
+}
+
+/* Grid QS: gap maior + sem stretch (deixa altura natural, sem retângulo aparente) */
 .qs__grid--animated {
   gap: clamp(32px, 4vw, 64px);
-  align-items: stretch;
+  align-items: center;
 }
 .qs__grid--animated > .qs-scene-wrap { min-width: 0; }
 .qs__grid--animated > .card-stack {
   position: relative;
-  z-index: 3;                 /* acima das mensagens flutuantes */
+  z-index: 3;
   min-width: 0;
 }
-/* Mobile (≤900px): motion fica full-width acima do texto — sem sobreposição */
+
 @media (max-width: 900px) {
-  .qs-scene-wrap {
+  .qs-scene-wrap,
+  #quem-somos .qs-scene-wrap {
     min-height: 420px;
-    /* Mobile: mask só vertical — horizontal vai até a borda do container */
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
-            mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  /* Sem autoplay de cards passando, o mask ainda protege eventual estado final */
-  .qs-scene-wrap { overflow: hidden; }
 }
 
 /* Respeita reduced-motion no team hint */
