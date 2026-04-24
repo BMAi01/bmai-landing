@@ -87,13 +87,65 @@ const progress = document.getElementById('scrollProgress');
 })();
 
 /* ============================================
-   SMOOTH SCROLL
+   SMOOTH SCROLL — Lenis (premium inertia) + fallback nativo
+   Lenis roda no desktop. Mobile: scroll nativo (smoothTouch: false).
+   Respeita prefers-reduced-motion.
    ============================================ */
+let lenisInstance = null;
+(function initLenis() {
+  // Espera script do CDN carregar (script defer + init após DOMContentLoaded)
+  const ready = () => {
+    if (PREFERS_REDUCE || typeof window.Lenis === 'undefined') return;
+    try {
+      lenisInstance = new window.Lenis({
+        lerp: 0.1,
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: false,
+        wheelMultiplier: 1,
+        touchMultiplier: 1.5,
+        infinite: false
+      });
+      function raf(time) {
+        lenisInstance.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Sync com ScrollTrigger quando GSAP carrega
+      window.addEventListener('load', () => {
+        if (typeof ScrollTrigger !== 'undefined' && lenisInstance) {
+          lenisInstance.on('scroll', ScrollTrigger.update);
+        }
+      });
+    } catch (e) {
+      console.warn('[lenis] init falhou, usando scroll nativo:', e);
+      lenisInstance = null;
+    }
+  };
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    // Script defer pode ainda não ter rodado — tenta agora, e re-tenta após load
+    ready();
+    if (!lenisInstance) window.addEventListener('load', ready, { once: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', ready, { once: true });
+  }
+})();
+
+/* Anchor links — usa Lenis quando disponível, fallback scrollTo nativo */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    const t = document.querySelector(href);
+    if (!t) return;
     e.preventDefault();
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) scrollTo({ top: t.offsetTop - 56, behavior: 'smooth' });
+    if (lenisInstance) {
+      lenisInstance.scrollTo(t, { offset: -56, duration: 1.2 });
+    } else {
+      scrollTo({ top: t.offsetTop - 56, behavior: 'smooth' });
+    }
   });
 });
 
@@ -248,6 +300,16 @@ document.querySelectorAll('section[id]').forEach(s => {
   if (!wraps.length) return;
   const section = document.getElementById('para-quem');
   const pin = document.getElementById('team-pin');
+  const grid = document.getElementById('team-grid');
+
+  // Mobile full-bleed: esconde drag hint após primeiro scroll horizontal
+  if (grid && section) {
+    const hideHint = () => {
+      section.classList.add('has-swiped');
+      grid.removeEventListener('scroll', hideHint);
+    };
+    grid.addEventListener('scroll', hideHint, { passive: true });
+  }
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
 
@@ -379,7 +441,7 @@ document.querySelectorAll('section[id]').forEach(s => {
 })();
 
 /* ============================================
-   ARIA METHOD — interactive flow diagram
+   MÉTODO DEIA — carrossel horizontal com snap + efeitos
    ============================================ */
 (function() {
   const ARIA_KEYS = ['d', 'e', 'i', 'a'];
@@ -393,261 +455,242 @@ document.querySelectorAll('section[id]').forEach(s => {
       subtitle: t(`aria.${k}.subtitle`),
       desc:     t(`aria.${k}.desc`),
       bullets:  [1, 2, 3, 4, 5].map(n => t(`aria.${k}.b${n}`)),
-      time:     t(`aria.${k}.time`),
       tag:      t(`aria.${k}.tag`),
       result:   t(`aria.${k}.result`)
     }));
   }
+
+  const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+
+  const nodes    = document.querySelectorAll('#aria-flow .aria-node');
+  const viewport = document.getElementById('metodoViewport');
+  const track    = document.getElementById('metodoTrack');
+  const prevBtn  = document.getElementById('metodoPrev');
+  const nextBtn  = document.getElementById('metodoNext');
+  const dotsWrap = document.getElementById('metodoDots');
+  const section  = document.getElementById('metodo');
+  if (!track || !viewport || !section) return;
+
   let ARIA_DATA = getAriaData();
+  let current = 0;
+  let autoTimer = null;
+  let userInteracting = false;
+  let resumeTimer = null;
+  const AUTO_MS = 5000;
 
-  const nodes  = document.querySelectorAll('.aria-node');
-  const detail = document.getElementById('aria-detail');
-  const inner  = document.getElementById('aria-detail-inner');
-  if (!nodes.length || !detail || !inner) return;
-
-  let current = -1;
-  let animating = false;
-
-  function renderDetail(d) {
+  function cardHTML(d, i) {
     return `
-      <div class="aria-detail-grid">
-        <div class="aria-detail-left">
-          <div class="aria-detail-num">${d.num}</div>
-          <div class="aria-detail-letter">${d.letter}</div>
-          <h3 class="aria-detail-title">${d.title}</h3>
-          <div class="aria-detail-subtitle">${d.subtitle}</div>
-          <p class="aria-detail-desc">${d.desc}</p>
+      <article class="metodo-card" data-idx="${i}" role="tab" aria-label="${escapeHtml(d.title)}" tabindex="0">
+        <div class="metodo-card-letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
+        <div class="metodo-card-num">${escapeHtml(d.num)}</div>
+        <h3 class="metodo-card-title">${escapeHtml(d.title)}</h3>
+        <div class="metodo-card-subtitle">${escapeHtml(d.subtitle)}</div>
+        <p class="metodo-card-desc">${escapeHtml(d.desc)}</p>
+        <ul class="metodo-card-bullets">${d.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+        <div class="metodo-card-footer">
+          <span class="metodo-card-tag">${escapeHtml(d.tag)}</span>
+          <span class="metodo-card-result">${escapeHtml(d.result)}</span>
         </div>
-        <div class="aria-detail-right">
-          <ul class="aria-detail-bullets">
-            ${d.bullets.map(b => `<li>${b}</li>`).join('')}
-          </ul>
-          <div class="aria-detail-footer">
-            <span class="aria-detail-tag">${d.tag}</span>
-            <span class="aria-detail-result">${d.result}</span>
-          </div>
-          <div class="aria-detail-progress" aria-hidden="true">
-            <div class="aria-detail-progress__bar"></div>
-          </div>
-        </div>
-      </div>
+      </article>
     `;
   }
 
-  function activate(index, opts) {
-    opts = opts || {};
-    if (animating && !opts.force) return;
-    if (index === current) {
-      if (opts.noToggle) return;    /* Trigger externo nunca fecha */
-      nodes[index].classList.remove('active');
-      detail.classList.remove('open');
-      current = -1;
-      return;
+  function render() {
+    track.innerHTML = ARIA_DATA.map((d, i) => cardHTML(d, i)).join('');
+    if (dotsWrap) {
+      dotsWrap.innerHTML = ARIA_DATA.map((d, i) =>
+        `<button type="button" class="metodo-dot" role="tab" data-idx="${i}" aria-label="Ir para fase ${d.letter} — ${escapeHtml(d.title)}"></button>`
+      ).join('');
     }
-    animating = true;
-    current = index;
-    nodes.forEach((n, i) => n.classList.toggle('active', i === index));
-
-    if (detail.classList.contains('open')) {
-      inner.style.opacity = '0';
-      inner.style.transform = 'translateY(12px)';
-      setTimeout(() => {
-        inner.innerHTML = renderDetail(ARIA_DATA[index]);
-        inner.style.opacity = '';
-        inner.style.transform = '';
-        animating = false;
-      }, 300);
-    } else {
-      inner.innerHTML = renderDetail(ARIA_DATA[index]);
-      detail.classList.add('open');
-      setTimeout(() => { animating = false; }, 600);
-    }
+    bindCards();
+    bindDots();
+    updateActive(0, { scroll: false });
   }
 
-  // Mobile: renderiza os 4 cards como ACCORDION (primeiro aberto, restante colapsado)
-  function renderAccordion() {
-    inner.innerHTML = ARIA_DATA.map((d, i) => `
-      <div class="aria-acc-item${i === 0 ? ' aria-acc-item--open' : ''}" data-idx="${i}">
-        <button class="aria-acc-head" type="button" aria-expanded="${i === 0}">
-          <span class="aria-acc-letter">${d.letter}</span>
-          <span class="aria-acc-head-text">
-            <span class="aria-acc-num">0${i + 1} / 04</span>
-            <span class="aria-acc-title">${d.title}</span>
-          </span>
-          <svg class="aria-acc-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-        <div class="aria-acc-body">
-          <div class="aria-acc-body-inner">
-            <div class="aria-detail-subtitle">${d.subtitle}</div>
-            <p class="aria-detail-desc">${d.desc}</p>
-            <ul class="aria-detail-bullets">${d.bullets.map(b => `<li>${b}</li>`).join('')}</ul>
-            <div class="aria-detail-footer">
-              <span class="aria-detail-tag">${d.tag}</span>
-              <span class="aria-detail-result">${d.result}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    `).join('');
-    detail.classList.add('open');
-    // Sync pills: primeiro ativo
-    nodes.forEach((n, i) => n.classList.toggle('active', i === 0));
-    bindAccordion();
-  }
-
-  function bindAccordion() {
-    const items = inner.querySelectorAll('.aria-acc-item');
-    items.forEach(item => {
-      const head = item.querySelector('.aria-acc-head');
-      head.addEventListener('click', () => {
-        const alreadyOpen = item.classList.contains('aria-acc-item--open');
-        items.forEach(it => {
-          it.classList.remove('aria-acc-item--open');
-          const h = it.querySelector('.aria-acc-head');
-          if (h) h.setAttribute('aria-expanded', 'false');
-        });
-        if (!alreadyOpen) {
-          item.classList.add('aria-acc-item--open');
-          head.setAttribute('aria-expanded', 'true');
-          // Sync pills com card aberto
-          const idx = parseInt(item.dataset.idx);
-          nodes.forEach((n, i) => n.classList.toggle('active', i === idx));
-        } else {
-          nodes.forEach(n => n.classList.remove('active'));
-        }
+  function bindCards() {
+    track.querySelectorAll('.metodo-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        const idx = parseInt(card.dataset.idx, 10);
+        goTo(idx, { user: true });
       });
-    });
-  }
-
-  // Recarrega dados e re-renderiza ao trocar idioma
-  window.addEventListener('i18n:change', () => {
-    ARIA_DATA = getAriaData();
-    if (IS_MOBILE) {
-      renderAccordion();
-    } else if (current >= 0 && detail.classList.contains('open')) {
-      inner.innerHTML = renderDetail(ARIA_DATA[current]);
-    }
-  });
-
-  // ARIA + semantic role
-  nodes.forEach((node, i) => {
-    node.setAttribute('role', 'button');
-    node.setAttribute('tabindex', '0');
-    node.setAttribute('aria-pressed', 'false');
-    node.setAttribute('aria-controls', 'aria-detail');
-  });
-  function syncPressed() {
-    nodes.forEach((n, i) => n.setAttribute('aria-pressed', i === current ? 'true' : 'false'));
-  }
-
-  // Touch detection
-  const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
-  let enterTimer = null;
-
-  // Desktop: hover/click/keydown bindados ao activate (card único swap)
-  // Mobile: pills bindados separadamente no bloco IS_MOBILE abaixo (abre accordion)
-  if (!IS_MOBILE) {
-    nodes.forEach((node, i) => {
-      if (!isTouch) {
-        node.addEventListener('mouseenter', () => {
-          clearTimeout(enterTimer);
-          enterTimer = setTimeout(() => { activate(i); syncPressed(); }, 120);
-        });
-        node.addEventListener('mouseleave', () => clearTimeout(enterTimer));
-        node.addEventListener('focus', () => {
-          clearTimeout(enterTimer);
-          if (current !== i) { activate(i); syncPressed(); }
-        });
-      }
-      node.addEventListener('click', () => {
-        clearTimeout(enterTimer);
-        activate(i); syncPressed();
-      });
-      node.addEventListener('keydown', (e) => {
+      card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          clearTimeout(enterTimer);
-          activate(i); syncPressed();
+          const idx = parseInt(card.dataset.idx, 10);
+          goTo(idx, { user: true });
         }
       });
     });
   }
 
-  /* Auto-cycle: cicla os 4 DEIA a cada 2.3s quando a seção tá visível.
-     Abre o detail no load e só pausa se usuário tiver prefers-reduced-motion. */
-  let cycleIdx = 0;
-  let cycleTimer = null;
-  const CYCLE_MS = 2300;
-
-  function stepCycle() {
-    cycleIdx = (cycleIdx + 1) % nodes.length;
-    activate(cycleIdx, { noToggle: true, force: true });
-    syncPressed();
-  }
-  function startCycle() {
-    if (cycleTimer || LOW_MOTION) return;
-    cycleTimer = setInterval(stepCycle, CYCLE_MS);
-  }
-  function stopCycle() {
-    if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
+  function bindDots() {
+    if (!dotsWrap) return;
+    dotsWrap.querySelectorAll('.metodo-dot').forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.idx, 10);
+        goTo(idx, { user: true });
+      });
+    });
   }
 
-  const metodoSection = document.getElementById('metodo');
+  function updateActive(idx, opts) {
+    opts = opts || {};
+    current = idx;
+    track.querySelectorAll('.metodo-card').forEach((c, i) => {
+      c.classList.toggle('is-active', i === idx);
+      c.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+    });
+    nodes.forEach((n, i) => {
+      n.classList.toggle('active', i === idx);
+      n.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      n.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+    });
+    if (dotsWrap) {
+      dotsWrap.querySelectorAll('.metodo-dot').forEach((d, i) => {
+        d.classList.toggle('is-active', i === idx);
+        d.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      });
+    }
+    updateArrows();
+    if (opts.scroll !== false) scrollToIndex(idx);
+  }
 
-  if (IS_MOBILE) {
-    // Mobile: accordion com 4 items (primeiro aberto), sem auto-cycle
-    renderAccordion();
-    // Tap num pill D/E/I/A abre o item correspondente
-    nodes.forEach((node, i) => {
-      node.addEventListener('click', (e) => {
+  function scrollToIndex(idx) {
+    const card = track.children[idx];
+    if (!card) return;
+    const vpRect = viewport.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const offset = (cardRect.left - vpRect.left) + viewport.scrollLeft
+                 - (viewport.clientWidth / 2 - card.clientWidth / 2);
+    viewport.scrollTo({
+      left: offset,
+      behavior: LOW_MOTION ? 'auto' : 'smooth'
+    });
+  }
+
+  function updateArrows() {
+    if (!prevBtn || !nextBtn) return;
+    // Não desabilito — faço looping
+    prevBtn.setAttribute('aria-disabled', 'false');
+    nextBtn.setAttribute('aria-disabled', 'false');
+  }
+
+  function goTo(idx, opts) {
+    const n = ARIA_DATA.length;
+    const next = ((idx % n) + n) % n;
+    updateActive(next);
+    if (opts && opts.user) pauseAuto();
+  }
+
+  function pauseAuto() {
+    userInteracting = true;
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    if (resumeTimer) clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      userInteracting = false;
+      startAuto();
+    }, 8000);
+  }
+
+  function startAuto() {
+    if (autoTimer || LOW_MOTION || userInteracting) return;
+    autoTimer = setInterval(() => goTo(current + 1), AUTO_MS);
+  }
+  function stopAuto() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  }
+
+  // Arrows
+  if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1, { user: true }));
+  if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1, { user: true }));
+
+  // Keyboard: setas navegam quando foco está no carrossel
+  viewport.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1, { user: true }); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1, { user: true }); }
+  });
+
+  // Detecta card central visível durante scroll manual
+  let scrollTimeout = null;
+  viewport.addEventListener('scroll', () => {
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      const vpRect = viewport.getBoundingClientRect();
+      const vpCenter = vpRect.left + vpRect.width / 2;
+      let closest = 0, minDist = Infinity;
+      track.querySelectorAll('.metodo-card').forEach((c, i) => {
+        const r = c.getBoundingClientRect();
+        const center = r.left + r.width / 2;
+        const d = Math.abs(center - vpCenter);
+        if (d < minDist) { minDist = d; closest = i; }
+      });
+      if (closest !== current) updateActive(closest, { scroll: false });
+    }, 90);
+  }, { passive: true });
+
+  // Pills D/E/I/A navegam
+  nodes.forEach((node, i) => {
+    node.setAttribute('role', 'tab');
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('aria-pressed', 'false');
+    node.setAttribute('aria-controls', 'metodoTrack');
+    node.addEventListener('click', (e) => {
+      e.preventDefault();
+      goTo(i, { user: true });
+    });
+    node.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        e.stopPropagation();
-        const items = inner.querySelectorAll('.aria-acc-item');
-        items.forEach((it, j) => {
-          it.classList.toggle('aria-acc-item--open', j === i);
-          const h = it.querySelector('.aria-acc-head');
-          if (h) h.setAttribute('aria-expanded', String(j === i));
-        });
-        nodes.forEach((n, j) => n.classList.toggle('active', j === i));
-        items[i]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, true);
-    });
-  } else {
-    // Desktop: auto-cycle original
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          activate(cycleIdx, { noToggle: true, force: true });
-          syncPressed();
-          startCycle();
-        } else {
-          stopCycle();
-        }
-      });
-    }, { threshold: 0.3 });
-    io.observe(metodoSection);
-  }
-
-  /* Trigger externo — nunca fecha, só troca (desktop only) */
-  if (!IS_MOBILE) {
-    document.addEventListener('metodo:set', (e) => {
-      const i = e.detail && e.detail.index;
-      if (typeof i === 'number') {
-        cycleIdx = i;
-        activate(i, { noToggle: true, force: true });
-        syncPressed();
+        goTo(i, { user: true });
       }
     });
-  }
+  });
 
-  /* Respeita reduced-motion: desktop mostra só o primeiro card */
-  if (LOW_MOTION && !IS_MOBILE) {
-    activate(0, { noToggle: true, force: true });
-    syncPressed();
-  }
+  // Pause auto no hover/touch da viewport
+  ['mouseenter', 'touchstart', 'focusin'].forEach(ev => {
+    viewport.addEventListener(ev, () => pauseAuto(), { passive: true });
+  });
 
-  /* Sem swipe horizontal — usuário interage via tap nos pills D/E/I/A.
-     Auto-cycle cuida da rotação automatica (2.3s por fase) em touch + desktop. */
+  // i18n re-render
+  window.addEventListener('i18n:change', () => {
+    ARIA_DATA = getAriaData();
+    const prev = current;
+    render();
+    updateActive(prev, { scroll: false });
+  });
+
+  // Entrada no viewport → fade + translateY + inicia auto-play
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        track.querySelectorAll('.metodo-card').forEach((c, i) => {
+          setTimeout(() => c.classList.add('is-entered'), i * 80);
+        });
+        startAuto();
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  // Pause quando sai da viewport
+  const ioPause = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) stopAuto();
+      else if (!userInteracting) startAuto();
+    });
+  }, { threshold: 0.2 });
+
+  render();
+  io.observe(section);
+  ioPause.observe(section);
+
+  // Trigger externo (section dots etc)
+  document.addEventListener('metodo:set', (e) => {
+    const i = e && e.detail && e.detail.index;
+    if (typeof i === 'number') goTo(i, { user: true });
+  });
 })();
 
 /* ============================================

@@ -748,6 +748,7 @@ html { scrollbar-gutter: stable; }
   width: 100%;
   margin-left: 0;
   margin-right: auto;
+  padding-top: clamp(20px, 3.4vw, 56px);
   padding-bottom: clamp(60px, 8vw, 100px);
   text-align: left;
 }
@@ -831,7 +832,7 @@ html { scrollbar-gutter: stable; }
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 48px;
+  margin-top: clamp(72px, 6vw, 108px);
   margin-bottom: 0;
 }
 #hero .container.hero__stats-row {
@@ -1074,11 +1075,8 @@ html { scrollbar-gutter: stable; }
 .aria-hdr { position: relative; }
 .aria-hdr { text-align: center; margin-bottom: 36px; }
 
-/* Método: esconde os 4 nodes DEIA pequenos — cards auto-ciclam sem navegação manual */
-.aria-flow { display: none !important; }
-
-/* Garante que o detail panel fique sempre aberto (o JS cicla o conteúdo) */
-#metodo .aria-detail { max-height: none !important; opacity: 1 !important; }
+/* Método: legacy aria-detail escondido — carrossel DEIA substituiu */
+#metodo .aria-detail { display: none !important; }
 .aria-sub {
   font-size: 15px;
   color: #888;
@@ -1377,14 +1375,312 @@ html { scrollbar-gutter: stable; }
   font-weight: 700;
 }
 
+/* ============================================
+   MÉTODO CARROSSEL (D/E/I/A)
+   ============================================ */
+.metodo-carousel {
+  position: relative;
+  margin-top: 24px;
+  padding: 4px 0 8px;
+}
+.metodo-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 36px clamp(16px, 6vw, 72px);
+  -webkit-overflow-scrolling: touch;
+}
+.metodo-viewport::-webkit-scrollbar { display: none; }
+.metodo-track {
+  display: flex;
+  gap: clamp(14px, 2vw, 28px);
+  align-items: stretch;
+  min-width: max-content;
+}
+.metodo-card {
+  position: relative;
+  flex: 0 0 clamp(280px, 38vw, 460px);
+  scroll-snap-align: center;
+  padding: 32px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, #162534 0%, #0d1b2a 100%);
+  overflow: hidden;
+  transform: scale(.92);
+  opacity: .58;
+  filter: blur(1px);
+  transition:
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity, filter;
+}
+.metodo-card.is-entered { animation: metodoCardIn .7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes metodoCardIn {
+  from { opacity: 0; transform: translateY(20px) scale(.92); }
+  to   { opacity: .58; transform: translateY(0) scale(.92); }
+}
+.metodo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(219,85,0,.0) 0%, rgba(219,85,0,.6) 50%, rgba(255,168,102,.0) 100%);
+  background-size: 200% 200%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  animation: metodoBorderFlow 4s linear infinite paused;
+}
+@keyframes metodoBorderFlow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.metodo-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(219,85,0,.7) 30%, #ff7a2a 50%, rgba(219,85,0,.7) 70%, transparent);
+  box-shadow: 0 0 10px rgba(219,85,0,.4);
+  opacity: 0;
+  transition: opacity .5s;
+}
+.metodo-card.is-active {
+  transform: scale(1.05);
+  opacity: 1;
+  filter: blur(0);
+  border-color: rgba(219,85,0,.35);
+}
+.metodo-card.is-active::after { opacity: 1; }
+.metodo-card.is-active::before { opacity: .6; animation-play-state: running; }
+@media (hover: hover) {
+  .metodo-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 40px rgba(255,107,0,0.25);
+  }
+  .metodo-card:hover::before { opacity: 1; animation-play-state: running; }
+  .metodo-card.is-active:hover { transform: scale(1.06); }
+}
+.metodo-card-num {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: .14em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.metodo-card-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(219,85,0,.3), transparent);
+}
+.metodo-card-letter {
+  font-family: var(--fd);
+  font-size: clamp(72px, 8vw, 110px);
+  font-weight: 700;
+  color: rgba(219,85,0,.07);
+  line-height: 1;
+  letter-spacing: -.04em;
+  margin-bottom: -8px;
+  user-select: none;
+}
+.metodo-card-title {
+  font-family: var(--fd);
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  color: var(--white);
+  line-height: 1.05;
+  margin-bottom: 6px;
+}
+.metodo-card-subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--orange);
+  letter-spacing: .04em;
+  margin-bottom: 14px;
+}
+.metodo-card-desc {
+  font-size: 13.5px;
+  color: #888;
+  line-height: 1.7;
+  letter-spacing: -.005em;
+  margin-bottom: 16px;
+}
+.metodo-card-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 0;
+}
+.metodo-card-bullets li {
+  font-size: 13px;
+  color: #c9c9c9;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+.metodo-card-bullets li::before {
+  content: '→';
+  color: var(--orange);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 3px;
+}
+.metodo-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.metodo-card-tag {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--orange);
+  border: 1px solid rgba(219,85,0,.25);
+  border-radius: 6px;
+  padding: 5px 12px;
+  background: rgba(219,85,0,.06);
+}
+.metodo-card-result {
+  font-size: 12px;
+  color: #b8b8b8;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 4px;
+}
+.metodo-card-result::before {
+  content: '✓';
+  color: var(--orange);
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* Setas navegação */
+.metodo-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(219,85,0,.3);
+  background: rgba(13,27,42,.82);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .3s, border-color .3s, background .3s, opacity .3s;
+}
+.metodo-arrow--prev { left: clamp(2px, 1vw, 16px); }
+.metodo-arrow--next { right: clamp(2px, 1vw, 16px); }
+.metodo-arrow:hover {
+  transform: translateY(-50%) scale(1.08);
+  background: rgba(219,85,0,.16);
+  border-color: var(--orange);
+}
+.metodo-arrow:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+.metodo-arrow[disabled],
+.metodo-arrow[aria-disabled="true"] {
+  opacity: .35;
+  cursor: not-allowed;
+}
+@media (hover: none), (pointer: coarse) {
+  .metodo-arrow { display: none; }
+}
+
+/* Dots (mobile) */
+.metodo-dots {
+  display: none;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0 6px;
+}
+.metodo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  background: rgba(255,255,255,.18);
+  cursor: pointer;
+  transition: width .3s cubic-bezier(0.22, 1, 0.36, 1), background .3s;
+}
+.metodo-dot.is-active {
+  width: 24px;
+  border-radius: 6px;
+  background: var(--orange);
+}
+.metodo-dot:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+@media (hover: none), (pointer: coarse) {
+  .metodo-dots { display: flex; }
+}
+
+/* Flow pills (nav visível) */
+.aria-flow {
+  padding: 10px 0 18px;
+}
+.aria-node {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
 @media (max-width: 768px) {
-  .aria-flow { gap: 0; padding: 10px 0 32px; justify-content: flex-start; }
-  .aria-node-inner { width: 64px; height: 64px; }
-  .aria-node-letter { font-size: 22px; }
+  .aria-flow { gap: 0; padding: 10px 0 16px; justify-content: space-between; }
+  .aria-node-inner { width: 56px; height: 56px; }
+  .aria-node-letter { font-size: 20px; }
   .aria-node-label  { font-size: 10px; }
-  .aria-connector { min-width: 32px; max-width: 60px; }
+  .aria-connector { min-width: 12px; max-width: 40px; }
   .aria-detail-grid { grid-template-columns: 1fr; gap: 24px; }
   .aria-detail-inner { padding: 24px 20px; }
+  .metodo-viewport { padding: 30px 18vw 30px 18vw; }
+  .metodo-card { flex-basis: 78vw; padding: 26px 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .metodo-viewport { scroll-behavior: auto; }
+  .metodo-card {
+    transform: none;
+    opacity: 1;
+    filter: none;
+    transition: none;
+  }
+  .metodo-card::before { animation: none; }
+  .metodo-card.is-entered { animation: none; }
 }
 
 /* ============================================
@@ -3479,7 +3775,7 @@ section h2.shimmer-active::after,
   /* Hero */
   .hero { min-height: auto !important; padding: 110px 0 60px !important; }
   #hero .container.hero__wrap { padding: 0 20px !important; }
-  .hero__title { font-size: clamp(30px, 8.6vw, 44px) !important; margin-bottom: 20px !important; }
+  .hero__title { font-size: clamp(30px, 8.6vw, 44px) !important; margin-bottom: 20px !important; margin-top: clamp(16px, 4vw, 28px) !important; }
   .hero__title .h-line { white-space: normal !important; }
   .hero__sub { font-size: 1.08rem !important; margin-bottom: 24px !important; line-height: 1.55 !important; }
   .hero__ctas { flex-direction: column !important; flex-wrap: nowrap !important; gap: 10px !important; align-items: stretch !important; }
@@ -3487,7 +3783,7 @@ section h2.shimmer-active::after,
   .hero__badge { font-size: 11px !important; padding: 6px 12px !important; }
 
   /* Hero stats — 3-col compacto horizontal */
-  .hero__stats { margin-top: 28px !important; }
+  .hero__stats { margin-top: clamp(50px, 9vw, 64px) !important; }
   #hero .container.hero__stats-row {
     display: flex !important;
     flex-direction: row !important;
@@ -5631,4 +5927,143 @@ html { scroll-padding-top: 84px; }
   }
 }
 
+/* ============================================
+   TEAM MOBILE — full-bleed horizontal snap
+   ============================================ */
+@media (max-width: 768px) {
+  #para-quem .team-pin {
+    padding: 10px 0 48px !important;
+    position: relative;
+    overflow: visible;
+  }
+  #para-quem .team-grid {
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    scrollbar-width: none !important;
+  }
+  #para-quem .team-grid::-webkit-scrollbar { display: none !important; }
 
+  #para-quem .team-card-wrap {
+    flex: 0 0 100vw !important;
+    width: 100vw !important;
+    max-width: none !important;
+    aspect-ratio: unset !important;
+    height: min(78vh, 620px) !important;
+    scroll-snap-align: center !important;
+    scroll-snap-stop: always !important;
+    position: relative;
+    perspective: none;
+  }
+  /* Mata flip 3D no mobile full-bleed — usamos fade entre front/back */
+  #para-quem .team-card {
+    transform: none !important;
+    transform-style: flat !important;
+  }
+  #para-quem .team-card-wrap .tc-front,
+  #para-quem .team-card-wrap .tc-back {
+    position: absolute;
+    inset: 0;
+    border-radius: 0 !important;
+    border: 0 !important;
+    transition: opacity .45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #para-quem .team-card-wrap .tc-front img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 20% !important;
+  }
+  #para-quem .team-card-wrap .tc-front-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px 24px 40px !important;
+    background: linear-gradient(to top,
+      rgba(0,0,0,.92) 0%,
+      rgba(0,0,0,.65) 40%,
+      rgba(0,0,0,.2) 78%,
+      transparent 100%) !important;
+  }
+  #para-quem .team-card-wrap .tc-front-info h3 {
+    font-size: clamp(24px, 7vw, 34px) !important;
+    margin-bottom: 4px !important;
+  }
+  #para-quem .team-card-wrap .tc-front-info span {
+    font-size: 11px !important;
+    letter-spacing: .14em !important;
+    color: var(--orange) !important;
+  }
+  #para-quem .team-card-wrap .tc-front  { opacity: 1; z-index: 2; }
+  #para-quem .team-card-wrap .tc-back   { opacity: 0; z-index: 1; }
+  #para-quem .team-card-wrap.flipped .tc-front { opacity: 0 !important; z-index: 1 !important; }
+  #para-quem .team-card-wrap.flipped .tc-back  { opacity: 1 !important; z-index: 2 !important; }
+  #para-quem .team-card-wrap .tc-back {
+    background:
+      linear-gradient(180deg, rgba(7,18,29,.88) 0%, rgba(7,18,29,.98) 60%, #07121d 100%);
+    backdrop-filter: blur(4px);
+  }
+  #para-quem .team-card-wrap .tc-back-content {
+    padding: 88px 28px 40px !important;
+  }
+
+  /* Drag hint — seta pulsante na primeira visualização */
+  #para-quem .team-pin::after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    bottom: 24px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background:
+      rgba(13,27,42,.8)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23db5500' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='m9 18 6-6-6-6'/></svg>")
+      center / 22px 22px no-repeat;
+    border: 1px solid rgba(219,85,0,.4);
+    box-shadow: 0 0 24px rgba(219,85,0,.22);
+    z-index: 5;
+    pointer-events: none;
+    animation: teamHintPulse 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    transition: opacity .4s ease;
+  }
+  #para-quem.has-swiped .team-pin::after {
+    opacity: 0;
+    animation: none;
+  }
+  @keyframes teamHintPulse {
+    0%, 100% { transform: translateX(0); opacity: .9; }
+    50%      { transform: translateX(-8px); opacity: .55; }
+  }
+}
+
+/* ============================================
+   MOTION SEAMLESS — #quem-somos qs-scene colada no bg
+   ============================================ */
+.qs-scene {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+.qs-scene::before {
+  /* Mantém dot pattern com opacidade bem sutil pra dar textura sem rectangle */
+  opacity: .18 !important;
+}
+.qs-scene-wrap {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* Respeita reduced-motion no team hint */
+@media (prefers-reduced-motion: reduce) {
+  #para-quem .team-pin::after { animation: none !important; opacity: .5; }
+}
