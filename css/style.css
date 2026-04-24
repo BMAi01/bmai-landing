@@ -6624,11 +6624,11 @@ html { scroll-padding-top: 84px; }
   box-shadow: none !important;
   border-radius: 0 !important;
   contain: none !important;        /* sobrescreve `contain: layout paint` antigo (criava containing block visível) */
-  overflow: hidden;
+  overflow: visible;               /* cards podem extrapolar ate -6% sem clipping */
   position: relative;
-  /* Fade radial ÚNICO — funciona em todos os browsers (sem mask-composite) */
-  -webkit-mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 55%, rgba(0,0,0,.55) 80%, transparent 100%);
-          mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 55%, rgba(0,0,0,.55) 80%, transparent 100%);
+  /* Fade radial: sólido até 92% pra não cortar cards de borda; fade só nos cantos pra blend com bg */
+  -webkit-mask-image: radial-gradient(ellipse 110% 105% at 50% 50%, #000 92%, rgba(0,0,0,.85) 97%, transparent 100%);
+          mask-image: radial-gradient(ellipse 110% 105% at 50% 50%, #000 92%, rgba(0,0,0,.85) 97%, transparent 100%);
   -webkit-mask-repeat: no-repeat;
           mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -6645,7 +6645,7 @@ html { scroll-padding-top: 84px; }
   border-radius: 0 !important;
   box-shadow: none !important;
   -webkit-box-shadow: none !important;
-  overflow: hidden;
+  overflow: visible;
 }
 /* Glow radial laranja antigo (::after) e dot pattern (::before): mantém só sutil */
 .qs-scene::after,
