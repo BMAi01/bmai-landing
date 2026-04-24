@@ -542,6 +542,8 @@ document.querySelectorAll('section[id]').forEach(s => {
       c.classList.toggle('is-active', i === idx);
       c.setAttribute('aria-selected', i === idx ? 'true' : 'false');
     });
+    const flow = document.getElementById('aria-flow');
+    if (flow) flow.style.setProperty('--aria-progress', String(idx));
     nodes.forEach((n, i) => {
       n.classList.toggle('active', i === idx);
       n.setAttribute('aria-selected', i === idx ? 'true' : 'false');
