@@ -293,6 +293,164 @@ document.querySelectorAll('section[id]').forEach(s => {
 });
 
 /* ============================================
+   TEAM MOBILE — cinematic full-screen controller
+   Pointer events nativos (sem libs). Desktop continua no IIFE abaixo.
+   ============================================ */
+(function () {
+  const root = document.getElementById('team-mobile');
+  if (!root) return;
+  // Só ativa em mobile (CSS já esconde em desktop, mas evita trabalho do JS)
+  if (!matchMedia('(max-width: 768px)').matches) return;
+
+  const slides = Array.from(root.querySelectorAll('.team-mslide'));
+  const dots   = Array.from(root.querySelectorAll('.team-mdot'));
+  const prevZ  = document.getElementById('teamMPrev');
+  const nextZ  = document.getElementById('teamMNext');
+  const hint   = document.getElementById('teamMobileHint');
+  const track  = document.getElementById('teamMobileTrack');
+  if (!slides.length || !track) return;
+
+  let current = 0;
+  let dragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragDx = 0;
+  let dragLocked = null; // 'x' | 'y' | null
+  let pointerId = null;
+  let hintHidden = false;
+  const PREFERS_REDUCE_LOCAL = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SWIPE_THRESHOLD = 60;
+
+  function hideHint(force) {
+    if (hintHidden && !force) return;
+    hintHidden = true;
+    root.classList.add('is-hidden-hint');
+  }
+  // Hint some após 3s mesmo sem interação
+  setTimeout(() => hideHint(false), 3000);
+
+  function goTo(idx) {
+    const n = slides.length;
+    const next = ((idx % n) + n) % n;
+    if (next === current) return;
+    slides.forEach((s, i) => {
+      const active = i === next;
+      s.classList.toggle('is-active', active);
+      s.classList.toggle('is-out', !active && i === current);
+      s.setAttribute('aria-hidden', active ? 'false' : 'true');
+      s.style.transform = '';  // limpa drag residual
+    });
+    dots.forEach((d, i) => {
+      d.classList.toggle('is-active', i === next);
+      d.setAttribute('aria-selected', i === next ? 'true' : 'false');
+    });
+    current = next;
+    hideHint(true);
+
+    // Limpa will-change depois da transição pra liberar GPU
+    const cleanup = () => {
+      slides.forEach(s => { s.style.willChange = ''; });
+    };
+    setTimeout(cleanup, 700);
+  }
+
+  // Dots
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const idx = parseInt(dot.dataset.idx, 10);
+      goTo(idx);
+    });
+  });
+
+  // Zonas laterais
+  if (prevZ) prevZ.addEventListener('click', () => goTo(current - 1));
+  if (nextZ) nextZ.addEventListener('click', () => goTo(current + 1));
+
+  // Pointer events pro swipe
+  function onDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    pointerId = e.pointerId;
+    dragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    dragDx = 0;
+    dragLocked = null;
+    root.classList.add('is-dragging');
+    try { root.setPointerCapture(pointerId); } catch (_) {}
+  }
+  function onMove(e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    if (!dragLocked) {
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        dragLocked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      } else return;
+    }
+    if (dragLocked !== 'x') return;
+    e.preventDefault();
+    dragDx = dx;
+    const w = root.clientWidth || 360;
+    const pct = Math.max(-1, Math.min(1, dx / w));
+    // Move ativo com o dedo; próximo/anterior entra pelo lado oposto
+    const activeEl = slides[current];
+    const nextEl   = slides[(current + 1) % slides.length];
+    const prevEl   = slides[(current - 1 + slides.length) % slides.length];
+    activeEl.style.transform = `translate3d(${dx}px, 0, 0) scale(1)`;
+    activeEl.style.opacity   = String(1 - Math.abs(pct) * 0.4);
+    if (dx < 0) {
+      nextEl.style.visibility = 'visible';
+      nextEl.style.opacity    = String(Math.abs(pct));
+      nextEl.style.transform  = `translate3d(${w + dx}px, 0, 0) scale(${1.05 - 0.05 * Math.abs(pct)})`;
+      prevEl.style.transform  = '';
+      prevEl.style.opacity    = '';
+    } else if (dx > 0) {
+      prevEl.style.visibility = 'visible';
+      prevEl.style.opacity    = String(Math.abs(pct));
+      prevEl.style.transform  = `translate3d(${-w + dx}px, 0, 0) scale(${1.05 - 0.05 * Math.abs(pct)})`;
+      nextEl.style.transform  = '';
+      nextEl.style.opacity    = '';
+    }
+  }
+  function onUp(e) {
+    if (!dragging || (pointerId !== null && e.pointerId !== pointerId)) return;
+    dragging = false;
+    root.classList.remove('is-dragging');
+    try { root.releasePointerCapture(pointerId); } catch (_) {}
+    pointerId = null;
+
+    // Limpa inline styles temporários de drag
+    slides.forEach(s => {
+      s.style.transform  = '';
+      s.style.opacity    = '';
+      s.style.visibility = '';
+    });
+
+    if (dragLocked === 'x' && Math.abs(dragDx) > SWIPE_THRESHOLD) {
+      if (dragDx < 0) goTo(current + 1);
+      else goTo(current - 1);
+    }
+    dragLocked = null;
+    dragDx = 0;
+  }
+  root.addEventListener('pointerdown', onDown);
+  root.addEventListener('pointermove', onMove, { passive: false });
+  root.addEventListener('pointerup', onUp);
+  root.addEventListener('pointercancel', onUp);
+
+  // Teclado nas zonas
+  [prevZ, nextZ].forEach((z, idx) => {
+    if (!z) return;
+    z.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        goTo(idx === 0 ? current - 1 : current + 1);
+      }
+    });
+  });
+})();
+
+/* ============================================
    TEAM — hover-driven desktop (click/tap no touch)
    ============================================ */
 (function () {
@@ -300,16 +458,6 @@ document.querySelectorAll('section[id]').forEach(s => {
   if (!wraps.length) return;
   const section = document.getElementById('para-quem');
   const pin = document.getElementById('team-pin');
-  const grid = document.getElementById('team-grid');
-
-  // Mobile full-bleed: esconde drag hint após primeiro scroll horizontal
-  if (grid && section) {
-    const hideHint = () => {
-      section.classList.add('has-swiped');
-      grid.removeEventListener('scroll', hideHint);
-    };
-    grid.addEventListener('scroll', hideHint, { passive: true });
-  }
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
 
