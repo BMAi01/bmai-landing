@@ -1797,16 +1797,18 @@ html { scrollbar-gutter: stable; }
   .metodo__star-watermark { width: 500px; height: 500px; left: 50%; }
 }
 @media (max-width: 768px) {
-  /* === MOBILE: SCROLL-STACK LITE ===
-     Sem pin do GSAP (causava trava). Cards usam position: sticky e empilham
-     naturalmente com o scroll nativo. Cada card gruda no topo (offset do header)
-     ate o proximo subir por cima. JS desativa buildStack() neste viewport. */
+  /* === MOBILE: STACK PLANO ===
+     Sem pin GSAP (travava scroll), sem position:sticky (criava gaps quando
+     card era maior que viewport). Cards empilham um embaixo do outro com
+     scroll nativo puro. JS desativa buildStack() neste viewport. */
   .metodo__scroll-container {
-    height: auto !important;          /* zera 400vh do desktop — agora a altura sai do conteudo */
+    height: auto !important;          /* zera 400vh/dvh do desktop — altura sai do conteudo */
+    min-height: 0 !important;
   }
   .metodo__sticky {
-    position: static !important;       /* NAO ser o sticky parent — quem fica sticky sao os cards */
+    position: static !important;       /* NAO ser o sticky parent */
     height: auto !important;
+    min-height: 0 !important;
     top: auto !important;
     overflow: visible !important;
     display: block !important;
@@ -1814,6 +1816,7 @@ html { scrollbar-gutter: stable; }
   .metodo__cards-wrapper {
     position: static !important;
     height: auto !important;
+    min-height: 0 !important;
     max-width: 100%;
     padding-inline: 16px;
   }
@@ -1822,34 +1825,23 @@ html { scrollbar-gutter: stable; }
     inset: auto !important;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 20px;                         /* espaco entre cards (gap pequeno, sem area preta enorme) */
   }
 
-  /* Cards: cada um sticky individualmente. margin-bottom cria a "gaveta de scroll"
-     entre cards — quanto mais espaco, mais tempo o card fica grudado no topo
-     antes do proximo subir por cima. */
+  /* Cards: empilhamento plano. Sem sticky pra evitar gap quando card > viewport. */
   .metodo__card {
-    position: sticky !important;
-    top: 80px;                         /* offset do header */
+    position: relative !important;     /* NAO sticky — flow normal sem gap fantasma */
     inset: auto !important;            /* anula top/left/right/bottom: 0 do desktop */
     height: auto !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     width: auto;
-    margin: 0 0 80px 0 !important;     /* gaveta de scroll entre cards */
+    margin: 0 !important;              /* gap controlado pelo .metodo__stack { gap: 20px } */
     padding: 32px 22px !important;
     border-radius: 16px;
     transform: none !important;        /* desfaz translate3d(0, 100vh, 0) do desktop */
     will-change: auto;
-    background: var(--bmai-navy-card); /* fundo solido pra cobrir o card anterior */
-    box-shadow:
-      0 -4px 20px rgba(0, 0, 0, 0.3),  /* sombra superior — profundidade ao empilhar */
-      0 20px 40px rgba(0, 0, 0, 0.35);
-  }
-  .metodo__card:first-child {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);  /* sem sombra superior — nada acima pra cobrir */
-  }
-  .metodo__card:last-child {
-    margin-bottom: 0 !important;
+    background: var(--bmai-navy-card);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   }
 
   /* Layout 1 coluna no mobile */

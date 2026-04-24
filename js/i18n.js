@@ -622,13 +622,12 @@
     },
 
     init() {
+      // Site BR — default sempre PT. Auto-detect via navigator.language foi removido
+      // (visitantes brasileiros com browser em ingles/espanhol caiam em EN/ES sem querer).
+      // Se o usuario escolher outro idioma no seletor, salva em localStorage e respeita.
       let stored = null;
       try { stored = localStorage.getItem('bmai-lang'); } catch (e) {}
-      let lang = stored;
-      if (!lang || !DICT[lang]) {
-        const nav = (navigator.language || 'pt').slice(0, 2).toLowerCase();
-        lang = DICT[nav] ? nav : 'pt';
-      }
+      const lang = (stored && DICT[stored]) ? stored : 'pt';
       this.lang = lang;
       this.apply();
     }
