@@ -69,6 +69,15 @@
   --r-sm: 14px;
   --ease: cubic-bezier(.25, .46, .45, .94);
   --spring: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* === Spacing system (vertical entre seções) === */
+  --section-spacing-sm: 64px;   /* mobile padrão */
+  --section-spacing-md: 96px;   /* tablet */
+  --section-spacing-lg: 128px;  /* desktop padrão */
+  --section-spacing-xl: 160px;  /* respiráveis: hero, CTA final */
+  --content-gap-sm: 24px;
+  --content-gap-md: 40px;
+  --content-gap-lg: 64px;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -203,28 +212,58 @@ ul { list-style: none; }
 }
 
 /* ============================================
-   SECTION
+   SECTION — spacing system uniforme
+   Regra de ouro: padding controla; nunca margin entre seções.
    ============================================ */
-section {
+section,
+.section {
   position: relative;
   z-index: 1;
   display: block;
-  isolation: isolate;       /* cada section tem seu próprio stacking context — evita overlay entre elas */
-  scroll-margin-top: 80px;  /* header fixo não cobre âncoras */
+  isolation: isolate;
+  scroll-margin-top: 80px;
+  padding-top:    var(--section-spacing-sm);
+  padding-bottom: var(--section-spacing-sm);
+  margin: 0;
 }
-/* Padding vertical padronizado — respira generoso entre seções */
-.section { padding: 128px 0; }
-@media (max-width: 768px) {
-  .section { padding: 80px 0; }
+@media (min-width: 768px) {
+  section,
+  .section {
+    padding-top:    var(--section-spacing-md);
+    padding-bottom: var(--section-spacing-md);
+  }
 }
-/* Margem extra entre seções consecutivas — evita visual colado */
-section + section,
-section + .section,
-.section + section { margin-top: 32px; }
-@media (max-width: 768px) {
-  section + section,
-  section + .section,
-  .section + section { margin-top: 16px; }
+@media (min-width: 1024px) {
+  section,
+  .section {
+    padding-top:    var(--section-spacing-lg);
+    padding-bottom: var(--section-spacing-lg);
+  }
+}
+/* Title spacing interno consistente */
+.section__title { margin-bottom: var(--content-gap-md); }
+@media (min-width: 1024px) {
+  .section__title { margin-bottom: var(--content-gap-lg); }
+}
+
+/* Debug helper — ativar no console: document.body.classList.add('debug-spacing') */
+.debug-spacing section,
+.debug-spacing .section {
+  outline: 1px dashed rgba(255, 107, 0, 0.4);
+  position: relative;
+}
+.debug-spacing section::before,
+.debug-spacing .section::before {
+  content: attr(id);
+  position: absolute;
+  top: 4px; left: 4px;
+  background: #FF6B00;
+  color: #000;
+  padding: 2px 6px;
+  font-size: 10px;
+  z-index: 9999;
+  pointer-events: none;
+  font-family: var(--mono);
 }
 
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
@@ -243,7 +282,7 @@ html { scrollbar-gutter: stable; }
 /* ============================================
    QUEM SOMOS — dois pilares
    ============================================ */
-#quem-somos { padding: 0; }
+/* #quem-somos herda do section reset (cena interna usa absolute, padding ok) */
 #quem-somos .section__center { margin-bottom: 32px; }
 
 /* Pinned section — 2 padrões mutuamente exclusivos por device:
@@ -330,7 +369,7 @@ html { scrollbar-gutter: stable; }
 }
 
 @media (max-width: 768px) {
-  #quem-somos { padding: 80px 0; }
+  /* padding herda do section reset (--section-spacing-sm) */
   #quem-somos .section__center { margin-bottom: 48px; }
   .qs__grid { grid-template-columns: 1fr; gap: 20px; }
   .qs__pillar { padding: 36px 28px 28px; }
@@ -544,10 +583,17 @@ html { scrollbar-gutter: stable; }
   min-height: 100vh; min-height: min(100svh, 100vh);
   display: flex; flex-direction: column; justify-content: center;
   align-items: flex-start;
-  padding: calc(var(--hdr) + 60px) 0 96px;
+  /* Hero não tem seção anterior: top compensa header; bottom usa o token padrão */
+  padding-top: calc(var(--hdr) + 24px) !important;
+  padding-bottom: var(--section-spacing-sm) !important;
   overflow: hidden;
-  /* Fundo sólido — composição tech .hero-fx é renderizada por cima em código */
   background: #0d1b2a;
+}
+@media (min-width: 768px) {
+  .hero { padding-bottom: var(--section-spacing-md) !important; }
+}
+@media (min-width: 1024px) {
+  .hero { padding-bottom: var(--section-spacing-lg) !important; }
 }
 
 /* Pedestal legado removido — hero-fx (canvas + SVG) faz o visual agora */
@@ -1025,7 +1071,7 @@ html { scrollbar-gutter: stable; }
    ARIA METHOD — flow diagram
    ============================================ */
 #metodo {
-  padding: 128px 0;
+  /* padding herda do section reset (--section-spacing-*) */
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -1884,10 +1930,17 @@ html { scrollbar-gutter: stable; }
 .manifesto__line--accent { color: var(--orange) !important; text-shadow: 0 0 60px rgba(219,85,0,.25), 0 0 120px rgba(219,85,0,.1); }
 
 /* ============================================
-   CTA
+   CTA — clímax do site, ganha spacing XL
    ============================================ */
 .cta .section__sub { margin-bottom: 32px; }
 .cta__actions { margin-top: 28px; }
+@media (min-width: 1024px) {
+  section.cta,
+  .section.cta {
+    padding-top:    var(--section-spacing-xl);
+    padding-bottom: var(--section-spacing-xl);
+  }
+}
 
 /* ============================================
    FAQ
@@ -1918,8 +1971,12 @@ html { scrollbar-gutter: stable; }
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, var(--bg) 0%, #0a1523 100%);
-  padding-top: 88px;
+  padding-top: var(--section-spacing-md);
+  padding-bottom: 40px;
   border-top: 1px solid rgba(255, 255, 255, .06);
+}
+@media (min-width: 1024px) {
+  .footer { padding-top: var(--section-spacing-lg); }
 }
 /* Linha superior estática: filete laranja discreto */
 .footer::before {
@@ -2264,7 +2321,7 @@ html { scrollbar-gutter: stable; }
    FORMULÁRIO BMAI
    ============================================ */
 #form {
-  padding: 128px 0;
+  /* padding herda do section reset */
   background: var(--bg2);
   border-top: 1px solid var(--glass-border);
 }
@@ -3118,7 +3175,7 @@ h1, h2, h3, p, span, li, a {
    CASES — 3D Tabs (Aceternity inspired)
    ============================================ */
 #cases {
-  padding: 128px 0;
+  /* padding herda do section reset */
   position: relative;
   z-index: 1;
 }
