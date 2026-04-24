@@ -5460,56 +5460,44 @@ html { scroll-padding-top: 84px; }
   color: var(--qs-text-3);
 }
 
-/* ── Brand card central (entra após todas as notifs e SOBREPÕE tudo) ── */
+/* ── Brand central: símbolo + "integrando IA…" flutuando direto no fundo ── */
+/* SEM card, SEM borda, SEM box-shadow externo, SEM background — só conteúdo */
 .qs-brand {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0);
   opacity: 0;
   width: min(60%, 340px);
-  padding: 32px 28px 28px;
-  /* Fundo com gradient radial — fade suave no entorno (evita corte duro) */
-  background:
-    radial-gradient(ellipse 130% 110% at 50% 50%,
-      #0D1B2A 55%,
-      rgba(13, 27, 42, .85) 78%,
-      rgba(13, 27, 42, 0) 100%);
-  border: none;
-  border-radius: 24px;
-  box-shadow:
-    0 0 80px rgba(219, 85, 0, .35),
-    0 0 160px rgba(219, 85, 0, .15),
-    0 30px 80px -20px rgba(0, 0, 0, .8);
+  padding: 0;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
   text-align: center;
   z-index: 100;
   font-family: var(--ff);
   will-change: transform, opacity;
 }
-/* Borda laranja renderizada como halo interno sutil — não corta o que tá atrás */
-.qs-brand::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border: 1px solid rgba(219, 85, 0, .4);
-  border-radius: inherit;
-  pointer-events: none;
-  mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, #000 65%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, #000 65%, transparent 100%);
-}
+.qs-brand::after { content: none !important; }   /* mata a borda laranja interna antiga */
 
-/* Backdrop escurecedor — aplicado no .qs-scene (fora do preserve-3d) */
+/* Backdrop escurecedor da .qs-scene (durante brand-on): radial bem suave,
+   sem opacity total — não cria retângulo central perceptível */
 .qs-scene.qs--brand-on::after,
 .qs-scene.qs--brand-off::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 75% 65% at 50% 50%, rgba(13, 27, 42, .96) 0%, rgba(13, 27, 42, .9) 50%, rgba(13, 27, 42, .6) 78%, rgba(13, 27, 42, .25) 100%);
+    radial-gradient(ellipse 50% 38% at 50% 50%, rgba(13, 27, 42, .65) 0%, rgba(13, 27, 42, .3) 50%, transparent 80%);
   z-index: 50;
   pointer-events: none;
   opacity: 0;
   transition: opacity .55s ease;
-  border-radius: inherit;
+  border-radius: 0;
 }
 .qs-scene.qs--brand-on::after { opacity: 1; }
 
@@ -6508,6 +6496,26 @@ html { scroll-padding-top: 84px; }
 /* ============================================
    MOTION SEAMLESS — #quem-somos qs-scene colada no bg
    ============================================ */
+/* === RESET UNIVERSAL Motion (#quem-somos): nenhum container ganha visual ===
+   Exceções permitidas: .qs-notif (mensagens iOS individuais), <img>/picture,
+   .qs-brand__logo/wordmark/halo (são pseudo-decorações, não containers).
+   Tudo o mais que estiver dentro de #quem-somos fica transparente. */
+#quem-somos .qs-scene,
+#quem-somos .qs-scene-wrap,
+#quem-somos .qs-stage,
+#quem-somos .qs-brand,
+#quem-somos .qs-brand__tag {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+  outline: none !important;
+}
+
 /* Wrapper: contém cards que passam -4%/-6% das bordas, sem rectangle visual */
 .qs-scene-wrap,
 #quem-somos .qs-scene-wrap {
