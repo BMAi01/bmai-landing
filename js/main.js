@@ -964,6 +964,9 @@ document.querySelectorAll('section[id]').forEach(s => {
 
   function buildStack() {
     teardown();
+    // Mobile: NAO ativar scroll-stack do GSAP. CSS cuida do efeito com position: sticky
+    // (sticky stack lite). Pin do GSAP no mobile causa travamento de scroll.
+    if (matchMedia('(max-width: 768px)').matches) return;
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
     const container = document.getElementById('metodoScrollContainer');
     const cards = gsap.utils.toArray('.metodo__card');
@@ -1047,6 +1050,51 @@ document.querySelectorAll('section[id]').forEach(s => {
     setActiveIndicator(0);
   }
 
+  // Progress mobile via IntersectionObserver — sem ScrollTrigger/pin.
+  // Detecta qual card esta mais visivel e atualiza .metodo__progress (fill + markers + labels).
+  let mobileObserver = null;
+  function initMetodoProgressMobile() {
+    if (!matchMedia('(max-width: 768px)').matches) return;
+    if (mobileObserver) { mobileObserver.disconnect(); mobileObserver = null; }
+    const cards = Array.from(document.querySelectorAll('.metodo__card'));
+    if (!cards.length || !progressEl) return;
+
+    let hideTimeout = null;
+    let activeIndex = -1;
+
+    const showProgress = () => {
+      progressEl.classList.add('is-visible');
+      if (hideTimeout) clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => progressEl.classList.remove('is-visible'), 1500);
+    };
+
+    mobileObserver = new IntersectionObserver((entries) => {
+      // Pega a entry mais visivel entre as que cruzaram threshold
+      let bestIdx = activeIndex;
+      let bestRatio = 0;
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
+          bestRatio = entry.intersectionRatio;
+          bestIdx = cards.indexOf(entry.target);
+        }
+      });
+      if (bestIdx !== -1 && bestIdx !== activeIndex) {
+        activeIndex = bestIdx;
+        const pct = ((activeIndex + 1) / cards.length) * 100;
+        if (fillEl) fillEl.style.width = `${pct}%`;
+        setActiveIndicator(activeIndex);
+        showProgress();
+      } else if (bestIdx !== -1) {
+        showProgress();
+      }
+    }, {
+      threshold: [0.4, 0.6, 0.8],
+      rootMargin: '-80px 0px -40% 0px'  // zona ativa: abaixo do header, acima da metade da tela
+    });
+
+    cards.forEach(card => mobileObserver.observe(card));
+  }
+
   function init() {
     if (PREFERS_REDUCE) {
       // Fallback: cards aparecem empilhados estáticos sem pin
@@ -1055,7 +1103,14 @@ document.querySelectorAll('section[id]').forEach(s => {
       return;
     }
     renderStack();
-    // Espera GSAP/ScrollTrigger carregarem (script defer)
+    // Mobile: scroll-stack lite via CSS sticky + progress por IntersectionObserver
+    if (matchMedia('(max-width: 768px)').matches) {
+      setActiveIndicator(0);
+      // Espera o DOM dos cards estar pronto (renderStack acabou de rodar — innerHTML eh sincrono, ok)
+      initMetodoProgressMobile();
+      return;
+    }
+    // Desktop: aguarda GSAP/ScrollTrigger carregarem (script defer)
     const tryBuild = () => {
       if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
@@ -1072,6 +1127,12 @@ document.querySelectorAll('section[id]').forEach(s => {
   window.addEventListener('i18n:change', () => {
     ARIA_DATA = getAriaData();
     renderStack();
+    if (matchMedia('(max-width: 768px)').matches) {
+      // Mobile: cards foram recriados, religar IntersectionObserver
+      setActiveIndicator(0);
+      initMetodoProgressMobile();
+      return;
+    }
     if (typeof ScrollTrigger !== 'undefined' && !PREFERS_REDUCE) {
       buildStack();
       ScrollTrigger.refresh();
@@ -1082,7 +1143,10 @@ document.querySelectorAll('section[id]').forEach(s => {
   let resizeT = null;
   let lastViewportHeight = window.innerHeight;
   window.addEventListener('resize', () => {
-    if (typeof ScrollTrigger === 'undefined' || PREFERS_REDUCE) return;
+    if (PREFERS_REDUCE) return;
+    // Mobile: nada a recalcular (sem pin/scrub). IntersectionObserver continua valido.
+    if (matchMedia('(max-width: 768px)').matches) return;
+    if (typeof ScrollTrigger === 'undefined') return;
     const currentHeight = window.innerHeight;
     const diff = Math.abs(currentHeight - lastViewportHeight);
     if (diff >= 200) {
