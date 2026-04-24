@@ -5405,6 +5405,7 @@ html { scroll-padding-top: 84px; }
 .qs-notif__name {
   font-size: 12px;
   font-weight: 600;
+  /* nome continua nowrap (eh sempre curto: "Steve Jobs", "Sundar Pichai"). Ellipsis preserva alinhamento se algum nome encostar na borda. */
   color: rgba(255, 255, 255, .95);
   letter-spacing: -.015em;
   overflow: hidden;
@@ -5417,11 +5418,14 @@ html { scroll-padding-top: 84px; }
   font-size: 11px;
   color: rgba(255, 255, 255, .68);
   line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   font-weight: 400;
   letter-spacing: -.005em;
+  /* Sem ellipsis: textos foram encurtados pra 2-4 palavras, cabem inteiros.
+     Se alguma string for maior, quebra em 2 linhas naturalmente em vez de truncar com "...". */
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 .qs-notif--mini .qs-notif__msg { font-size: 10.5px; }
 .qs-notif__msg--urgent { color: rgba(219, 85, 0, .92); font-weight: 500; }
