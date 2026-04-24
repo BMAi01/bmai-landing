@@ -6047,20 +6047,58 @@ html { scroll-padding-top: 84px; }
 /* ============================================
    MOTION SEAMLESS — #quem-somos qs-scene colada no bg
    ============================================ */
+.qs-scene-wrap {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;           /* contém cards que passam -4% / -6% */
+  position: relative;
+  /* Fade 4 lados: cards saem/entram com alpha suave em vez de corte seco */
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%),
+    linear-gradient(to right,  transparent 0%, black 6%, black 94%, transparent 100%);
+          mask-image:
+    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%),
+    linear-gradient(to right,  transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+}
 .qs-scene {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
   border-radius: 0 !important;
+  overflow: hidden;           /* reforço: cards com left:-4% não vazam pro grid */
 }
 .qs-scene::before {
-  /* Mantém dot pattern com opacidade bem sutil pra dar textura sem rectangle */
+  /* Dot pattern sutil pra dar textura sem rectangle */
   opacity: .18 !important;
 }
-.qs-scene-wrap {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+/* Grid QS: garante que motion (esquerda) e card-stack (direita) não se tocam */
+.qs__grid--animated {
+  gap: clamp(32px, 4vw, 64px);
+  align-items: stretch;
+}
+.qs__grid--animated > .qs-scene-wrap { min-width: 0; }
+.qs__grid--animated > .card-stack {
+  position: relative;
+  z-index: 3;                 /* acima das mensagens flutuantes */
+  min-width: 0;
+}
+/* Mobile (≤900px): motion fica full-width acima do texto — sem sobreposição */
+@media (max-width: 900px) {
+  .qs-scene-wrap {
+    min-height: 420px;
+    /* Mobile: mask só vertical — horizontal vai até a borda do container */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Sem autoplay de cards passando, o mask ainda protege eventual estado final */
+  .qs-scene-wrap { overflow: hidden; }
 }
 
 /* Respeita reduced-motion no team hint */
