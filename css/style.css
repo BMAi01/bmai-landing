@@ -912,7 +912,7 @@ html { scrollbar-gutter: stable; }
   white-space: nowrap;
   max-width: 100%;
 }
-/* Tablet/desktop estreito (769-1100px): labels EN ("WhatsApp conversion", "Days to implement")
+/* Tablet/desktop estreito (769-1100px): labels EN ("Customer satisfaction", "Days to implement")
    estouravam o max-content da row. Permite quebra controlada nesse range. */
 @media (min-width: 769px) and (max-width: 1100px) {
   .hero__stat-label {
