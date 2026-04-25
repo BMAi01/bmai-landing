@@ -78,7 +78,7 @@
 
       'aria.i.title':    'Implementação',
       'aria.i.subtitle': 'Inteligência integrada onde gera impacto.',
-      'aria.i.desc':     'Construímos agentes sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado — nada lançado no escuro.',
+      'aria.i.desc':     'Construímos agentes de IA sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado — nada lançado no escuro.',
       'aria.i.b1': 'Construção sob medida dos agentes',
       'aria.i.b2': 'Integração com as ferramentas já em uso',
       'aria.i.b3': 'Validação em produção antes da escala',
@@ -272,7 +272,7 @@
 
       'aria.i.title':    'Implementation',
       'aria.i.subtitle': 'Intelligence integrated where it drives impact.',
-      'aria.i.desc':     'We build tailored agents and integrate them into the operation you already use. We test in production, adjust with the team and only scale when the result is proven — nothing launched in the dark.',
+      'aria.i.desc':     'We build tailored AI agents and integrate them into the operation you already use. We test in production, adjust with the team and only scale when the result is proven — nothing launched in the dark.',
       'aria.i.b1': 'Tailor-made construction of agents',
       'aria.i.b2': 'Integration with tools already in use',
       'aria.i.b3': 'Production validation before scaling',
@@ -460,7 +460,7 @@
 
       'aria.i.title':    'Implementación',
       'aria.i.subtitle': 'Inteligencia integrada donde genera impacto.',
-      'aria.i.desc':     'Construimos agentes a medida e integramos a la operación que ya usas. Probamos en producción, ajustamos con el equipo y solo escalamos cuando el resultado está comprobado — nada lanzado a ciegas.',
+      'aria.i.desc':     'Construimos agentes de IA a medida e integramos a la operación que ya usas. Probamos en producción, ajustamos con el equipo y solo escalamos cuando el resultado está comprobado — nada lanzado a ciegas.',
       'aria.i.b1': 'Construcción a medida de los agentes',
       'aria.i.b2': 'Integración con las herramientas ya en uso',
       'aria.i.b3': 'Validación en producción antes de escalar',
