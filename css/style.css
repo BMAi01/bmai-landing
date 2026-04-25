@@ -1698,6 +1698,20 @@ html { scrollbar-gutter: stable; }
   margin: 0 0 12px;
   line-height: 1;
 }
+/* Card 4 — "ACOMPANHAMENTO" eh o titulo mais longo (14 letras) e quebrava
+   em 2 linhas. Reducao ~88% + kerning negativo pra caber em 1 linha sem
+   ficar visualmente menor que os outros 3 titulos. */
+.metodo__card[data-phase="A"] .metodo__title {
+  font-size: clamp(28px, 3.5vw, 42px);
+  letter-spacing: -0.02em;
+}
+/* Mobile pequeno: reducao adicional pra garantir 1 linha em 375px/414px */
+@media (max-width: 400px) {
+  .metodo__card[data-phase="A"] .metodo__title {
+    font-size: 24px;
+    letter-spacing: -0.03em;
+  }
+}
 
 /* Subtítulo — laranja queimado oficial */
 .metodo__subtitle {
