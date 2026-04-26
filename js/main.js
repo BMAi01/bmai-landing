@@ -1207,28 +1207,22 @@ function _initCardStackFx() {
     const card2 = stack.querySelector('.card-stack__item--2');
     if (!card1 || !card2) return;
 
-    // Estado inicial igual buildStack do Metodo
+    // 2026-04-26: card-stack puro com scrub — Card 2 sobe igual Metodo
+    // conforme o usuario rola pra baixo. SEM pin (nao infla secao Motion).
     gsap.set(card1, { y: 0, zIndex: 1 });
     gsap.set(card2, { y: '100vh', zIndex: 2 });
 
-    // Pin de 200% (= 2 viewports) com scrub. Card 2 sobe nos primeiros 50%
-    // do pin com ease power2.out (igual segmento (1-0.5)/2 a 1/2 do Metodo
-    // que renderiza 2 cards). Resto do pin Card 2 fica fixo ate liberar.
-    const tl = gsap.timeline({
+    gsap.to(card2, {
+      y: 0,
+      ease: 'power2.out',
       scrollTrigger: {
         trigger: stack,
-        start: 'top top',
-        end: '+=50%',                   // 2026-04-26: pin curto (50% extra) — parada igual Metodo mas sem inflar secao
-        pin: true,
-        pinSpacing: false,              // 2026-04-26: NAO infla altura da secao Motion — pin sem reservar espaco extra
+        start: 'top 80%',               // comeca quando topo do stack passa 80% do viewport
+        end: 'top 20%',                 // termina quando topo passa 20% do viewport
         scrub: 1,
-        anticipatePin: 1,
         invalidateOnRefresh: true,
       }
     });
-    // Card 2 sobe nos primeiros 60% do pin (~30vh de scroll). Nos 40% finais
-    // fica fixo visivel — eh a "parada" igual Metodo antes do pin liberar.
-    tl.to(card2, { y: 0, ease: 'power2.out', duration: 0.6 }, 0);
   };
   tryBuild();
 }
