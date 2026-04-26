@@ -5143,38 +5143,9 @@ html { scroll-padding-top: 84px; }
   will-change: transform;
 }
 
-/* ========== DEPTH OF FIELD reveal (Apple-style) ==========
-   Hover: card 1 recua (scale .92 + blur 6px + opacity .5),
-   card 2 avança do fundo (scale .94 → 1 + unblur + opacity 1). */
-.card-stack__item--1 {
-  transition:
-    transform .6s cubic-bezier(.22, 1, .36, 1),
-    opacity .55s cubic-bezier(.22, 1, .36, 1),
-    filter .6s cubic-bezier(.22, 1, .36, 1);
-}
-@media (hover: hover) and (pointer: fine) {
-  .card-stack:hover .card-stack__item--1 {
-    transform: scale(.92) translateZ(0);
-    opacity: .5;
-    filter: blur(6px);
-  }
-  .card-stack:hover .card-stack__item--2 {
-    opacity: 1;
-    transform: scale(1) translateZ(0);
-    filter: blur(0) brightness(1);
-  }
-}
-/* Touch: tap alterna via classe .is-revealed */
-.card-stack.is-revealed .card-stack__item--1 {
-  transform: scale(.92) translateZ(0);
-  opacity: .5;
-  filter: blur(6px);
-}
-.card-stack.is-revealed .card-stack__item--2 {
-  opacity: 1;
-  transform: scale(1) translateZ(0);
-  filter: blur(0) brightness(1);
-}
+/* 2026-04-26: depth-of-field REMOVIDO — Card 1 fica sempre nitido
+   (era da versao hover; agora com scroll-jack GSAP nao faz sentido borrar).
+   Card 2 sobe sobre o Card 1 mantendo ambos com filter:none. */
 
 /* EXPLODE desligado — transição depth-of-field já é suave nos dois sentidos */
 .card-stack.explode .card-stack__item--2,
@@ -6141,14 +6112,7 @@ html { scroll-padding-top: 84px; }
     border-color: rgba(255, 122, 42, .55);
     box-shadow: 0 0 12px rgba(219, 85, 0, .3);
   }
-  /* Scale pulse leve no card ativo pra dar vida */
-  .card-stack__item--1 {
-    transition: transform .7s cubic-bezier(.4, 0, .2, 1), filter .5s ease !important;
-  }
-  .card-stack.is-revealed .card-stack__item--1 {
-    transform: translate3d(0, 0, 0) scale(.97);
-    filter: brightness(.7) blur(1px);
-  }
+  /* 2026-04-26: Card 1 sempre nitido — sem blur/brightness no is-revealed */
 
   /* ========================================================
      MÉTODO mobile — stepper compacto (círculo + linha conectora)
