@@ -487,23 +487,52 @@ reveal('.cs-card', true);
 
 /* ============================================
    COUNTERS — em mobile vai direto pro número final
+   2026-04-26: threshold 0.5 -> 0.1 (spans pequenos no mobile passavam direto
+   sem disparar). + rootMargin antecipa. + fallback time-based: se IO nao
+   disparou em 4s apos load, snapa pro valor final (ultima rede de seguranca).
    ============================================ */
 if (LOW_MOTION) {
   document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count; });
 } else {
+  const counters = document.querySelectorAll('[data-count]');
+  const animated = new WeakSet();
+  const animate = (el) => {
+    if (animated.has(el)) return;
+    animated.add(el);
+    const target = +el.dataset.count, dur = 1600, t0 = performance.now();
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
+      p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
+    })(t0);
+  };
   const cObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
-      const el = e.target, target = +el.dataset.count, dur = 1600, t0 = performance.now();
-      (function tick(now) {
-        const p = Math.min((now - t0) / dur, 1);
-        el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
-        p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
-      })(t0);
-      cObs.unobserve(el);
+      animate(e.target);
+      cObs.unobserve(e.target);
     });
-  }, { threshold: .5 });
-  document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
+  }, {
+    threshold: 0.1,                 // antes 0.5 — spans pequenos no mobile (12x24px) raramente atingem 50%
+    rootMargin: '0px 0px -5% 0px',  // dispara um pouco antes da entrada total
+  });
+  counters.forEach(el => cObs.observe(el));
+
+  // Rede de seguranca: se 4s apos load algum counter ainda for "0", snapa pro target.
+  // Cobre cenarios onde IO falha (Lenis, focus tab oculta, scroll muito rapido).
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      counters.forEach(el => {
+        if (animated.has(el)) return;
+        // So snapa se ainda mostra "0" — nao atrapalha animacao em curso
+        if (el.textContent.trim() === '0') {
+          el.textContent = el.dataset.count;
+          animated.add(el);
+          try { cObs.unobserve(el); } catch (_) {}
+        }
+      });
+    }, 4000);
+  }, { once: true });
 }
 
 /* ============================================
