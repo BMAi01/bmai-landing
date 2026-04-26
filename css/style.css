@@ -70,11 +70,11 @@
   --ease: cubic-bezier(.25, .46, .45, .94);
   --spring: cubic-bezier(.34, 1.56, .64, 1);
 
-  /* === Spacing system (vertical entre seções) === */
-  --section-spacing-sm: 64px;   /* mobile padrão */
-  --section-spacing-md: 96px;   /* tablet */
-  --section-spacing-lg: 128px;  /* desktop padrão */
-  --section-spacing-xl: 160px;  /* respiráveis: hero, CTA final */
+  /* === Spacing system (vertical entre seções) — 2026-04-26: reduzido (era 64/96/128/160) === */
+  --section-spacing-sm: 40px;   /* mobile padrão */
+  --section-spacing-md: 56px;   /* tablet */
+  --section-spacing-lg: 72px;   /* desktop padrão */
+  --section-spacing-xl: 96px;   /* respiráveis: hero, CTA final */
   --content-gap-sm: 24px;
   --content-gap-md: 40px;
   --content-gap-lg: 64px;
@@ -4482,8 +4482,8 @@ section h2.shimmer-active::after,
   .section__title { line-height: 1.15 !important; }
   .section__sub { font-size: .95rem !important; }
 
-  /* Section spacing geral */
-  section { padding-top: 48px !important; padding-bottom: 48px !important; }
+  /* Section spacing geral — 2026-04-26: reduzido (era 48px) */
+  section { padding-top: 32px !important; padding-bottom: 32px !important; }
   #hero, #para-quem { padding-top: 0 !important; padding-bottom: 0 !important; }
 
   /* Footer — cols em 2 */
