@@ -1216,9 +1216,10 @@ function _initCardStackFx() {
     gsap.set(card1, { y: 0, zIndex: 1 });
     gsap.set(card2, { y: '100vh', zIndex: 2 });
 
-    gsap.to(card2, {
-      y: 0,
-      ease: 'power2.out',
+    // Timeline com SEGMENTOS igual buildStack do Metodo — Card 2 anima
+    // do 25% ao 50% do scroll, depois fica PARADO ate o fim (parada visivel
+    // identica aos cards do Metodo que travam apos subir).
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
         start: 'top top',
@@ -1227,6 +1228,8 @@ function _initCardStackFx() {
         invalidateOnRefresh: true,
       }
     });
+    // Para 2 cards: segmentStart = (1-0.5)/2 = 0.25, segmentEnd = 1/2 = 0.5
+    tl.to(card2, { y: 0, ease: 'power2.out', duration: 0.25 }, 0.25);
   };
   tryBuild();
 }
