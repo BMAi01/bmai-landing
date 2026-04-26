@@ -1217,18 +1217,16 @@ function _initCardStackFx() {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: stack,
-        start: 'top top',
-        end: '+=100%',                  // 2026-04-26: 200% -> 100% — encurta secao pela metade
-        pin: true,
-        pinSpacing: true,
+        start: 'top 80%',               // comeca quando topo do stack entra em 80% da viewport
+        end: 'bottom 20%',              // termina quando bottom do stack sai por cima dos 20% inferiores
         scrub: 1,
-        anticipatePin: 1,
         invalidateOnRefresh: true,
+        // 2026-04-26 (sem pin): pinSpacing adicionava +1 viewport altura na secao.
+        // Sem pin: secao volta ao tamanho ORIGINAL, Card 2 anima ao longo do
+        // scroll natural pela secao. Easing power2.out preservado pra suavidade.
       }
     });
-    // Card 2 anima nos primeiros 70% do pin (= ~70vh de scroll com easing
-    // power2.out). Resto fica fixo. Suave sem pin gigante.
-    tl.to(card2, { y: 0, ease: 'power2.out', duration: 0.7 }, 0);
+    tl.to(card2, { y: 0, ease: 'power2.out' });
   };
   tryBuild();
 }
