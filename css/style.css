@@ -4794,25 +4794,53 @@ html { scroll-padding-top: 84px; }
   width: 100%;
 }
 
-/* 2026-04-26: video do time (substitui cards mobile+desktop) */
+/* 2026-04-26: video do time — enquadramento natural sem crop, com audio.
+   object-fit:contain mantem proporcao original do video, sem distorcer
+   nem cortar. max-height casa com viewport. */
 .team-video-wrap {
   margin: 0 auto;
-  max-width: 1080px;
+  max-width: 900px;
   padding: 0 20px;
+  position: relative;
 }
 .team-video {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 80vh;
-  object-fit: cover;
-  border-radius: 24px;
+  max-height: 78vh;
+  object-fit: contain;       /* preserva enquadramento original */
+  border-radius: 20px;
   background: #000;
   box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6);
 }
+/* Botao de unmute (autoplay com som eh bloqueado pelo browser; user clica) */
+.team-video__unmute {
+  position: absolute;
+  bottom: 20px;
+  right: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, .75);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 999px;
+  font: 600 13px/1 'General Sans', system-ui, sans-serif;
+  letter-spacing: .02em;
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background .25s ease, transform .25s ease, opacity .35s ease;
+}
+.team-video__unmute:hover { background: rgba(219, 85, 0, .9); transform: translateY(-1px); }
+.team-video__unmute.is-hidden { opacity: 0; pointer-events: none; }
+
 @media (max-width: 768px) {
-  .team-video-wrap { padding: 0 12px; }
-  .team-video { border-radius: 18px; max-height: 70vh; }
+  .team-video-wrap { padding: 0 12px; max-width: 100%; }
+  .team-video { border-radius: 14px; max-height: 80vh; }
+  .team-video__unmute { bottom: 14px; right: 20px; padding: 8px 12px; font-size: 12px; }
 }
 
 /* 2026-04-26: scroll-jack do card-stack igual Metodo

@@ -1239,6 +1239,32 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
+/* 2026-04-26: video do time — botao de unmute (autoplay bloqueia audio) */
+(function initTeamVideoUnmute() {
+  const init = () => {
+    const video = document.querySelector('.team-video');
+    const btn = document.getElementById('teamVideoUnmute');
+    if (!video || !btn) return;
+    const unmute = () => {
+      video.muted = false;
+      video.volume = 1;
+      const p = video.play();
+      if (p && p.catch) p.catch(() => {});
+      btn.classList.add('is-hidden');
+    };
+    btn.addEventListener('click', unmute);
+    // Esconde botao se o user ja interagir com os controls nativos e ativar audio
+    video.addEventListener('volumechange', () => {
+      if (!video.muted) btn.classList.add('is-hidden');
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
 /* ============================================
    GSAP SCROLL FX
    ============================================ */
