@@ -4902,7 +4902,15 @@ html { scroll-padding-top: 84px; }
   background: #0d1b2a;
   position: relative;
   z-index: 1;
-  pointer-events: none;     /* 2026-04-26: cliente nao controla o video */
+}
+/* Overlay invisivel pra bloquear interacao do cliente sem afetar autoplay */
+.team-video__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  cursor: default;
+  background: transparent;
 }
 
 /* Cantos accent (estilo card-stack) */

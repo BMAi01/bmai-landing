@@ -1239,21 +1239,46 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
-/* 2026-04-26: video do time — aspect-ratio dinamica + audio na primeira
-   interacao do usuario (browsers bloqueiam autoplay com som; comeca muted
-   e desmuta no primeiro click/touch/scroll/keydown em qualquer lugar). */
+/* 2026-04-26: video do time — autoplay garantido + audio na 1a interacao */
 (function initTeamVideo() {
   const init = () => {
     const video = document.querySelector('.team-video');
     const stage = document.getElementById('teamVideoStage');
     if (!video || !stage) return;
 
+    // Garante atributos necessarios pra autoplay funcionar
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+
+    const tryPlay = () => {
+      const p = video.play();
+      if (p && p.catch) p.catch(err => {
+        // Fallback: tenta de novo no proximo gesto se autoplay falhar
+        const retry = () => {
+          video.play().catch(() => {});
+          ['click', 'touchstart', 'scroll', 'keydown'].forEach(ev =>
+            window.removeEventListener(ev, retry, true)
+          );
+        };
+        ['click', 'touchstart', 'scroll', 'keydown'].forEach(ev =>
+          window.addEventListener(ev, retry, { capture: true, passive: true, once: true })
+        );
+      });
+    };
+
     const applyAspect = () => {
       const w = video.videoWidth, h = video.videoHeight;
       if (w && h) stage.style.setProperty('--video-aspect', `${w} / ${h}`);
+      tryPlay();
     };
     if (video.readyState >= 1) applyAspect();
     else video.addEventListener('loadedmetadata', applyAspect, { once: true });
+
+    // Garantia extra: tenta tocar tambem quando o canplay disparar
+    video.addEventListener('canplay', tryPlay, { once: true });
 
     video.addEventListener('contextmenu', e => e.preventDefault());
 
