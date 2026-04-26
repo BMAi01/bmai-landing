@@ -1151,10 +1151,46 @@ document.querySelectorAll('section[id]').forEach(s => {
    QS CARD STACK — HOVER slide (esq→dir) + EXPLODE ao sair o cursor
    ============================================ */
 function _initCardStackFx() {
-  // 2026-04-26: substituido por sticky scroll-stack puro CSS.
-  // Auto-cycle mobile e depth-of-field hover desktop foram removidos.
-  // Cards empilham via `position: sticky` no .card-stack__item — funciona
-  // em ambos desktop e mobile sem GSAP pin nem timer.
+  const stack = document.querySelector('.card-stack');
+  if (!stack || stack.dataset.fxInit === '1') return;
+  stack.dataset.fxInit = '1';
+
+  if (IS_TOUCH) {
+    // Mobile: auto-cycle alterna card 1 ↔ card 2 a cada 2.5s quando visível
+    let cycleTimer = null;
+    const CYCLE_MS = 2500;
+    function tickStack() {
+      stack.classList.toggle('is-revealed');
+    }
+    function startStackCycle() {
+      if (cycleTimer || LOW_MOTION) return;
+      cycleTimer = setInterval(tickStack, CYCLE_MS);
+    }
+    function stopStackCycle() {
+      if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
+    }
+    const qsSection = document.getElementById('quem-somos');
+    if (qsSection) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) startStackCycle();
+          else stopStackCycle();
+        });
+      }, { threshold: 0.25 });
+      io.observe(qsSection);
+    } else {
+      startStackCycle();
+    }
+    // Tap também alterna manualmente (pausa/retoma o cycle)
+    stack.addEventListener('click', () => {
+      stopStackCycle();
+      stack.classList.toggle('is-revealed');
+      setTimeout(startStackCycle, 4000);
+    });
+    return;
+  }
+
+  /* Desktop: depth-of-field via hover puro CSS (sem JS de explode/snap) */
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _initCardStackFx);

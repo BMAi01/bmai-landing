@@ -5018,16 +5018,12 @@ html { scroll-padding-top: 84px; }
 /* ───────────────────────────────────────────
    Card Stack — card 2 atras do card 1, scroll-hijack traz por cima
    ─────────────────────────────────────────── */
-/* 2026-04-26: sticky scroll-stack puro (sem GSAP pin). Cards empilham por scroll
-   nativo — Card 2 sobe vindo de baixo conforme scroll avanca, cobre Card 1.
-   Funciona em desktop e mobile sem risco de pin gap. */
 .card-stack {
+  --progress: 0;
   position: relative;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 80px;                 /* "gaveta de scroll" entre Card 1 e Card 2 */
-  padding-bottom: 40vh;      /* espaco final pra Card 2 desgrudar suavemente */
+  min-height: 320px;
+  perspective: 1400px;
 }
 
 /* Scroll-reveal suave — fade + slide horizontal sutil (x:40→0).
@@ -5052,10 +5048,10 @@ html { scroll-padding-top: 84px; }
   }
 }
 
-/* Cada item = card completo. Sticky individual cria scroll-stack natural. */
+/* Cada item = card completo, absolute inset pra empilhar */
 .card-stack__item {
-  position: sticky;
-  top: 80px;                 /* offset do header */
+  position: absolute;
+  inset: 0;
   padding: 44px 40px;
   display: flex;
   flex-direction: column;
@@ -5121,15 +5117,30 @@ html { scroll-padding-top: 84px; }
   z-index: 2;
 }
 
-/* Card 1: navy escuro, sticky no topo, fica abaixo do Card 2 quando ele sobe. */
+/* Card 1 sempre visível atrás (opaco, sólido). */
 .card-stack__item--1 {
   z-index: 1;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
-/* Card 2: branco creme/laranja invertido — sticky igual Card 1, vem por cima
-   por ordem natural do DOM (mais abaixo = z-index implicito maior no scroll). */
+/* Card 2 EMERGE DE TRÁS DO MOTION (lado esquerdo do card-stack = lado do motion).
+   Começa invisível via clip-path(0 100% 0 0) — wipe revelado esquerda→direita.
+   Leve translateY+scale pra dar sensação de card saindo de trás. */
 .card-stack__item--2 {
   z-index: 2;
+  /* Depth of field inicial: card 2 está "atrás", escondido, desfocado */
+  opacity: 0;
+  transform: scale(.94) translateZ(0);
+  filter: blur(12px) brightness(.85);
+  clip-path: none;
+  transition:
+    opacity .55s cubic-bezier(.22, 1, .36, 1),
+    transform .7s cubic-bezier(.22, 1, .36, 1),
+    filter .55s cubic-bezier(.22, 1, .36, 1);
+  pointer-events: auto;
+
+  /* Paleta invertida — branco creme + laranja */
   background:
     radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(219, 85, 0, .06) 0%, transparent 55%),
     radial-gradient(ellipse 60% 50% at 100% 100%, rgba(219, 85, 0, .04) 0%, transparent 60%),
@@ -5161,15 +5172,80 @@ html { scroll-padding-top: 84px; }
   opacity: 1;
 }
 
-/* 2026-04-26: Removido bloco DEPTH OF FIELD (hover desktop + tap mobile) e
-   keyframes cardExplode. Substituido por sticky scroll-stack puro acima.
-   Mobile: ajusta apenas padding e gap; sticky CSS funciona em ambos. */
+/* ========== DEPTH OF FIELD reveal (Apple-style) ==========
+   Hover: card 1 recua (scale .92 + blur 6px + opacity .5),
+   card 2 avança do fundo (scale .94 → 1 + unblur + opacity 1). */
+.card-stack__item--1 {
+  transition:
+    transform .6s cubic-bezier(.22, 1, .36, 1),
+    opacity .55s cubic-bezier(.22, 1, .36, 1),
+    filter .6s cubic-bezier(.22, 1, .36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-stack:hover .card-stack__item--1 {
+    transform: scale(.92) translateZ(0);
+    opacity: .5;
+    filter: blur(6px);
+  }
+  .card-stack:hover .card-stack__item--2 {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    filter: blur(0) brightness(1);
+  }
+}
+/* Touch: tap alterna via classe .is-revealed */
+.card-stack.is-revealed .card-stack__item--1 {
+  transform: scale(.92) translateZ(0);
+  opacity: .5;
+  filter: blur(6px);
+}
+.card-stack.is-revealed .card-stack__item--2 {
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+  filter: blur(0) brightness(1);
+}
+
+/* EXPLODE desligado — transição depth-of-field já é suave nos dois sentidos */
+.card-stack.explode .card-stack__item--2,
+.card-stack.snap .card-stack__item--2 {
+  animation: none !important;
+}
+
+@keyframes cardExplode {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0);
+    clip-path: inset(0 round 24px);
+    opacity: 1;
+    filter: brightness(1.25) blur(0);
+    box-shadow:
+      0 30px 60px -20px rgba(0, 0, 0, .55),
+      0 0 56px -16px rgba(219, 85, 0, .3);
+  }
+  30% {
+    transform: translate3d(0, 0, 0) scale(1.08) rotate(.4deg);
+    clip-path: inset(0 round 24px);
+    opacity: 1;
+    filter: brightness(1.7) blur(0);
+    box-shadow:
+      0 30px 60px -20px rgba(0, 0, 0, .55),
+      0 0 160px rgba(219, 85, 0, 1),
+      0 0 60px rgba(255, 220, 180, .9);
+  }
+  100% {
+    transform: translate3d(20%, -12px, 0) scale(1.3) rotate(1.5deg);
+    clip-path: inset(0 round 24px);
+    opacity: 0;
+    filter: brightness(.4) blur(16px);
+    box-shadow: 0 0 0 rgba(219, 85, 0, 0);
+  }
+}
+/* Mobile */
 @media (max-width: 768px) {
-  .card-stack { gap: 60px; padding-bottom: 30vh; }
+  .card-stack { min-height: 340px; }
   .card-stack__item { padding: 36px 28px; border-radius: 20px; }
 }
 @media (max-width: 560px) {
-  .card-stack { gap: 40px; padding-bottom: 25vh; }
+  .card-stack { min-height: 320px; }
   .card-stack__item { padding: 28px 22px; border-radius: 18px; }
 }
 
@@ -6728,12 +6804,10 @@ html { scroll-padding-top: 84px; }
   opacity: .12 !important;
 }
 
-/* Grid QS: gap maior + sem stretch (deixa altura natural, sem retângulo aparente).
-   2026-04-26: align-items: start pra coluna direita (.card-stack sticky scroll-stack)
-   poder ser mais alta que esquerda sem desalinhar verticalmente. */
+/* Grid QS: gap maior + sem stretch (deixa altura natural, sem retângulo aparente) */
 .qs__grid--animated {
   gap: clamp(32px, 4vw, 64px);
-  align-items: start;
+  align-items: center;
 }
 .qs__grid--animated > .qs-scene-wrap { min-width: 0; }
 .qs__grid--animated > .card-stack {
