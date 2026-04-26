@@ -1239,21 +1239,40 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
-/* 2026-04-26: video do time — aspect-ratio dinamica (sem barras pretas).
-   Sem audio, sem controles, sem interacao do cliente. */
+/* 2026-04-26: video do time — aspect-ratio dinamica + audio na primeira
+   interacao do usuario (browsers bloqueiam autoplay com som; comeca muted
+   e desmuta no primeiro click/touch/scroll/keydown em qualquer lugar). */
 (function initTeamVideo() {
   const init = () => {
     const video = document.querySelector('.team-video');
     const stage = document.getElementById('teamVideoStage');
     if (!video || !stage) return;
+
     const applyAspect = () => {
       const w = video.videoWidth, h = video.videoHeight;
       if (w && h) stage.style.setProperty('--video-aspect', `${w} / ${h}`);
     };
     if (video.readyState >= 1) applyAspect();
     else video.addEventListener('loadedmetadata', applyAspect, { once: true });
-    // Bloqueia menu de contexto (right-click "Salvar video como...")
+
     video.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Desmuta no primeiro gesto/scroll do user
+    let unmuted = false;
+    const unmute = () => {
+      if (unmuted) return;
+      unmuted = true;
+      video.muted = false;
+      video.volume = 1;
+      const p = video.play();
+      if (p && p.catch) p.catch(() => {});
+      ['click', 'touchstart', 'keydown', 'scroll'].forEach(ev =>
+        window.removeEventListener(ev, unmute, true)
+      );
+    };
+    ['click', 'touchstart', 'keydown', 'scroll'].forEach(ev =>
+      window.addEventListener(ev, unmute, { capture: true, passive: true })
+    );
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
