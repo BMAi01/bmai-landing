@@ -4793,6 +4793,24 @@ html { scroll-padding-top: 84px; }
   margin: 0 auto;
   width: 100%;
 }
+
+/* 2026-04-26: scroll-jack do card-stack igual Metodo
+   Desktop: container 200vh + sticky inner 100vh trava o grid (motion+cards)
+   enquanto Card 2 sobe via GSAP scrub. Mobile: bypass total (fluxo normal). */
+.qs__scroll-container { position: relative; }
+.qs__sticky { position: relative; }
+@media (min-width: 901px) {
+  .qs__scroll-container { height: 200vh; }
+  .qs__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .qs__sticky > .qs__grid--animated { width: 100%; }
+}
 /* Motion esquerda, card direita */
 .qs__grid--animated > .qs-scene-wrap { order: 1; }
 .qs__grid--animated > .card-stack    { order: 2; }

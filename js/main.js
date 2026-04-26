@@ -1207,8 +1207,12 @@ function _initCardStackFx() {
     const card2 = stack.querySelector('.card-stack__item--2');
     if (!card1 || !card2) return;
 
-    // 2026-04-26: card-stack puro com scrub — Card 2 sobe igual Metodo
-    // conforme o usuario rola pra baixo. SEM pin (nao infla secao Motion).
+    // 2026-04-26: replicar EXATAMENTE buildStack do Metodo.
+    // CSS cuida da "parada" via container 200vh + sticky inner 100vh.
+    // GSAP so anima Card 2 via scrub conforme o scroll cruza o container.
+    const container = stack.closest('.qs__scroll-container');
+    if (!container) return;
+
     gsap.set(card1, { y: 0, zIndex: 1 });
     gsap.set(card2, { y: '100vh', zIndex: 2 });
 
@@ -1216,9 +1220,9 @@ function _initCardStackFx() {
       y: 0,
       ease: 'power2.out',
       scrollTrigger: {
-        trigger: stack,
-        start: 'top 80%',               // comeca quando topo do stack passa 80% do viewport
-        end: 'top 20%',                 // termina quando topo passa 20% do viewport
+        trigger: container,
+        start: 'top top',
+        end: 'bottom bottom',
         scrub: 1,
         invalidateOnRefresh: true,
       }
