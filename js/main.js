@@ -1239,8 +1239,8 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
-/* 2026-04-26: video do time — minimal. Forca play() uma vez, log de erro
-   pra debug, desmuta no 1o gesto. Sem retries que geram AbortError. */
+/* 2026-04-26: video do time — som ATIVA quando o video entra no viewport
+   (e o user ja interagiu com a pagina). Som desativa quando sai do viewport. */
 (function initTeamVideo() {
   const init = () => {
     const video = document.querySelector('.team-video');
@@ -1256,14 +1256,11 @@ if (document.readyState === 'loading') {
       else video.addEventListener('loadedmetadata', applyAspect, { once: true });
     }
 
-    // Log pra debug: o que aconteceu se nao tocar?
     video.addEventListener('error', e => {
       const err = video.error;
       console.warn('[team-video] error:', err && err.code, err && err.message);
     });
 
-    // Forca play() uma vez. Browsers as vezes ignoram autoplay attribute mas
-    // aceitam .play() programatico (especialmente se muted estiver ativo).
     const kick = () => {
       const p = video.play();
       if (p && p.catch) p.catch(err => console.warn('[team-video] play() rejected:', err.name, err.message));
@@ -1273,22 +1270,44 @@ if (document.readyState === 'loading') {
 
     video.addEventListener('contextmenu', e => e.preventDefault());
 
-    // Desmuta no 1o gesto REAL (click/touchstart/keydown). Scroll NAO conta
-    // como user activation no Chrome — desmutar nele pausa o video inteiro.
-    let unmuted = false;
-    const unmute = () => {
-      if (unmuted) return;
-      unmuted = true;
-      video.muted = false;
-      video.volume = 1;
-      if (video.paused) video.play().catch(() => {});
+    // Browsers exigem user activation antes de tocar audio. Marcamos a
+    // 1a interacao real (click/touch/key) e dai em diante a logica do
+    // IntersectionObserver decide quando desmutar.
+    let userActivated = false;
+    let inSection = false;
+    const applyAudio = () => {
+      // So desmuta se user JA interagiu E secao esta visivel
+      const shouldUnmute = userActivated && inSection;
+      if (shouldUnmute && video.muted) {
+        video.muted = false;
+        video.volume = 1;
+        if (video.paused) video.play().catch(() => {});
+      } else if (!shouldUnmute && !video.muted) {
+        video.muted = true;
+      }
+    };
+    const onActivate = () => {
+      if (userActivated) return;
+      userActivated = true;
+      applyAudio();
       ['click', 'touchstart', 'keydown'].forEach(ev =>
-        window.removeEventListener(ev, unmute, true)
+        window.removeEventListener(ev, onActivate, true)
       );
     };
     ['click', 'touchstart', 'keydown'].forEach(ev =>
-      window.addEventListener(ev, unmute, { capture: true, passive: true })
+      window.addEventListener(ev, onActivate, { capture: true, passive: true })
     );
+
+    // Observer no stage — desmuta entrando, muta saindo
+    if (stage && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          inSection = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+          applyAudio();
+        });
+      }, { threshold: [0, 0.5, 1] });
+      io.observe(stage);
+    }
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
