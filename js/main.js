@@ -487,52 +487,23 @@ reveal('.cs-card', true);
 
 /* ============================================
    COUNTERS — em mobile vai direto pro número final
-   2026-04-26: threshold 0.5 -> 0.1 (spans pequenos no mobile passavam direto
-   sem disparar). + rootMargin antecipa. + fallback time-based: se IO nao
-   disparou em 4s apos load, snapa pro valor final (ultima rede de seguranca).
    ============================================ */
 if (LOW_MOTION) {
   document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count; });
 } else {
-  const counters = document.querySelectorAll('[data-count]');
-  const animated = new WeakSet();
-  const animate = (el) => {
-    if (animated.has(el)) return;
-    animated.add(el);
-    const target = +el.dataset.count, dur = 1600, t0 = performance.now();
-    (function tick(now) {
-      const p = Math.min((now - t0) / dur, 1);
-      el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
-      p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
-    })(t0);
-  };
   const cObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
-      animate(e.target);
-      cObs.unobserve(e.target);
+      const el = e.target, target = +el.dataset.count, dur = 1600, t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / dur, 1);
+        el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
+        p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
+      })(t0);
+      cObs.unobserve(el);
     });
-  }, {
-    threshold: 0.1,                 // antes 0.5 — spans pequenos no mobile (12x24px) raramente atingem 50%
-    rootMargin: '0px 0px -5% 0px',  // dispara um pouco antes da entrada total
-  });
-  counters.forEach(el => cObs.observe(el));
-
-  // Rede de seguranca: se 4s apos load algum counter ainda for "0", snapa pro target.
-  // Cobre cenarios onde IO falha (Lenis, focus tab oculta, scroll muito rapido).
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      counters.forEach(el => {
-        if (animated.has(el)) return;
-        // So snapa se ainda mostra "0" — nao atrapalha animacao em curso
-        if (el.textContent.trim() === '0') {
-          el.textContent = el.dataset.count;
-          animated.add(el);
-          try { cObs.unobserve(el); } catch (_) {}
-        }
-      });
-    }, 4000);
-  }, { once: true });
+  }, { threshold: .5 });
+  document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
 }
 
 /* ============================================
@@ -1184,42 +1155,37 @@ function _initCardStackFx() {
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  if (IS_TOUCH) {
-    // Mobile: auto-cycle alterna card 1 ↔ card 2 a cada 2.5s quando visível
-    let cycleTimer = null;
-    const CYCLE_MS = 2500;
-    function tickStack() {
-      stack.classList.toggle('is-revealed');
-    }
-    function startStackCycle() {
-      if (cycleTimer || LOW_MOTION) return;
-      cycleTimer = setInterval(tickStack, CYCLE_MS);
-    }
-    function stopStackCycle() {
-      if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
-    }
-    const qsSection = document.getElementById('quem-somos');
-    if (qsSection) {
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) startStackCycle();
-          else stopStackCycle();
-        });
-      }, { threshold: 0.25 });
-      io.observe(qsSection);
-    } else {
-      startStackCycle();
-    }
-    // Tap também alterna manualmente (pausa/retoma o cycle)
-    stack.addEventListener('click', () => {
-      stopStackCycle();
-      stack.classList.toggle('is-revealed');
-      setTimeout(startStackCycle, 4000);
-    });
-    return;
-  }
+  // Mobile: position:sticky puro via CSS — JS nao precisa fazer nada
+  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) return;
 
-  /* Desktop: depth-of-field via hover puro CSS (sem JS de explode/snap) */
+  // Desktop: GSAP ScrollTrigger pin + scrub no Card 2 (y:100% -> 0)
+  // 2026-04-26 (refazer): pin no .card-stack durante 100% do viewport,
+  // Card 2 sobe vindo de baixo cobre Card 1. Mesma cor de fundo nos dois.
+  const tryBuild = () => {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      setTimeout(tryBuild, 80);
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+    const card1 = stack.querySelector('.card-stack__item--1');
+    const card2 = stack.querySelector('.card-stack__item--2');
+    if (!card1 || !card2) return;
+    gsap.set(card1, { y: 0, zIndex: 1 });
+    gsap.set(card2, { y: '100%', zIndex: 2 });
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: stack,
+        start: 'top top+=80',
+        end: '+=100%',
+        pin: true,
+        pinSpacing: true,
+        scrub: 1,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      }
+    }).to(card2, { y: '0%', ease: 'none' });
+  };
+  tryBuild();
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _initCardStackFx);
