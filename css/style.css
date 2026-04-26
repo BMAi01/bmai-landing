@@ -4452,8 +4452,17 @@ section h2.shimmer-active::after,
   .faq__a p { font-size: 14px !important; line-height: 1.6 !important; }
   /* padding-bottom só quando ativo — se aplicar sempre, o padding-bottom
      mantém 18px visível mesmo com max-height:0 (border-box quirk) */
-  .faq__a { padding: 0 16px !important; }
-  .faq__item.active .faq__a { padding: 0 16px 18px !important; }
+  .faq__a {
+    padding: 0 16px !important;
+    display: block !important;          /* defesa: garante que nao vira display:none por algum reset mobile */
+  }
+  .faq__item.active .faq__a {
+    padding: 0 16px 18px !important;
+    max-height: 2000px !important;       /* fix: alguns iOS/Android tem bug com transition max-height — !important garante abrir mesmo se cascata sobrescreveu */
+    overflow: visible !important;        /* fix: se algum ancestor tiver overflow:hidden, conteudo ainda aparece */
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 
   /* Form */
   #form { padding: 60px 0 !important; }
