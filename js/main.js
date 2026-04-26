@@ -1151,10 +1151,41 @@ document.querySelectorAll('section[id]').forEach(s => {
    QS CARD STACK — HOVER slide (esq→dir) + EXPLODE ao sair o cursor
    ============================================ */
 function _initCardStackFx() {
-  // 2026-04-26: substituido por sticky scroll-stack puro CSS.
-  // Auto-cycle mobile e depth-of-field hover desktop foram removidos.
-  // Cards empilham via `position: sticky` no .card-stack__item — funciona
-  // em ambos desktop e mobile sem GSAP pin nem timer.
+  const stack = document.querySelector('.card-stack');
+  if (!stack || stack.dataset.fxInit === '1') return;
+  stack.dataset.fxInit = '1';
+
+  // Mobile: position:sticky puro via CSS — JS nao precisa fazer nada
+  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) return;
+
+  // Desktop: GSAP ScrollTrigger pin + scrub no Card 2 (y:100% -> 0)
+  // 2026-04-26 (refazer): pin no .card-stack durante 100% do viewport,
+  // Card 2 sobe vindo de baixo cobre Card 1. Mesma cor de fundo nos dois.
+  const tryBuild = () => {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      setTimeout(tryBuild, 80);
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+    const card1 = stack.querySelector('.card-stack__item--1');
+    const card2 = stack.querySelector('.card-stack__item--2');
+    if (!card1 || !card2) return;
+    gsap.set(card1, { y: 0, zIndex: 1 });
+    gsap.set(card2, { y: '100%', zIndex: 2 });
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: stack,
+        start: 'top top+=80',
+        end: '+=100%',
+        pin: true,
+        pinSpacing: true,
+        scrub: 1,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      }
+    }).to(card2, { y: '0%', ease: 'none' });
+  };
+  tryBuild();
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _initCardStackFx);
