@@ -1220,7 +1220,7 @@ function _initCardStackFx() {
         start: 'top top',
         end: '+=50%',                   // 2026-04-26: pin curto (50% extra) — parada igual Metodo mas sem inflar secao
         pin: true,
-        pinSpacing: true,
+        pinSpacing: false,              // 2026-04-26: NAO infla altura da secao Motion — pin sem reservar espaco extra
         scrub: 1,
         anticipatePin: 1,
         invalidateOnRefresh: true,
