@@ -606,6 +606,23 @@ html { scrollbar-gutter: stable; }
   .hero { padding-bottom: var(--section-spacing-lg) !important; }
 }
 
+/* 2026-04-26: desktop-only — aumenta headline+sub em ~7% e desce bloco em 32px.
+   Mobile (<=768px) e tablet (769-1023px) ficam intactos. */
+@media (min-width: 1024px) {
+  .hero__content {
+    padding-top: calc(clamp(20px, 3.4vw, 56px) + 32px);
+  }
+  .hero__title {
+    font-size: clamp(30px, 3.85vw, 51px);   /* era clamp(28px, 3.6vw, 48px) — +7% */
+  }
+  .hero__sub {
+    font-size: 0.86rem;                      /* era 0.8rem — +7% */
+  }
+  .hero__sub--2lines {
+    font-size: 0.77rem;                      /* era 0.72rem — +7% */
+  }
+}
+
 /* Pedestal legado removido — hero-fx (canvas + SVG) faz o visual agora */
 .hero__pedestal,
 .hero__pedestal-glow,
@@ -5001,12 +5018,16 @@ html { scroll-padding-top: 84px; }
 /* ───────────────────────────────────────────
    Card Stack — card 2 atras do card 1, scroll-hijack traz por cima
    ─────────────────────────────────────────── */
+/* 2026-04-26: sticky scroll-stack puro (sem GSAP pin). Cards empilham por scroll
+   nativo — Card 2 sobe vindo de baixo conforme scroll avanca, cobre Card 1.
+   Funciona em desktop e mobile sem risco de pin gap. */
 .card-stack {
-  --progress: 0;
   position: relative;
   width: 100%;
-  min-height: 320px;
-  perspective: 1400px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;                 /* "gaveta de scroll" entre Card 1 e Card 2 */
+  padding-bottom: 40vh;      /* espaco final pra Card 2 desgrudar suavemente */
 }
 
 /* Scroll-reveal suave — fade + slide horizontal sutil (x:40→0).
@@ -5031,10 +5052,10 @@ html { scroll-padding-top: 84px; }
   }
 }
 
-/* Cada item = card completo, absolute inset pra empilhar */
+/* Cada item = card completo. Sticky individual cria scroll-stack natural. */
 .card-stack__item {
-  position: absolute;
-  inset: 0;
+  position: sticky;
+  top: 80px;                 /* offset do header */
   padding: 44px 40px;
   display: flex;
   flex-direction: column;
@@ -5100,111 +5121,52 @@ html { scroll-padding-top: 84px; }
   z-index: 2;
 }
 
-/* Card 1 sempre visível atrás (opaco, sólido). */
+/* Card 1: navy escuro, sticky no topo, fica abaixo do Card 2 quando ele sobe. */
 .card-stack__item--1 {
   z-index: 1;
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
 }
 
-/* 2026-04-26 (refazer): Card 2 IDENTICO ao Card 1 (navy mesmo bg/border/shadow).
-   Comeca FORA DA TELA embaixo (y: 100%) — GSAP move pra y: 0 conforme scroll
-   no desktop. Mobile usa position:sticky puro (regra mais abaixo). */
+/* Card 2: branco creme/laranja invertido — sticky igual Card 1, vem por cima
+   por ordem natural do DOM (mais abaixo = z-index implicito maior no scroll). */
 .card-stack__item--2 {
   z-index: 2;
-  transform: translate3d(0, 100%, 0);   /* offscreen embaixo no estado inicial */
-  will-change: transform;
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(219, 85, 0, .06) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(219, 85, 0, .04) 0%, transparent 60%),
+    linear-gradient(180deg, #FAF6F1 0%, #EDE7E1 100%);
+  border: 1.5px solid rgba(219, 85, 0, .35);
+  box-shadow:
+    0 30px 60px -20px rgba(219, 85, 0, .35),
+    0 8px 20px -6px rgba(0, 0, 0, .15),
+    0 0 56px -16px rgba(219, 85, 0, .3),
+    inset 0 1px 0 rgba(255, 255, 255, .8);
 }
-
-/* ========== DEPTH OF FIELD reveal (Apple-style) ==========
-   Hover: card 1 recua (scale .92 + blur 6px + opacity .5),
-   card 2 avança do fundo (scale .94 → 1 + unblur + opacity 1). */
-.card-stack__item--1 {
-  transition:
-    transform .6s cubic-bezier(.22, 1, .36, 1),
-    opacity .55s cubic-bezier(.22, 1, .36, 1),
-    filter .6s cubic-bezier(.22, 1, .36, 1);
+.card-stack__item--2::before {
+  background: linear-gradient(135deg,
+    rgba(219, 85, 0, .55) 0%,
+    rgba(219, 85, 0, .15) 35%,
+    transparent 55%,
+    rgba(219, 85, 0, .15) 70%,
+    rgba(219, 85, 0, .5) 100%);
 }
-@media (hover: hover) and (pointer: fine) {
-  .card-stack:hover .card-stack__item--1 {
-    transform: scale(.92) translateZ(0);
-    opacity: .5;
-    filter: blur(6px);
-  }
-  .card-stack:hover .card-stack__item--2 {
-    opacity: 1;
-    transform: scale(1) translateZ(0);
-    filter: blur(0) brightness(1);
-  }
+/* Texto interno do card 2 em tom escuro sobre fundo claro */
+.card-stack__item--2 .card-content h3 { color: #0A0A0A; }
+.card-stack__item--2 .card-content h3 span { color: var(--orange); }
+.card-stack__item--2 .card-content p { color: rgba(10, 10, 10, .72); }
+.card-stack__item--2 .card-eyebrow {
+  color: var(--orange);
 }
-/* Touch: tap alterna via classe .is-revealed */
-.card-stack.is-revealed .card-stack__item--1 {
-  transform: scale(.92) translateZ(0);
-  opacity: .5;
-  filter: blur(6px);
-}
-.card-stack.is-revealed .card-stack__item--2 {
+.card-stack__item--2 .card-eyebrow::before {
+  background: var(--orange);
   opacity: 1;
-  transform: scale(1) translateZ(0);
-  filter: blur(0) brightness(1);
 }
 
-/* EXPLODE desligado — transição depth-of-field já é suave nos dois sentidos */
-.card-stack.explode .card-stack__item--2,
-.card-stack.snap .card-stack__item--2 {
-  animation: none !important;
-}
-
-@keyframes cardExplode {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1) rotate(0);
-    clip-path: inset(0 round 24px);
-    opacity: 1;
-    filter: brightness(1.25) blur(0);
-    box-shadow:
-      0 30px 60px -20px rgba(0, 0, 0, .55),
-      0 0 56px -16px rgba(219, 85, 0, .3);
-  }
-  30% {
-    transform: translate3d(0, 0, 0) scale(1.08) rotate(.4deg);
-    clip-path: inset(0 round 24px);
-    opacity: 1;
-    filter: brightness(1.7) blur(0);
-    box-shadow:
-      0 30px 60px -20px rgba(0, 0, 0, .55),
-      0 0 160px rgba(219, 85, 0, 1),
-      0 0 60px rgba(255, 220, 180, .9);
-  }
-  100% {
-    transform: translate3d(20%, -12px, 0) scale(1.3) rotate(1.5deg);
-    clip-path: inset(0 round 24px);
-    opacity: 0;
-    filter: brightness(.4) blur(16px);
-    box-shadow: 0 0 0 rgba(219, 85, 0, 0);
-  }
-}
-/* Mobile: sticky CSS puro (sem GSAP pin) — Card 2 sobe sobre Card 1 por
-   scroll nativo. Estado inicial diferente do desktop: cards empilhados em
-   flex column, position sticky individual, sem transform offscreen. */
+/* 2026-04-26: Removido bloco DEPTH OF FIELD (hover desktop + tap mobile) e
+   keyframes cardExplode. Substituido por sticky scroll-stack puro acima.
+   Mobile: ajusta apenas padding e gap; sticky CSS funciona em ambos. */
 @media (max-width: 768px) {
-  .card-stack {
-    min-height: 0;
-    perspective: none;
-    display: flex;
-    flex-direction: column;
-    gap: 60px;
-    padding-bottom: 30vh;
-  }
-  .card-stack__item {
-    position: sticky;
-    top: 80px;
-    inset: auto;
-    padding: 36px 28px;
-    border-radius: 20px;
-    transform: none !important;        /* anula y:100% do desktop */
-  }
-  .card-stack__item--1 { z-index: 1; }
-  .card-stack__item--2 { z-index: 2; }
+  .card-stack { gap: 60px; padding-bottom: 30vh; }
+  .card-stack__item { padding: 36px 28px; border-radius: 20px; }
 }
 @media (max-width: 560px) {
   .card-stack { gap: 40px; padding-bottom: 25vh; }
@@ -6766,10 +6728,12 @@ html { scroll-padding-top: 84px; }
   opacity: .12 !important;
 }
 
-/* Grid QS: gap maior + sem stretch (deixa altura natural, sem retângulo aparente) */
+/* Grid QS: gap maior + sem stretch (deixa altura natural, sem retângulo aparente).
+   2026-04-26: align-items: start pra coluna direita (.card-stack sticky scroll-stack)
+   poder ser mais alta que esquerda sem desalinhar verticalmente. */
 .qs__grid--animated {
   gap: clamp(32px, 4vw, 64px);
-  align-items: center;
+  align-items: start;
 }
 .qs__grid--animated > .qs-scene-wrap { min-width: 0; }
 .qs__grid--animated > .card-stack {
