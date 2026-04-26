@@ -1239,27 +1239,41 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
-/* 2026-04-26: video do time — aspect-ratio dinamica + audio na 1a interacao.
-   Sem multiplas chamadas de play() competindo (causava AbortError -> freeze). */
+/* 2026-04-26: video do time — minimal. Forca play() uma vez, log de erro
+   pra debug, desmuta no 1o gesto. Sem retries que geram AbortError. */
 (function initTeamVideo() {
   const init = () => {
     const video = document.querySelector('.team-video');
     const stage = document.getElementById('teamVideoStage');
-    if (!video || !stage) return;
+    if (!video) return;
 
-    video.muted = true;
-    video.playsInline = true;
+    if (stage) {
+      const applyAspect = () => {
+        const w = video.videoWidth, h = video.videoHeight;
+        if (w && h) stage.style.setProperty('--video-aspect', `${w} / ${h}`);
+      };
+      if (video.readyState >= 1) applyAspect();
+      else video.addEventListener('loadedmetadata', applyAspect, { once: true });
+    }
 
-    const applyAspect = () => {
-      const w = video.videoWidth, h = video.videoHeight;
-      if (w && h) stage.style.setProperty('--video-aspect', `${w} / ${h}`);
+    // Log pra debug: o que aconteceu se nao tocar?
+    video.addEventListener('error', e => {
+      const err = video.error;
+      console.warn('[team-video] error:', err && err.code, err && err.message);
+    });
+
+    // Forca play() uma vez. Browsers as vezes ignoram autoplay attribute mas
+    // aceitam .play() programatico (especialmente se muted estiver ativo).
+    const kick = () => {
+      const p = video.play();
+      if (p && p.catch) p.catch(err => console.warn('[team-video] play() rejected:', err.name, err.message));
     };
-    if (video.readyState >= 1) applyAspect();
-    else video.addEventListener('loadedmetadata', applyAspect, { once: true });
+    if (video.readyState >= 2) kick();
+    else video.addEventListener('loadeddata', kick, { once: true });
 
     video.addEventListener('contextmenu', e => e.preventDefault());
 
-    // Desmuta + (se preciso) toca no primeiro gesto/scroll do user
+    // Desmuta no 1o gesto
     let unmuted = false;
     const unmute = () => {
       if (unmuted) return;

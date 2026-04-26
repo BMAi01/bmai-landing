@@ -4904,15 +4904,7 @@ html { scroll-padding-top: 84px; }
   z-index: 1;
   /* 2026-04-26: filter removido — estava travando o decode do video. */
 }
-/* Overlay invisivel pra bloquear interacao do cliente sem afetar autoplay */
-.team-video__frame::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  cursor: default;
-  background: transparent;
-}
+/* 2026-04-26: overlay removido (estava sobre o video, podia interferir) */
 
 /* Cantos accent (estilo card-stack) */
 .team-video__corner {
