@@ -606,6 +606,23 @@ html { scrollbar-gutter: stable; }
   .hero { padding-bottom: var(--section-spacing-lg) !important; }
 }
 
+/* 2026-04-26: desktop-only — aumenta headline+sub em ~7% e desce bloco em 32px.
+   Mobile (<=768px) e tablet (769-1023px) ficam intactos. */
+@media (min-width: 1024px) {
+  .hero__content {
+    padding-top: calc(clamp(20px, 3.4vw, 56px) + 32px);
+  }
+  .hero__title {
+    font-size: clamp(30px, 3.85vw, 51px);   /* era clamp(28px, 3.6vw, 48px) — +7% */
+  }
+  .hero__sub {
+    font-size: 0.86rem;                      /* era 0.8rem — +7% */
+  }
+  .hero__sub--2lines {
+    font-size: 0.77rem;                      /* era 0.72rem — +7% */
+  }
+}
+
 /* Pedestal legado removido — hero-fx (canvas + SVG) faz o visual agora */
 .hero__pedestal,
 .hero__pedestal-glow,
