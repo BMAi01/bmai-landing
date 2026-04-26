@@ -1273,7 +1273,8 @@ if (document.readyState === 'loading') {
 
     video.addEventListener('contextmenu', e => e.preventDefault());
 
-    // Desmuta no 1o gesto
+    // Desmuta no 1o gesto REAL (click/touchstart/keydown). Scroll NAO conta
+    // como user activation no Chrome — desmutar nele pausa o video inteiro.
     let unmuted = false;
     const unmute = () => {
       if (unmuted) return;
@@ -1281,11 +1282,11 @@ if (document.readyState === 'loading') {
       video.muted = false;
       video.volume = 1;
       if (video.paused) video.play().catch(() => {});
-      ['click', 'touchstart', 'keydown', 'scroll'].forEach(ev =>
+      ['click', 'touchstart', 'keydown'].forEach(ev =>
         window.removeEventListener(ev, unmute, true)
       );
     };
-    ['click', 'touchstart', 'keydown', 'scroll'].forEach(ev =>
+    ['click', 'touchstart', 'keydown'].forEach(ev =>
       window.addEventListener(ev, unmute, { capture: true, passive: true })
     );
   };
