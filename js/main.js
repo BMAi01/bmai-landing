@@ -1351,13 +1351,16 @@ addEventListener('load', function () {
   // 2) ARIA slides — sem GSAP de entrada (CSS classes controlam tudo, evita jitter no hover)
 
   // 3) Team flip cards — entrada fade-up, flip ao entrar na viewport (stagger)
-  gsap.fromTo('.team-card-wrap',
-    { y: 60, opacity: 0 },
-    {
-      y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .1,
-      scrollTrigger: { trigger: '#team-pin', start: 'top 85%', toggleActions: 'play none none none' }
-    }
-  );
+  // 2026-04-26: guard — secao Team agora usa video, .team-card-wrap nao existe
+  if (document.querySelector('.team-card-wrap') && document.querySelector('#team-pin')) {
+    gsap.fromTo('.team-card-wrap',
+      { y: 60, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .1,
+        scrollTrigger: { trigger: '#team-pin', start: 'top 85%', toggleActions: 'play none none none' }
+      }
+    );
+  }
 
   // 4) Cases cards
   document.querySelectorAll('.mv-card').forEach((card, i) => {
@@ -1399,41 +1402,46 @@ addEventListener('load', function () {
   });
 
   /* ── #por-que (versus) ────────────────────── */
-  gsap.fromTo('#por-que .section__title',
-    { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
-    {
-      clipPath: 'inset(0 0% 0 0)', opacity: 1, duration: 1.1, ease: 'power4.out',
-      scrollTrigger: { trigger: '#por-que', start: 'top 80%', toggleActions: 'play none none none' }
-    }
-  );
-
-  const dx = isMobile ? 40 : 100;
-  gsap.fromTo('.versus__col--old',
-    { x: -dx, opacity: 0, rotateY: isMobile ? 0 : 12 },
-    {
-      x: 0, opacity: 1, rotateY: 0, duration: 1, ease: 'power3.out',
-      scrollTrigger: { trigger: '.versus__grid', start: 'top 82%', toggleActions: 'play none none none' }
-    }
-  );
-  gsap.fromTo('.versus__col--new',
-    { x: dx, opacity: 0, rotateY: isMobile ? 0 : -12 },
-    {
-      x: 0, opacity: 1, rotateY: 0, duration: 1, ease: 'power3.out', delay: .15,
-      scrollTrigger: { trigger: '.versus__grid', start: 'top 82%', toggleActions: 'play none none none' }
-    }
-  );
-
-  document.querySelectorAll('.versus__col').forEach((col, ci) => {
-    const items = col.querySelectorAll('li');
-    if (!items.length) return;
-    gsap.fromTo(items,
-      { x: ci === 0 ? -30 : 30, opacity: 0 },
+  // 2026-04-26: guard — secao #por-que/versus nao existe mais nesse build
+  if (document.querySelector('#por-que')) {
+    gsap.fromTo('#por-que .section__title',
+      { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
       {
-        x: 0, opacity: 1, duration: .5, ease: 'power2.out', stagger: .07, delay: .5,
-        scrollTrigger: { trigger: '.versus__grid', start: 'top 78%', toggleActions: 'play none none none' }
+        clipPath: 'inset(0 0% 0 0)', opacity: 1, duration: 1.1, ease: 'power4.out',
+        scrollTrigger: { trigger: '#por-que', start: 'top 80%', toggleActions: 'play none none none' }
       }
     );
-  });
+
+    const dx = isMobile ? 40 : 100;
+    if (document.querySelector('.versus__grid')) {
+      gsap.fromTo('.versus__col--old',
+        { x: -dx, opacity: 0, rotateY: isMobile ? 0 : 12 },
+        {
+          x: 0, opacity: 1, rotateY: 0, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: '.versus__grid', start: 'top 82%', toggleActions: 'play none none none' }
+        }
+      );
+      gsap.fromTo('.versus__col--new',
+        { x: dx, opacity: 0, rotateY: isMobile ? 0 : -12 },
+        {
+          x: 0, opacity: 1, rotateY: 0, duration: 1, ease: 'power3.out', delay: .15,
+          scrollTrigger: { trigger: '.versus__grid', start: 'top 82%', toggleActions: 'play none none none' }
+        }
+      );
+
+      document.querySelectorAll('.versus__col').forEach((col, ci) => {
+        const items = col.querySelectorAll('li');
+        if (!items.length) return;
+        gsap.fromTo(items,
+          { x: ci === 0 ? -30 : 30, opacity: 0 },
+          {
+            x: 0, opacity: 1, duration: .5, ease: 'power2.out', stagger: .07, delay: .5,
+            scrollTrigger: { trigger: '.versus__grid', start: 'top 78%', toggleActions: 'play none none none' }
+          }
+        );
+      });
+    }
+  }
 
   /* ── Footer ───────────────────────────────── */
   gsap.fromTo('.footer',
@@ -1455,21 +1463,26 @@ addEventListener('load', function () {
     }
   );
 
-  gsap.fromTo('.footer__col h4',
-    { y: 16, opacity: 0 },
-    {
-      y: 0, opacity: 1, duration: .6, stagger: .08, ease: 'power2.out',
-      scrollTrigger: { trigger: '.footer', start: 'top 92%', toggleActions: 'play none none none' }
-    }
-  );
+  // 2026-04-26: guards — selectors podem nao existir nesse build
+  if (document.querySelector('.footer__col h4')) {
+    gsap.fromTo('.footer__col h4',
+      { y: 16, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: .6, stagger: .08, ease: 'power2.out',
+        scrollTrigger: { trigger: '.footer', start: 'top 92%', toggleActions: 'play none none none' }
+      }
+    );
+  }
 
-  gsap.fromTo('.footer__watermark h2',
-    { opacity: 0, scale: .9 },
-    {
-      opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out', delay: .3,
-      scrollTrigger: { trigger: '.footer', start: 'top 80%', toggleActions: 'play none none none' }
-    }
-  );
+  if (document.querySelector('.footer__watermark h2')) {
+    gsap.fromTo('.footer__watermark h2',
+      { opacity: 0, scale: .9 },
+      {
+        opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out', delay: .3,
+        scrollTrigger: { trigger: '.footer', start: 'top 80%', toggleActions: 'play none none none' }
+      }
+    );
+  }
 
   // Copyright typewriter
   const fcEl = document.querySelector('.footer__bottom p');
