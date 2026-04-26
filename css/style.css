@@ -4803,15 +4803,15 @@ html { scroll-padding-top: 84px; }
 .team-video-wrap {
   margin: 0 auto;
   max-width: 1080px;
-  padding: 32px 20px;
+  padding: 16px 20px;
   position: relative;
 }
 .team-video-stage {
   position: relative;
   margin: 0 auto;
-  width: 100%;
-  max-width: 880px;
-  /* aspect-ratio default — sobrescrito por JS apos loadedmetadata */
+  width: auto;          /* deixa max-height + aspect-ratio mandarem na largura */
+  max-width: min(560px, 100%);
+  max-height: 560px;
   aspect-ratio: var(--video-aspect, 16 / 9);
   isolation: isolate;
   transition: transform .5s cubic-bezier(.22, 1, .36, 1);
@@ -4981,8 +4981,8 @@ html { scroll-padding-top: 84px; }
 }
 
 @media (max-width: 768px) {
-  .team-video-wrap { padding: 16px 12px; }
-  .team-video-stage { max-width: 100%; }
+  .team-video-wrap { padding: 12px; }
+  .team-video-stage { max-width: 92%; max-height: 70vh; }
   .team-video__frame { border-radius: 18px; }
   .team-video { border-radius: 16px; }
   .team-video__corner { width: 16px; height: 16px; }
