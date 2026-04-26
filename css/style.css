@@ -6763,15 +6763,15 @@ html { scroll-padding-top: 84px; }
   -webkit-box-shadow: none !important;
   overflow: visible;
 }
-/* Glow radial laranja antigo (::after) e dot pattern (::before): mantém só sutil */
+/* 2026-04-26: glow laranja superior REMOVIDO — user nao pediu iluminacao.
+   ::after escondido. ::before (dot pattern) tambem zerado pra ficar limpo. */
 .qs-scene::after,
 #quem-somos .qs-scene::after {
-  background: radial-gradient(ellipse at 50% 60%, rgba(219, 85, 0,.08) 0%, transparent 70%) !important;
-  filter: blur(28px) !important;
+  display: none !important;
 }
 .qs-scene::before,
 #quem-somos .qs-scene::before {
-  opacity: .12 !important;
+  display: none !important;
 }
 
 /* Grid QS: gap maior + sem stretch (deixa altura natural, sem retângulo aparente) */
