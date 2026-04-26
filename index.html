@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260426-contentGapAll">
+  <link rel="stylesheet" href="css/style.css?v=20260426-teamVideo">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -694,111 +694,12 @@
       <p class="team-scroll-hint mono" data-i18n="team.scroll_hint">Role para conhecer o time →</p>
     </div>
 
-    <!-- Mobile full-screen cinematic (≤768px via CSS) -->
-    <div class="team-mobile" id="team-mobile" aria-roledescription="carousel" aria-label="Fundadores da BMAi">
-      <!-- Barra de progresso segmentada (estilo Stories) — topo -->
-      <div class="carousel-progress carousel-progress--stories-top" id="teamMobileProgress" role="tablist" aria-label="Fundadores">
-        <button type="button" class="carousel-progress__segment is-active" data-slide="0" aria-label="Matheus, Sócio Fundador" aria-selected="true"></button>
-        <button type="button" class="carousel-progress__segment" data-slide="1" aria-label="Pedro, Sócio Fundador" aria-selected="false"></button>
-      </div>
-
-      <div class="team-mobile__track" id="teamMobileTrack">
-        <article class="team-mslide is-active" data-idx="0" aria-roledescription="slide" aria-label="Matheus, Sócio Fundador">
-          <picture class="team-mslide__picture">
-            <source srcset="assets/images/team-matheus-resized.webp" type="image/webp">
-            <img src="assets/images/team-matheus-resized.jpg" alt="Matheus — Sócio Fundador da BMAi" fetchpriority="high" decoding="async"/>
-          </picture>
-          <div class="team-mslide__overlay" aria-hidden="true"></div>
-          <div class="team-mslide__brand" aria-hidden="true">
-            <img src="assets/images/simbolo-laranja.svg" alt=""/>
-            <span>BMAi</span>
-          </div>
-          <div class="team-mslide__body">
-            <span class="team-mslide__role" data-i18n="team.matheus.role">Sócio Fundador</span>
-            <h3 class="team-mslide__name">Matheus</h3>
-          </div>
-        </article>
-        <article class="team-mslide" data-idx="1" aria-roledescription="slide" aria-label="Pedro, Sócio Fundador" aria-hidden="true">
-          <picture class="team-mslide__picture">
-            <source srcset="assets/images/team-pedro-resized.webp" type="image/webp">
-            <img src="assets/images/team-pedro-resized.jpg" alt="Pedro — Sócio Fundador da BMAi" loading="lazy" decoding="async"/>
-          </picture>
-          <div class="team-mslide__overlay" aria-hidden="true"></div>
-          <div class="team-mslide__brand" aria-hidden="true">
-            <img src="assets/images/simbolo-laranja.svg" alt=""/>
-            <span>BMAi</span>
-          </div>
-          <div class="team-mslide__body">
-            <span class="team-mslide__role" data-i18n="team.pedro.role">Sócio Fundador</span>
-            <h3 class="team-mslide__name">Pedro</h3>
-          </div>
-        </article>
-      </div>
-
-      <button type="button" class="team-mobile__zone team-mobile__zone--prev" id="teamMPrev" aria-label="Fundador anterior" tabindex="-1"></button>
-      <button type="button" class="team-mobile__zone team-mobile__zone--next" id="teamMNext" aria-label="Próximo fundador" tabindex="-1"></button>
-
-      <div class="team-mobile__hint" id="teamMobileHint" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        <span>arraste</span>
-      </div>
-    </div>
-
-    <!-- Container pinado pelo GSAP (desktop) -->
-    <div class="team-pin" id="team-pin">
-      <div class="team-grid" id="team-grid">
-
-        <!-- Card 1 — Matheus (Sócio Fundador) -->
-        <div class="team-card-wrap">
-          <div class="team-card" id="tc-0">
-            <div class="tc-front">
-              <img src="assets/images/team-matheus-resized.webp" alt="Matheus — Sócio Fundador da BMAI" onerror="this.style.display='none'" loading="lazy"/>
-              <div class="tc-front-info">
-                <h3>Matheus</h3>
-                <span data-i18n="team.matheus.role">Sócio Fundador</span>
-              </div>
-            </div>
-            <div class="tc-back">
-              <div class="tc-back-grid"></div>
-              <div class="tc-back-content">
-                <div class="tc-quotes">❝</div>
-                <p data-i18n="team.matheus.bio">Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura — o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.</p>
-                <div class="tc-back-footer">
-                  <div class="tc-back-bar"></div>
-                  <strong>Matheus</strong>
-                  <span data-i18n="team.matheus.sig">Sócio Fundador · BMAI</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 2 — Pedro (Sócio Fundador) -->
-        <div class="team-card-wrap">
-          <div class="team-card" id="tc-1">
-            <div class="tc-front">
-              <img src="assets/images/team-pedro-resized.webp" alt="Pedro — Sócio Fundador da BMAI" onerror="this.style.display='none'" loading="lazy"/>
-              <div class="tc-front-info">
-                <h3>Pedro</h3>
-                <span data-i18n="team.pedro.role">Sócio Fundador</span>
-              </div>
-            </div>
-            <div class="tc-back">
-              <div class="tc-back-grid"></div>
-              <div class="tc-back-content">
-                <div class="tc-quotes">❝</div>
-                <p data-i18n="team.pedro.bio">Acredito que gerar valor verdadeiro às pessoas e às empresas é a única forma de resultado real e sustentável. Cada solução que a BMAi entrega precisa gerar impacto real — tempo de volta pro dono, previsibilidade de receita e um negócio que cresce sem depender de improviso.</p>
-                <div class="tc-back-footer">
-                  <div class="tc-back-bar"></div>
-                  <strong>Pedro</strong>
-                  <span data-i18n="team.pedro.sig">Sócio Fundador · BMAI</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+    <!-- 2026-04-26: cards substituidos por video unico (mobile + desktop) -->
+    <div class="container team-video-wrap">
+      <video class="team-video"
+             src="assets/videos/team.mp4?v=20260426-teamVideo"
+             autoplay muted loop playsinline preload="metadata"
+             aria-label="Apresentacao do time BMAi"></video>
     </div>
   </section>
 
@@ -1014,8 +915,8 @@
     <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
-  <script src="js/i18n.js?v=20260426-contentGapAll"></script>
-  <script defer src="js/main.js?v=20260426-contentGapAll"></script>
+  <script src="js/i18n.js?v=20260426-teamVideo"></script>
+  <script defer src="js/main.js?v=20260426-teamVideo"></script>
 
   <script>
   /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */
