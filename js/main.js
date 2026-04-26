@@ -1239,58 +1239,34 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
-/* 2026-04-26: video do time — autoplay garantido + audio na 1a interacao */
+/* 2026-04-26: video do time — aspect-ratio dinamica + audio na 1a interacao.
+   Sem multiplas chamadas de play() competindo (causava AbortError -> freeze). */
 (function initTeamVideo() {
   const init = () => {
     const video = document.querySelector('.team-video');
     const stage = document.getElementById('teamVideoStage');
     if (!video || !stage) return;
 
-    // Garante atributos necessarios pra autoplay funcionar
     video.muted = true;
-    video.defaultMuted = true;
     video.playsInline = true;
-    video.setAttribute('muted', '');
-    video.setAttribute('playsinline', '');
-
-    const tryPlay = () => {
-      const p = video.play();
-      if (p && p.catch) p.catch(err => {
-        // Fallback: tenta de novo no proximo gesto se autoplay falhar
-        const retry = () => {
-          video.play().catch(() => {});
-          ['click', 'touchstart', 'scroll', 'keydown'].forEach(ev =>
-            window.removeEventListener(ev, retry, true)
-          );
-        };
-        ['click', 'touchstart', 'scroll', 'keydown'].forEach(ev =>
-          window.addEventListener(ev, retry, { capture: true, passive: true, once: true })
-        );
-      });
-    };
 
     const applyAspect = () => {
       const w = video.videoWidth, h = video.videoHeight;
       if (w && h) stage.style.setProperty('--video-aspect', `${w} / ${h}`);
-      tryPlay();
     };
     if (video.readyState >= 1) applyAspect();
     else video.addEventListener('loadedmetadata', applyAspect, { once: true });
 
-    // Garantia extra: tenta tocar tambem quando o canplay disparar
-    video.addEventListener('canplay', tryPlay, { once: true });
-
     video.addEventListener('contextmenu', e => e.preventDefault());
 
-    // Desmuta no primeiro gesto/scroll do user
+    // Desmuta + (se preciso) toca no primeiro gesto/scroll do user
     let unmuted = false;
     const unmute = () => {
       if (unmuted) return;
       unmuted = true;
       video.muted = false;
       video.volume = 1;
-      const p = video.play();
-      if (p && p.catch) p.catch(() => {});
+      if (video.paused) video.play().catch(() => {});
       ['click', 'touchstart', 'keydown', 'scroll'].forEach(ev =>
         window.removeEventListener(ev, unmute, true)
       );

@@ -4902,11 +4902,7 @@ html { scroll-padding-top: 84px; }
   background: #0d1b2a;
   position: relative;
   z-index: 1;
-  /* 2026-04-26: boost perceptual pra mascarar compressao do WhatsApp.
-     Saturate aumenta vivacidade; contrast da nitidez aparente; brightness
-     compensa o leve apagar do contrast. NAO recupera detalhe perdido. */
-  filter: saturate(1.18) contrast(1.08) brightness(1.04);
-  image-rendering: auto;
+  /* 2026-04-26: filter removido — estava travando o decode do video. */
 }
 /* Overlay invisivel pra bloquear interacao do cliente sem afetar autoplay */
 .team-video__frame::after {
