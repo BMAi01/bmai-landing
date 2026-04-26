@@ -641,6 +641,56 @@ html { scrollbar-gutter: stable; }
    (grid de pontos + linhas de circuito no canvas, blobs CSS, símbolo SVG)
    Substitui a imagem de pedestal/chip antiga.
    ============================================ */
+/* 2026-04-26: imagem aria do hero — lado direito, sem bordas (mask radial)
+   bg da imagem casa exato com #0d1b2a do site, mas o mask garante derreter
+   gradual nas 4 direcoes pra nao mostrar nenhum corte. */
+.hero__aria-img {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: min(58%, 920px);
+  height: auto;
+  max-height: 110%;
+  object-fit: contain;
+  object-position: right center;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 65% 50%,
+    #000 30%,
+    rgba(0, 0, 0, .85) 55%,
+    rgba(0, 0, 0, .35) 80%,
+    transparent 100%);
+          mask-image: radial-gradient(ellipse 75% 75% at 65% 50%,
+    #000 30%,
+    rgba(0, 0, 0, .85) 55%,
+    rgba(0, 0, 0, .35) 80%,
+    transparent 100%);
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
+  user-select: none;
+  animation: heroAriaFloat 9s ease-in-out infinite;
+}
+@keyframes heroAriaFloat {
+  0%, 100% { transform: translate(0, calc(-50% + 0px)) scale(1); }
+  50%      { transform: translate(0, calc(-50% - 8px)) scale(1.015); }
+}
+@media (max-width: 900px) {
+  .hero__aria-img {
+    width: 100%;
+    max-width: 520px;
+    right: -8%;
+    top: auto;
+    bottom: -10%;
+    transform: none;
+    opacity: .55;
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__aria-img { animation: none; }
+}
+
 .hero-fx {
   position: absolute;
   top: 0; right: 0; bottom: 0;
