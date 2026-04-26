@@ -131,7 +131,7 @@
 
       /* TEAM */
       'team.title':        'Nosso time entende<br><span style="color:var(--orange)">o seu negócio.</span>',
-      'team.scroll_hint':  'Role para conhecer o time →',
+      'team.scroll_hint':  'Conheça os fundadores da BMAi',
       'team.matheus.role': 'Sócio Fundador',
       'team.matheus.bio':  'Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura — o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.',
       'team.matheus.sig':  'Sócio Fundador · BMAI',
@@ -323,7 +323,7 @@
       'cs3.role':   'CEO · O Canto',
 
       'team.title':        'Our team understands<br><span style="color:var(--orange)">your business.</span>',
-      'team.scroll_hint':  'Scroll to meet the team →',
+      'team.scroll_hint':  'Meet the BMAi founders',
       'team.matheus.role': 'Founding Partner',
       'team.matheus.bio':  'I built BMAI because I saw up close what happens when a business grows without structure — the owner becomes a slave to the operation. My mission is to change that: turn companies that depend on one person into businesses that run on systems.',
       'team.matheus.sig':  'Founding Partner · BMAI',
@@ -511,7 +511,7 @@
       'cs3.role':   'CEO · O Canto',
 
       'team.title':        'Nuestro equipo entiende<br><span style="color:var(--orange)">tu negocio.</span>',
-      'team.scroll_hint':  'Desplázate para conocer al equipo →',
+      'team.scroll_hint':  'Conoce a los fundadores de BMAi',
       'team.matheus.role': 'Socio Fundador',
       'team.matheus.bio':  'Construí BMAI porque vi de cerca lo que pasa cuando un negocio crece sin estructura — el dueño se vuelve esclavo de la operación. Mi misión es cambiar eso: transformar empresas que dependen de una persona en negocios que funcionan por sistema.',
       'team.matheus.sig':  'Socio Fundador · BMAI',

@@ -4809,9 +4809,9 @@ html { scroll-padding-top: 84px; }
 .team-video-stage {
   position: relative;
   margin: 0 auto;
-  width: auto;          /* deixa max-height + aspect-ratio mandarem na largura */
-  max-width: min(560px, 100%);
-  max-height: 560px;
+  width: auto;
+  max-width: min(720px, 100%);
+  max-height: 720px;
   aspect-ratio: var(--video-aspect, 16 / 9);
   isolation: isolate;
   transition: transform .5s cubic-bezier(.22, 1, .36, 1);
@@ -4896,12 +4896,13 @@ html { scroll-padding-top: 84px; }
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;       /* sem barras pretas (stage tem aspect-ratio do video) */
+  object-fit: cover;
   object-position: center;
   border-radius: 22px;
   background: #0d1b2a;
   position: relative;
   z-index: 1;
+  pointer-events: none;     /* 2026-04-26: cliente nao controla o video */
 }
 
 /* Cantos accent (estilo card-stack) */
@@ -4919,66 +4920,8 @@ html { scroll-padding-top: 84px; }
 .team-video__corner--bl { bottom: 8px; left: 8px;    border-right: 0; border-top: 0;    border-radius: 0 0 0 8px; }
 .team-video__corner--br { bottom: 8px; right: 8px;   border-left: 0;  border-top: 0;    border-radius: 0 0 8px 0; }
 
-/* Scan line — passa por cima do video periodicamente */
-.team-video__scan {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(180deg,
-    transparent 0%,
-    transparent 48%,
-    rgba(255, 168, 102, .12) 49%,
-    rgba(255, 168, 102, .25) 50%,
-    rgba(255, 168, 102, .12) 51%,
-    transparent 52%,
-    transparent 100%);
-  background-size: 100% 220%;
-  background-position: 0% -100%;
-  animation: teamVideoScan 7s ease-in-out infinite;
-  mix-blend-mode: screen;
-  opacity: .7;
-}
-@keyframes teamVideoScan {
-  0%   { background-position: 0% -100%; opacity: 0; }
-  20%  { opacity: .7; }
-  80%  { opacity: .7; }
-  100% { background-position: 0% 100%;  opacity: 0; }
-}
-
-/* Botao de unmute (autoplay com som eh bloqueado pelo browser; user clica) */
-.team-video__unmute {
-  position: absolute;
-  bottom: 18px;
-  right: 28px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: rgba(13, 27, 42, .85);
-  color: #fff;
-  border: 1px solid rgba(219, 85, 0, .55);
-  border-radius: 999px;
-  font: 600 13px/1 'General Sans', system-ui, sans-serif;
-  letter-spacing: .02em;
-  cursor: pointer;
-  z-index: 6;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, .5), 0 0 20px -4px rgba(219, 85, 0, .4);
-  transition: background .25s ease, transform .25s ease, opacity .35s ease, box-shadow .25s ease;
-  animation: teamVideoUnmuteAttention 2.4s ease-in-out infinite;
-}
-.team-video__unmute:hover {
-  background: var(--bmai-orange, #db5500);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px -6px rgba(219, 85, 0, .6);
-}
-.team-video__unmute.is-hidden { opacity: 0; pointer-events: none; transform: translateY(8px); }
-@keyframes teamVideoUnmuteAttention {
-  0%, 100% { box-shadow: 0 6px 20px -4px rgba(0, 0, 0, .5), 0 0 20px -4px rgba(219, 85, 0, .4); }
-  50%      { box-shadow: 0 6px 20px -4px rgba(0, 0, 0, .5), 0 0 30px 0   rgba(219, 85, 0, .65); }
-}
+/* 2026-04-26: scan line removido (user pediu sem efeito brilhoso dentro do video).
+   Botao de unmute removido — video roda sem audio e sem controle do cliente. */
 
 @media (max-width: 768px) {
   .team-video-wrap { padding: 12px; }
@@ -4990,13 +4933,10 @@ html { scroll-padding-top: 84px; }
   .team-video__corner--tr { top: 6px; right: 6px; border-radius: 0 6px 0 0; }
   .team-video__corner--bl { bottom: 6px; left: 6px; border-radius: 0 0 0 6px; }
   .team-video__corner--br { bottom: 6px; right: 6px; border-radius: 0 0 6px 0; }
-  .team-video__unmute { bottom: 12px; right: 16px; padding: 8px 12px; font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .team-video__halo,
-  .team-video__glow,
-  .team-video__scan,
-  .team-video__unmute { animation: none !important; }
+  .team-video__glow { animation: none !important; }
 }
 
 /* 2026-04-26: scroll-jack do card-stack igual Metodo
