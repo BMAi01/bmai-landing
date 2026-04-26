@@ -5260,16 +5260,19 @@ html { scroll-padding-top: 84px; }
   inset: 0;
   transform-style: preserve-3d;
   animation: qsCamJitter 7s ease-in-out infinite;
-  /* Máscara radial — fade suave na zona central onde o brand card vive,
-     evita corte duro e sobreposição confusa no miolo. */
-  -webkit-mask-image: radial-gradient(ellipse 55% 45% at 50% 50%,
+  /* 2026-04-26: mask SO nas laterais — notifs perto da esquerda/direita
+     viram alpha:0 progressivo (derretem) em vez de cortar/sobrar faixa.
+     Centro/topo/baixo permanecem solidos (notifs visiveis 100%). */
+  -webkit-mask-image: linear-gradient(to right,
     transparent 0%,
-    rgba(0, 0, 0, .35) 40%,
-    #000 68%);
-          mask-image: radial-gradient(ellipse 55% 45% at 50% 50%,
+    #000 14%,
+    #000 86%,
+    transparent 100%);
+          mask-image: linear-gradient(to right,
     transparent 0%,
-    rgba(0, 0, 0, .35) 40%,
-    #000 68%);
+    #000 14%,
+    #000 86%,
+    transparent 100%);
 }
 .qs-stage.qs-stage--chaos { animation: qsCamJitter 2.5s cubic-bezier(.36,.07,.19,.97) infinite; }
 @keyframes qsCamJitter {
@@ -6730,26 +6733,11 @@ html { scroll-padding-top: 84px; }
     rgba(13, 27, 42, .55) 65%,
     rgba(13, 27, 42, 0) 100%);
 }
-.qs-fade--left {
-  top: 0; bottom: 0; left: 0;
-  width: 22%;
-  min-width: 80px;
-  background: linear-gradient(to right,
-    #0d1b2a 0%,
-    rgba(13, 27, 42, .92) 30%,
-    rgba(13, 27, 42, .55) 65%,
-    rgba(13, 27, 42, 0) 100%);
-}
-.qs-fade--right {
-  top: 0; bottom: 0; right: 0;
-  width: 22%;
-  min-width: 80px;
-  background: linear-gradient(to left,
-    #0d1b2a 0%,
-    rgba(13, 27, 42, .92) 30%,
-    rgba(13, 27, 42, .55) 65%,
-    rgba(13, 27, 42, 0) 100%);
-}
+/* 2026-04-26: fades laterais REMOVIDOS — criavam faixa escura constante
+   nas laterais (sem notif por baixo) que parecia borda.
+   Notifs nas laterais agora derretem via mask-image direto na .qs-stage. */
+.qs-fade--left,
+.qs-fade--right { display: none !important; }
 
 /* .qs-scene: zera TUDO que parecia card (bg, border, shadow inset/outset, radius) */
 .qs-scene,
