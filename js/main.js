@@ -1193,9 +1193,10 @@ function _initCardStackFx() {
   // Mobile: position:sticky puro via CSS — JS nao precisa fazer nada
   if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) return;
 
-  // Desktop: GSAP ScrollTrigger pin + scrub no Card 2 (y:100% -> 0)
-  // 2026-04-26 (refazer): pin no .card-stack durante 100% do viewport,
-  // Card 2 sobe vindo de baixo cobre Card 1. Mesma cor de fundo nos dois.
+  // Desktop 2026-04-26 (replicar Metodo): pin com 200% de scroll + easing power2.out
+  // (Metodo usa container 400vh com 4 cards = 100vh por card; aqui 2 cards = 200%
+  // de pin + Card 2 anima durante a primeira metade no segmento 0->0.5, igual
+  // primeiro card da timeline do buildStack do Metodo.)
   const tryBuild = () => {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
       setTimeout(tryBuild, 80);
@@ -1205,20 +1206,27 @@ function _initCardStackFx() {
     const card1 = stack.querySelector('.card-stack__item--1');
     const card2 = stack.querySelector('.card-stack__item--2');
     if (!card1 || !card2) return;
+
+    // Estado inicial igual buildStack do Metodo
     gsap.set(card1, { y: 0, zIndex: 1 });
-    gsap.set(card2, { y: '100%', zIndex: 2 });
-    gsap.timeline({
+    gsap.set(card2, { y: '100vh', zIndex: 2 });
+
+    // Pin de 200% (= 2 viewports) com scrub. Card 2 sobe nos primeiros 50%
+    // do pin com ease power2.out (igual segmento (1-0.5)/2 a 1/2 do Metodo
+    // que renderiza 2 cards). Resto do pin Card 2 fica fixo ate liberar.
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: stack,
-        start: 'top top+=80',
-        end: '+=100%',
+        start: 'top top',
+        end: '+=200%',
         pin: true,
         pinSpacing: true,
         scrub: 1,
         anticipatePin: 1,
         invalidateOnRefresh: true,
       }
-    }).to(card2, { y: '0%', ease: 'none' });
+    });
+    tl.to(card2, { y: 0, ease: 'power2.out', duration: 0.5 }, 0);
   };
   tryBuild();
 }
