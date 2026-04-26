@@ -1218,7 +1218,7 @@ function _initCardStackFx() {
       scrollTrigger: {
         trigger: stack,
         start: 'top top',
-        end: '+=200%',
+        end: '+=100%',                  // 2026-04-26: 200% -> 100% — encurta secao pela metade
         pin: true,
         pinSpacing: true,
         scrub: 1,
@@ -1226,7 +1226,9 @@ function _initCardStackFx() {
         invalidateOnRefresh: true,
       }
     });
-    tl.to(card2, { y: 0, ease: 'power2.out', duration: 0.5 }, 0);
+    // Card 2 anima nos primeiros 70% do pin (= ~70vh de scroll com easing
+    // power2.out). Resto fica fixo. Suave sem pin gigante.
+    tl.to(card2, { y: 0, ease: 'power2.out', duration: 0.7 }, 0);
   };
   tryBuild();
 }
