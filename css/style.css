@@ -75,9 +75,9 @@
   --section-spacing-md: 56px;   /* tablet */
   --section-spacing-lg: 72px;   /* desktop padrão */
   --section-spacing-xl: 96px;   /* respiráveis: hero, CTA final */
-  --content-gap-sm: 24px;
-  --content-gap-md: 40px;
-  --content-gap-lg: 64px;
+  --content-gap-sm: 16px;   /* 2026-04-26: era 24 */
+  --content-gap-md: 24px;   /* 2026-04-26: era 40 */
+  --content-gap-lg: 36px;   /* 2026-04-26: era 64 */
 
   /* === BMAi brand tokens (oficiais — usar nos cards do Método) === */
   --bmai-orange:        #db5500;
@@ -279,7 +279,7 @@ section,
 /* scrollbar-gutter: stable evita layout shift em qualquer contexto */
 html { scrollbar-gutter: stable; }
 .section--alt { background: var(--bg2); }
-.section__center { text-align: center; margin-bottom: 28px; }
+.section__center { text-align: center; margin-bottom: 20px; }
 .section__title {
   font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700;
   line-height: 1.12; letter-spacing: -.03em; color: var(--white);
@@ -293,7 +293,7 @@ html { scrollbar-gutter: stable; }
    QUEM SOMOS — dois pilares
    ============================================ */
 /* #quem-somos herda do section reset (cena interna usa absolute, padding ok) */
-#quem-somos .section__center { margin-bottom: 32px; }
+#quem-somos .section__center { margin-bottom: 20px; }
 
 /* Pinned section — 2 padrões mutuamente exclusivos por device:
 
@@ -380,7 +380,7 @@ html { scrollbar-gutter: stable; }
 
 @media (max-width: 768px) {
   /* padding herda do section reset (--section-spacing-sm) */
-  #quem-somos .section__center { margin-bottom: 48px; }
+  #quem-somos .section__center { margin-bottom: 24px; }
   .qs__grid { grid-template-columns: 1fr; gap: 20px; }
   .qs__pillar { padding: 36px 28px 28px; }
   .qs__num { font-size: 64px; top: 12px; right: 20px; }
