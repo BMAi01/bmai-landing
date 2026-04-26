@@ -4794,53 +4794,209 @@ html { scroll-padding-top: 84px; }
   width: 100%;
 }
 
-/* 2026-04-26: video do time — enquadramento natural sem crop, com audio.
-   object-fit:contain mantem proporcao original do video, sem distorcer
-   nem cortar. max-height casa com viewport. */
+/* ============================================
+   TEAM VIDEO — layout cinematografico + efeitos
+   2026-04-26: enquadramento sem barras pretas (aspect-ratio do video
+   aplicada via JS), halo radial laranja pulsante, glows orbitais,
+   moldura com cantos tipo card-stack, scan line, hover lift.
+   ============================================ */
 .team-video-wrap {
   margin: 0 auto;
-  max-width: 900px;
-  padding: 0 20px;
+  max-width: 1080px;
+  padding: 32px 20px;
   position: relative;
 }
+.team-video-stage {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 880px;
+  /* aspect-ratio default — sobrescrito por JS apos loadedmetadata */
+  aspect-ratio: var(--video-aspect, 16 / 9);
+  isolation: isolate;
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .team-video-stage:hover { transform: translateY(-4px) scale(1.005); }
+}
+
+/* Halo radial laranja por tras do video (pulse sutil) */
+.team-video__halo {
+  position: absolute;
+  inset: -8% -6%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 50%, rgba(219, 85, 0, .35) 0%, transparent 65%);
+  filter: blur(40px);
+  animation: teamVideoHaloPulse 6s ease-in-out infinite;
+}
+@keyframes teamVideoHaloPulse {
+  0%, 100% { opacity: .55; transform: scale(1); }
+  50%      { opacity: .9;  transform: scale(1.04); }
+}
+
+/* 2 glows orbitais que vagueiam atras do video */
+.team-video__glow {
+  position: absolute;
+  width: 38%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(60px);
+  opacity: .55;
+}
+.team-video__glow--a {
+  top: -8%;
+  left: -6%;
+  background: radial-gradient(circle, rgba(219, 85, 0, .85) 0%, transparent 70%);
+  animation: teamVideoGlowOrbit1 14s ease-in-out infinite;
+}
+.team-video__glow--b {
+  bottom: -10%;
+  right: -8%;
+  background: radial-gradient(circle, rgba(13, 148, 196, .55) 0%, transparent 70%);
+  animation: teamVideoGlowOrbit2 18s ease-in-out infinite;
+}
+@keyframes teamVideoGlowOrbit1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(20%, 8%) scale(1.1); }
+  66%      { transform: translate(-8%, 18%) scale(.9); }
+}
+@keyframes teamVideoGlowOrbit2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%      { transform: translate(-15%, -10%) scale(1.15); }
+  75%      { transform: translate(10%, -20%) scale(.95); }
+}
+
+/* Frame que segura o video — gradient border + corte arredondado */
+.team-video__frame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 2px;          /* espessura da borda gradient */
+  background:
+    linear-gradient(135deg,
+      rgba(219, 85, 0, .55) 0%,
+      rgba(255, 168, 102, .25) 30%,
+      rgba(255, 255, 255, .1) 50%,
+      rgba(219, 85, 0, .15) 75%,
+      rgba(219, 85, 0, .5) 100%);
+  box-shadow:
+    0 30px 80px -25px rgba(0, 0, 0, .75),
+    0 0 0 1px rgba(255, 255, 255, .04),
+    0 0 60px -10px rgba(219, 85, 0, .35);
+}
+
 .team-video {
   display: block;
   width: 100%;
-  height: auto;
-  max-height: 78vh;
-  object-fit: contain;       /* preserva enquadramento original */
-  border-radius: 20px;
-  background: #000;
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6);
+  height: 100%;
+  object-fit: cover;       /* sem barras pretas (stage tem aspect-ratio do video) */
+  object-position: center;
+  border-radius: 22px;
+  background: #0d1b2a;
+  position: relative;
+  z-index: 1;
 }
+
+/* Cantos accent (estilo card-stack) */
+.team-video__corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--bmai-orange, #db5500);
+  z-index: 4;
+  pointer-events: none;
+  opacity: .85;
+}
+.team-video__corner--tl { top: 8px;    left: 8px;    border-right: 0; border-bottom: 0; border-radius: 8px 0 0 0; }
+.team-video__corner--tr { top: 8px;    right: 8px;   border-left: 0;  border-bottom: 0; border-radius: 0 8px 0 0; }
+.team-video__corner--bl { bottom: 8px; left: 8px;    border-right: 0; border-top: 0;    border-radius: 0 0 0 8px; }
+.team-video__corner--br { bottom: 8px; right: 8px;   border-left: 0;  border-top: 0;    border-radius: 0 0 8px 0; }
+
+/* Scan line — passa por cima do video periodicamente */
+.team-video__scan {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    transparent 48%,
+    rgba(255, 168, 102, .12) 49%,
+    rgba(255, 168, 102, .25) 50%,
+    rgba(255, 168, 102, .12) 51%,
+    transparent 52%,
+    transparent 100%);
+  background-size: 100% 220%;
+  background-position: 0% -100%;
+  animation: teamVideoScan 7s ease-in-out infinite;
+  mix-blend-mode: screen;
+  opacity: .7;
+}
+@keyframes teamVideoScan {
+  0%   { background-position: 0% -100%; opacity: 0; }
+  20%  { opacity: .7; }
+  80%  { opacity: .7; }
+  100% { background-position: 0% 100%;  opacity: 0; }
+}
+
 /* Botao de unmute (autoplay com som eh bloqueado pelo browser; user clica) */
 .team-video__unmute {
   position: absolute;
-  bottom: 20px;
-  right: 36px;
+  bottom: 18px;
+  right: 28px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: rgba(0, 0, 0, .75);
+  background: rgba(13, 27, 42, .85);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, .15);
+  border: 1px solid rgba(219, 85, 0, .55);
   border-radius: 999px;
   font: 600 13px/1 'General Sans', system-ui, sans-serif;
   letter-spacing: .02em;
   cursor: pointer;
-  z-index: 5;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: background .25s ease, transform .25s ease, opacity .35s ease;
+  z-index: 6;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, .5), 0 0 20px -4px rgba(219, 85, 0, .4);
+  transition: background .25s ease, transform .25s ease, opacity .35s ease, box-shadow .25s ease;
+  animation: teamVideoUnmuteAttention 2.4s ease-in-out infinite;
 }
-.team-video__unmute:hover { background: rgba(219, 85, 0, .9); transform: translateY(-1px); }
-.team-video__unmute.is-hidden { opacity: 0; pointer-events: none; }
+.team-video__unmute:hover {
+  background: var(--bmai-orange, #db5500);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -6px rgba(219, 85, 0, .6);
+}
+.team-video__unmute.is-hidden { opacity: 0; pointer-events: none; transform: translateY(8px); }
+@keyframes teamVideoUnmuteAttention {
+  0%, 100% { box-shadow: 0 6px 20px -4px rgba(0, 0, 0, .5), 0 0 20px -4px rgba(219, 85, 0, .4); }
+  50%      { box-shadow: 0 6px 20px -4px rgba(0, 0, 0, .5), 0 0 30px 0   rgba(219, 85, 0, .65); }
+}
 
 @media (max-width: 768px) {
-  .team-video-wrap { padding: 0 12px; max-width: 100%; }
-  .team-video { border-radius: 14px; max-height: 80vh; }
-  .team-video__unmute { bottom: 14px; right: 20px; padding: 8px 12px; font-size: 12px; }
+  .team-video-wrap { padding: 16px 12px; }
+  .team-video-stage { max-width: 100%; }
+  .team-video__frame { border-radius: 18px; }
+  .team-video { border-radius: 16px; }
+  .team-video__corner { width: 16px; height: 16px; }
+  .team-video__corner--tl { top: 6px; left: 6px; border-radius: 6px 0 0 0; }
+  .team-video__corner--tr { top: 6px; right: 6px; border-radius: 0 6px 0 0; }
+  .team-video__corner--bl { bottom: 6px; left: 6px; border-radius: 0 0 0 6px; }
+  .team-video__corner--br { bottom: 6px; right: 6px; border-radius: 0 0 6px 0; }
+  .team-video__unmute { bottom: 12px; right: 16px; padding: 8px 12px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .team-video__halo,
+  .team-video__glow,
+  .team-video__scan,
+  .team-video__unmute { animation: none !important; }
 }
 
 /* 2026-04-26: scroll-jack do card-stack igual Metodo

@@ -1239,24 +1239,36 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
-/* 2026-04-26: video do time — botao de unmute (autoplay bloqueia audio) */
-(function initTeamVideoUnmute() {
+/* 2026-04-26: video do time — aspect-ratio dinamica + unmute */
+(function initTeamVideo() {
   const init = () => {
     const video = document.querySelector('.team-video');
+    const stage = document.getElementById('teamVideoStage');
     const btn = document.getElementById('teamVideoUnmute');
-    if (!video || !btn) return;
-    const unmute = () => {
-      video.muted = false;
-      video.volume = 1;
-      const p = video.play();
-      if (p && p.catch) p.catch(() => {});
-      btn.classList.add('is-hidden');
+    if (!video) return;
+
+    // Seta aspect-ratio do stage com base no video real (sem barras pretas)
+    const applyAspect = () => {
+      const w = video.videoWidth, h = video.videoHeight;
+      if (stage && w && h) stage.style.setProperty('--video-aspect', `${w} / ${h}`);
     };
-    btn.addEventListener('click', unmute);
-    // Esconde botao se o user ja interagir com os controls nativos e ativar audio
-    video.addEventListener('volumechange', () => {
-      if (!video.muted) btn.classList.add('is-hidden');
-    });
+    if (video.readyState >= 1) applyAspect();
+    else video.addEventListener('loadedmetadata', applyAspect, { once: true });
+
+    // Unmute button (autoplay com som bloqueado pelo browser)
+    if (btn) {
+      const unmute = () => {
+        video.muted = false;
+        video.volume = 1;
+        const p = video.play();
+        if (p && p.catch) p.catch(() => {});
+        btn.classList.add('is-hidden');
+      };
+      btn.addEventListener('click', unmute);
+      video.addEventListener('volumechange', () => {
+        if (!video.muted) btn.classList.add('is-hidden');
+      });
+    }
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
