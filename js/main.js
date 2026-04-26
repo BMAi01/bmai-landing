@@ -487,23 +487,46 @@ reveal('.cs-card', true);
 
 /* ============================================
    COUNTERS — em mobile vai direto pro número final
+   2026-04-26 (re-apply): threshold 0.5 -> 0.1 (spans pequenos no mobile
+   raramente atingiam 50%) + rootMargin antecipa + safety net 4s pos-load
+   pra snapar caso IO falhe (Lenis, tab oculta, scroll rapido).
    ============================================ */
 if (LOW_MOTION) {
   document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count; });
 } else {
+  const counters = document.querySelectorAll('[data-count]');
+  const animatedCounters = new WeakSet();
+  const animateCounter = (el) => {
+    if (animatedCounters.has(el)) return;
+    animatedCounters.add(el);
+    const target = +el.dataset.count, dur = 1600, t0 = performance.now();
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
+      p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
+    })(t0);
+  };
   const cObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
-      const el = e.target, target = +el.dataset.count, dur = 1600, t0 = performance.now();
-      (function tick(now) {
-        const p = Math.min((now - t0) / dur, 1);
-        el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
-        p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
-      })(t0);
-      cObs.unobserve(el);
+      animateCounter(e.target);
+      cObs.unobserve(e.target);
     });
-  }, { threshold: .5 });
-  document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
+  }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+  counters.forEach(el => cObs.observe(el));
+  // Safety net: 4s pos-load, snapa counters que ainda mostram "0"
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      counters.forEach(el => {
+        if (animatedCounters.has(el)) return;
+        if (el.textContent.trim() === '0') {
+          el.textContent = el.dataset.count;
+          animatedCounters.add(el);
+          try { cObs.unobserve(el); } catch (_) {}
+        }
+      });
+    }, 4000);
+  }, { once: true });
 }
 
 /* ============================================
@@ -1054,6 +1077,8 @@ document.querySelectorAll('section[id]').forEach(s => {
 
   // Mobile card reveal — fade-in suave quando card entra no viewport (estilo Framer).
   // Sem ScrollTrigger, sem pin, sem progress: scroll 100% nativo.
+  // 2026-04-26 (fix): + safety net 4s pra forcar .is-visible se IO falhar
+  // (sem isso, cards ficam opacity:0 invisiveis = "secao Metodo nao existe").
   let mobileObserver = null;
   function initMobileCardReveal() {
     if (!matchMedia('(max-width: 768px)').matches) return;
@@ -1069,11 +1094,21 @@ document.querySelectorAll('section[id]').forEach(s => {
         }
       });
     }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -10% 0px'
+      threshold: 0.05,                                  // antes 0.15 — mais permissivo
+      rootMargin: '0px 0px -5% 0px'
     });
 
     cards.forEach(card => mobileObserver.observe(card));
+
+    // Safety net: 4s pos-load, forca .is-visible em qualquer card que ainda
+    // nao reveloou (cobre IO falhando por Lenis/tab oculta/scroll rapido).
+    setTimeout(() => {
+      cards.forEach(card => {
+        if (!card.classList.contains('is-visible')) {
+          card.classList.add('is-visible');
+        }
+      });
+    }, 4000);
   }
 
   function init() {
@@ -1930,8 +1965,22 @@ const CASES_DATA = [
         resetScene();
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.05 });   // 2026-04-26 (fix): 0.2 -> 0.05 — scene grande raramente atingia 20% no mobile
   io.observe(scene);
+
+  // Safety net 2026-04-26: 4s pos-load, se IO nao disparou e cards estao invisiveis,
+  // forca .qs--in em todos pra pelo menos APARECEREM (sem animacao playCycle).
+  // Sem isso, area do Motion fica vazia no mobile = "nao aparece no celular".
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (running) return;
+      const anyVisible = Array.from(notifs).some(n => n.classList.contains('qs--in'));
+      if (!anyVisible) {
+        notifs.forEach(n => n.classList.add('qs--in'));
+        brand?.classList.add('qs--in');
+      }
+    }, 4000);
+  }, { once: true });
 })();
 
 /* Footer: ano dinâmico */
