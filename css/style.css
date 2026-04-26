@@ -6716,7 +6716,10 @@ html { scroll-padding-top: 84px; }
   outline: none !important;
 }
 
-/* Wrapper: contém cards que passam -4%/-6% das bordas, sem rectangle visual */
+/* Wrapper: contém cards que passam -4%/-6% das bordas, sem rectangle visual.
+   2026-04-26: removida mask radial (cortava em "ellipse" e nao parecia natural).
+   Substituida por 4 divs .qs-fade--{top,bottom,left,right} com gradient da cor
+   do bg (#0d1b2a) — Etapa 3 universal, sem depender de mask-composite. */
 .qs-scene-wrap,
 #quem-somos .qs-scene-wrap {
   background: transparent !important;
@@ -6726,13 +6729,39 @@ html { scroll-padding-top: 84px; }
   contain: none !important;        /* sobrescreve `contain: layout paint` antigo (criava containing block visível) */
   overflow: visible;               /* cards podem extrapolar ate -6% sem clipping */
   position: relative;
-  /* Fade radial: sólido até 92% pra não cortar cards de borda; fade só nos cantos pra blend com bg */
-  -webkit-mask-image: radial-gradient(ellipse 110% 105% at 50% 50%, #000 92%, rgba(0,0,0,.85) 97%, transparent 100%);
-          mask-image: radial-gradient(ellipse 110% 105% at 50% 50%, #000 92%, rgba(0,0,0,.85) 97%, transparent 100%);
-  -webkit-mask-repeat: no-repeat;
-          mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-          mask-position: center;
+}
+
+/* === FADE NAS 4 BORDAS (4 divs absolutos com gradient pra cor do bg) ===
+   Funciona em qualquer browser, sem mask-composite. Z-index alto pra cobrir
+   cards proximos das bordas e criar ilusao de "flutuar no fundo". */
+.qs-fade {
+  position: absolute;
+  pointer-events: none;
+  z-index: 20;
+}
+.qs-fade--top {
+  top: 0; left: 0; right: 0;
+  height: 6%;
+  min-height: 24px;
+  background: linear-gradient(to bottom, #0d1b2a 0%, rgba(13, 27, 42, 0) 100%);
+}
+.qs-fade--bottom {
+  bottom: 0; left: 0; right: 0;
+  height: 6%;
+  min-height: 24px;
+  background: linear-gradient(to top, #0d1b2a 0%, rgba(13, 27, 42, 0) 100%);
+}
+.qs-fade--left {
+  top: 0; bottom: 0; left: 0;
+  width: 6%;
+  min-width: 24px;
+  background: linear-gradient(to right, #0d1b2a 0%, rgba(13, 27, 42, 0) 100%);
+}
+.qs-fade--right {
+  top: 0; bottom: 0; right: 0;
+  width: 6%;
+  min-width: 24px;
+  background: linear-gradient(to left, #0d1b2a 0%, rgba(13, 27, 42, 0) 100%);
 }
 
 /* .qs-scene: zera TUDO que parecia card (bg, border, shadow inset/outset, radius) */
