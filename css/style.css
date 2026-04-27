@@ -2679,21 +2679,20 @@ html { scrollbar-gutter: stable; }
   background: rgba(219, 85, 0, .08);
 }
 
-/* 2026-04-26: footer colapsa pra 1-col cedo (era 480 -> agora 768) */
 @media (max-width: 900px) {
   .footer__inner {
     grid-template-columns: 1fr;
-    gap: 36px;
-    padding: 0 28px 36px;
+    gap: 40px;
+    padding: 0 32px 40px;
   }
-  .footer__cols { gap: 28px; }
+  .footer__cols { gap: 32px; }
   .footer__logo-mark { height: 28px; }
   .footer__logo-symbol { width: 32px; height: 32px; }
-  .footer__bottom { padding: 18px 28px 22px; flex-direction: column; gap: 10px; }
-  .footer { padding-top: 56px; }
+  .footer__bottom { padding: 20px 32px 24px; flex-direction: column; gap: 12px; }
+  .footer { padding-top: 64px; }
 }
-@media (max-width: 768px) {
-  .footer__cols { grid-template-columns: 1fr; gap: 22px; }
+@media (max-width: 480px) {
+  .footer__cols { grid-template-columns: 1fr; gap: 24px; }
   .footer__glow-img { width: 70%; }
   .footer__glow-spotlight {
     -webkit-mask-size: 70% auto;
@@ -3953,17 +3952,18 @@ h1, h2, h3, p, span, li, a {
 .cs-card__author strong { font-size: 13px; color: var(--white); display: block; }
 .cs-card__author span { font-size: 11px; color: rgba(255,255,255,0.35); }
 
-/* ── Responsive ── 2026-04-26: cs-grid antecipa colapso pra 768px (era 600) */
+/* ── Responsive ── */
 @media (max-width: 900px) {
   .cs-hero { grid-template-columns: 1fr; }
   .cs-hero__visual { min-height: 200px; border-left: none; border-top: 1px solid rgba(255,255,255,0.04); }
   .cs-hero__content { padding: 32px; }
+  .cs-grid { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 768px) {
-  .cs-grid { grid-template-columns: 1fr; gap: 18px; }
-  .cs-hero__content { padding: 26px 22px; }
-  .cs-hero__stats { flex-wrap: wrap; gap: 18px; }
-  .cs-hero__quote { font-size: 16px; line-height: 1.55; }
+@media (max-width: 600px) {
+  .cs-grid { grid-template-columns: 1fr; }
+  .cs-hero__content { padding: 24px; }
+  .cs-hero__stats { flex-wrap: wrap; gap: 20px; }
+  .cs-hero__quote { font-size: 16px; }
 }
 
 
@@ -4413,15 +4413,7 @@ section h2.shimmer-active::after,
 
   /* CTA final */
   .cta .section__title { font-size: clamp(26px, 7.5vw, 34px) !important; line-height: 1.15 !important; }
-  .cta__actions {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 14px !important;
-  }
   .cta__actions .btn { width: 100%; max-width: 320px; justify-content: center; }
-  /* Form copy lead em mobile estreito — fluxo confortavel */
-  .form-copy__lead { font-size: 14.5px !important; line-height: 1.6 !important; }
 
   /* Titles gerais */
   .section__title { line-height: 1.15 !important; }
@@ -5263,40 +5255,29 @@ html { scroll-padding-top: 84px; }
 /* Mobile: sticky CSS puro (sem GSAP pin) — Card 2 sobe sobre Card 1 por
    scroll nativo. Estado inicial diferente do desktop: cards empilhados em
    flex column, position sticky individual, sem transform offscreen. */
-/* 2026-04-26: card-stack mobile reescrito — sticky cleaner + parada com
-   transform sutil + scale on appear (paridade visual com desktop scroll-jack) */
 @media (max-width: 768px) {
   .card-stack {
     min-height: 0;
     perspective: none;
     display: flex;
     flex-direction: column;
-    gap: 36px;
-    padding-bottom: 20vh;
+    gap: 60px;
+    padding-bottom: 30vh;
   }
   .card-stack__item {
     position: sticky;
-    top: calc(var(--hdr) + 16px);
+    top: 80px;
     inset: auto;
-    padding: 32px 24px;
+    padding: 36px 28px;
     border-radius: 20px;
-    transform: none !important;
-    transition: transform .6s cubic-bezier(.22, 1, .36, 1), box-shadow .6s ease;
-    will-change: transform;
+    transform: none !important;        /* anula y:100% do desktop */
   }
   .card-stack__item--1 { z-index: 1; }
-  .card-stack__item--2 {
-    z-index: 2;
-    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .55), 0 0 0 1px rgba(219, 85, 0, .14);
-  }
+  .card-stack__item--2 { z-index: 2; }
 }
 @media (max-width: 560px) {
-  .card-stack { gap: 28px; padding-bottom: 18vh; }
-  .card-stack__item { padding: 26px 20px; border-radius: 18px; }
-}
-@media (max-width: 360px) {
-  .card-stack { gap: 22px; }
-  .card-stack__item { padding: 22px 18px; }
+  .card-stack { gap: 40px; padding-bottom: 25vh; }
+  .card-stack__item { padding: 28px 22px; border-radius: 18px; }
 }
 
 /* ── Palco ── */
