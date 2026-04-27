@@ -6331,6 +6331,7 @@ html { scroll-padding-top: 84px; }
   #hero .hero__ctas {
     justify-content: center !important;
     align-items: center !important;
+    display: none !important;        /* 2026-04-27: remove primeiro CTA do mobile (redundante com WhatsApp float + nav CTA) */
   }
   #hero .hero__sub-line { display: block; }
   /* .hero-visual legacy oculto (usamos .hero__pedestal agora) */
