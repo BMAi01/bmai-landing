@@ -1892,14 +1892,14 @@ html { scrollbar-gutter: stable; }
     margin: 0;
     overflow-x: auto;
     overflow-y: visible;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;          /* proximity vs mandatory: menos agressivo na captura de touch — libera swipe vertical */
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    /* -webkit-overflow-scrolling: touch removido — legado iOS que conflita com touch-action */
     scroll-padding-inline: 16px;
     transform: none !important;
     height: auto !important;
-    touch-action: pan-x;             /* só captura swipes horizontais — vertical passa pro body (scroll da pagina) */
-    overscroll-behavior-x: contain;  /* nao propaga overscroll horizontal pro body */
+    touch-action: pan-x !important;         /* só captura swipes horizontais — vertical passa pro body (scroll da pagina) */
+    overscroll-behavior-x: contain;
   }
   .metodo__stack::-webkit-scrollbar { display: none; }
 
@@ -5420,11 +5420,11 @@ html { scroll-padding-top: 84px; }
     margin: 0 -16px;                       /* full-bleed mobile */
     overflow-x: auto;
     overflow-y: visible;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;          /* proximity (vs mandatory) — libera swipe vertical iOS */
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    /* -webkit-overflow-scrolling: touch removido — legado iOS que conflita com touch-action */
     scroll-padding-inline: 16px;
-    touch-action: pan-x;                   /* só captura swipe horizontal — vertical libera scroll da pagina */
+    touch-action: pan-x !important;         /* só captura swipe horizontal — vertical libera scroll da pagina */
     overscroll-behavior-x: contain;
   }
   .card-stack::-webkit-scrollbar { display: none; }
@@ -6659,8 +6659,8 @@ html { scroll-padding-top: 84px; }
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     overflow-y: visible !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x proximity !important;     /* proximity (vs mandatory) — libera swipe vertical iOS */
+    /* -webkit-overflow-scrolling: touch removido — legado iOS que conflita com touch-action */
     gap: 14px !important;
     padding: 6px 20px 24px !important;
     margin: 0 -20px !important;
