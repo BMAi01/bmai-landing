@@ -2111,46 +2111,11 @@ const CASES_DATA = [
   }, { once: true });
 })();
 
-/* ============================================
-   2026-04-27 — DIRECTION LOCK pros carousels mobile
-   Reforço pro CSS (touch-action: pan-x): em alguns browsers (iOS Safari
-   antigo, WebViews) o touch ainda eh capturado pelo scroller horizontal
-   bloqueando o scroll vertical da pagina. Esse listener decide a direcao
-   do gesto no primeiro touchmove e, se for vertical, scrolla a pagina
-   manualmente garantindo que o user nunca fique preso no carousel.
-   ============================================ */
-(function dirLockCarousels() {
-  if (!matchMedia('(max-width: 768px)').matches) return;
-  const carousels = document.querySelectorAll(
-    '.metodo__stack, .card-stack, #cases .cs-grid'
-  );
-  if (!carousels.length) return;
-
-  carousels.forEach(c => {
-    let sx = 0, sy = 0, lastY = 0, intent = null;
-    c.addEventListener('touchstart', e => {
-      const t = e.touches[0];
-      sx = t.clientX; sy = t.clientY; lastY = sy;
-      intent = null;
-    }, { passive: true });
-
-    c.addEventListener('touchmove', e => {
-      const t = e.touches[0];
-      const dx = Math.abs(t.clientX - sx);
-      const dy = Math.abs(t.clientY - sy);
-      if (intent === null) {
-        if (dx + dy < 6) return;          // ainda muito pouco movimento — espera
-        intent = dx > dy ? 'x' : 'y';
-      }
-      if (intent === 'y') {
-        // Scroll vertical: rola a pagina manualmente pelo delta acumulado.
-        const moveDy = lastY - t.clientY;
-        window.scrollBy(0, moveDy);
-        lastY = t.clientY;
-      }
-    }, { passive: true });
-  });
-})();
+/* 2026-04-27 (rev3): direction-lock JS REMOVIDO.
+   Estava dobrando o scroll (browser nativo + window.scrollBy manual).
+   O fix correto eh CSS-only: touch-action: pan-x pan-y nos carousels
+   (pan-x sozinho BLOQUEIA pan vertical, contradiz a intencao). Browser
+   decide qual scroller pega o gesto baseado na direcao inicial. */
 
 /* Footer: ano dinâmico */
 (function () {

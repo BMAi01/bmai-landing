@@ -1898,7 +1898,7 @@ html { scrollbar-gutter: stable; }
     scroll-padding-inline: 16px;
     transform: none !important;
     height: auto !important;
-    touch-action: pan-x !important;         /* só captura swipes horizontais — vertical passa pro body (scroll da pagina) */
+    touch-action: pan-x pan-y !important;   /* CRITICO: pan-x sozinho BLOQUEIA pan vertical (spec) — pan-x pan-y libera ambos, browser decide qual scroller pega o gesto */
     overscroll-behavior-x: contain;
   }
   .metodo__stack::-webkit-scrollbar { display: none; }
@@ -5424,7 +5424,7 @@ html { scroll-padding-top: 84px; }
     scrollbar-width: none;
     /* -webkit-overflow-scrolling: touch removido — legado iOS que conflita com touch-action */
     scroll-padding-inline: 16px;
-    touch-action: pan-x !important;         /* só captura swipe horizontal — vertical libera scroll da pagina */
+    touch-action: pan-x pan-y !important;   /* CRITICO: pan-x sozinho BLOQUEIA pan vertical (spec) — pan-x pan-y libera ambos */
     overscroll-behavior-x: contain;
   }
   .card-stack::-webkit-scrollbar { display: none; }
@@ -6666,7 +6666,7 @@ html { scroll-padding-top: 84px; }
     padding: 6px 20px 24px !important;
     margin: 0 -20px !important;
     scrollbar-width: none !important;
-    touch-action: pan-x !important;        /* libera swipe vertical pra pagina */
+    touch-action: pan-x pan-y !important;  /* CRITICO: pan-x sozinho BLOQUEIA pan vertical — pan-x pan-y libera ambos */
     overscroll-behavior-x: contain !important;
   }
   #cases .cs-grid::-webkit-scrollbar { display: none !important; }
