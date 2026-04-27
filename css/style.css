@@ -5377,16 +5377,16 @@ html { scroll-padding-top: 84px; }
     box-shadow: 0 0 0 rgba(219, 85, 0, 0);
   }
 }
-/* 2026-04-27: card-stack mobile SIMPLES — cards empilhados sempre visiveis.
-   Motion (qs-scene-wrap) escondida no mobile (24 notifs flutuantes em tela
-   pequena fica ruim — desktop only). */
+/* 2026-04-27 (v4): card-stack mobile com VISUAL STACK OVERLAP.
+   Card 2 sobrepoe fisicamente Card 1 via margin-top negativo + shadow topo
+   + scale leve. Da o efeito de "stack" sem animacao precaria. */
 @media (max-width: 768px) {
   .card-stack {
     min-height: 0;
     perspective: none;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 0;
     padding-bottom: 0;
   }
   .card-stack__item {
@@ -5397,32 +5397,25 @@ html { scroll-padding-top: 84px; }
     transform: none !important;
     opacity: 1;
   }
-  .card-stack__item--1 { z-index: 1; }
+  .card-stack__item--1 {
+    z-index: 1;
+    transform: scale(.97) !important;        /* leve recuo visual — embaixo da pilha */
+    transform-origin: top center;
+  }
   .card-stack__item--2 {
     z-index: 2;
+    margin-top: -34px;                       /* sobrepoe a parte inferior de Card 1 */
     box-shadow:
-      0 18px 40px -16px rgba(0, 0, 0, .55),
-      0 0 0 1px rgba(219, 85, 0, .25);
-    /* 2026-04-27 (v3): IO+transition one-shot (~900ms) ao entrar viewport.
-       Estado inicial: shifted+scaled mas VISIVEL (opacity .55). Transicao
-       fixa 900ms — user ve o movimento mesmo em scroll rapido. */
-    transform: translateY(70px) scale(.95);
-    opacity: .55;
-    transition:
-      transform .9s cubic-bezier(.22, 1, .36, 1),
-      opacity .7s ease;
-    will-change: transform, opacity;
-  }
-  .card-stack__item--2.qs-rise {
-    transform: translateY(0) scale(1);
-    opacity: 1;
+      0 -28px 60px -10px rgba(0, 0, 0, .65), /* shadow no TOPO indica overlap */
+      0 0 0 1px rgba(219, 85, 0, .28),
+      0 24px 50px -18px rgba(0, 0, 0, .5);
   }
   /* Esconde motion (24 notifs flutuantes) no mobile */
   .qs-scene-wrap { display: none !important; }
 }
 @media (max-width: 560px) {
-  .card-stack { gap: 20px; }
   .card-stack__item { padding: 26px 20px; border-radius: 18px; }
+  .card-stack__item--2 { margin-top: -28px; }
 }
 
 /* ── Palco ── */
