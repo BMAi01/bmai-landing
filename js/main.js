@@ -1190,8 +1190,29 @@ function _initCardStackFx() {
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  // Mobile: cards stack via CSS only (visual overlap com margin-top negativo)
-  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) return;
+  // Mobile: JS scroll-driven Card 2 — translateY amarrado ao scroll position
+  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) {
+    const card2 = stack.querySelector('.card-stack__item--2');
+    if (!card2) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = card2.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // progress: 0 quando topo do card2 esta no fundo do viewport,
+      // 1 quando topo esta a 1/3 do topo do viewport (card 2 cobrindo card 1)
+      const start = vh;
+      const end   = vh * 0.30;
+      const p = Math.max(0, Math.min(1, (start - r.top) / (start - end)));
+      // translateY: comeca em +120px (vindo de baixo), termina em 0
+      const ty = (1 - p) * 120;
+      card2.style.setProperty('--qs-card2-y', ty.toFixed(1) + 'px');
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return;
+  }
 
   // Desktop 2026-04-26 (replicar Metodo): pin com 200% de scroll + easing power2.out
   // (Metodo usa container 400vh com 4 cards = 100vh por card; aqui 2 cards = 200%

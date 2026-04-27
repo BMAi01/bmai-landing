@@ -5377,42 +5377,44 @@ html { scroll-padding-top: 84px; }
     box-shadow: 0 0 0 rgba(219, 85, 0, 0);
   }
 }
-/* 2026-04-27 (v5): DUAL-STICKY STACK — ambos cards sticky no mesmo top.
-   Card 2 vem por baixo e cobre Card 1 conforme user rola. Padrao usado
-   em sites como algarys — funciona em qualquer browser, sem JS, sem
-   scroll-jack. Animacao perceptivel porque cards sao tall (60vh+). */
+/* 2026-04-27 (v7): JS scroll-driven Card 2 sem void.
+   Cards encostados (gap:0). Card 1 sticky. Card 2 fica VISIVEL desde
+   o inicio com translateY que JS atualiza em tempo real conforme scroll.
+   Card 2 vem subindo de baixo pra cima cobrindo Card 1 — paridade
+   visual com desktop, sem GSAP, sem scroll-jack. */
 @media (max-width: 768px) {
   .card-stack {
     min-height: 0;
     perspective: none;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding-bottom: 30vh;          /* espaco extra apos Card 2 pra ele sair sozinho */
+    gap: 0;
   }
   .card-stack__item {
-    position: sticky;
-    top: calc(var(--hdr) + 12px);
     inset: auto;
     padding: 32px 24px;
     border-radius: 20px;
-    transform: none !important;
     opacity: 1;
-    min-height: 60vh;              /* card tall — scroll significativo entre eles */
   }
-  .card-stack__item--1 { z-index: 1; }
+  .card-stack__item--1 {
+    position: sticky;
+    top: calc(var(--hdr) + 12px);
+    z-index: 1;
+    transform: none !important;
+  }
   .card-stack__item--2 {
+    position: relative;
     z-index: 2;
+    will-change: transform;
     box-shadow:
-      0 -22px 50px -12px rgba(0, 0, 0, .6),    /* shadow no topo — sensacao "por cima" */
+      0 -22px 50px -12px rgba(0, 0, 0, .6),
       0 0 0 1px rgba(219, 85, 0, .28);
+    /* JS seta transform via --qs-card2-y; fallback 0 se JS nao rodar */
+    transform: translateY(var(--qs-card2-y, 0px));
   }
-  /* Esconde motion (24 notifs flutuantes) no mobile */
-  .qs-scene-wrap { display: none !important; }
 }
 @media (max-width: 560px) {
-  .card-stack { gap: 14px; padding-bottom: 25vh; }
-  .card-stack__item { padding: 26px 20px; border-radius: 18px; min-height: 56vh; }
+  .card-stack__item { padding: 26px 20px; border-radius: 18px; }
 }
 
 /* ── Palco ── */
