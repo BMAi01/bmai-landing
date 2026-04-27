@@ -715,10 +715,19 @@
           <span class="team-video__corner team-video__corner--bl" aria-hidden="true"></span>
           <span class="team-video__corner team-video__corner--br" aria-hidden="true"></span>
           <video class="team-video"
-                 autoplay muted loop playsinline preload="auto"
-                 aria-label="Apresentacao do time BMAi">
+                 autoplay muted loop playsinline
+                 preload="metadata"
+                 poster="assets/images/team-matheus-resized.webp"
+                 disablepictureinpicture disableremoteplayback
+                 aria-label="Apresentacao do time BMAi"
+                 onerror="this.classList.add('team-video--failed')">
             <source src="assets/videos/team.mp4?v=20260426-noLangMobile" type="video/mp4">
           </video>
+          <!-- Fallback estatico se video falhar (codec, autoplay bloqueado, conexao lenta) -->
+          <div class="team-video__fallback" aria-hidden="true">
+            <img src="assets/images/team-matheus-resized.webp" alt="" loading="lazy"/>
+            <div class="team-video__fallback-badge">▶ Vídeo</div>
+          </div>
         </div>
       </div>
     </div>

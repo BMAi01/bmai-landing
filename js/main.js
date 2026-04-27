@@ -1283,14 +1283,29 @@ if (document.readyState === 'loading') {
       else video.addEventListener('loadedmetadata', applyAspect, { once: true });
     }
 
+    // Marca falha → CSS mostra fallback estatico
+    const markFailed = (reason) => {
+      console.warn('[team-video] fallback ativo:', reason);
+      video.classList.add('team-video--failed');
+    };
     video.addEventListener('error', e => {
       const err = video.error;
-      console.warn('[team-video] error:', err && err.code, err && err.message);
+      markFailed(`error code=${err && err.code} msg=${err && err.message}`);
     });
+    // Stall watchdog: se em 8s o video nao tem dados pra tocar, mostra fallback.
+    // Cobre conexao lenta + autoplay bloqueado + codec nao suportado em alguns devices.
+    const stallTimer = setTimeout(() => {
+      if (video.readyState < 2) markFailed('stalled — readyState < HAVE_CURRENT_DATA apos 8s');
+    }, 8000);
+    video.addEventListener('loadeddata', () => clearTimeout(stallTimer), { once: true });
 
     const kick = () => {
       const p = video.play();
-      if (p && p.catch) p.catch(err => console.warn('[team-video] play() rejected:', err.name, err.message));
+      if (p && p.catch) p.catch(err => {
+        console.warn('[team-video] play() rejected:', err.name, err.message);
+        // Autoplay bloqueado em alguns iOS sem playsinline reconhecido — cai pro fallback estatico
+        if (err.name === 'NotAllowedError' || err.name === 'AbortError') markFailed(`play() ${err.name}`);
+      });
     };
     if (video.readyState >= 2) kick();
     else video.addEventListener('loadeddata', kick, { once: true });
