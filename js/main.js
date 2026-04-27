@@ -1075,43 +1075,36 @@ document.querySelectorAll('section[id]').forEach(s => {
     setActiveIndicator(0);
   }
 
-  // 2026-04-27: mobile virou carousel + EFEITO #2 stagger reveal.
-  // Dots: atualiza ao arrastar. Stagger: IO dispara .stagger-in no
-  // .metodo__stack quando entra viewport (cascata 0/100/200/300ms).
+  // 2026-04-27: mobile carousel + EFEITO destaque progressivo.
+  // Dots: atualiza ao arrastar. --accent: 0 a 1 por card baseado em
+  // proximidade ao centro do carousel viewport (scroll-based CSS var).
   function initMobileCardReveal() {
     if (!matchMedia('(max-width: 768px)').matches) return;
     const stack = document.getElementById('metodoStack');
     if (!stack) return;
-    // Dots (paginacao)
+    const cards = Array.from(stack.querySelectorAll('.metodo__card'));
     const dotsWrap = document.getElementById('metodoDots');
-    if (dotsWrap) {
-      const dots = Array.from(dotsWrap.querySelectorAll('.metodo__dot'));
-      let raf = 0;
-      const update = () => {
-        raf = 0;
-        const idx = Math.round(stack.scrollLeft / stack.clientWidth);
-        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
-      };
-      stack.addEventListener('scroll',
-        () => { if (!raf) raf = requestAnimationFrame(update); },
-        { passive: true });
-      update();
-    }
-    // Stagger reveal
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            stack.classList.add('stagger-in');
-            io.unobserve(stack);
-          }
-        });
-      }, { threshold: 0.15 });
-      io.observe(stack);
-    } else {
-      stack.classList.add('stagger-in');
-    }
-    setTimeout(() => stack.classList.add('stagger-in'), 4000); // safety
+    const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.metodo__dot')) : [];
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const center = stack.scrollLeft + stack.clientWidth / 2;
+      let bestIdx = 0, bestDist = Infinity;
+      cards.forEach((card, i) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const dist = Math.abs(center - cardCenter);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+        // accent: 1 quando card centralizado, 0 quando 1+ cardWidth fora
+        const accent = Math.max(0, Math.min(1, 1 - dist / (card.offsetWidth * 0.85)));
+        card.style.setProperty('--accent', accent.toFixed(3));
+      });
+      if (dots.length) dots.forEach((d, i) => d.classList.toggle('is-active', i === bestIdx));
+    };
+    stack.addEventListener('scroll',
+      () => { if (!raf) raf = requestAnimationFrame(update); },
+      { passive: true });
+    // Inicializa apos render (next frame)
+    requestAnimationFrame(update);
   }
 
   function init() {
