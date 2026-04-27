@@ -1075,40 +1075,25 @@ document.querySelectorAll('section[id]').forEach(s => {
     setActiveIndicator(0);
   }
 
-  // Mobile card reveal — fade-in suave quando card entra no viewport (estilo Framer).
-  // Sem ScrollTrigger, sem pin, sem progress: scroll 100% nativo.
-  // 2026-04-26 (fix): + safety net 4s pra forcar .is-visible se IO falhar
-  // (sem isso, cards ficam opacity:0 invisiveis = "secao Metodo nao existe").
-  let mobileObserver = null;
+  // 2026-04-27: mobile virou carousel horizontal. JS so atualiza dots
+  // conforme o user arrasta (cards ja sao opacity:1 via CSS).
   function initMobileCardReveal() {
     if (!matchMedia('(max-width: 768px)').matches) return;
-    if (mobileObserver) { mobileObserver.disconnect(); mobileObserver = null; }
-    const cards = document.querySelectorAll('.metodo__card');
-    if (!cards.length) return;
-
-    mobileObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          mobileObserver.unobserve(entry.target);  // revela uma vez so
-        }
-      });
-    }, {
-      threshold: 0.05,                                  // antes 0.15 — mais permissivo
-      rootMargin: '0px 0px -5% 0px'
-    });
-
-    cards.forEach(card => mobileObserver.observe(card));
-
-    // Safety net: 4s pos-load, forca .is-visible em qualquer card que ainda
-    // nao reveloou (cobre IO falhando por Lenis/tab oculta/scroll rapido).
-    setTimeout(() => {
-      cards.forEach(card => {
-        if (!card.classList.contains('is-visible')) {
-          card.classList.add('is-visible');
-        }
-      });
-    }, 4000);
+    const stack = document.getElementById('metodoStack');
+    const dotsWrap = document.getElementById('metodoDots');
+    if (!stack || !dotsWrap) return;
+    const dots = Array.from(dotsWrap.querySelectorAll('.metodo__dot'));
+    if (!dots.length) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const idx = Math.round(stack.scrollLeft / stack.clientWidth);
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+    };
+    stack.addEventListener('scroll',
+      () => { if (!raf) raf = requestAnimationFrame(update); },
+      { passive: true });
+    update();
   }
 
   function init() {

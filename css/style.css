@@ -1861,16 +1861,14 @@ html { scrollbar-gutter: stable; }
   .metodo__star-watermark { width: 500px; height: 500px; left: 50%; }
 }
 @media (max-width: 768px) {
-  /* === MOBILE FRAMER-LIKE: cards empilhados + fade-in via IntersectionObserver ===
-     Sem Lenis, sem GSAP pin, sem sticky, sem progress flutuante. Scroll 100% nativo. */
-  html { scroll-behavior: smooth; }                 /* anchor links suaves */
-
-  .metodo__progress { display: none !important; }   /* progress so faz sentido com pin/scroll-jack */
+  /* === MOBILE CAROUSEL: 4 cards do Metodo lado a lado com swipe ===
+     Mesmo padrao do QS — scroll-snap horizontal + dots. */
+  html { scroll-behavior: smooth; }
+  .metodo__progress { display: none !important; }
 
   .metodo__scroll-container,
   .metodo__sticky,
-  .metodo__cards-wrapper,
-  .metodo__stack {
+  .metodo__cards-wrapper {
     position: static !important;
     inset: auto !important;
     height: auto !important;
@@ -1882,41 +1880,53 @@ html { scrollbar-gutter: stable; }
     width: auto;
     transform: none !important;
   }
-  .metodo__cards-wrapper { padding-inline: 16px; }
+  .metodo__cards-wrapper { padding: 0; }
 
-  /* Cards: empilhados verticalmente com gap. Estado inicial = invisivel + 20px abaixo.
-     Classe .is-visible (aplicada pelo IntersectionObserver) anima entrada suave. */
+  /* Stack vira o carousel */
+  .metodo__stack {
+    position: static !important;
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 14px;
+    padding: 4px 16px 16px;
+    margin: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: 16px;
+    transform: none !important;
+    height: auto !important;
+  }
+  .metodo__stack::-webkit-scrollbar { display: none; }
+
   .metodo__card {
     position: relative !important;
     inset: auto !important;
+    flex: 0 0 calc(100% - 32px);
+    max-width: 460px;
     height: auto !important;
     min-height: 0 !important;
-    width: auto;
-    margin: 0 0 24px 0 !important;     /* gap vertical entre cards */
+    margin: 0 !important;
     padding: 32px 22px !important;
     border-radius: 16px;
     background: var(--bmai-navy-card);
     border: 1px solid rgba(219, 85, 0, 0.15);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    will-change: auto;
-    transform: translateY(20px);
-    opacity: 0;
-    transition: opacity 600ms ease, transform 600ms ease;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
   }
-  .metodo__card.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .metodo__card:last-child { margin-bottom: 0 !important; }
 
-  /* Layout 1 coluna no mobile */
   .metodo__card-grid {
     grid-template-columns: 1fr !important;
     gap: 24px !important;
   }
   .metodo__col--right { padding-top: 0 !important; }
 
-  /* Letra D/E/I/A reduzida pra caber bem (Framer-like: discreta, nao gigante) */
   .metodo__letter {
     font-size: clamp(80px, 24vw, 140px) !important;
     margin-bottom: 8px;
@@ -5422,22 +5432,26 @@ html { scroll-padding-top: 84px; }
   .card-stack__item { padding: 26px 20px; border-radius: 18px; flex-basis: calc(100% - 28px); }
 }
 
-/* Dots de paginacao do carousel mobile */
-.card-stack-dots { display: none; }
+/* Dots de paginacao do carousel mobile (QS + Metodo) */
+.card-stack-dots,
+.metodo__dots { display: none; }
 @media (max-width: 768px) {
-  .card-stack-dots {
+  .card-stack-dots,
+  .metodo__dots {
     display: flex;
     justify-content: center;
     gap: 8px;
     margin-top: 14px;
   }
-  .card-stack-dot {
+  .card-stack-dot,
+  .metodo__dot {
     width: 8px; height: 8px;
     border-radius: 50%;
     background: rgba(255, 255, 255, .25);
     transition: background .3s, transform .3s;
   }
-  .card-stack-dot.is-active {
+  .card-stack-dot.is-active,
+  .metodo__dot.is-active {
     background: var(--bmai-orange, #db5500);
     transform: scale(1.25);
   }
