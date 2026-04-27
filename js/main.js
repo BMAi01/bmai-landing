@@ -1190,8 +1190,7 @@ function _initCardStackFx() {
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  // Mobile: position:sticky puro via CSS — JS nao precisa fazer nada
-  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) return;
+  // 2026-04-26: scroll-jack ativo em todas as larguras (mobile inclusive)
 
   // Desktop 2026-04-26 (replicar Metodo): pin com 200% de scroll + easing power2.out
   // (Metodo usa container 400vh com 4 cards = 100vh por card; aqui 2 cards = 200%
