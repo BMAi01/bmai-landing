@@ -1274,6 +1274,19 @@ if (document.readyState === 'loading') {
     const stage = document.getElementById('teamVideoStage');
     if (!video) return;
 
+    // Mobile/tablet (<=900px): NAO tenta carregar nem tocar o video.
+    // CSS ja esconde .team-video e mostra .team-video__fallback (imagem
+    // estatica). Aqui preservamos banda + bateria + CPU removendo o src
+    // pra browser nao baixar os 13MB do mp4 em 3G/4G.
+    if (matchMedia('(max-width: 900px)').matches) {
+      video.removeAttribute('autoplay');
+      video.preload = 'none';
+      const src = video.querySelector('source');
+      if (src) src.removeAttribute('src');
+      video.load();           // forca abandonar request pendente
+      return;                 // skip todo o setup de play/audio/IO
+    }
+
     if (stage) {
       const applyAspect = () => {
         const w = video.videoWidth, h = video.videoHeight;
