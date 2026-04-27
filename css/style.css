@@ -1916,10 +1916,23 @@ html { scrollbar-gutter: stable; }
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     scroll-snap-align: center;
     scroll-snap-stop: always;
-    transform: none !important;
-    opacity: 1 !important;
-    transition: none !important;
+    /* === EFEITO #2: STAGGER REVEAL (Metodo) ===
+       Estado inicial: invisivel + 24px abaixo. Ganha .stagger-in
+       (via JS quando section entra viewport) com delay progressivo. */
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity .7s cubic-bezier(.22, 1, .36, 1),
+      transform .7s cubic-bezier(.22, 1, .36, 1);
   }
+  .metodo__stack.stagger-in .metodo__card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .metodo__stack.stagger-in .metodo__card:nth-child(1) { transition-delay: 0ms; }
+  .metodo__stack.stagger-in .metodo__card:nth-child(2) { transition-delay: 100ms; }
+  .metodo__stack.stagger-in .metodo__card:nth-child(3) { transition-delay: 200ms; }
+  .metodo__stack.stagger-in .metodo__card:nth-child(4) { transition-delay: 300ms; }
 
   .metodo__card-grid {
     grid-template-columns: 1fr !important;
@@ -5429,6 +5442,22 @@ html { scroll-padding-top: 84px; }
   /* Hint visual: cursor grab */
   .card-stack { cursor: grab; }
   .card-stack:active { cursor: grabbing; }
+
+  /* === EFEITO #4: BORDER GLOW ON VIEW (Quem Somos) ===
+     Card sem border-color marcado -> ao entrar viewport, borda laranja
+     "acende" + box-shadow halo laranja anima de 0 ao final. */
+  .card-stack__item {
+    transition:
+      border-color .9s cubic-bezier(.22, 1, .36, 1),
+      box-shadow .9s cubic-bezier(.22, 1, .36, 1);
+  }
+  .card-stack.qs-glow .card-stack__item {
+    border-color: rgba(219, 85, 0, .55) !important;
+    box-shadow:
+      0 0 0 1px rgba(219, 85, 0, .35),
+      0 0 32px -4px rgba(219, 85, 0, .35),
+      0 18px 40px -16px rgba(0, 0, 0, .55) !important;
+  }
 }
 @media (max-width: 560px) {
   .card-stack__item { padding: 26px 20px; border-radius: 18px; flex-basis: calc(100% - 28px); }

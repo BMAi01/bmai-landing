@@ -1075,25 +1075,43 @@ document.querySelectorAll('section[id]').forEach(s => {
     setActiveIndicator(0);
   }
 
-  // 2026-04-27: mobile virou carousel horizontal. JS so atualiza dots
-  // conforme o user arrasta (cards ja sao opacity:1 via CSS).
+  // 2026-04-27: mobile virou carousel + EFEITO #2 stagger reveal.
+  // Dots: atualiza ao arrastar. Stagger: IO dispara .stagger-in no
+  // .metodo__stack quando entra viewport (cascata 0/100/200/300ms).
   function initMobileCardReveal() {
     if (!matchMedia('(max-width: 768px)').matches) return;
     const stack = document.getElementById('metodoStack');
+    if (!stack) return;
+    // Dots (paginacao)
     const dotsWrap = document.getElementById('metodoDots');
-    if (!stack || !dotsWrap) return;
-    const dots = Array.from(dotsWrap.querySelectorAll('.metodo__dot'));
-    if (!dots.length) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const idx = Math.round(stack.scrollLeft / stack.clientWidth);
-      dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
-    };
-    stack.addEventListener('scroll',
-      () => { if (!raf) raf = requestAnimationFrame(update); },
-      { passive: true });
-    update();
+    if (dotsWrap) {
+      const dots = Array.from(dotsWrap.querySelectorAll('.metodo__dot'));
+      let raf = 0;
+      const update = () => {
+        raf = 0;
+        const idx = Math.round(stack.scrollLeft / stack.clientWidth);
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      };
+      stack.addEventListener('scroll',
+        () => { if (!raf) raf = requestAnimationFrame(update); },
+        { passive: true });
+      update();
+    }
+    // Stagger reveal
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            stack.classList.add('stagger-in');
+            io.unobserve(stack);
+          }
+        });
+      }, { threshold: 0.15 });
+      io.observe(stack);
+    } else {
+      stack.classList.add('stagger-in');
+    }
+    setTimeout(() => stack.classList.add('stagger-in'), 4000); // safety
   }
 
   function init() {
@@ -1175,7 +1193,7 @@ function _initCardStackFx() {
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  // Mobile: carousel horizontal com swipe — JS so atualiza os dots
+  // Mobile: carousel horizontal com swipe — dots + EFEITO #4 border glow
   if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) {
     const dotsWrap = document.getElementById('cardStackDots');
     if (dotsWrap) {
@@ -1191,6 +1209,21 @@ function _initCardStackFx() {
         { passive: true });
       update();
     }
+    // Border glow on view: dispara .qs-glow quando .card-stack entra viewport
+    if ('IntersectionObserver' in window) {
+      const glowIO = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            stack.classList.add('qs-glow');
+            glowIO.unobserve(stack);
+          }
+        });
+      }, { threshold: 0.2 });
+      glowIO.observe(stack);
+    } else {
+      stack.classList.add('qs-glow');
+    }
+    setTimeout(() => stack.classList.add('qs-glow'), 4000); // safety
     return;
   }
 
