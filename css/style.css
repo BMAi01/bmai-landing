@@ -5407,8 +5407,7 @@ html { scroll-padding-top: 84px; }
       0 -22px 50px -12px rgba(0, 0, 0, .6),    /* shadow no topo — sensacao "por cima" */
       0 0 0 1px rgba(219, 85, 0, .28);
   }
-  /* Esconde motion (24 notifs flutuantes) no mobile */
-  .qs-scene-wrap { display: none !important; }
+  /* 2026-04-27: motion visivel no mobile (user pediu B) */
 }
 @media (max-width: 560px) {
   .card-stack { gap: 14px; padding-bottom: 25vh; }
