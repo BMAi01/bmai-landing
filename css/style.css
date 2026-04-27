@@ -5404,17 +5404,18 @@ html { scroll-padding-top: 84px; }
       0 18px 40px -16px rgba(0, 0, 0, .55),
       0 0 0 1px rgba(219, 85, 0, .25);
   }
-  /* 2026-04-27: scroll-driven animation — Card 2 sobe proporcional ao scroll
-     (Chrome Android moderno + Safari iOS 26+; older browsers ignoram = static) */
+  /* 2026-04-27: scroll-driven animation — Card 2 sobe DRAMATICAMENTE
+     conforme scroll cruza ele. Range cover 0%->50% = anima enquanto
+     entra e ate metade do viewport. */
   @supports (animation-timeline: view()) {
     .card-stack__item--2 {
       animation: qsCard2RiseScroll linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 50%;
+      animation-range: cover 0% cover 50%;
     }
     @keyframes qsCard2RiseScroll {
-      from { transform: translateY(80px) scale(.96); opacity: .55; }
-      to   { transform: translateY(0)    scale(1);   opacity: 1; }
+      0%   { transform: translateY(180px) scale(.9); opacity: 0; }
+      100% { transform: translateY(0)     scale(1);  opacity: 1; }
     }
   }
   /* Esconde motion (24 notifs flutuantes) no mobile */
