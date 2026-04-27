@@ -7078,6 +7078,75 @@ html { scroll-padding-top: 84px; }
 }
 
 /* ============================================
+   2026-04-27 — VIDEO DO TEAM no MOBILE
+   Override do `#para-quem { display:none }` (linha 6714) — mostra so a
+   sub-secao do video. Team-pin (desktop) e team-mobile (carousel cinematico)
+   continuam hidden. Glows orbitais desligados pra preservar GPU.
+   ============================================ */
+@media (max-width: 768px) {
+  #para-quem { display: block !important; padding: 8px 0 32px !important; }
+  #para-quem .team-pin,
+  #para-quem .team-mobile { display: none !important; }
+
+  /* Header compacto (sem o "scroll hint" desktop) */
+  #para-quem .team-header { padding: 32px 0 8px !important; }
+  #para-quem .team-header .section__title {
+    font-size: clamp(26px, 7vw, 36px) !important;
+    line-height: 1.15 !important;
+  }
+  #para-quem .team-scroll-hint { display: none !important; }
+
+  /* Wrapper sem padding lateral excessivo + sem max-width restritivo */
+  #para-quem .team-video-wrap {
+    padding: 4px 16px 8px !important;
+    max-width: 100% !important;
+  }
+  /* Stage usa largura cheia e aspect-ratio nativo do video (var --video-aspect
+     setada via JS). Fallback 16:9. Sem max-height fixo no mobile. */
+  #para-quem .team-video-stage {
+    max-width: 100% !important;
+    max-height: none !important;
+    width: 100% !important;
+  }
+
+  /* Mata os 2 glows orbitais (60px blur animado = caro no mobile). Halo
+     central permanece pra preservar identidade visual, mas mais sutil. */
+  #para-quem .team-video__glow { display: none !important; }
+  #para-quem .team-video__halo {
+    inset: -3% -2% !important;
+    filter: blur(28px) !important;
+    animation-duration: 8s !important;     /* mais lento = menos repaints */
+    opacity: .7 !important;
+  }
+
+  /* Frame com border-radius e shadow um pouco mais suaves */
+  #para-quem .team-video__frame {
+    border-radius: 16px !important;
+    box-shadow:
+      0 18px 40px -16px rgba(0, 0, 0, .7),
+      0 0 0 1px rgba(255, 255, 255, .04),
+      0 0 32px -8px rgba(219, 85, 0, .28) !important;
+  }
+  #para-quem .team-video {
+    border-radius: 14px !important;
+    /* contain: paint isola o repaint do video do resto do layout */
+    contain: paint;
+  }
+
+  /* Cantos accent ja sao reduzidos no @media existente (linha 5012) */
+
+  /* Link "Team" volta no nav mobile pra permitir navegacao ate a secao */
+  .floatnav__item--team-desktop-only { display: inline-flex !important; }
+  #sdots [href="#para-quem"] { display: block !important; }
+  .footer__col [href="#para-quem"] { display: inline-block !important; }
+}
+
+/* Reduced-motion no mobile: video estatico sem halo pulsante */
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  #para-quem .team-video__halo { animation: none !important; opacity: .5 !important; }
+}
+
+/* ============================================
    CAROUSEL PROGRESS — barra segmentada Stories (Método + Team)
    Componente único reutilizável. Altura fixa com tripla guarda
    (min/max/height) pra impossibilitar herança vertical estranha.
