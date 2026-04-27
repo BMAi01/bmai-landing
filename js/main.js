@@ -1190,8 +1190,24 @@ function _initCardStackFx() {
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  // Mobile: cards stack via CSS only (visual overlap com margin-top negativo)
-  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) return;
+  // Mobile: carousel horizontal com swipe — JS so atualiza os dots
+  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) {
+    const dotsWrap = document.getElementById('cardStackDots');
+    if (dotsWrap) {
+      const dots = Array.from(dotsWrap.querySelectorAll('.card-stack-dot'));
+      let raf = 0;
+      const update = () => {
+        raf = 0;
+        const idx = Math.round(stack.scrollLeft / stack.clientWidth);
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      };
+      stack.addEventListener('scroll',
+        () => { if (!raf) raf = requestAnimationFrame(update); },
+        { passive: true });
+      update();
+    }
+    return;
+  }
 
   // Desktop 2026-04-26 (replicar Metodo): pin com 200% de scroll + easing power2.out
   // (Metodo usa container 400vh com 4 cards = 100vh por card; aqui 2 cards = 200%

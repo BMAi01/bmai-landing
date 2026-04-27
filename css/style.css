@@ -5377,41 +5377,70 @@ html { scroll-padding-top: 84px; }
     box-shadow: 0 0 0 rgba(219, 85, 0, 0);
   }
 }
-/* 2026-04-27 (v5): DUAL-STICKY STACK — ambos cards sticky no mesmo top.
-   Card 2 vem por baixo e cobre Card 1 conforme user rola. Padrao usado
-   em sites como algarys — funciona em qualquer browser, sem JS, sem
-   scroll-jack. Animacao perceptivel porque cards sao tall (60vh+). */
+/* 2026-04-27 (v8): CAROUSEL HORIZONTAL — cards lado a lado com swipe.
+   scroll-snap nativo. Sem JS. Universal browser support. */
 @media (max-width: 768px) {
   .card-stack {
     min-height: 0;
     perspective: none;
     display: flex;
-    flex-direction: column;
-    gap: 18px;
-    padding-bottom: 30vh;          /* espaco extra apos Card 2 pra ele sair sozinho */
+    flex-direction: row;
+    gap: 14px;
+    padding: 4px 16px 16px;
+    margin: 0 -16px;                       /* full-bleed mobile */
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: 16px;
   }
+  .card-stack::-webkit-scrollbar { display: none; }
   .card-stack__item {
-    position: sticky;
-    top: calc(var(--hdr) + 12px);
+    position: relative;
     inset: auto;
+    flex: 0 0 calc(100% - 32px);          /* 1 card por viewport, 32px = peek do proximo */
+    max-width: 460px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
     padding: 32px 24px;
     border-radius: 20px;
     transform: none !important;
     opacity: 1;
-    min-height: 60vh;              /* card tall — scroll significativo entre eles */
+    min-height: 0;
   }
   .card-stack__item--1 { z-index: 1; }
   .card-stack__item--2 {
-    z-index: 2;
-    box-shadow:
-      0 -22px 50px -12px rgba(0, 0, 0, .6),    /* shadow no topo — sensacao "por cima" */
-      0 0 0 1px rgba(219, 85, 0, .28);
+    z-index: 1;
+    box-shadow: 0 18px 40px -16px rgba(0, 0, 0, .55), 0 0 0 1px rgba(219, 85, 0, .22);
   }
-  /* 2026-04-27: motion visivel no mobile (user pediu B) */
+  /* Hint visual: cursor grab */
+  .card-stack { cursor: grab; }
+  .card-stack:active { cursor: grabbing; }
 }
 @media (max-width: 560px) {
-  .card-stack { gap: 14px; padding-bottom: 25vh; }
-  .card-stack__item { padding: 26px 20px; border-radius: 18px; min-height: 56vh; }
+  .card-stack__item { padding: 26px 20px; border-radius: 18px; flex-basis: calc(100% - 28px); }
+}
+
+/* Dots de paginacao do carousel mobile */
+.card-stack-dots { display: none; }
+@media (max-width: 768px) {
+  .card-stack-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .card-stack-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .25);
+    transition: background .3s, transform .3s;
+  }
+  .card-stack-dot.is-active {
+    background: var(--bmai-orange, #db5500);
+    transform: scale(1.25);
+  }
 }
 
 /* ── Palco ── */
