@@ -7228,10 +7228,10 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .hero__symbol {
   position: absolute;
-  top: 50%;
-  right: clamp(40px, 6vw, 96px);
+  top: 34%;                                    /* sobe ~16% em relacao ao centro */
+  right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
-  width: clamp(320px, 32vw, 480px);
+  width: clamp(300px, 28vw, 440px);             /* leve reducao pra equilibrar a posicao mais offset */
   aspect-ratio: 1;
   pointer-events: none;
   z-index: 1;
