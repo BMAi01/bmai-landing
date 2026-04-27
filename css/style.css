@@ -7217,3 +7217,109 @@ html { scroll-padding-top: 84px; }
   }
 }
 
+/* ============================================
+   2026-04-27 — HERO SYMBOL (desktop only)
+   Composicao tech minimalista no lado direito do hero:
+   - Grid de pontos sutil mascarado no centro
+   - Glow radial laranja pulsante
+   - 2 aneis concentricos (outer solido com dot orbital, inner tracejado)
+   - Simbolo BMAi central com drop-shadow + leve float
+   Hidden em <=1024px (mobile/tablet ja tem o simbolo como watermark no .hero::before).
+   ============================================ */
+.hero__symbol {
+  position: absolute;
+  top: 50%;
+  right: clamp(40px, 6vw, 96px);
+  transform: translateY(-50%);
+  width: clamp(320px, 32vw, 480px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+.hero__symbol-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(219, 85, 0, .18) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 65%);
+          mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 65%);
+  opacity: .55;
+}
+.hero__symbol-glow {
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle,
+      rgba(219, 85, 0, .38) 0%,
+      rgba(219, 85, 0, .1)  45%,
+      transparent 75%);
+  filter: blur(28px);
+  animation: heroSymbolGlow 5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+@keyframes heroSymbolGlow {
+  0%, 100% { opacity: .6; transform: scale(1); }
+  50%      { opacity: 1;  transform: scale(1.06); }
+}
+.hero__symbol-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero__symbol-ring--outer {
+  inset: 0;
+  border: 1px solid rgba(219, 85, 0, .22);
+  animation: heroSymbolSpin 22s linear infinite;
+  will-change: transform;
+}
+/* Dot orbital no anel externo — sensacao de tracking */
+.hero__symbol-ring--outer::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange, #db5500);
+  transform: translateX(-50%);
+  box-shadow:
+    0 0 12px rgba(219, 85, 0, .9),
+    0 0 4px  rgba(255, 200, 150, .8);
+}
+.hero__symbol-ring--inner {
+  inset: 18%;
+  border: 1px dashed rgba(219, 85, 0, .32);
+  animation: heroSymbolSpinReverse 32s linear infinite;
+  will-change: transform;
+}
+@keyframes heroSymbolSpin        { to { transform: rotate(360deg);  } }
+@keyframes heroSymbolSpinReverse { to { transform: rotate(-360deg); } }
+.hero__symbol-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 46%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 22px rgba(219, 85, 0, .55));
+  animation: heroSymbolFloat 6s ease-in-out infinite;
+  user-select: none;
+}
+@keyframes heroSymbolFloat {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50%      { transform: translate(-50%, calc(-50% - 6px)); }
+}
+/* Mobile/tablet: ja existe simbolo como watermark no .hero::before (linha ~6280).
+   Esconde a versao desktop pra nao duplicar/competir por espaco. */
+@media (max-width: 1024px) {
+  .hero__symbol { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__symbol-glow,
+  .hero__symbol-ring--outer,
+  .hero__symbol-ring--inner,
+  .hero__symbol-mark { animation: none !important; }
+}
+
