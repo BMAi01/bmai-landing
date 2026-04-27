@@ -5377,9 +5377,9 @@ html { scroll-padding-top: 84px; }
     box-shadow: 0 0 0 rgba(219, 85, 0, 0);
   }
 }
-/* 2026-04-27: card-stack mobile SIMPLES — cards empilhados sempre visiveis,
-   sem sticky, sem animacao, sem void. Card 2 ganha box-shadow laranja sutil
-   pra ter destaque visual. */
+/* 2026-04-27: card-stack mobile SIMPLES — cards empilhados sempre visiveis.
+   Motion (qs-scene-wrap) escondida no mobile (24 notifs flutuantes em tela
+   pequena fica ruim — desktop only). */
 @media (max-width: 768px) {
   .card-stack {
     min-height: 0;
@@ -5404,6 +5404,8 @@ html { scroll-padding-top: 84px; }
       0 18px 40px -16px rgba(0, 0, 0, .55),
       0 0 0 1px rgba(219, 85, 0, .25);
   }
+  /* Esconde motion (24 notifs flutuantes) no mobile */
+  .qs-scene-wrap { display: none !important; }
 }
 @media (max-width: 560px) {
   .card-stack { gap: 20px; }
