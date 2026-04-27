@@ -636,10 +636,61 @@ html { scrollbar-gutter: stable; }
   padding-right: 0;
 }
 
-/* 2026-04-26: hero-aria-img + hero-fx legados removidos.
-   Ambos os elementos foram apagados do HTML — CSS abaixo (.hero-fx*)
-   tambem nao tem mais propósito. Mantido apenas por seguranca caso
-   algum trecho remanescente referencie. Pode ser limpo depois. */
+/* ============================================
+   HERO FX — composição tech em código
+   (grid de pontos + linhas de circuito no canvas, blobs CSS, símbolo SVG)
+   Substitui a imagem de pedestal/chip antiga.
+   ============================================ */
+/* 2026-04-26: imagem aria do hero — lado direito, sem bordas (mask radial)
+   bg da imagem casa exato com #0d1b2a do site, mas o mask garante derreter
+   gradual nas 4 direcoes pra nao mostrar nenhum corte. */
+.hero__aria-img {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: min(58%, 920px);
+  height: auto;
+  max-height: 110%;
+  object-fit: contain;
+  object-position: right center;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 65% 50%,
+    #000 30%,
+    rgba(0, 0, 0, .85) 55%,
+    rgba(0, 0, 0, .35) 80%,
+    transparent 100%);
+          mask-image: radial-gradient(ellipse 75% 75% at 65% 50%,
+    #000 30%,
+    rgba(0, 0, 0, .85) 55%,
+    rgba(0, 0, 0, .35) 80%,
+    transparent 100%);
+  -webkit-mask-mode: alpha;
+          mask-mode: alpha;
+  user-select: none;
+  animation: heroAriaFloat 9s ease-in-out infinite;
+}
+@keyframes heroAriaFloat {
+  0%, 100% { transform: translate(0, calc(-50% + 0px)) scale(1); }
+  50%      { transform: translate(0, calc(-50% - 8px)) scale(1.015); }
+}
+@media (max-width: 900px) {
+  .hero__aria-img {
+    width: 100%;
+    max-width: 520px;
+    right: -8%;
+    top: auto;
+    bottom: -10%;
+    transform: none;
+    opacity: .55;
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__aria-img { animation: none; }
+}
+
 .hero-fx {
   position: absolute;
   top: 0; right: 0; bottom: 0;
@@ -4297,9 +4348,71 @@ section h2.shimmer-active::after,
     backdrop-filter: blur(18px);
   }
 
-  /* 2026-04-26: Hero mobile movido para o bloco canonico em ~6090
-     (consolidado, sem duplicacao). Aqui ficou apenas placeholder. */
+  /* Hero */
+  .hero { min-height: auto !important; padding: 110px 0 60px !important; }
+  #hero .container.hero__wrap { padding: 0 20px !important; }
+  .hero__title { font-size: clamp(30px, 8.6vw, 44px) !important; margin-bottom: 20px !important; margin-top: clamp(16px, 4vw, 28px) !important; }
+  .hero__title .h-line { white-space: normal !important; }
+  .hero__sub { font-size: 1.08rem !important; margin-bottom: 24px !important; line-height: 1.55 !important; }
+  .hero__ctas { flex-direction: column !important; flex-wrap: nowrap !important; gap: 10px !important; align-items: stretch !important; }
+  .hero__ctas .btn { width: 100% !important; min-width: 0 !important; justify-content: center !important; padding: 15px 24px !important; }
+  .hero__badge { font-size: 11px !important; padding: 6px 12px !important; }
 
+  /* Hero stats mobile — 3 colunas balanceadas (número ~36-44px / label legível) */
+  .hero__stats {
+    margin-top: clamp(50px, 9vw, 64px) !important;
+    touch-action: pan-y !important;        /* garante que swipe vertical na area de stats nao seja capturado */
+  }
+  #hero .container.hero__stats-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr) 1px minmax(0, 1fr) !important;  /* minmax(0,1fr) impede grid blowout com palavras longas */
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-items: stretch !important;
+    column-gap: 0 !important;
+    width: calc(100vw - 32px) !important;
+    max-width: 100% !important;
+    padding: 20px 12px !important;
+    overflow: visible !important;
+    overflow-x: visible !important;        /* explicitamente revoga overflow-x:auto da regra @768px anterior */
+    touch-action: pan-y !important;        /* libera scroll vertical no container */
+    border-radius: 16px !important;
+  }
+  .hero__stat {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    padding: 4px 8px !important;
+    text-align: center !important;
+    min-width: 0 !important;               /* essencial pra grid item nao estourar com texto longo */
+    flex-shrink: 1 !important;             /* anula flex-shrink:0 herdado da regra @768px anterior */
+  }
+  .hero__stat-value {
+    font-size: clamp(2rem, 9vw, 2.75rem) !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: -.02em !important;
+    text-shadow: none !important;
+    margin-bottom: 0 !important;
+  }
+  .hero__stat-label {
+    font-size: clamp(0.75rem, 3vw, 0.875rem) !important;
+    font-weight: 500 !important;
+    line-height: 1.3 !important;
+    color: rgba(255, 255, 255, .75) !important;
+    letter-spacing: .01em !important;
+    text-transform: none !important;
+    max-width: 100% !important;            /* nunca exceder coluna do grid (era 110px fixo, estourava em telas <340px) */
+    margin-inline: auto !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;  /* quebra palavras longas tipo "implementação" se preciso */
+    word-break: normal !important;
+    hyphens: auto !important;
+    text-align: center !important;
+  }
+  /* Separadores via grid track de 1px (alinhamento perfeito, sem desencontro) */
   .hero__stat-sep {
     width: 1px !important;
     height: auto !important;
@@ -4590,15 +4703,19 @@ html { scroll-padding-top: 84px; }
   /* Container — 20px padding-inline (16px só em <=360) */
   .container { padding-left: 20px !important; padding-right: 20px !important; }
 
-  /* Hero ja balanceado via clamp() no bloco canonico */
+  /* Hero — top menor + base respirando */
+  .hero { padding: 96px 0 56px !important; }
 
-  /* CTAs primários — tap target garantido em CTA/form */
+  /* CTAs primários — tap target 48px + font legível (não dispara zoom iOS em inputs adjacentes) */
+  .hero__ctas .btn,
   .cta__actions .btn,
   .form-submit {
     min-height: 50px !important;
     font-size: 15px !important;
     padding: 14px 22px !important;
   }
+
+  /* Hero stats label: já vem balanceado via clamp do bloco principal */
 
   /* Quem Somos — cards encaixam melhor em 320-375px */
   .qs__pillar { padding: 30px 22px 26px !important; }
@@ -4631,7 +4748,12 @@ html { scroll-padding-top: 84px; }
   /* Ticker — fade lateral não come mais os logos em 320px */
   .ticker::before, .ticker::after { width: 40px !important; }
 
-  /* Hero badge: ja balanceado no bloco canonico */
+  /* Hero badge — folga no smartphone */
+  .hero__badge {
+    letter-spacing: .08em !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+  }
 
   /* Lang switcher — tap target garantido */
   .lang-trigger { padding: 10px 14px !important; min-height: 44px !important; }
@@ -4647,7 +4769,8 @@ html { scroll-padding-top: 84px; }
   /* Tag — não estourar em 3 linhas */
   .tag { font-size: 12px !important; padding: 6px 13px !important; letter-spacing: .1em !important; }
 
-  /* Hero sub ja balanceado no bloco canonico */
+  /* Hero sub — leitura confortável */
+  .hero__sub { font-size: 1.05rem !important; line-height: 1.6 !important; }
 
   /* FAQ item — line-height mais confortável */
   .faq__q span { line-height: 1.4 !important; }
@@ -4682,7 +4805,9 @@ html { scroll-padding-top: 84px; }
 /* iPhone SE / Android pequeno — 360 e abaixo */
 @media (max-width: 360px) {
   .container { padding-left: 16px !important; padding-right: 16px !important; }
-  /* Hero title/sub ja balanceados via clamp() no bloco canonico */
+  .hero__title { font-size: clamp(22px, 8vw, 30px) !important; line-height: 1.1 !important; }
+  .hero__sub { font-size: .96rem !important; }
+  /* hero__stat-label já balanceado via clamp do bloco principal */
   .qs__num { font-size: 48px !important; }
   .qs__title { font-size: 1.12rem !important; }
   .qs__desc { font-size: .88rem !important; }
@@ -6037,178 +6162,107 @@ html { scroll-padding-top: 84px; }
 
   /* Lang-btn fica fixo no topo direito ao lado do burger, fora do drawer */
 
-  /* ============================================
-     HERO MOBILE — bloco canonico (2026-04-26)
-     Limpo, centralizado, com watermark sutil + glow laranja.
-     Tipografia escalavel, CTA full-width, stats em 3 colunas.
-     ============================================ */
+  /* ---------- HERO: pedestal 3D bem contido entre CTA e stats, sem vazar ---------- */
   .hero {
-    min-height: auto !important;
-    padding: calc(var(--hdr) + 32px) 0 56px !important;
-    background: #0d1b2a !important;
-    overflow: hidden !important;
-    touch-action: pan-y;
-  }
-  /* Watermark do simbolo (atras do conteudo) */
-  .hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: url('../assets/images/simbolo-laranja.svg') center 50% / 60vw 60vw no-repeat;
-    opacity: .07;
-    pointer-events: none;
-    z-index: 0;
-  }
-  /* Glow laranja radial difuso atras do conteudo */
-  .hero::after {
-    content: '';
-    position: absolute;
-    left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    width: 76vw; height: 76vw;
-    max-width: 480px; max-height: 480px;
-    background: radial-gradient(circle, rgba(219, 85, 0, .22) 0%, rgba(219, 85, 0, .06) 40%, transparent 70%);
-    filter: blur(40px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Container — centralizado, padding consistente */
-  #hero .container.hero__wrap {
-    position: relative;
-    z-index: 2;
-    max-width: 100%;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 22px !important;
-  }
-  #hero .hero__content {
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 0;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Badge — pill compacta, centralizada */
-  #hero .hero__badge {
-    font-size: 11px;
-    padding: 7px 14px;
-    margin: 0 auto 18px;
-    letter-spacing: .14em;
-  }
-
-  /* Titulo — clamp generoso, sempre cabe */
-  #hero .hero__title {
-    font-size: clamp(28px, 8.4vw, 40px);
-    line-height: 1.1;
-    letter-spacing: -.025em;
-    margin: 0 0 18px;
-    text-align: center;
-  }
-  #hero .hero__title .h-line { white-space: normal; }
-
-  /* Subtitulo — fluxo natural (sem hack de 2 linhas forcadas) */
-  #hero .hero__sub--2lines,
-  #hero .hero__sub {
-    display: block !important;
-    font-size: clamp(13px, 3.4vw, 15px) !important;
-    line-height: 1.55 !important;
-    letter-spacing: .01em !important;
-    font-weight: 600 !important;
-    color: rgba(255, 255, 255, .8) !important;
-    max-width: 36ch !important;
-    margin: 0 auto 26px !important;
-    text-align: center !important;
-  }
-  #hero .hero__sub-line {
-    display: inline !important;
-    white-space: normal !important;
-  }
-  #hero .hero__sub-line + .hero__sub-line::before {
-    content: ' ';
-  }
-
-  /* CTAs — full-width centralizado */
-  #hero .hero__ctas {
-    width: 100%;
-    max-width: 360px;
-    margin: 0 auto;
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
-  }
-  #hero .hero__ctas .btn {
-    width: 100%;
-    min-width: 0;
-    justify-content: center;
-    padding: 16px 24px;
-    font-size: 15px;
-    border-radius: 14px;
-  }
-
-  /* Stats — pill compacta, 3 colunas balanceadas */
-  #hero .hero__stats {
-    margin-top: 56px !important;
-    padding: 0 16px;
-    width: 100%;
-  }
-  #hero .container.hero__stats-row {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr) 1px minmax(0, 1fr) !important;
-    align-items: center !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 18px 8px !important;
-    border-radius: 16px !important;
-    background: linear-gradient(180deg, rgba(20, 33, 50, .95) 0%, rgba(10, 19, 32, .98) 100%);
-    border: 1px solid rgba(219, 85, 0, .22);
-    box-shadow:
-      0 18px 40px -16px rgba(0, 0, 0, .7),
-      inset 0 1px 0 rgba(255, 255, 255, .05);
-  }
-  #hero .hero__stat {
+    position: relative !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: center !important;
-    gap: 6px !important;
-    padding: 4px 6px !important;
-    min-width: 0 !important;
-    text-align: center !important;
+    min-height: auto !important;
+    padding: 110px 0 48px !important;
+    background: #0d1b2a !important;
+    overflow: hidden !important;
+    touch-action: pan-y !important;        /* mobile: garante que swipe vertical na seção do hero/stats nunca seja capturado */
   }
+  /* Sem glow global de fundo — cada bloco tem sua própria presença */
+  .hero::before { display: none !important; }
+
+  #hero .container.hero__wrap,
+  #hero .hero-visual,
+  #hero .hero__stats {
+    position: relative;
+    z-index: 1;
+  }
+  /* Mobile: sem imagem de pedestal — símbolo BMAi como watermark atrás dos textos */
+  .hero__pedestal { display: none !important; }
+  .hero::before {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: url('../assets/images/simbolo-laranja.svg') center 52% / 70vw 70vw no-repeat !important;
+    opacity: .08 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    filter: blur(.4px);
+  }
+  /* Glow laranja sutil pulsando atrás do símbolo pra dar vida */
+  .hero::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 52% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 78vw !important;
+    height: 78vw !important;
+    max-width: 520px !important;
+    max-height: 520px !important;
+    background: radial-gradient(circle,
+      rgba(219, 85, 0, .2) 0%,
+      rgba(219, 85, 0, .08) 35%,
+      transparent 65%) !important;
+    filter: blur(38px);
+    pointer-events: none !important;
+    z-index: 0 !important;
+  }
+  /* Conteúdo sempre em cima do símbolo/glow + centralizado */
+  #hero .container.hero__wrap,
+  #hero .hero__stats {
+    position: relative;
+    z-index: 2;
+  }
+  #hero .hero__content {
+    text-align: center !important;
+    align-items: center !important;
+  }
+  #hero .hero__title,
+  #hero .hero__sub {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  #hero .hero__badge {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  #hero .hero__ctas {
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  #hero .hero__sub-line { display: block; }
+  /* .hero-visual legacy oculto (usamos .hero__pedestal agora) */
+  .hero-visual { display: none !important; }
+
+  #hero .hero__stats { margin-top: 0 !important; }
+  /* Stats row com bg sólido pra destacar */
+  #hero .container.hero__stats-row {
+    background: linear-gradient(180deg, rgba(15, 26, 42, 1) 0%, rgba(8, 16, 28, 1) 100%) !important;
+    border: 1px solid rgba(219, 85, 0, .28) !important;
+    box-shadow:
+      0 20px 50px -12px rgba(0, 0, 0, .85),
+      0 0 40px -8px rgba(219, 85, 0, .22),
+      inset 0 1px 0 rgba(255, 255, 255, .08) !important;
+  }
+  /* Números e labels mais vivos — evita look "apagado" */
   #hero .hero__stat-value {
-    font-size: clamp(26px, 7.2vw, 36px) !important;
-    font-weight: 800 !important;
-    line-height: 1 !important;
     color: #ff8533 !important;
-    text-shadow: 0 0 12px rgba(219, 85, 0, .3) !important;
-    margin: 0 !important;
+    text-shadow: 0 0 14px rgba(219, 85, 0, .35) !important;
+    font-weight: 800 !important;
   }
   #hero .hero__stat-label {
-    font-size: clamp(10px, 2.6vw, 12px) !important;
-    line-height: 1.3 !important;
-    color: rgba(255, 255, 255, .78) !important;
-    letter-spacing: .015em !important;
-    font-weight: 500 !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-    hyphens: auto !important;
+    color: rgba(255, 255, 255, .82) !important;
   }
-  #hero .hero__stat-sep {
-    width: 1px !important;
-    height: 70% !important;
-    align-self: center !important;
-    margin: 0 !important;
-    background: rgba(219, 85, 0, .25) !important;
-  }
-
-  /* Esconde decoracoes legadas */
-  .hero-visual,
-  .hero-fx,
-  .hero__pedestal { display: none !important; }
+  #hero .hero__stat-sep { background: rgba(219, 85, 0, .25) !important; }
 
   /* ---------- Cards — garantir stack + reveal suave ---------- */
   .qs__grid,
