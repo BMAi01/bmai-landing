@@ -1190,8 +1190,24 @@ function _initCardStackFx() {
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  // Mobile: position:sticky puro via CSS — JS nao precisa fazer nada
-  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) return;
+  // Mobile: Card 2 ganha .qs-card-rise via IO (CSS faz translateY+opacity)
+  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) {
+    const card2 = stack.querySelector('.card-stack__item--2');
+    if (card2 && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            card2.classList.add('qs-card-rise');
+            io.unobserve(card2);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+      io.observe(card2);
+      // Safety net 4s: forca rise se IO nao disparou
+      setTimeout(() => card2.classList.add('qs-card-rise'), 4000);
+    }
+    return;
+  }
 
   // Desktop 2026-04-26 (replicar Metodo): pin com 200% de scroll + easing power2.out
   // (Metodo usa container 400vh com 4 cards = 100vh por card; aqui 2 cards = 200%

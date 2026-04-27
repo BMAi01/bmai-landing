@@ -5377,9 +5377,9 @@ html { scroll-padding-top: 84px; }
     box-shadow: 0 0 0 rgba(219, 85, 0, 0);
   }
 }
-/* 2026-04-26: card-stack mobile — efeito "Card 2 sobe e cobre Card 1"
-   via CSS puro (Card 1 sticky + scroll space + Card 2 z-index alto).
-   Sem GSAP, sem scroll-jack, scroll nativo do touch funciona normal. */
+/* 2026-04-26: card-stack mobile — Card 2 sobe sobre Card 1 com overlap.
+   Sem void: cards encostados (margin-top negativo) + Card 2 entra com
+   animacao translateY via .qs-card-rise (IntersectionObserver no JS). */
 @media (max-width: 768px) {
   .card-stack {
     min-height: 0;
@@ -5399,20 +5399,28 @@ html { scroll-padding-top: 84px; }
     position: sticky;
     top: calc(var(--hdr) + 16px);
     z-index: 1;
-    margin-bottom: 50vh;               /* parada sticky enquanto Card 2 nao chega */
   }
   .card-stack__item--2 {
     position: relative;
     z-index: 2;
+    margin-top: 24px;                  /* leve overlap visual com sticky Card 1 */
+    transform: translateY(60px);
+    opacity: 0;
+    transition:
+      transform .9s cubic-bezier(.22, 1, .36, 1),
+      opacity .7s ease;
     box-shadow:
       0 -22px 50px -12px rgba(0, 0, 0, .55),
       0 -1px 0 rgba(219, 85, 0, .35),
       0 14px 40px -16px rgba(0, 0, 0, .4);
   }
+  .card-stack__item--2.qs-card-rise {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 @media (max-width: 560px) {
   .card-stack__item { padding: 26px 20px; border-radius: 18px; }
-  .card-stack__item--1 { margin-bottom: 40vh; }
 }
 
 /* ── Palco ── */
