@@ -5403,20 +5403,19 @@ html { scroll-padding-top: 84px; }
     box-shadow:
       0 18px 40px -16px rgba(0, 0, 0, .55),
       0 0 0 1px rgba(219, 85, 0, .25);
+    /* 2026-04-27 (v3): IO+transition one-shot (~900ms) ao entrar viewport.
+       Estado inicial: shifted+scaled mas VISIVEL (opacity .55). Transicao
+       fixa 900ms — user ve o movimento mesmo em scroll rapido. */
+    transform: translateY(70px) scale(.95);
+    opacity: .55;
+    transition:
+      transform .9s cubic-bezier(.22, 1, .36, 1),
+      opacity .7s ease;
+    will-change: transform, opacity;
   }
-  /* 2026-04-27: scroll-driven animation — Card 2 sobe DRAMATICAMENTE
-     conforme scroll cruza ele. Range cover 0%->50% = anima enquanto
-     entra e ate metade do viewport. */
-  @supports (animation-timeline: view()) {
-    .card-stack__item--2 {
-      animation: qsCard2RiseScroll linear both;
-      animation-timeline: view();
-      animation-range: cover 0% cover 50%;
-    }
-    @keyframes qsCard2RiseScroll {
-      0%   { transform: translateY(180px) scale(.9); opacity: 0; }
-      100% { transform: translateY(0)     scale(1);  opacity: 1; }
-    }
+  .card-stack__item--2.qs-rise {
+    transform: translateY(0) scale(1);
+    opacity: 1;
   }
   /* Esconde motion (24 notifs flutuantes) no mobile */
   .qs-scene-wrap { display: none !important; }
