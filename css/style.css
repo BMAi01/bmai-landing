@@ -5444,6 +5444,9 @@ html { scroll-padding-top: 84px; }
   .card-stack { cursor: grab; }
   .card-stack:active { cursor: grabbing; }
 
+  /* 2026-04-27: lang switcher escondido no mobile */
+  #lang-btn { display: none !important; }
+
   /* === EFEITO #4: BORDER GLOW ON VIEW (Quem Somos) ===
      Card sem border-color marcado -> ao entrar viewport, borda laranja
      "acende" + box-shadow halo laranja anima de 0 ao final. */
