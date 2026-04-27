@@ -1274,19 +1274,7 @@ if (document.readyState === 'loading') {
     const stage = document.getElementById('teamVideoStage');
     if (!video) return;
 
-    // Mobile/tablet (<=900px): NAO tenta carregar nem tocar o video.
-    // CSS ja esconde .team-video e mostra .team-video__fallback (imagem
-    // estatica). Aqui preservamos banda + bateria + CPU removendo o src
-    // pra browser nao baixar os 13MB do mp4 em 3G/4G.
-    if (matchMedia('(max-width: 900px)').matches) {
-      video.removeAttribute('autoplay');
-      video.preload = 'none';
-      const src = video.querySelector('source');
-      if (src) src.removeAttribute('src');
-      video.load();           // forca abandonar request pendente
-      return;                 // skip todo o setup de play/audio/IO
-    }
-
+    // Aspect-ratio do stage assim que metadata carrega
     if (stage) {
       const applyAspect = () => {
         const w = video.videoWidth, h = video.videoHeight;
@@ -1301,44 +1289,64 @@ if (document.readyState === 'loading') {
       console.warn('[team-video] fallback ativo:', reason);
       video.classList.add('team-video--failed');
     };
-    video.addEventListener('error', e => {
+    video.addEventListener('error', () => {
       const err = video.error;
       markFailed(`error code=${err && err.code} msg=${err && err.message}`);
     });
-    // Stall watchdog: se em 8s o video nao tem dados pra tocar, mostra fallback.
-    // Cobre conexao lenta + autoplay bloqueado + codec nao suportado em alguns devices.
-    const stallTimer = setTimeout(() => {
-      if (video.readyState < 2) markFailed('stalled — readyState < HAVE_CURRENT_DATA apos 8s');
-    }, 8000);
-    video.addEventListener('loadeddata', () => clearTimeout(stallTimer), { once: true });
-
-    const kick = () => {
-      const p = video.play();
-      if (p && p.catch) p.catch(err => {
-        console.warn('[team-video] play() rejected:', err.name, err.message);
-        // Autoplay bloqueado em alguns iOS sem playsinline reconhecido — cai pro fallback estatico
-        if (err.name === 'NotAllowedError' || err.name === 'AbortError') markFailed(`play() ${err.name}`);
-      });
-    };
-    if (video.readyState >= 2) kick();
-    else video.addEventListener('loadeddata', kick, { once: true });
-
     video.addEventListener('contextmenu', e => e.preventDefault());
 
-    // Browsers exigem user activation antes de tocar audio. Marcamos a
-    // 1a interacao real (click/touch/key) e dai em diante a logica do
-    // IntersectionObserver decide quando desmutar.
-    let userActivated = false;
+    // 2026-04-27: PLAY/PAUSE controlado por IntersectionObserver.
+    // Video roda QUANDO usuario entra na secao e pausa AO SAIR.
+    // Vale pra mobile + desktop. Stall watchdog so dispara DEPOIS que o
+    // video entrou em viewport (evita falso positivo se ele esta out-of-view
+    // e ainda nao tentou carregar).
     let inSection = false;
+    let userActivated = false;
+    let stallTimer = null;
+    let playAttempted = false;
+
+    const tryPlay = () => {
+      const p = video.play();
+      playAttempted = true;
+      if (p && p.catch) p.catch(err => {
+        console.warn('[team-video] play() rejected:', err.name, err.message);
+        if (err.name === 'NotAllowedError' || err.name === 'AbortError') {
+          markFailed(`play() ${err.name}`);
+        }
+      });
+    };
+
+    const handleEnter = () => {
+      // Cancela stall timer anterior se houver
+      if (stallTimer) clearTimeout(stallTimer);
+      // Stall watchdog 10s: se nao carregar nada apos entrar na secao, mostra fallback
+      stallTimer = setTimeout(() => {
+        if (video.readyState < 2) markFailed('stalled — readyState < HAVE_CURRENT_DATA apos 10s na viewport');
+      }, 10000);
+      // Carrega + toca
+      if (video.readyState >= 2) {
+        tryPlay();
+      } else {
+        // Forca preload se ainda nao baixou
+        if (video.preload !== 'auto') video.preload = 'auto';
+        video.load();
+        video.addEventListener('loadeddata', tryPlay, { once: true });
+      }
+    };
+
+    const handleLeave = () => {
+      if (stallTimer) { clearTimeout(stallTimer); stallTimer = null; }
+      if (!video.paused) video.pause();
+      // Re-muta ao sair (audio so toca em-secao + apos user activation)
+      if (!video.muted) video.muted = true;
+    };
+
+    // Audio: so desmuta se user JA interagiu E secao esta visivel
     const applyAudio = () => {
-      // So desmuta se user JA interagiu E secao esta visivel
       const shouldUnmute = userActivated && inSection;
       if (shouldUnmute && video.muted) {
         video.muted = false;
         video.volume = 1;
-        if (video.paused) video.play().catch(() => {});
-      } else if (!shouldUnmute && !video.muted) {
-        video.muted = true;
       }
     };
     const onActivate = () => {
@@ -1353,16 +1361,36 @@ if (document.readyState === 'loading') {
       window.addEventListener(ev, onActivate, { capture: true, passive: true })
     );
 
-    // Observer no stage — desmuta entrando, muta saindo
-    if (stage && 'IntersectionObserver' in window) {
+    // IntersectionObserver: play/pause + audio mute control
+    const target = stage || video;
+    if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          inSection = entry.isIntersecting && entry.intersectionRatio >= 0.5;
-          applyAudio();
+          const visible = entry.isIntersecting && entry.intersectionRatio >= 0.4;
+          if (visible && !inSection) {
+            inSection = true;
+            handleEnter();
+            applyAudio();
+          } else if (!visible && inSection) {
+            inSection = false;
+            handleLeave();
+          }
         });
-      }, { threshold: [0, 0.5, 1] });
-      io.observe(stage);
+      }, { threshold: [0, 0.4, 0.7] });
+      io.observe(target);
+    } else {
+      // Fallback sem IntersectionObserver (browsers muito antigos): toca direto
+      handleEnter();
     }
+
+    // Tab oculta → pausa pra economizar bateria; volta visivel + estava na secao → retoma
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (!video.paused) video.pause();
+      } else if (inSection && video.paused) {
+        tryPlay();
+      }
+    });
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

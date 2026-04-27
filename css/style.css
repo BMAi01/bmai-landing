@@ -7424,15 +7424,12 @@ html { scroll-padding-top: 84px; }
 .team-video.team-video--failed { display: none; }
 .team-video.team-video--failed ~ .team-video__fallback { display: block; }
 
-/* MOBILE/TABLET (<=900px): SEMPRE mostra fallback, NUNCA tenta video.
-   Motivos: arquivo team.mp4 = 13MB (lento em 3G/4G), autoplay bloqueado
-   em data saver / bateria fraca / iOS antigo, codec H.264 high profile
-   nem sempre suportado, decode pesa em CPU mobile. Fallback imagem
-   estatica garante 100% dos devices ven algo. */
-@media (max-width: 900px) {
-  .team-video { display: none !important; }
-  .team-video__fallback { display: block !important; }
-}
+/* MOBILE/TABLET (<=900px): video aparece SO depois de carregar — antes
+   disso o poster (imagem do team) cobre o stage. Comeca lazy
+   (preload=metadata) e so toca quando IntersectionObserver detecta
+   entrada na secao (50% visivel). Pausa ao sair — economiza banda +
+   bateria + CPU.
+   Fallback estatico cobre se video falhar (codec/network/autoplay). */
 
 /* ── 3. Scroll mobile: REMOVE scroll-snap-type dos carousels ──
    scroll-snap-type mandatory/proximity ainda capturava touch em alguns
