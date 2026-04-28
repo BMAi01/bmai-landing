@@ -7317,6 +7317,66 @@ html { scroll-padding-top: 84px; }
   0%, 100% { transform: translate(-50%, -50%); }
   50%      { transform: translate(-50%, calc(-50% - 6px)); }
 }
+/* 2026-04-28: efeito holografico — scanline horizontal varrendo + 5 vlines piscando */
+.hero__symbol-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(219, 85, 0, .8) 20%,
+    rgba(255, 133, 51, 1) 50%,
+    rgba(219, 85, 0, .8) 80%,
+    transparent 100%);
+  box-shadow:
+    0 0 10px rgba(219, 85, 0, .8),
+    0 0 20px rgba(219, 85, 0, .5);
+  animation: heroSymbolScan 4s linear infinite;
+  will-change: top, opacity;
+  pointer-events: none;
+  z-index: 2;
+}
+@keyframes heroSymbolScan {
+  0%   { top: -2%;  opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 102%; opacity: 0; }
+}
+.hero__symbol-vlines {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 18%;
+  opacity: .15;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero__symbol-vlines > span {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(219, 85, 0, .4) 20%,
+    rgba(219, 85, 0, .6) 50%,
+    rgba(219, 85, 0, .4) 80%,
+    transparent 100%);
+  animation: heroSymbolVlineFlicker 4s ease-in-out infinite;
+  will-change: opacity;
+}
+.hero__symbol-vlines > span:nth-child(1) { animation-delay: 0s;   }
+.hero__symbol-vlines > span:nth-child(2) { animation-delay: .5s;  }
+.hero__symbol-vlines > span:nth-child(3) { animation-delay: 1s;   }
+.hero__symbol-vlines > span:nth-child(4) { animation-delay: 1.5s; }
+.hero__symbol-vlines > span:nth-child(5) { animation-delay: 2s;   }
+@keyframes heroSymbolVlineFlicker {
+  0%, 100% { opacity: .55; }
+  50%      { opacity: 1;   }
+}
 /* Mobile/tablet: ja existe simbolo como watermark no .hero::before (linha ~6280).
    Esconde a versao desktop pra nao duplicar/competir por espaco. */
 @media (max-width: 1024px) {
@@ -7327,7 +7387,9 @@ html { scroll-padding-top: 84px; }
   .hero__symbol-glow,
   .hero__symbol-ring--outer,
   .hero__symbol-ring--inner,
-  .hero__symbol-mark { animation: none !important; }
+  .hero__symbol-mark,
+  .hero__symbol-scanline,
+  .hero__symbol-vlines > span { animation: none !important; }
 }
 
 /* ============================================
