@@ -7277,9 +7277,9 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .hero__symbol {
   position: absolute;
-  /* 2026-04-28 (rev4): sobe de 65% pra 58% — alinha centro do simbolo com o
-     subtitulo "DEVOLVEMOS O CONTROLE...". !important mantido. */
-  top: 58% !important;
+  /* 2026-04-28 (rev5): sobe de 58% pra 50% — alinha com centro real do bloco
+     de texto (.hero ja eh flex-column justify-center). !important mantido. */
+  top: 50% !important;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
   width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
