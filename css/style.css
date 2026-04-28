@@ -7277,8 +7277,8 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .hero__symbol {
   position: absolute;
-  /* 2026-04-28 (rev6): sobe de 50% pra 45% — pedido cliente, "um tico a mais". */
-  top: 45% !important;
+  /* 2026-04-28 (rev7): 45% -> 43% — pedido cliente. */
+  top: 43% !important;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
   width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
