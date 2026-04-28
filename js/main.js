@@ -1253,6 +1253,8 @@ function _initCardStackFx() {
         end: 'bottom bottom',
         scrub: 1,
         invalidateOnRefresh: true,
+        fastScrollEnd: true,
+        preventOverlaps: true,
       }
     });
     // Para 2 cards: segmentStart = (1-0.5)/2 = 0.25, segmentEnd = 1/2 = 0.5
