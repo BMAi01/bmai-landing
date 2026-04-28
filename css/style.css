@@ -7363,34 +7363,8 @@ html { scroll-padding-top: 84px; }
   0%, 100% { transform: translate(-50%, -50%); }
   50%      { transform: translate(-50%, calc(-50% - 6px)); }
 }
-/* 2026-04-28: efeito holografico — scanline horizontal varrendo + 5 vlines piscando */
-.hero__symbol-scanline {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 2px;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(219, 85, 0, .8) 20%,
-    rgba(255, 133, 51, 1) 50%,
-    rgba(219, 85, 0, .8) 80%,
-    transparent 100%);
-  box-shadow:
-    0 0 10px rgba(219, 85, 0, .8),
-    0 0 20px rgba(219, 85, 0, .5);
-  animation: heroSymbolScan 4s linear infinite;
-  will-change: top, opacity;
-  pointer-events: none;
-  z-index: 2;
-}
-@keyframes heroSymbolScan {
-  0%   { top: -2%;  opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { top: 102%; opacity: 0; }
-}
+/* 2026-04-28 (rev3): scanline horizontal removida — pedido cliente.
+   Mantidos: glow, grid, vlines, aneis, simbolo. */
 .hero__symbol-vlines {
   position: absolute;
   inset: 0;
@@ -7434,7 +7408,6 @@ html { scroll-padding-top: 84px; }
   .hero__symbol-ring--outer,
   .hero__symbol-ring--inner,
   .hero__symbol-mark,
-  .hero__symbol-scanline,
   .hero__symbol-vlines > span { animation: none !important; }
 }
 
