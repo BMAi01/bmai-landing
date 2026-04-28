@@ -101,6 +101,19 @@
   <section class="hero" id="hero">
     <!-- 2026-04-26: hero-fx + hero-aria.png removidos — hero limpo, so texto -->
     <!-- 2026-04-27: simbolo BMAi com aneis tech no lado direito (so desktop) -->
+    <!-- 2026-04-28: video de fundo (desktop + mobile) — autoplay/muted/playsinline pro iOS -->
+    <video
+      class="hero__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster="assets/images/hero-bg-mobile.jpg"
+      aria-hidden="true">
+      <source src="assets/videos/hero.mp4" type="video/mp4"/>
+    </video>
+    <span class="hero__video-overlay" aria-hidden="true"></span>
     <div class="hero__symbol" aria-hidden="true">
       <span class="hero__symbol-grid"></span>
       <span class="hero__symbol-glow"></span>

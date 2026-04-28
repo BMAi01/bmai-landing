@@ -7317,6 +7317,46 @@ html { scroll-padding-top: 84px; }
 @media (max-width: 1024px) {
   .hero__symbol { display: none; }
 }
+
+/* ============================================
+   2026-04-28 — HERO VIDEO (desktop + mobile)
+   ============================================ */
+.hero { position: relative; overflow: hidden; }
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--bmai-navy, #0d1b2a);
+}
+.hero__video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(13,27,42,.55) 0%, rgba(13,27,42,.78) 60%, rgba(13,27,42,.92) 100%),
+    radial-gradient(ellipse at 30% 40%, rgba(13,27,42,.35) 0%, transparent 60%);
+}
+.hero .container,
+.hero__wrap,
+.hero__content,
+.hero__stats,
+.hero__symbol { position: relative; z-index: 2; }
+@media (max-width: 768px) {
+  .hero__video {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__video { animation: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .hero__symbol-glow,
   .hero__symbol-ring--outer,
