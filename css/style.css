@@ -3981,6 +3981,9 @@ h1, h2, h3, p, span, li, a {
   transition: filter 0.3s;
 }
 .cs-card:hover .cs-card__logo { filter: brightness(1.3) grayscale(0); }
+/* MGP: logo azul-marinho — invert pra ficar branca no card escuro (mesmo padrao do ticker) */
+.cs-card__logo--mgp { filter: brightness(0) invert(1) !important; height: 28px; }
+.cs-card:hover .cs-card__logo--mgp { filter: brightness(0) invert(1) opacity(0.95) !important; }
 .cs-card__logo-fb {
   font-family: var(--fd);
   font-size: 18px; font-weight: 700; color: var(--white);
