@@ -7268,8 +7268,9 @@ html { scroll-padding-top: 84px; }
   position: absolute;
   /* 2026-04-28: centraliza com o bloco de texto (que ja esta vertical-center
      dentro do .hero flex-column) — antes estava em top:22% (mais alto que a tag
-     "+10.000 horas"). Agora alinha com o meio do bloco headline+sub. */
-  top: 50%;
+     "+10.000 horas"). 60% desce um pouco pra alinhar com a regiao entre
+     "resultado" e a descricao "DEVOLVEMOS O CONTROLE...". */
+  top: 60%;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
   width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
