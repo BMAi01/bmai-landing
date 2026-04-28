@@ -7266,10 +7266,13 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .hero__symbol {
   position: absolute;
-  top: 22%;                                    /* sobe mais — bem proximo do topo do hero */
+  /* 2026-04-28: centraliza com o bloco de texto (que ja esta vertical-center
+     dentro do .hero flex-column) — antes estava em top:22% (mais alto que a tag
+     "+10.000 horas"). Agora alinha com o meio do bloco headline+sub. */
+  top: 50%;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
-  width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no canto sup-direito */
+  width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
   aspect-ratio: 1;
   pointer-events: none;
   z-index: 1;
