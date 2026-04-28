@@ -1017,15 +1017,9 @@ html { scrollbar-gutter: stable; }
 .ticker__logo--luciana img { transform: scale(1.7); filter: brightness(0) invert(1); }
 .ticker__logo--ocanto img { filter: brightness(0) invert(1); }
 .ticker__logo--white img { filter: brightness(0) invert(1); }
-/* MGP Engenharia: logo azul-marinho + texto preto — invert pra ficar branca.
-   !important pq media-queries mobile abaixo redefinem max-w/max-h e podem
-   limpar o filter herdado em alguns browsers. Logo eh quadrada (1600x1600,
-   M vertical + texto), entao scale leve pra encaixar no slot retangular. */
-.ticker__logo--mgp img {
-  filter: brightness(0) invert(1) !important;
-  transform: scale(0.95);
-  -webkit-filter: brightness(0) invert(1);
-}
+/* MGP Engenharia: logo ja eh branca no PNG (regenerada via PIL em 2026-04-28
+   a partir da versao preta MGP_vertical_preto_nbg). Sem filter — direto. */
+.ticker__logo--mgp img { transform: scale(0.95); }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ============================================
@@ -3988,9 +3982,8 @@ h1, h2, h3, p, span, li, a {
   transition: filter 0.3s;
 }
 .cs-card:hover .cs-card__logo { filter: brightness(1.3) grayscale(0); }
-/* MGP: logo azul-marinho — invert pra ficar branca no card escuro (mesmo padrao do ticker) */
-.cs-card__logo--mgp { filter: brightness(0) invert(1) !important; height: 28px; }
-.cs-card:hover .cs-card__logo--mgp { filter: brightness(0) invert(1) opacity(0.95) !important; }
+/* MGP: logo ja branca no PNG (regenerada). Sem filter no card. */
+.cs-card__logo--mgp { height: 28px; }
 .cs-card__logo-fb {
   font-family: var(--fd);
   font-size: 18px; font-weight: 700; color: var(--white);
