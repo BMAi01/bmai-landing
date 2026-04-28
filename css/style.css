@@ -1943,8 +1943,10 @@ html { scrollbar-gutter: stable; }
     scroll-snap-align: center !important;
     scroll-snap-stop: always !important;
     opacity: 1;
-    /* CRITICO: card individual tambem deixa pan-y passar pra pagina */
-    touch-action: pan-y !important;
+    /* CRITICO: card permite pan-y (scroll vertical da pagina) E pan-x (swipe
+       horizontal do carrossel inicia mesmo com dedo em cima do card). pan-y
+       sozinho bloqueia o swipe horizontal — bug recorrente no projeto. */
+    touch-action: pan-x pan-y pinch-zoom !important;
   }
 
   .metodo__card-grid {
