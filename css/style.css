@@ -7277,11 +7277,9 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .hero__symbol {
   position: absolute;
-  /* 2026-04-28 (rev3): forcar 65% com !important — pedido explicito do cliente
-     pra alinhar centro do simbolo com regiao entre "resultado" e "DEVOLVEMOS
-     O CONTROLE...". Marcado !important pra prevenir override de regras
-     posteriores na cascata. */
-  top: 65% !important;
+  /* 2026-04-28 (rev4): sobe de 65% pra 58% — alinha centro do simbolo com o
+     subtitulo "DEVOLVEMOS O CONTROLE...". !important mantido. */
+  top: 58% !important;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
   width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
