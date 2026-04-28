@@ -7510,10 +7510,23 @@ html { scroll-padding-top: 84px; }
     animation-duration: 8s !important;
     will-change: auto !important;       /* tira hint de GPU layer pra qsa-notif que nao precisa */
   }
-  /* Fallback prefers-reduced-motion: tudo estatico */
+  /* 2026-04-28: garantir check verde sempre visivel no mobile (era opt-in
+     so via prefers-reduced-motion, agora default). Pedido explicito do user. */
+  .qs-notif::after {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    visibility: visible !important;
+    display: flex !important;
+  }
+  /* Tambem garante o span filho original visivel se existir */
+  .qs-notif__check {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 }
 @media (max-width: 768px) and (prefers-reduced-motion: reduce) {
-  .qs-notif::after { animation: none !important; opacity: 1 !important; transform: scale(1) !important; }
   .qs-notif { animation: none !important; }
 }
 
