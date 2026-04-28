@@ -5365,13 +5365,45 @@ html { scroll-padding-top: 84px; }
   transform: translate3d(0, 0, 0);
 }
 
-/* 2026-04-26 (refazer): Card 2 IDENTICO ao Card 1 (navy mesmo bg/border/shadow).
-   Comeca FORA DA TELA embaixo (y: 100%) — GSAP move pra y: 0 conforme scroll
-   no desktop. Mobile usa position:sticky puro (regra mais abaixo). */
+/* 2026-04-26 (refazer): Card 2 comeca FORA DA TELA embaixo (y: 100%) — GSAP move
+   pra y: 0 conforme scroll no desktop. Mobile usa position:sticky puro (regra mais abaixo).
+   2026-04-28: visual LIGHT — bg cream/branco com texto navy, contraste vs Card 1 (dark). */
 .card-stack__item--2 {
   z-index: 2;
   transform: translate3d(0, 100%, 0);   /* offscreen embaixo no estado inicial */
   will-change: transform;
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(219, 85, 0, .08) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(219, 85, 0, .06) 0%, transparent 60%),
+    linear-gradient(180deg, #fdfaf6 0%, #ede7e1 100%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: rgba(219, 85, 0, .35);
+  box-shadow:
+    0 30px 60px -20px rgba(13, 27, 42, .25),
+    0 8px 20px -6px rgba(13, 27, 42, .12),
+    0 0 48px -16px rgba(219, 85, 0, .25),
+    inset 0 1px 0 rgba(255, 255, 255, .8);
+  color: #0d1b2a;
+}
+.card-stack__item--2 .card-eyebrow {
+  color: rgba(219, 85, 0, .92);
+}
+.card-stack__item--2 h3,
+.card-stack__item--2 h3 span {
+  color: #0d1b2a !important;
+}
+.card-stack__item--2 p {
+  color: rgba(13, 27, 42, .78);
+}
+.card-stack__item--2 .card-top-line {
+  background: linear-gradient(90deg, transparent, rgba(219, 85, 0, .85), transparent);
+}
+.card-stack__item--2 .card-corner {
+  border-color: rgba(219, 85, 0, .55);
+}
+.card-stack__item--2 .card-scan {
+  background: linear-gradient(180deg, transparent, rgba(219, 85, 0, .25), transparent);
 }
 
 /* 2026-04-26: depth-of-field REMOVIDO — Card 1 fica sempre nitido
