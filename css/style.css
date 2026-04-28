@@ -1864,10 +1864,12 @@ html { scrollbar-gutter: stable; }
   .metodo__star-watermark { width: 500px; height: 500px; left: 50%; }
 }
 @media (max-width: 768px) {
-  /* === MOBILE CAROUSEL: 4 cards do Metodo lado a lado com swipe ===
-     Mesmo padrao do QS — scroll-snap horizontal + dots. */
+  /* === MOBILE STACK VERTICAL: 4 cards do Metodo empilhados (1 por linha) ===
+     2026-04-28: pivot de carousel horizontal -> stack vertical (pedido cliente).
+     Cards aparecem na ordem D / E / I / A, full-width, scroll natural da pagina. */
   html { scroll-behavior: smooth; }
   .metodo__progress { display: none !important; }
+  .metodo__dots { display: none !important; }
 
   .metodo__scroll-container,
   .metodo__sticky,
@@ -1885,60 +1887,42 @@ html { scrollbar-gutter: stable; }
   }
   .metodo__cards-wrapper { padding: 0; }
 
-  /* Stack vira o carousel */
+  /* Stack vertical — block flow simples, scroll da propria pagina */
   .metodo__stack {
     position: static !important;
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 14px;
+    display: block !important;
     padding: 4px 16px 16px;
     margin: 0;
-    overflow-x: auto;
-    overflow-y: visible;
-    scroll-snap-type: x proximity;          /* proximity vs mandatory: menos agressivo na captura de touch — libera swipe vertical */
-    scrollbar-width: none;
-    /* -webkit-overflow-scrolling: touch removido — legado iOS que conflita com touch-action */
-    scroll-padding-inline: 16px;
+    overflow: visible !important;
     transform: none !important;
     height: auto !important;
-    touch-action: pan-x pan-y !important;   /* CRITICO: pan-x sozinho BLOQUEIA pan vertical (spec) — pan-x pan-y libera ambos, browser decide qual scroller pega o gesto */
-    overscroll-behavior-x: contain;
   }
-  .metodo__stack::-webkit-scrollbar { display: none; }
 
   .metodo__card {
-    --accent: 0;                              /* JS atualiza 0 -> 1 conforme scroll */
+    --accent: 1;                              /* sem carousel — card sempre em estado "ativo" full */
     position: relative !important;
     inset: auto !important;
-    flex: 0 0 calc(100% - 48px);
-    max-width: 380px;
+    display: block;
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto 20px auto !important;
     height: auto !important;
     min-height: 0 !important;
-    margin: 0 !important;
     padding: 22px 18px !important;
     border-radius: 16px;
-    /* === EFEITO: DESTAQUE PROGRESSIVO (scroll-based CSS var) ===
-       --accent vai de 0 (sutil) a 1 (full) conforme card chega ao centro
-       do carousel. Border laranja + bg escuro + glow halo aumentam juntos. */
-    border: 1px solid rgba(219, 85, 0, calc(0.1 + var(--accent) * 0.6));
+    border: 1px solid rgba(219, 85, 0, .55);
     background:
-      linear-gradient(180deg,
-        rgba(8, 16, 28, calc(0.45 + var(--accent) * 0.45)) 0%,
-        rgba(13, 27, 42, calc(0.85 + var(--accent) * 0.15)) 100%),
+      linear-gradient(180deg, rgba(8, 16, 28, .9) 0%, rgba(13, 27, 42, 1) 100%),
       var(--bmai-navy-card);
     box-shadow:
-      0 8px 24px rgba(0, 0, 0, calc(0.3 + var(--accent) * 0.25)),
-      0 0 calc(var(--accent) * 38px) calc(var(--accent) * -8px) rgba(219, 85, 0, calc(var(--accent) * 0.55));
-    transform: scale(calc(0.96 + var(--accent) * 0.04));
-    transition:
-      border-color .35s ease,
-      background .35s ease,
-      box-shadow .4s ease,
-      transform .4s cubic-bezier(.22, 1, .36, 1);
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
+      0 8px 24px rgba(0, 0, 0, .45),
+      0 0 28px -8px rgba(219, 85, 0, .35);
+    transform: none !important;
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
     opacity: 1;
   }
+  .metodo__card:last-child { margin-bottom: 0 !important; }
 
   .metodo__card-grid {
     grid-template-columns: 1fr !important;
