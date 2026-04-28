@@ -1017,6 +1017,8 @@ html { scrollbar-gutter: stable; }
 .ticker__logo--luciana img { transform: scale(1.7); filter: brightness(0) invert(1); }
 .ticker__logo--ocanto img { filter: brightness(0) invert(1); }
 .ticker__logo--white img { filter: brightness(0) invert(1); }
+/* MGP Engenharia: logo azul-marinho — invert pra ficar branca no fundo navy */
+.ticker__logo--mgp img { filter: brightness(0) invert(1); }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ============================================
