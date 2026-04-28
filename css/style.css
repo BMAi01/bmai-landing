@@ -7276,11 +7276,11 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .hero__symbol {
   position: absolute;
-  /* 2026-04-28: centraliza com o bloco de texto (que ja esta vertical-center
-     dentro do .hero flex-column) — antes estava em top:22% (mais alto que a tag
-     "+10.000 horas"). 60% desce um pouco pra alinhar com a regiao entre
-     "resultado" e a descricao "DEVOLVEMOS O CONTROLE...". */
-  top: 60%;
+  /* 2026-04-28 (rev3): forcar 65% com !important — pedido explicito do cliente
+     pra alinhar centro do simbolo com regiao entre "resultado" e "DEVOLVEMOS
+     O CONTROLE...". Marcado !important pra prevenir override de regras
+     posteriores na cascata. */
+  top: 65% !important;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
   width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
