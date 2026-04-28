@@ -1017,8 +1017,15 @@ html { scrollbar-gutter: stable; }
 .ticker__logo--luciana img { transform: scale(1.7); filter: brightness(0) invert(1); }
 .ticker__logo--ocanto img { filter: brightness(0) invert(1); }
 .ticker__logo--white img { filter: brightness(0) invert(1); }
-/* MGP Engenharia: logo azul-marinho — invert pra ficar branca no fundo navy */
-.ticker__logo--mgp img { filter: brightness(0) invert(1); }
+/* MGP Engenharia: logo azul-marinho + texto preto — invert pra ficar branca.
+   !important pq media-queries mobile abaixo redefinem max-w/max-h e podem
+   limpar o filter herdado em alguns browsers. Logo eh quadrada (1600x1600,
+   M vertical + texto), entao scale leve pra encaixar no slot retangular. */
+.ticker__logo--mgp img {
+  filter: brightness(0) invert(1) !important;
+  transform: scale(0.95);
+  -webkit-filter: brightness(0) invert(1);
+}
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ============================================

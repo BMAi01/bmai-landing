@@ -124,10 +124,10 @@
       'cs2.quote':  '"A IA virou o motor da operação: estoque organizado e monitorado em tempo real, prospecção ativa rodando sozinha e agente de atendimento disponível 24 horas por dia. Em pouco tempo, o faturamento subiu 40% sem que a gente precisasse aumentar a equipe."',
       'cs2.role':   'CEO · Só Hydráulica',
 
-      'cs3.sector': 'Restaurante',
-      'cs3.result': 'Estoque no piloto automático — <span class="cs-card__metric">0 rupturas</span>, desperdício em queda e <span class="cs-card__metric">3 a 5 pessoas</span> liberadas do controle manual',
-      'cs3.quote':  '"Antes era tudo no improviso. Compra errada toda semana, falta de produto na hora do serviço. A IA antecipa tudo agora."',
-      'cs3.role':   'CEO · O Canto',
+      'cs3.sector': 'Construtora',
+      'cs3.result': 'Operação mais previsível — processos antes manuais na obra ganharam estrutura e visibilidade no dia a dia da construtora',
+      'cs3.quote':  '"A parceria com a BMAi trouxe organização e visibilidade pra processos que antes eram manuais. Hoje conseguimos focar no que realmente importa: entregar obras com mais previsibilidade."',
+      'cs3.role':   'CEO · MGP Engenharia',
 
       /* TEAM */
       'team.title':        'Nosso time entende<br><span style="color:var(--orange)">o seu negócio.</span>',
@@ -317,10 +317,10 @@
       'cs2.quote':  '"AI became the engine of the operation: inventory organized and monitored in real time, active prospecting running on its own, and a support agent available 24 hours a day. In a short time, revenue jumped 40% without us having to grow the team."',
       'cs2.role':   'CEO · Só Hydráulica',
 
-      'cs3.sector': 'Restaurant',
-      'cs3.result': 'Inventory on autopilot — <span class="cs-card__metric">0 stockouts</span>, waste dropping and <span class="cs-card__metric">3 to 5 people</span> freed from manual control',
-      'cs3.quote':  '"Before, everything was improv. Wrong purchase every week, product missing mid-service. AI anticipates everything now."',
-      'cs3.role':   'CEO · O Canto',
+      'cs3.sector': 'Construction',
+      'cs3.result': 'More predictable operations — processes that used to be manual on-site now have structure and visibility in the day-to-day of the construction company',
+      'cs3.quote':  '"The partnership with BMAi brought organization and visibility to processes that used to be manual. Today we can focus on what really matters: delivering construction projects with more predictability."',
+      'cs3.role':   'CEO · MGP Engenharia',
 
       'team.title':        'Our team understands<br><span style="color:var(--orange)">your business.</span>',
       'team.scroll_hint':  'Meet the BMAi founders',
@@ -505,10 +505,10 @@
       'cs2.quote':  '"La IA se convirtió en el motor de la operación: stock organizado y monitoreado en tiempo real, prospección activa funcionando sola y agente de atención disponible 24 horas al día. En poco tiempo, la facturación subió 40% sin que tuviéramos que aumentar el equipo."',
       'cs2.role':   'CEO · Só Hydráulica',
 
-      'cs3.sector': 'Restaurante',
-      'cs3.result': 'Stock en piloto automático — <span class="cs-card__metric">0 rupturas</span>, desperdicio en caída y <span class="cs-card__metric">3 a 5 personas</span> liberadas del control manual',
-      'cs3.quote':  '"Antes era todo improvisación. Compra equivocada cada semana, falta de producto en pleno servicio. La IA anticipa todo ahora."',
-      'cs3.role':   'CEO · O Canto',
+      'cs3.sector': 'Constructora',
+      'cs3.result': 'Operación más previsible — procesos antes manuales en obra ganaron estructura y visibilidad en el día a día de la constructora',
+      'cs3.quote':  '"La asociación con BMAi trajo organización y visibilidad a procesos que antes eran manuales. Hoy podemos enfocarnos en lo que realmente importa: entregar obras con más previsibilidad."',
+      'cs3.role':   'CEO · MGP Engenharia',
 
       'team.title':        'Nuestro equipo entiende<br><span style="color:var(--orange)">tu negocio.</span>',
       'team.scroll_hint':  'Conoce a los fundadores de BMAi',
