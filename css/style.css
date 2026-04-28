@@ -7531,13 +7531,10 @@ html { scroll-padding-top: 84px; }
 
 /* ── 4. Motion suave no mobile (QS notif) ── */
 @media (max-width: 768px) {
-  /* Reduz qtd de cards visiveis (esconde tier hero das laterais extremas) */
-  .qs-notif--mini[style*="left:-"] ,
-  .qs-notif--mini[style*="right:-"],
-  .qs-notif[data-tilt="left"][data-wave="3"],
-  .qs-notif[data-tilt="right"][data-wave="3"] {
-    display: none !important;
-  }
+  /* 2026-04-28: TODAS as 20 notificacoes visiveis no mobile (pedido cliente).
+     Antes escondia tier hero das laterais extremas + waves data-wave=3 pra
+     reduzir CPU — removido. Algumas podem aparecer parcialmente cortadas pelo
+     fade das bordas (qs-fade), comportamento esperado. */
   /* Wave anim mais lenta + menos amplitude (CPU lighter) */
   .qs-notif {
     animation-duration: 8s !important;
