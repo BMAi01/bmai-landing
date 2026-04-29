@@ -7952,10 +7952,10 @@ html {
 }
 .qs-flip__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1480px;
   perspective: 2000px;
 }
 
@@ -8054,6 +8054,34 @@ html {
 .qs-flip-card--2 .qs-flip-card__face--front .card-scan {
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.95) 50%, transparent) !important;
   box-shadow: 0 0 12px rgba(255,255,255,.5) !important;
+}
+
+/* CARD 4 BRANCO — restaurado em rev32 */
+.qs-flip-card--4 .qs-flip-card__face--front {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  border-color: rgba(219, 85, 0, .35);
+  color: #0d1b2a;
+  box-shadow:
+    0 30px 60px -20px rgba(13, 27, 42, .25),
+    0 8px 20px -6px rgba(13, 27, 42, .12),
+    0 0 48px -16px rgba(219, 85, 0, .25),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+.qs-flip-card--4 .qs-flip-card__face--front .card-eyebrow { color: #db5500 !important; }
+.qs-flip-card--4 .qs-flip-card__face--front h3,
+.qs-flip-card--4 .qs-flip-card__face--front h3 span { color: #0d1b2a !important; }
+.qs-flip-card--4 .qs-flip-card__face--front h3 span[style*="color"] { color: #db5500 !important; }
+.qs-flip-card--4 .qs-flip-card__face--front p { color: rgba(13, 27, 42, .7) !important; }
+.qs-flip-card--4 .qs-flip-card__face--front .card-top-line {
+  background: linear-gradient(90deg, transparent, rgba(219, 85, 0, .85), transparent);
+}
+.qs-flip-card--4 .qs-flip-card__face--front .card-corner {
+  border-color: rgba(219, 85, 0, .55);
+}
+.qs-flip-card--4 .qs-flip-card__face--front .card-scan {
+  background: linear-gradient(180deg, transparent, rgba(219, 85, 0, .25), transparent);
 }
 
 /* BACK — bg navy mesmo do front; padding e position herdados do base. */
