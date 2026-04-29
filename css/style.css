@@ -4880,7 +4880,10 @@ html { scroll-padding-top: 84px; }
 }
 
 .qs__grid--animated {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* 2026-04-28: 1.6fr 1fr (era 1fr 1fr) — Motion expande pra ~62% da largura
+     pra acomodar os 100 cards de notificacao espalhados. Cards laterais
+     "Estruturamos/Construímos IA" ocupam ~38% da direita. */
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
   gap: 40px;
   align-items: center;
   max-width: 1080px;
