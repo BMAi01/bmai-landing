@@ -6718,56 +6718,9 @@ html { scroll-padding-top: 84px; }
   .cs-hero__stat-val { font-size: 22px !important; }
   .cs-hero__stat-lbl { font-size: 10px !important; line-height: 1.25 !important; }
 
-  /* Grid de 3 cases → carrossel horizontal snap */
-  #cases .cs-grid {
-    display: flex !important;
-    grid-template-columns: none !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: visible !important;
-    scroll-snap-type: x proximity !important;     /* proximity (vs mandatory) — libera swipe vertical iOS */
-    /* -webkit-overflow-scrolling: touch removido — legado iOS que conflita com touch-action */
-    gap: 14px !important;
-    padding: 6px 20px 24px !important;
-    margin: 0 -20px !important;
-    scrollbar-width: none !important;
-    touch-action: pan-x pan-y !important;  /* CRITICO: pan-x sozinho BLOQUEIA pan vertical — pan-x pan-y libera ambos */
-    overscroll-behavior-x: contain !important;
-  }
-  #cases .cs-grid::-webkit-scrollbar { display: none !important; }
-  #cases .cs-card {
-    flex: 0 0 86% !important;
-    min-width: 86% !important;
-    max-width: 320px !important;
-    scroll-snap-align: center !important;
-    scroll-snap-stop: always !important;
-    opacity: 1 !important;
-    transform: none !important;
-    padding: 22px 20px !important;
-    border: 1px solid rgba(219, 85, 0, .15) !important;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(219, 85, 0, .06), transparent 60%),
-      rgba(255, 255, 255, .02) !important;
-  }
-  #cases .cs-card:hover { transform: none !important; }
-  #cases .cs-card__result { font-size: 14px !important; line-height: 1.5 !important; }
-  #cases .cs-card__quote { font-size: 13px !important; line-height: 1.55 !important; }
-
-  /* Hint visual pro usuário saber que rola — gradient fade nas bordas */
-  #cases .container:has(.cs-grid) {
-    position: relative;
-  }
-  #cases .container:has(.cs-grid)::after {
-    content: '';
-    position: absolute;
-    top: 6px;
-    right: 0;
-    bottom: 24px;
-    width: 36px;
-    background: linear-gradient(270deg, #0d1b2a, transparent);
-    pointer-events: none;
-    z-index: 2;
-  }
+  /* 2026-04-29 (rev37): bloco do "carrossel horizontal de cases mobile"
+     REMOVIDO. Estava causando 2 cards lado a lado em ~471px (cards 86%
+     width + peek). Agora .cs-grid usa grid 1fr stack (regra ~linha 4524). */
 }
 
 /* ============================================
@@ -7528,17 +7481,17 @@ html { scroll-padding-top: 84px; }
    garantir scroll vertical 100%. */
 @media (max-width: 768px) {
   .metodo__stack,
-  .card-stack,
-  #cases .cs-grid {
+  .card-stack {
     scroll-snap-type: none !important;
     overscroll-behavior: contain;       /* contain horizontal e vertical — nao chain pra body */
   }
   .metodo__card,
-  .card-stack__item,
-  #cases .cs-card {
+  .card-stack__item {
     scroll-snap-align: none !important;
     scroll-snap-stop: normal !important;
   }
+  /* 2026-04-29 (rev37): #cases .cs-grid/.cs-card removidos — nao sao mais
+     carrossel mobile (bloco original deletado em outro media query acima). */
 }
 
 /* ── 4. Motion suave no mobile (QS notif) ── */
