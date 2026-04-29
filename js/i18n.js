@@ -40,7 +40,7 @@
       'qs.card1_p':       'Identificamos e estruturamos o processo que a IA vai trabalhar — preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.',
       'qs.card2_eyebrow': 'Fase 02 · Inteligência Personalizada',
       'qs.card2_h3':      'Construímos<br><span style="color:var(--orange)">IA sob medida.</span>',
-      'qs.card2_p':       'Desenvolvemos Agentes de Inteligência Artificial personalizados para a função específica a ser potencializada e estruturada.',
+      'qs.card2_p':       'Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
@@ -237,7 +237,7 @@
       'qs.card1_p':       'We identify and structure the process the AI will work with — we prepare fertile ground for the AI Agent to amplify with measurable results.',
       'qs.card2_eyebrow': 'Phase 02 · Personalized Intelligence',
       'qs.card2_h3':      'We build<br><span style="color:var(--orange)">tailored AI.</span>',
-      'qs.card2_p':       'We develop AI Agents tailored for the specific function to be amplified and structured.',
+      'qs.card2_p':       'With the Phase 01 process already structured, we build the AI Agent shaped to that flow — not a generic template — to amplify the function defined in the previous step.',
       'qs.brand_tag': 'integrating AI…',
 
       'metodo.title': 'From diagnosis<br><span style="color:var(--orange)">to real scale.</span>',
@@ -426,7 +426,7 @@
       'qs.card1_p':       'Identificamos y estructuramos el proceso con el que la IA va a trabajar — preparamos un terreno eficiente para que el Agente de Inteligencia Artificial potencie con resultados medibles.',
       'qs.card2_eyebrow': 'Fase 02 · Inteligencia Personalizada',
       'qs.card2_h3':      'Construimos<br><span style="color:var(--orange)">IA a medida.</span>',
-      'qs.card2_p':       'Desarrollamos Agentes de Inteligencia Artificial personalizados para la función específica a potenciar y estructurar.',
+      'qs.card2_p':       'Con el proceso de la Fase 01 ya estructurado, desarrollamos el Agente de IA moldeado a ese flujo — no a una plantilla genérica — para potenciar la función definida en la etapa anterior.',
       'qs.brand_tag': 'integrando IA…',
 
       'metodo.title': 'Del diagnóstico<br><span style="color:var(--orange)">a la escala real.</span>',
