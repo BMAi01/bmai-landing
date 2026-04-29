@@ -7741,6 +7741,44 @@ html {
   0%, 100% { box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 0 1px rgba(219, 85, 0, .25); }
   50%      { box-shadow: 0 6px 24px rgba(0, 0, 0, .45), 0 0 0 4px rgba(219, 85, 0, .25); }
 }
+
+/* ============================================
+   2026-04-29 (rev41) — TEAM VIDEO POSTER (capa BMAi)
+   Substitui o poster nativo do <video>. Simbolo BMAi centralizado em
+   fundo navy. Some quando o video comeca a tocar.
+   ============================================ */
+.team-video__poster {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 65% 50% at 50% 50%, rgba(219, 85, 0, .12), transparent 70%),
+    linear-gradient(180deg, #0d1b2a 0%, #061121 100%);
+  pointer-events: none;
+  transition: opacity .6s cubic-bezier(.22, 1, .36, 1);
+  border-radius: 22px;
+}
+.team-video__poster-mark {
+  width: 38%;
+  max-width: 220px;
+  height: auto;
+  filter: drop-shadow(0 0 60px rgba(219, 85, 0, .55));
+  animation: teamPosterPulse 2.6s ease-in-out infinite;
+}
+@keyframes teamPosterPulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 50px rgba(219, 85, 0, .45)); }
+  50%      { transform: scale(1.04); filter: drop-shadow(0 0 80px rgba(219, 85, 0, .7)); }
+}
+.team-video__poster.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .team-video__poster-mark { animation: none; }
+}
 @media (max-width: 768px) {
   .team-video__unmute {
     bottom: 12px;

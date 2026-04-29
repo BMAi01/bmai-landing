@@ -1553,6 +1553,17 @@ if (document.readyState === 'loading') {
     video.muted = true;
     video.defaultMuted = true;
 
+    // Capa BMAi: esconde DEFINITIVAMENTE quando o video efetivamente comeca
+    // a tocar (so a primeira vez — depois loop continua sem flash de capa).
+    const poster = document.getElementById('teamVideoPoster');
+    if (poster) {
+      const hidePoster = () => {
+        poster.classList.add('is-hidden');
+        video.removeEventListener('playing', hidePoster);
+      };
+      video.addEventListener('playing', hidePoster, { once: true });
+    }
+
     // Botao overlay "Ativar audio": click destrava som imediato.
     const unmuteBtn = document.getElementById('teamVideoUnmute');
     const updateUnmuteBtn = () => {
