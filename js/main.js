@@ -1368,7 +1368,10 @@ if (document.readyState === 'loading') {
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          const visible = entry.isIntersecting && entry.intersectionRatio >= 0.4;
+          // 2026-04-29: relaxa threshold — qualquer parte da secao visivel
+          // dispara play. Antes exigia 40% visivel, que nunca era atingido
+          // em viewports onde o stage do video > viewport altura.
+          const visible = entry.isIntersecting;
           if (visible && !inSection) {
             inSection = true;
             handleEnter();
@@ -1378,7 +1381,7 @@ if (document.readyState === 'loading') {
             handleLeave();
           }
         });
-      }, { threshold: [0, 0.4, 0.7] });
+      }, { threshold: 0, rootMargin: '0px' });
       io.observe(target);
     } else {
       // Fallback sem IntersectionObserver (browsers muito antigos): toca direto
