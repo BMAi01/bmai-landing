@@ -7713,3 +7713,30 @@ html { scroll-padding-top: 84px; }
   }
 }
 
+
+/* ============================================
+   2026-04-28 — SCROLL SUAVE UNIVERSAL (CSS puro)
+   Desktop: Lenis controla (regra html.lenis.lenis-smooth na linha 135 forca
+   scroll-behavior:auto enquanto Lenis ativo, evitando conflito).
+   Mobile: scroll-behavior:smooth nativo + momentum iOS via -webkit-overflow-scrolling.
+   ============================================ */
+html {
+  scroll-behavior: smooth;
+}
+@media (max-width: 768px) {
+  html, body {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+  }
+  /* Anchors internos suavizados em todos elementos (so afeta scroll programatico,
+     nao bloqueia swipe nativo nem scroll-snap dos carrosseis) */
+  * {
+    scroll-behavior: smooth;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html, body, * {
+    scroll-behavior: auto !important;
+  }
+}
