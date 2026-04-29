@@ -225,9 +225,9 @@ reveal('.cs-card', true);
 (function() {
   const stack = document.querySelector('.card-stack');
   if (!stack) return;
-  /* 2026-04-29: side-by-side faz fade-in por card (stagger) em _initCardStackFx;
-     reveal do container ficaria duplicado. Skip aqui. */
-  if (stack.classList.contains('card-stack--side-by-side')) return;
+  /* 2026-04-29 (rev6): carrossel faz seu proprio init; reveal generico pula. */
+  if (stack.classList.contains('card-stack--carousel') ||
+      stack.classList.contains('card-stack--side-by-side')) return;
   if (LOW_MOTION) {
     stack.classList.add('card-stack--reveal', 'card-stack--revealed');
     return;
@@ -1189,24 +1189,72 @@ function _initCardStackFx() {
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
 
-  // 2026-04-29: side-by-side — fade-in por card com stagger 150ms.
-  // Sem GSAP scrub, sem dots, sem swipe carousel. Bypass total dos modos antigos.
-  if (stack.classList.contains('card-stack--side-by-side')) {
-    const items = Array.from(stack.querySelectorAll('.card-stack__item'));
+  // 2026-04-29 (rev6): carrossel estilo Apple — scroll-snap + active detection
+  // por scroll position, setas (desktop) + dots clicaveis. Mobile/desktop iguais.
+  if (stack.classList.contains('card-stack--carousel')) {
+    const items   = Array.from(stack.querySelectorAll('.card-stack__item'));
+    const dots    = Array.from(document.querySelectorAll('#qsCarouselDots .qs-carousel__dot'));
+    const prevBtn = document.querySelector('.qs-carousel__nav--prev');
+    const nextBtn = document.querySelector('.qs-carousel__nav--next');
     if (!items.length) return;
-    if (LOW_MOTION || !('IntersectionObserver' in window)) {
-      items.forEach(it => it.classList.add('is-visible'));
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const idx = items.indexOf(entry.target);
-        setTimeout(() => entry.target.classList.add('is-visible'), idx * 150);
-        io.unobserve(entry.target);
+
+    let activeIdx = 0;
+    const setActive = (idx) => {
+      activeIdx = idx;
+      items.forEach((it, i) => it.classList.toggle('is-active', i === idx));
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      if (prevBtn) prevBtn.disabled = (idx === 0);
+      if (nextBtn) nextBtn.disabled = (idx === items.length - 1);
+    };
+
+    const computeActive = () => {
+      const center = stack.scrollLeft + stack.clientWidth / 2;
+      let bestIdx = 0, bestDist = Infinity;
+      items.forEach((it, i) => {
+        const itCenter = it.offsetLeft + it.clientWidth / 2;
+        const dist = Math.abs(itCenter - center);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
       });
-    }, { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
-    items.forEach(it => io.observe(it));
+      if (bestIdx !== activeIdx) setActive(bestIdx);
+    };
+
+    let raf = 0;
+    stack.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; computeActive(); });
+    }, { passive: true });
+
+    const scrollToIdx = (idx) => {
+      const target = items[idx];
+      if (!target) return;
+      const left = target.offsetLeft - (stack.clientWidth - target.clientWidth) / 2;
+      stack.scrollTo({ left, behavior: LOW_MOTION ? 'auto' : 'smooth' });
+    };
+
+    prevBtn && prevBtn.addEventListener('click', () => {
+      scrollToIdx(Math.max(0, activeIdx - 1));
+    });
+    nextBtn && nextBtn.addEventListener('click', () => {
+      scrollToIdx(Math.min(items.length - 1, activeIdx + 1));
+    });
+    dots.forEach((d) => {
+      d.addEventListener('click', () => {
+        const i = parseInt(d.dataset.idx, 10);
+        if (!isNaN(i)) scrollToIdx(i);
+      });
+    });
+
+    // Teclado: setas esquerda/direita quando o carrossel tem foco
+    stack.tabIndex = 0;
+    stack.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); scrollToIdx(Math.max(0, activeIdx - 1)); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); scrollToIdx(Math.min(items.length - 1, activeIdx + 1)); }
+    });
+
+    // Estado inicial — primeiro card ativo
+    setActive(0);
+    requestAnimationFrame(computeActive);
+    window.addEventListener('resize', () => requestAnimationFrame(computeActive), { passive: true });
     return;
   }
 

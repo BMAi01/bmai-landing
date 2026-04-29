@@ -7758,126 +7758,218 @@ html {
 }
 
 /* ============================================
-   2026-04-29 — QUEM SOMOS side-by-side redesign
-   Substitui scroll-jack (200vh + sticky + GSAP scrub) por grid 2 colunas
-   estático com hover lift + fade-in stagger. Card 2 branco travado intacto.
+   2026-04-29 (rev6) — QUEM SOMOS carrossel estilo Apple
+   Scroll-snap horizontal centrado, peek dos cards adjacentes, scale+opacity
+   no card ativo, setas (desktop) + dots. Card 2 branco intacto.
    ============================================ */
 #quem-somos .section__center { margin-bottom: 14px !important; }
 
-/* DESKTOP: kill scroll-jack, cena acima full-width, cards 50/50 abaixo */
-@media (min-width: 769px) {
-  .qs__scroll-container { height: auto !important; }
-  .qs__sticky {
-    position: static !important;
-    height: auto !important;
-    overflow: visible !important;
-    display: block !important;
-  }
-  .qs__grid--side {
-    display: flex !important;
-    flex-direction: column;
-    gap: 0 !important;
-    grid-template-columns: none !important;
-    max-width: 1080px;
-  }
-  .qs__grid--side > .qs-scene-wrap { order: 1 !important; min-height: 120px; }
-  .qs__grid--side > .card-stack--side-by-side { margin-top: -40px !important; }
-  .qs__grid--side > .card-stack--side-by-side { order: 2 !important; }
-
-  .card-stack--side-by-side {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    perspective: 1500px !important;
-    min-height: 0 !important;
-  }
-  .card-stack--side-by-side .card-stack__item {
-    position: relative !important;
-    inset: auto !important;
-    opacity: 0 !important;
-    transform: translate3d(0, 40px, 0) !important;
-    transform-origin: center;
-    transition:
-      opacity .8s cubic-bezier(.22, 1, .36, 1),
-      transform .5s ease,
-      filter .5s ease,
-      box-shadow .5s ease,
-      border-color .5s ease !important;
-    will-change: transform, opacity, filter;
-  }
-  .card-stack--side-by-side .card-stack__item.is-visible {
-    opacity: 1 !important;
-    transform: translate3d(0, 0, 0) !important;
-  }
-
-  /* Spotlight: ao passar mouse em qualquer card do container,
-     TODOS recuam (apagados, menores, blur leve) por padrão */
-  .card-stack--side-by-side:hover .card-stack__item.is-visible {
-    opacity: .4 !important;
-    transform: scale(.97) !important;
-    filter: blur(1px);
-  }
-  /* O card sob o cursor volta destacado, com lift + glow laranja */
-  .card-stack--side-by-side .card-stack__item.is-visible:hover {
-    opacity: 1 !important;
-    transform: scale(1.04) translateY(-10px) !important;
-    filter: blur(0);
-    z-index: 2;
-    box-shadow:
-      0 22px 60px -10px rgba(0, 0, 0, .55),
-      0 0 60px -4px rgba(219, 85, 0, .45),
-      inset 0 1px 0 rgba(255, 255, 255, .06) !important;
-    border-color: rgba(219, 85, 0, .5) !important;
-  }
-  .card-stack--side-by-side .card-stack__item--2.is-visible:hover {
-    box-shadow:
-      0 24px 60px -10px rgba(13, 27, 42, .35),
-      0 0 60px -4px rgba(219, 85, 0, .55),
-      inset 0 1px 0 rgba(255, 255, 255, 1) !important;
-    border-color: rgba(219, 85, 0, .65) !important;
-  }
-  /* Tilt: card vizinho "olha" pro card destacado */
-  .card-stack--side-by-side .card-stack__item--1.is-visible:hover ~ .card-stack__item.is-visible {
-    transform: scale(.97) rotateY(-8deg) translateX(-10px) !important;
-  }
-  .card-stack--side-by-side:has(.card-stack__item--2.is-visible:hover) .card-stack__item--1.is-visible {
-    transform: scale(.97) rotateY(8deg) translateX(10px) !important;
-  }
+/* Kill scroll-jack restante */
+.qs__scroll-container { height: auto !important; }
+.qs__sticky {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+  display: block !important;
 }
 
-/* MOBILE: cards verticais (não scroll horizontal), fade-in idêntico */
+/* Coluna: cena animada acima, carrossel + dots abaixo */
+.qs__grid--side {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0 !important;
+  grid-template-columns: none !important;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+.qs__grid--side > .qs-scene-wrap { order: 1 !important; min-height: 120px; }
+.qs__grid--side > .qs-carousel { order: 2 !important; margin-top: -32px; }
+.qs__grid--side > .qs-carousel__dots { order: 3 !important; }
+
+/* Wrapper do carrossel — relative pra setas posicionarem */
+.qs-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Trilho de scroll do carrossel */
+.card-stack--carousel {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 24px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 32px clamp(16px, 15%, 200px) !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  scroll-snap-type: x mandatory !important;
+  scroll-padding-inline: clamp(16px, 15%, 200px) !important;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  perspective: none !important;
+  min-height: 0 !important;
+  cursor: grab;
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+  /* Mascara fade nas bordas — efeito Apple peek */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0,
+    rgba(0,0,0,.3) 4%,
+    #000 12%,
+    #000 88%,
+    rgba(0,0,0,.3) 96%,
+    transparent 100%);
+          mask-image: linear-gradient(to right,
+    transparent 0,
+    rgba(0,0,0,.3) 4%,
+    #000 12%,
+    #000 88%,
+    rgba(0,0,0,.3) 96%,
+    transparent 100%);
+}
+.card-stack--carousel:active { cursor: grabbing; }
+.card-stack--carousel::-webkit-scrollbar { display: none; }
+
+/* Cada card — flex-basis fixo, snap center, scale .92 default */
+.card-stack--carousel .card-stack__item {
+  position: relative !important;
+  inset: auto !important;
+  flex: 0 0 70% !important;
+  max-width: 720px !important;
+  min-width: 0 !important;
+  min-height: 380px !important;
+  padding: 56px 48px !important;
+  border-radius: 24px !important;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  opacity: .55;
+  transform: scale(.92) translate3d(0,0,0) !important;
+  transform-origin: center;
+  transition:
+    opacity .55s cubic-bezier(.22,1,.36,1),
+    transform .55s cubic-bezier(.22,1,.36,1),
+    box-shadow .45s ease,
+    border-color .45s ease !important;
+  will-change: transform, opacity;
+  z-index: 1;
+}
+/* Card ativo — destaque Apple: scale 1, opacity 1, glow laranja */
+.card-stack--carousel .card-stack__item.is-active {
+  opacity: 1;
+  transform: scale(1) translate3d(0,0,0) !important;
+  z-index: 2;
+  box-shadow:
+    0 30px 70px -18px rgba(0, 0, 0, .6),
+    0 0 60px -8px rgba(219, 85, 0, .4),
+    inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+  border-color: rgba(219, 85, 0, .45) !important;
+}
+.card-stack--carousel .card-stack__item--2.is-active {
+  box-shadow:
+    0 30px 70px -18px rgba(13, 27, 42, .35),
+    0 0 60px -8px rgba(219, 85, 0, .55),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  border-color: rgba(219, 85, 0, .55) !important;
+}
+
+/* ============ Setas (desktop only) ============ */
+.qs-carousel__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(13, 27, 42, .82);
+  border: 1px solid rgba(219, 85, 0, .35);
+  color: #ede7e1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity .3s ease, background .3s ease, transform .3s ease, border-color .3s ease;
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+          backdrop-filter: blur(8px) saturate(140%);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, .5);
+  padding: 0;
+}
+.qs-carousel__nav svg { width: 22px; height: 22px; display: block; }
+.qs-carousel__nav--prev { left: 8px; }
+.qs-carousel__nav--next { right: 8px; }
+.qs-carousel:hover .qs-carousel__nav,
+.qs-carousel__nav:focus-visible { opacity: 1; }
+.qs-carousel__nav:hover {
+  background: rgba(219, 85, 0, .92);
+  border-color: rgba(255, 168, 102, .8);
+  transform: translateY(-50%) scale(1.08);
+  color: #fff;
+}
+.qs-carousel__nav[disabled] {
+  opacity: 0 !important;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Mobile/touch: setas escondidas (gesto = swipe) */
+@media (max-width: 900px), (hover: none) {
+  .qs-carousel__nav { display: none !important; }
+}
+
+/* ============ Dots ============ */
+.qs-carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 4px;
+}
+.qs-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .22);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background .3s ease, width .3s ease, border-radius .3s ease;
+}
+.qs-carousel__dot:hover { background: rgba(255, 255, 255, .45); }
+.qs-carousel__dot.is-active {
+  background: var(--bmai-orange, #db5500);
+  width: 28px;
+  border-radius: 4px;
+}
+
+/* ============ Mobile tweaks ============ */
 @media (max-width: 768px) {
-  .card-stack--side-by-side {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    scroll-snap-type: none !important;
-    cursor: default !important;
-    min-height: 0 !important;
+  .card-stack--carousel {
+    gap: 16px !important;
+    padding: 24px clamp(8px, 8%, 64px) !important;
+    scroll-padding-inline: clamp(8px, 8%, 64px) !important;
   }
-  /* Esconde o indicador "01 / 02" — ambos cards visíveis juntos agora */
-  .card-stack--side-by-side::before { display: none !important; }
-  .card-stack--side-by-side .card-stack__item {
-    flex: 0 0 auto !important;
-    max-width: 100% !important;
-    scroll-snap-align: none !important;
-    opacity: 0 !important;
-    transform: translate3d(0, 30px, 0) !important;
-    transition:
-      opacity .7s ease,
-      transform .7s ease !important;
+  .card-stack--carousel .card-stack__item {
+    flex: 0 0 84% !important;
+    max-width: 480px !important;
+    min-height: 340px !important;
+    padding: 40px 28px !important;
+    border-radius: 20px !important;
   }
-  .card-stack--side-by-side .card-stack__item.is-visible {
-    opacity: 1 !important;
-    transform: translate3d(0, 0, 0) !important;
-  }
+  .qs__grid--side > .qs-carousel { margin-top: -16px; }
+  .qs-carousel__dots { margin-top: 14px; }
+  /* Esconde indicador antigo "01/02" do legacy carousel mobile */
+  .card-stack--carousel::before { display: none !important; }
 }
 
+/* Reduced motion: sem transition, ativo direto */
 @media (prefers-reduced-motion: reduce) {
-  .card-stack--side-by-side .card-stack__item {
+  .card-stack--carousel { scroll-behavior: auto; }
+  .card-stack--carousel .card-stack__item {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;

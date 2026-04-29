@@ -252,7 +252,11 @@
       <div class="qs__scroll-container">
        <div class="qs__sticky">
       <div class="qs__grid qs__grid--animated qs__grid--side">
-        <div class="card-stack card-stack--side-by-side" data-stack="qs">
+        <div class="qs-carousel">
+        <button class="qs-carousel__nav qs-carousel__nav--prev" type="button" aria-label="Card anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="card-stack card-stack--carousel" data-stack="qs">
           <article class="card-stack__item card-stack__item--1">
             <div class="card-top-line"></div>
             <span class="card-corner card-corner--tl" aria-hidden="true"></span>
@@ -279,6 +283,14 @@
               <p data-i18n="qs.card2_p">Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.</p>
             </div>
           </article>
+        </div>
+        <button class="qs-carousel__nav qs-carousel__nav--next" type="button" aria-label="Próximo card">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        </div>
+        <div class="qs-carousel__dots" id="qsCarouselDots" aria-hidden="false">
+          <button class="qs-carousel__dot is-active" type="button" data-idx="0" aria-label="Ir para Fase 01"></button>
+          <button class="qs-carousel__dot" type="button" data-idx="1" aria-label="Ir para Fase 02"></button>
         </div>
         <!-- ===== Cena animada: enxurrada de clientes → agente resolve ===== -->
         <div class="qs-scene-wrap" aria-hidden="true">
