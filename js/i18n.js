@@ -44,6 +44,9 @@
       'qs.card3_eyebrow': 'Fase 03 · Operação Contínua',
       'qs.card3_h3':      'Operamos<br><span style="color:var(--orange)">e refinamos.</span>',
       'qs.card3_p':       'O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda — IA viva, não projeto entregue e esquecido.',
+      'qs.card4_eyebrow': 'Fase 04 · Escala Estratégica',
+      'qs.card4_h3':      'Escalamos<br><span style="color:var(--orange)">o resultado.</span>',
+      'qs.card4_p':       'Quando um agente prova valor, replicamos o modelo para outras funções e times — multiplicando o ganho de produtividade sem reinventar a roda a cada projeto.',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
@@ -244,6 +247,9 @@
       'qs.card3_eyebrow': 'Phase 03 · Continuous Operation',
       'qs.card3_h3':      'We run it<br><span style="color:var(--orange)">and refine it.</span>',
       'qs.card3_p':       'The Agent goes into production and keeps evolving: we track metrics and adjust context and prompts as the business shifts — living AI, not a delivered-and-forgotten project.',
+      'qs.card4_eyebrow': 'Phase 04 · Strategic Scale',
+      'qs.card4_h3':      'We scale<br><span style="color:var(--orange)">the result.</span>',
+      'qs.card4_p':       'Once an agent proves value, we replicate the model to other functions and teams — multiplying productivity gains without reinventing the wheel each project.',
       'qs.brand_tag': 'integrating AI…',
 
       'metodo.title': 'From diagnosis<br><span style="color:var(--orange)">to real scale.</span>',
@@ -436,6 +442,9 @@
       'qs.card3_eyebrow': 'Fase 03 · Operación Continua',
       'qs.card3_h3':      'Operamos<br><span style="color:var(--orange)">y refinamos.</span>',
       'qs.card3_p':       'El Agente entra en producción y sigue evolucionando: acompañamos métricas y ajustamos contexto y prompt según cambia el negocio — IA viva, no proyecto entregado y olvidado.',
+      'qs.card4_eyebrow': 'Fase 04 · Escala Estratégica',
+      'qs.card4_h3':      'Escalamos<br><span style="color:var(--orange)">el resultado.</span>',
+      'qs.card4_p':       'Cuando un agente prueba valor, replicamos el modelo a otras funciones y equipos — multiplicando la ganancia de productividad sin reinventar la rueda en cada proyecto.',
       'qs.brand_tag': 'integrando IA…',
 
       'metodo.title': 'Del diagnóstico<br><span style="color:var(--orange)">a la escala real.</span>',

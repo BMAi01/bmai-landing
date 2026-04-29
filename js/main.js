@@ -1450,7 +1450,7 @@ if (document.readyState === 'loading') {
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: '+=300%',           // 3 cards = 3 viewports de scroll
+          end: '+=' + (inners.length * 100) + '%', // N cards = N viewports
           pin: true,
           scrub: 2,                // inercia suave
           anticipatePin: 1,
