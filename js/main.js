@@ -1251,6 +1251,53 @@ function _initCardStackFx() {
       if (e.key === 'ArrowRight') { e.preventDefault(); scrollToIdx(Math.min(items.length - 1, activeIdx + 1)); }
     });
 
+    // Drag-to-scroll com cursor (desktop) — mousedown + move + up
+    let isDown = false;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragMoved = false;
+
+    const snapToNearest = () => {
+      const center = stack.scrollLeft + stack.clientWidth / 2;
+      let bestIdx = 0, bestDist = Infinity;
+      items.forEach((it, i) => {
+        const c = it.offsetLeft + it.clientWidth / 2;
+        const d = Math.abs(c - center);
+        if (d < bestDist) { bestDist = d; bestIdx = i; }
+      });
+      scrollToIdx(bestIdx);
+    };
+
+    stack.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      isDown = true;
+      dragMoved = false;
+      dragStartX = e.pageX;
+      dragStartScroll = stack.scrollLeft;
+      stack.classList.add('is-dragging');
+    });
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      const dx = e.pageX - dragStartX;
+      if (Math.abs(dx) > 4) dragMoved = true;
+      stack.scrollLeft = dragStartScroll - dx;
+    };
+    const onMouseUp = () => {
+      if (!isDown) return;
+      isDown = false;
+      stack.classList.remove('is-dragging');
+      if (dragMoved) snapToNearest();
+    };
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+
+    // Bloqueia click depois de drag (evita disparar action acidental no card)
+    stack.addEventListener('click', (e) => {
+      if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
+    }, true);
+    // Previne drag do browser em texto/imagens dentro dos cards
+    stack.addEventListener('dragstart', (e) => e.preventDefault());
+
     // Estado inicial — primeiro card ativo
     setActive(0);
     requestAnimationFrame(computeActive);
@@ -1461,7 +1508,8 @@ if (document.readyState === 'loading') {
           if (visible && !inSection) {
             inSection = true;
             handleEnter();
-            applyAudio();
+            /* 2026-04-29: applyAudio() removida — ficou orfa apos refactor.
+               Audio agora eh controlado pelo botao overlay (click do user). */
           } else if (!visible && inSection) {
             inSection = false;
             handleLeave();

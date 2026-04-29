@@ -7834,6 +7834,16 @@ html {
 }
 .card-stack--carousel:active { cursor: grabbing; }
 .card-stack--carousel::-webkit-scrollbar { display: none; }
+.card-stack--carousel.is-dragging {
+  cursor: grabbing !important;
+  scroll-behavior: auto !important;
+  scroll-snap-type: none !important;
+}
+.card-stack--carousel.is-dragging * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  pointer-events: none !important;
+}
 
 /* Cada card — flex-basis fixo, snap center, scale .92 default */
 .card-stack--carousel .card-stack__item {
