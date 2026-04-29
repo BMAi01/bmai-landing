@@ -6761,13 +6761,11 @@ html { scroll-padding-top: 84px; }
    ============================================ */
 .team-mobile { display: none; }
 @media (max-width: 768px) {
-  /* Time inteiro removido do mobile (decisão UX 2026-04-23) */
-  #para-quem { display: none !important; }
+  /* 2026-04-29: regra antiga "#para-quem display:none" removida — sub-secao
+     do video do team agora aparece no mobile (regra explicita ~linha 7138). */
   .team-mobile { display: none !important; }
-  /* Esconde link "Team" do nav mobile e do section-dots */
-  .floatnav__item--team-desktop-only { display: none !important; }
-  #sdots [href="#para-quem"] { display: none !important; }
-  .footer__col [href="#para-quem"] { display: none !important; }
+  /* Link "Team" no nav mobile e section-dots reativados pela regra
+     correspondente em ~7191 (#sdots/.footer__col [href="#para-quem"]). */
 
   .team-mobile {
     display: block;
