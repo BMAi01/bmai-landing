@@ -41,6 +41,9 @@
       'qs.card2_eyebrow': 'Fase 02 · Inteligência Personalizada',
       'qs.card2_h3':      'Construímos<br><span style="color:var(--orange)">IA sob medida.</span>',
       'qs.card2_p':       'Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.',
+      'qs.card3_eyebrow': 'Fase 03 · Operação Contínua',
+      'qs.card3_h3':      'Operamos<br><span style="color:var(--orange)">e refinamos.</span>',
+      'qs.card3_p':       'O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda — IA viva, não projeto entregue e esquecido.',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
@@ -238,6 +241,9 @@
       'qs.card2_eyebrow': 'Phase 02 · Personalized Intelligence',
       'qs.card2_h3':      'We build<br><span style="color:var(--orange)">tailored AI.</span>',
       'qs.card2_p':       'With the Phase 01 process already structured, we build the AI Agent shaped to that flow — not a generic template — to amplify the function defined in the previous step.',
+      'qs.card3_eyebrow': 'Phase 03 · Continuous Operation',
+      'qs.card3_h3':      'We run it<br><span style="color:var(--orange)">and refine it.</span>',
+      'qs.card3_p':       'The Agent goes into production and keeps evolving: we track metrics and adjust context and prompts as the business shifts — living AI, not a delivered-and-forgotten project.',
       'qs.brand_tag': 'integrating AI…',
 
       'metodo.title': 'From diagnosis<br><span style="color:var(--orange)">to real scale.</span>',
@@ -427,6 +433,9 @@
       'qs.card2_eyebrow': 'Fase 02 · Inteligencia Personalizada',
       'qs.card2_h3':      'Construimos<br><span style="color:var(--orange)">IA a medida.</span>',
       'qs.card2_p':       'Con el proceso de la Fase 01 ya estructurado, desarrollamos el Agente de IA moldeado a ese flujo — no a una plantilla genérica — para potenciar la función definida en la etapa anterior.',
+      'qs.card3_eyebrow': 'Fase 03 · Operación Continua',
+      'qs.card3_h3':      'Operamos<br><span style="color:var(--orange)">y refinamos.</span>',
+      'qs.card3_p':       'El Agente entra en producción y sigue evolucionando: acompañamos métricas y ajustamos contexto y prompt según cambia el negocio — IA viva, no proyecto entregado y olvidado.',
       'qs.brand_tag': 'integrando IA…',
 
       'metodo.title': 'Del diagnóstico<br><span style="color:var(--orange)">a la escala real.</span>',
