@@ -225,6 +225,9 @@ reveal('.cs-card', true);
 (function() {
   const stack = document.querySelector('.card-stack');
   if (!stack) return;
+  /* 2026-04-29: side-by-side faz fade-in por card (stagger) em _initCardStackFx;
+     reveal do container ficaria duplicado. Skip aqui. */
+  if (stack.classList.contains('card-stack--side-by-side')) return;
   if (LOW_MOTION) {
     stack.classList.add('card-stack--reveal', 'card-stack--revealed');
     return;
@@ -1185,6 +1188,27 @@ function _initCardStackFx() {
   const stack = document.querySelector('.card-stack');
   if (!stack || stack.dataset.fxInit === '1') return;
   stack.dataset.fxInit = '1';
+
+  // 2026-04-29: side-by-side — fade-in por card com stagger 150ms.
+  // Sem GSAP scrub, sem dots, sem swipe carousel. Bypass total dos modos antigos.
+  if (stack.classList.contains('card-stack--side-by-side')) {
+    const items = Array.from(stack.querySelectorAll('.card-stack__item'));
+    if (!items.length) return;
+    if (LOW_MOTION || !('IntersectionObserver' in window)) {
+      items.forEach(it => it.classList.add('is-visible'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const idx = items.indexOf(entry.target);
+        setTimeout(() => entry.target.classList.add('is-visible'), idx * 150);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(it => io.observe(it));
+    return;
+  }
 
   // Mobile: carousel horizontal com swipe — dots + EFEITO #4 border glow
   if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) {
