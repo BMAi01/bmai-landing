@@ -4065,13 +4065,41 @@ h1, h2, h3, p, span, li, a {
   .cs-hero { grid-template-columns: 1fr; }
   .cs-hero__visual { min-height: 200px; border-left: none; border-top: 1px solid rgba(255,255,255,0.04); }
   .cs-hero__content { padding: 32px; }
-  .cs-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
-  .cs-grid { grid-template-columns: 1fr; }
   .cs-hero__content { padding: 24px; }
   .cs-hero__stats { flex-wrap: wrap; gap: 20px; }
   .cs-hero__quote { font-size: 16px; }
+}
+
+/* Mobile (=768px): cases vira carrossel horizontal scroll-snap (rev38) */
+@media (max-width: 768px) {
+  .cs-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 16px;
+
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    /* full-bleed: expande alem do .container ate as bordas da viewport */
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: 8px max(16px, calc(50vw - 150px)) 24px;
+
+    scrollbar-width: none;
+  }
+  .cs-grid::-webkit-scrollbar { display: none; }
+
+  .cs-card {
+    flex: 0 0 300px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    margin: 0;
+  }
 }
 
 
@@ -4520,8 +4548,8 @@ section h2.shimmer-active::after,
   .cs-hero__visual-logo { max-height: 80px !important; }
   .cs__heading { font-size: clamp(26px, 7.2vw, 36px) !important; }
 
-  /* Cases grid — stack */
-  .cs-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+  /* Cases grid — sem stack (rev38: vira carrossel via regra abaixo) */
+  /* .cs-grid { grid-template-columns: 1fr !important; gap: 14px !important; } */
   .cs-card { padding: 22px 20px !important; }
   .cs-card__result { font-size: 14px !important; }
   .cs-card__quote { font-size: 13.5px !important; }

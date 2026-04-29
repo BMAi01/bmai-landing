@@ -1416,31 +1416,21 @@ if (document.readyState === 'loading') {
     if (!inners.length) return;
     stage.dataset.fxInit = '1';
 
-    /* Mobile: carrossel horizontal scroll-snap. Flippa cada card quando
-       centraliza no carrossel (intersection ratio >= 0.75 com root=grid). */
+    /* Mobile: stage entra no viewport, todos os cards flippam em stagger. */
     const isMobile = matchMedia('(max-width: 900px)').matches;
     if (isMobile || LOW_MOTION || !('IntersectionObserver' in window)) {
-      const grid = stage.querySelector('.qs-flip__grid');
-
-      const flipCard = (el) => {
-        if (el.dataset.flipped === '1') return;
-        el.dataset.flipped = '1';
-        el.style.transition = 'transform 1s cubic-bezier(.22, 1, .36, 1)';
-        el.style.transform = 'rotateY(180deg)';
-      };
-
       const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.intersectionRatio >= 0.75) {
-            setTimeout(() => flipCard(entry.target), 250);
-          }
-        });
-      }, {
-        root: grid,
-        threshold: [0, 0.5, 0.75, 1],
-      });
-
-      inners.forEach(el => io.observe(el));
+        if (entries[0].isIntersecting) {
+          inners.forEach((el, i) => {
+            setTimeout(() => {
+              el.style.transition = 'transform 1s cubic-bezier(.22, 1, .36, 1)';
+              el.style.transform = 'rotateY(180deg)';
+            }, i * 350);
+          });
+          io.disconnect();
+        }
+      }, { threshold: 0.2 });
+      io.observe(stage);
       return;
     }
 
