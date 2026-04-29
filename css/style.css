@@ -7575,36 +7575,37 @@ html { scroll-padding-top: 84px; }
   animation-delay: var(--notif-delay, 0s);
   opacity: 0;
 }
-/* 28 posicoes em grid 4col x 7row, left max 48% (zona esquerda do qs-stage),
-   top 5-86%. Pequeno jitter por celula pra parecer natural. */
-.qs-notif--n1  { left: 5%;  top: 6%;  --notif-delay: 0s;    }
-.qs-notif--n2  { left: 18%; top: 8%;  --notif-delay: 0.05s; }
-.qs-notif--n3  { left: 30%; top: 5%;  --notif-delay: 0.1s;  }
-.qs-notif--n4  { left: 43%; top: 9%;  --notif-delay: 0.15s; }
-.qs-notif--n5  { left: 7%;  top: 19%; --notif-delay: 0.2s;  }
-.qs-notif--n6  { left: 20%; top: 21%; --notif-delay: 0.25s; }
-.qs-notif--n7  { left: 32%; top: 18%; --notif-delay: 0.3s;  }
-.qs-notif--n8  { left: 44%; top: 22%; --notif-delay: 0.35s; }
-.qs-notif--n9  { left: 5%;  top: 32%; --notif-delay: 0.4s;  }
-.qs-notif--n10 { left: 17%; top: 34%; --notif-delay: 0.45s; }
-.qs-notif--n11 { left: 30%; top: 31%; --notif-delay: 0.5s;  }
-.qs-notif--n12 { left: 43%; top: 35%; --notif-delay: 0.55s; }
-.qs-notif--n13 { left: 8%;  top: 45%; --notif-delay: 0.6s;  }
-.qs-notif--n14 { left: 20%; top: 43%; --notif-delay: 0.65s; }
-.qs-notif--n15 { left: 32%; top: 46%; --notif-delay: 0.7s;  }
-.qs-notif--n16 { left: 45%; top: 42%; --notif-delay: 0.75s; }
-.qs-notif--n17 { left: 5%;  top: 58%; --notif-delay: 0.8s;  }
-.qs-notif--n18 { left: 18%; top: 60%; --notif-delay: 0.85s; }
-.qs-notif--n19 { left: 31%; top: 57%; --notif-delay: 0.9s;  }
-.qs-notif--n20 { left: 42%; top: 61%; --notif-delay: 0.95s; }
-.qs-notif--n21 { left: 6%;  top: 71%; --notif-delay: 1s;    }
-.qs-notif--n22 { left: 19%; top: 69%; --notif-delay: 1.05s; }
-.qs-notif--n23 { left: 33%; top: 72%; --notif-delay: 1.1s;  }
-.qs-notif--n24 { left: 44%; top: 70%; --notif-delay: 1.15s; }
-.qs-notif--n25 { left: 7%;  top: 84%; --notif-delay: 1.2s;  }
-.qs-notif--n26 { left: 20%; top: 82%; --notif-delay: 1.25s; }
-.qs-notif--n27 { left: 32%; top: 85%; --notif-delay: 1.3s;  }
-.qs-notif--n28 { left: 43%; top: 83%; --notif-delay: 1.35s; }
+/* 28 posicoes ORGANICAS — jitter posicional pra quebrar grade visivel.
+   Sem alinhamento vertical perfeito (nenhum mesmo `left` com mais de 2 cards),
+   variacao de top dentro de cada faixa, densidade variavel. */
+.qs-notif--n1  { left: 4%;  top: 8%;  --notif-delay: 0s;    }
+.qs-notif--n2  { left: 19%; top: 14%; --notif-delay: 0.05s; }
+.qs-notif--n3  { left: 33%; top: 6%;  --notif-delay: 0.1s;  }
+.qs-notif--n4  { left: 46%; top: 16%; --notif-delay: 0.15s; }
+.qs-notif--n5  { left: 11%; top: 24%; --notif-delay: 0.2s;  }
+.qs-notif--n6  { left: 27%; top: 28%; --notif-delay: 0.25s; }
+.qs-notif--n7  { left: 41%; top: 22%; --notif-delay: 0.3s;  }
+.qs-notif--n8  { left: 6%;  top: 38%; --notif-delay: 0.35s; }
+.qs-notif--n9  { left: 23%; top: 42%; --notif-delay: 0.4s;  }
+.qs-notif--n10 { left: 37%; top: 36%; --notif-delay: 0.45s; }
+.qs-notif--n11 { left: 47%; top: 44%; --notif-delay: 0.5s;  }
+.qs-notif--n12 { left: 13%; top: 52%; --notif-delay: 0.55s; }
+.qs-notif--n13 { left: 30%; top: 56%; --notif-delay: 0.6s;  }
+.qs-notif--n14 { left: 44%; top: 52%; --notif-delay: 0.65s; }
+.qs-notif--n15 { left: 8%;  top: 64%; --notif-delay: 0.7s;  }
+.qs-notif--n16 { left: 25%; top: 68%; --notif-delay: 0.75s; }
+.qs-notif--n17 { left: 39%; top: 64%; --notif-delay: 0.8s;  }
+.qs-notif--n18 { left: 14%; top: 78%; --notif-delay: 0.85s; }
+.qs-notif--n19 { left: 32%; top: 82%; --notif-delay: 0.9s;  }
+.qs-notif--n20 { left: 46%; top: 76%; --notif-delay: 0.95s; }
+.qs-notif--n21 { left: 5%;  top: 88%; --notif-delay: 1s;    }
+.qs-notif--n22 { left: 21%; top: 90%; --notif-delay: 1.05s; }
+.qs-notif--n23 { left: 37%; top: 92%; --notif-delay: 1.1s;  }
+.qs-notif--n24 { left: 16%; top: 32%; --notif-delay: 1.15s; }
+.qs-notif--n25 { left: 42%; top: 30%; --notif-delay: 1.2s;  }
+.qs-notif--n26 { left: 18%; top: 60%; --notif-delay: 1.25s; }
+.qs-notif--n27 { left: 35%; top: 72%; --notif-delay: 1.3s;  }
+.qs-notif--n28 { left: 28%; top: 18%; --notif-delay: 1.35s; }
 /* Mobile: mostra so primeiros 12 cards (esconde n13-n28) — evita saturacao */
 @media (max-width: 768px) {
   .qs-notif--n13, .qs-notif--n14, .qs-notif--n15, .qs-notif--n16,
