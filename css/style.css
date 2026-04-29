@@ -7991,7 +7991,10 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, .06);
 }
 
-/* FRONT — herda visual original do card-stack BMAi */
+/* FRONT — herda visual original do card-stack BMAi
+   2026-04-29 (rev15): swap front<->back. Visualmente o user agora ve PRIMEIRO
+   o face--back (Forbes-style), e ao virar ve face--front (BMAi).
+   Pra isso, --front recebe rotateY(180) (fica "atras") e --back perde. */
 .qs-flip-card__face--front {
   background:
     radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(219, 85, 0, .1) 0%, transparent 55%),
@@ -8000,6 +8003,7 @@ html {
   -webkit-backdrop-filter: blur(20px) saturate(140%);
           backdrop-filter: blur(20px) saturate(140%);
   justify-content: center;
+  transform: rotateY(180deg);
 }
 /* CARD 2 BRANCO — regra travada */
 .qs-flip-card--2 .qs-flip-card__face--front {
@@ -8059,7 +8063,6 @@ html {
 
 /* BACK — fundo escuro com grid de linhas (Forbes/blackground) */
 .qs-flip-card__face--back {
-  transform: rotateY(180deg);
   background: #050708;
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, .05) 1px, transparent 1px),
