@@ -1450,7 +1450,7 @@ if (document.readyState === 'loading') {
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: '+=400%',
+          end: '+=200%',
           pin: true,
           scrub: 2,
           anticipatePin: 1,
@@ -1458,15 +1458,17 @@ if (document.readyState === 'loading') {
         },
       });
 
-      // 2026-04-29 (rev26): match exato do codigo de referencia React.
-      // Stagger 0.35 entre cards.
-      inners.forEach((card, index) => {
-        tl.to(card, {
-          rotationY: 180,
-          ease: 'power2.inOut',
-          duration: 1,
-        }, index * 0.35);
-      });
+      // 2026-04-29 (rev27): SYNC flip (sem stagger). Stagger faz cards
+      // ficarem em rotacoes diferentes mid-flip, e a perspectiva 3D
+      // foreshortening (cos law) deixa o card mais virado parecer
+      // estreito enquanto outros estao chapados — visualmente "tamanhos
+      // diferentes". User exigiu cards mesmo tamanho. Sync resolve:
+      // todos os 4 sempre na mesma rotacao = mesmo "tamanho aparente".
+      tl.to(inners, {
+        rotationY: 180,
+        ease: 'power2.inOut',
+        duration: 1,
+      }, 0);
     };
     tryBuild();
   };
