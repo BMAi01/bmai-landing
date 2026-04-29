@@ -7740,3 +7740,71 @@ html {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================
+   2026-04-28 — MOTION: efeito rede neural (connections + stars)
+   80 pontos de luz + 15 linhas tracejadas no fundo do qs-stage,
+   atras das notificacoes. Cobrem a metade esquerda (zona das notifs).
+   ============================================ */
+.motion__stars {
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .7;
+}
+.star--orange {
+  fill: #db5500;
+  filter: drop-shadow(0 0 3px rgba(219, 85, 0, .6));
+}
+.star--orange-dim {
+  fill: rgba(219, 85, 0, .5);
+}
+.star--white-dim {
+  fill: rgba(255, 255, 255, .3);
+}
+.star {
+  animation: starTwinkle 4s ease-in-out infinite;
+}
+.star:nth-child(2n) { animation-delay: .5s; }
+.star:nth-child(3n) { animation-delay: 1s; }
+.star:nth-child(4n) { animation-delay: 1.5s; }
+.star:nth-child(5n) { animation-delay: 2s; }
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .4; }
+}
+.motion__connections {
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .3;
+}
+.connection {
+  fill: none;
+  stroke: rgba(219, 85, 0, .4);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  animation: connectionFlow 3s linear infinite;
+}
+.connection:nth-child(2n) { animation-duration: 4s; }
+.connection:nth-child(3n) { animation-duration: 5s; }
+@keyframes connectionFlow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -16; }
+}
+/* Notifs ficam acima das estrelas e linhas */
+.qs-notif { z-index: 2; }
+@media (max-width: 768px) {
+  /* Mobile: sem linhas (custo de animacao) e estrelas mais sutis */
+  .motion__connections { display: none; }
+  .motion__stars { opacity: .4; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .star, .connection { animation: none; }
+}
