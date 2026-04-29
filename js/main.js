@@ -1192,19 +1192,22 @@ function _initCardStackFx() {
   // 2026-04-29 (rev6): carrossel estilo Apple — scroll-snap + active detection
   // por scroll position, setas (desktop) + dots clicaveis. Mobile/desktop iguais.
   if (stack.classList.contains('card-stack--carousel')) {
-    const items   = Array.from(stack.querySelectorAll('.card-stack__item'));
-    const dots    = Array.from(document.querySelectorAll('#qsCarouselDots .qs-carousel__dot'));
-    const prevBtn = document.querySelector('.qs-carousel__nav--prev');
-    const nextBtn = document.querySelector('.qs-carousel__nav--next');
+    const items = Array.from(stack.querySelectorAll('.card-stack__item'));
     if (!items.length) return;
 
     let activeIdx = 0;
     const setActive = (idx) => {
       activeIdx = idx;
       items.forEach((it, i) => it.classList.toggle('is-active', i === idx));
-      dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
-      if (prevBtn) prevBtn.disabled = (idx === 0);
-      if (nextBtn) nextBtn.disabled = (idx === items.length - 1);
+    };
+
+    const scrollToIdx = (idx) => {
+      const clamped = Math.max(0, Math.min(items.length - 1, idx));
+      const target = items[clamped];
+      if (!target) return;
+      const left = target.offsetLeft - (stack.clientWidth - target.clientWidth) / 2;
+      stack.scrollTo({ left: Math.max(0, left), behavior: LOW_MOTION ? 'auto' : 'smooth' });
+      setActive(clamped);
     };
 
     const computeActive = () => {
@@ -1224,82 +1227,56 @@ function _initCardStackFx() {
       raf = requestAnimationFrame(() => { raf = 0; computeActive(); });
     }, { passive: true });
 
-    const scrollToIdx = (idx) => {
-      const target = items[idx];
-      if (!target) return;
-      const left = target.offsetLeft - (stack.clientWidth - target.clientWidth) / 2;
-      stack.scrollTo({ left, behavior: LOW_MOTION ? 'auto' : 'smooth' });
-    };
-
-    prevBtn && prevBtn.addEventListener('click', () => {
-      scrollToIdx(Math.max(0, activeIdx - 1));
-    });
-    nextBtn && nextBtn.addEventListener('click', () => {
-      scrollToIdx(Math.min(items.length - 1, activeIdx + 1));
-    });
-    dots.forEach((d) => {
-      d.addEventListener('click', () => {
-        const i = parseInt(d.dataset.idx, 10);
-        if (!isNaN(i)) scrollToIdx(i);
-      });
-    });
-
-    // Teclado: setas esquerda/direita quando o carrossel tem foco
-    stack.tabIndex = 0;
-    stack.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); scrollToIdx(Math.max(0, activeIdx - 1)); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); scrollToIdx(Math.min(items.length - 1, activeIdx + 1)); }
-    });
-
-    // Drag-to-scroll com cursor (desktop) — mousedown + move + up
+    // Drag-to-swipe com cursor (desktop): qualquer arrasto > 50px avanca ±1 card
+    const SWIPE_THRESHOLD = 50;
     let isDown = false;
     let dragStartX = 0;
     let dragStartScroll = 0;
+    let dragDelta = 0;
     let dragMoved = false;
-
-    const snapToNearest = () => {
-      const center = stack.scrollLeft + stack.clientWidth / 2;
-      let bestIdx = 0, bestDist = Infinity;
-      items.forEach((it, i) => {
-        const c = it.offsetLeft + it.clientWidth / 2;
-        const d = Math.abs(c - center);
-        if (d < bestDist) { bestDist = d; bestIdx = i; }
-      });
-      scrollToIdx(bestIdx);
-    };
 
     stack.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
       isDown = true;
       dragMoved = false;
+      dragDelta = 0;
       dragStartX = e.pageX;
       dragStartScroll = stack.scrollLeft;
       stack.classList.add('is-dragging');
     });
     const onMouseMove = (e) => {
       if (!isDown) return;
-      const dx = e.pageX - dragStartX;
-      if (Math.abs(dx) > 4) dragMoved = true;
-      stack.scrollLeft = dragStartScroll - dx;
+      dragDelta = e.pageX - dragStartX;
+      if (Math.abs(dragDelta) > 4) dragMoved = true;
+      stack.scrollLeft = dragStartScroll - dragDelta;
     };
     const onMouseUp = () => {
       if (!isDown) return;
       isDown = false;
       stack.classList.remove('is-dragging');
-      if (dragMoved) snapToNearest();
+      if (!dragMoved) return;
+      // Swipe: arrasto pra direita (dx > 0) -> card anterior; pra esquerda -> proximo
+      if (Math.abs(dragDelta) > SWIPE_THRESHOLD) {
+        const direction = dragDelta > 0 ? -1 : 1;
+        scrollToIdx(activeIdx + direction);
+      } else {
+        // Drag pequeno: volta pro card atual
+        scrollToIdx(activeIdx);
+      }
     };
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 
-    // Bloqueia click depois de drag (evita disparar action acidental no card)
+    // Bloqueia click depois de drag (evita disparar action acidental)
     stack.addEventListener('click', (e) => {
       if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
     }, true);
-    // Previne drag do browser em texto/imagens dentro dos cards
     stack.addEventListener('dragstart', (e) => e.preventDefault());
 
-    // Estado inicial — primeiro card ativo
+    // Touch (mobile): native scroll-snap cuida do swipe; so atualiza active via scroll
+    // Estado inicial — primeiro card ativo, scroll em 0
     setActive(0);
+    stack.scrollLeft = 0;
     requestAnimationFrame(computeActive);
     window.addEventListener('resize', () => requestAnimationFrame(computeActive), { passive: true });
     return;
