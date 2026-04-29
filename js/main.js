@@ -1194,6 +1194,7 @@ function _initCardStackFx() {
   if (stack.classList.contains('card-stack--carousel')) {
     const items = Array.from(stack.querySelectorAll('.card-stack__item'));
     if (!items.length) return;
+    const len = items.length;
 
     let activeIdx = 0;
     const setActive = (idx) => {
@@ -1201,13 +1202,16 @@ function _initCardStackFx() {
       items.forEach((it, i) => it.classList.toggle('is-active', i === idx));
     };
 
+    /* Wrap modular — idx pode ser negativo ou > len, sempre cai em [0, len-1] */
+    const wrap = (idx) => ((idx % len) + len) % len;
+
     const scrollToIdx = (idx) => {
-      const clamped = Math.max(0, Math.min(items.length - 1, idx));
-      const target = items[clamped];
+      const wrapped = wrap(idx);
+      const target = items[wrapped];
       if (!target) return;
       const left = target.offsetLeft - (stack.clientWidth - target.clientWidth) / 2;
       stack.scrollTo({ left: Math.max(0, left), behavior: LOW_MOTION ? 'auto' : 'smooth' });
-      setActive(clamped);
+      setActive(wrapped);
     };
 
     const computeActive = () => {
@@ -1227,7 +1231,23 @@ function _initCardStackFx() {
       raf = requestAnimationFrame(() => { raf = 0; computeActive(); });
     }, { passive: true });
 
-    // Drag-to-swipe com cursor (desktop): qualquer arrasto > 50px avanca ±1 card
+    /* Auto-rotate (carrossel de verdade): avanca a cada 5s, pausa no hover/drag */
+    const AUTO_INTERVAL = 5000;
+    let autoTimer = null;
+    const startAuto = () => {
+      if (LOW_MOTION) return;
+      stopAuto();
+      autoTimer = setInterval(() => scrollToIdx(activeIdx + 1), AUTO_INTERVAL);
+    };
+    const stopAuto = () => {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    };
+    stack.addEventListener('mouseenter', stopAuto);
+    stack.addEventListener('mouseleave', startAuto);
+    stack.addEventListener('touchstart', stopAuto, { passive: true });
+    stack.addEventListener('touchend',  () => setTimeout(startAuto, 1500), { passive: true });
+
+    /* Drag-to-swipe com cursor (desktop): swipe > 50px avanca ±1 card (com wrap) */
     const SWIPE_THRESHOLD = 50;
     let isDown = false;
     let dragStartX = 0;
@@ -1243,6 +1263,7 @@ function _initCardStackFx() {
       dragStartX = e.pageX;
       dragStartScroll = stack.scrollLeft;
       stack.classList.add('is-dragging');
+      stopAuto();
     });
     const onMouseMove = (e) => {
       if (!isDown) return;
@@ -1254,31 +1275,48 @@ function _initCardStackFx() {
       if (!isDown) return;
       isDown = false;
       stack.classList.remove('is-dragging');
-      if (!dragMoved) return;
-      // Swipe: arrasto pra direita (dx > 0) -> card anterior; pra esquerda -> proximo
-      if (Math.abs(dragDelta) > SWIPE_THRESHOLD) {
-        const direction = dragDelta > 0 ? -1 : 1;
-        scrollToIdx(activeIdx + direction);
-      } else {
-        // Drag pequeno: volta pro card atual
-        scrollToIdx(activeIdx);
+      if (dragMoved) {
+        if (Math.abs(dragDelta) > SWIPE_THRESHOLD) {
+          scrollToIdx(activeIdx + (dragDelta > 0 ? -1 : 1));
+        } else {
+          scrollToIdx(activeIdx);
+        }
       }
+      // Reinicia auto-rotate apos 2s sem interacao
+      setTimeout(startAuto, 2000);
     };
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 
-    // Bloqueia click depois de drag (evita disparar action acidental)
     stack.addEventListener('click', (e) => {
       if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
     }, true);
     stack.addEventListener('dragstart', (e) => e.preventDefault());
 
-    // Touch (mobile): native scroll-snap cuida do swipe; so atualiza active via scroll
-    // Estado inicial — primeiro card ativo, scroll em 0
+    /* Pausa auto-rotate quando aba fica oculta (economiza CPU, evita pulo ao voltar) */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+      else startAuto();
+    });
+
+    /* Estado inicial */
     setActive(0);
     stack.scrollLeft = 0;
     requestAnimationFrame(computeActive);
     window.addEventListener('resize', () => requestAnimationFrame(computeActive), { passive: true });
+
+    /* So inicia auto-rotate quando o carrossel entra no viewport */
+    if ('IntersectionObserver' in window) {
+      const visIO = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) startAuto();
+          else stopAuto();
+        });
+      }, { threshold: 0.3 });
+      visIO.observe(stack);
+    } else {
+      startAuto();
+    }
     return;
   }
 
