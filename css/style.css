@@ -8162,7 +8162,7 @@ html {
   font-weight: 700;
 }
 
-/* Mobile — flip ainda funciona, mas em coluna */
+/* Mobile — 2x2 grid (rev30) */
 @media (max-width: 900px) {
   .qs-flip__stage {
     height: auto;
@@ -8170,12 +8170,25 @@ html {
     padding: 32px 16px 64px;
   }
   .qs-flip__grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 480px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-width: 560px;
   }
-  .qs-flip-card { height: 460px; }
-  .qs-flip-card__face { padding: 36px 28px; }
+  .qs-flip-card { height: 380px; }
+  .qs-flip-card__face { padding: 22px 16px; }
+
+  /* tipografia mais compacta no card */
+  .card-content h3 { font-size: clamp(1.4rem, 4.5vw, 1.8rem); }
+  .card-content p { font-size: 0.85rem; line-height: 1.5; }
+  .card-eyebrow { font-size: 10px; letter-spacing: .18em; gap: 8px; }
+  .qs-flip-card__letter { width: 70%; max-height: 65%; }
+}
+
+/* telas bem pequenas (< 380px) */
+@media (max-width: 380px) {
+  .qs-flip__grid { gap: 10px; }
+  .qs-flip-card { height: 340px; }
+  .qs-flip-card__face { padding: 18px 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
