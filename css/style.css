@@ -7847,7 +7847,7 @@ html {
   border-radius: 24px !important;
   scroll-snap-align: center;
   scroll-snap-stop: always;
-  opacity: .55;
+  opacity: .55 !important;
   transform: scale(.92) translate3d(0,0,0) !important;
   transform-origin: center;
   transition:
@@ -7860,7 +7860,7 @@ html {
 }
 /* Card ativo — destaque Apple: scale 1, opacity 1, glow laranja */
 .card-stack--carousel .card-stack__item.is-active {
-  opacity: 1;
+  opacity: 1 !important;
   transform: scale(1) translate3d(0,0,0) !important;
   z-index: 2;
   box-shadow:
