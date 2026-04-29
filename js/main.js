@@ -1351,17 +1351,23 @@ if (document.readyState === 'loading') {
         video.volume = 1;
       }
     };
+    const ACTIVATE_EVENTS = ['click', 'touchstart', 'keydown', 'wheel', 'pointerdown', 'mousedown'];
     const onActivate = () => {
       if (userActivated) return;
       userActivated = true;
       applyAudio();
-      ['click', 'touchstart', 'keydown'].forEach(ev =>
+      ACTIVATE_EVENTS.forEach(ev =>
         window.removeEventListener(ev, onActivate, true)
       );
     };
-    ['click', 'touchstart', 'keydown'].forEach(ev =>
+    ACTIVATE_EVENTS.forEach(ev =>
       window.addEventListener(ev, onActivate, { capture: true, passive: true })
     );
+    // Click direto no video tambem desmuta imediato (atalho explicito)
+    video.addEventListener('click', () => {
+      onActivate();
+      if (video.muted) { video.muted = false; video.volume = 1; }
+    });
 
     // IntersectionObserver: play/pause + audio mute control
     const target = stage || video;
