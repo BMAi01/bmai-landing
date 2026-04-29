@@ -8092,13 +8092,13 @@ html {
    pra todas as 4 cards renderizarem letras no mesmo tamanho visual. */
 .qs-flip-card__letter {
   display: block;
-  width: 50%;
-  max-width: 200px;
+  width: 70%;
+  max-width: 280px;
   height: auto;
-  max-height: 50%;
+  max-height: 70%;
   margin: auto;            /* centra horizontal+vertical no flex parent */
   color: var(--bmai-orange, #db5500);
-  filter: drop-shadow(0 0 40px rgba(219, 85, 0, .35));
+  filter: drop-shadow(0 0 50px rgba(219, 85, 0, .4));
   user-select: none;
   pointer-events: none;
   position: relative;
