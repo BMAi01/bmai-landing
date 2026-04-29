@@ -7806,3 +7806,110 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .star, .connection { animation: none; }
 }
+
+/* ============================================
+   2026-04-29 — MOTION REDESIGN: brand centralizado + 2 cards lado-a-lado
+   + particulas flutuantes no fundo. Substitui sistema de notificacoes
+   flutuantes (qs-notif*) que foi removido do HTML.
+   ============================================ */
+#quem-somos {
+  position: relative;
+  overflow: hidden;
+}
+/* Particulas como fundo da secao toda */
+.motion__particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .6;
+}
+.particle--orange {
+  fill: #db5500;
+  filter: drop-shadow(0 0 4px rgba(219, 85, 0, .7));
+}
+.particle--orange-dim { fill: rgba(219, 85, 0, .5); }
+.particle--white-dim  { fill: rgba(255, 255, 255, .35); }
+.particle {
+  animation: particleFloat 8s ease-in-out infinite;
+  transform-origin: center;
+}
+.particle:nth-child(2n) { animation-duration: 10s; animation-delay: 1s;   }
+.particle:nth-child(3n) { animation-duration: 12s; animation-delay: 2s;   }
+.particle:nth-child(4n) { animation-duration: 9s;  animation-delay: .5s;  }
+.particle:nth-child(5n) { animation-duration: 11s; animation-delay: 1.5s; }
+@keyframes particleFloat {
+  0%, 100% { transform: translate(0, 0);     opacity: .7; }
+  25%      { transform: translate(8px, -10px);  opacity: 1;  }
+  50%      { transform: translate(-6px, -16px); opacity: .5; }
+  75%      { transform: translate(4px, -8px);   opacity: .9; }
+}
+@media (max-width: 768px) {
+  .motion__particles { opacity: .4; }
+  .motion__particles .particle[r="1"] { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .particle { animation: none; }
+}
+/* Layout: grid 1fr 1fr -> single column. Brand fica em cima, cards abaixo. */
+.qs__grid--animated {
+  grid-template-columns: 1fr !important;
+  gap: 48px !important;
+  max-width: 1200px !important;
+}
+.qs__scroll-container { height: auto !important; }
+.qs__sticky {
+  position: relative !important;
+  height: auto !important;
+  overflow: visible !important;
+  display: block !important;
+}
+/* qs-scene-wrap (Motion antigo) — agora so contem o brand BMAi central
+   ja que notifs foram removidas. Reduz altura. */
+.qs-scene-wrap {
+  min-height: 320px;
+  z-index: 2;
+}
+/* Card-stack: 2 cards lado a lado (era absolute scroll-stack) */
+.card-stack {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 32px !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  z-index: 3;
+  perspective: none !important;
+  min-height: 0 !important;
+}
+.card-stack__item {
+  position: relative !important;
+  inset: auto !important;
+  flex: 1 1 0 !important;
+  min-height: 480px !important;
+  max-width: 560px !important;
+  padding: 56px 48px !important;
+  border-radius: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+/* Cores dos cards INTOCADAS — Card 1 navy, Card 2 branco (regra travada) */
+@media (max-width: 768px) {
+  .card-stack {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+  .card-stack__item {
+    min-height: 400px !important;
+    padding: 40px 28px !important;
+    max-width: 100% !important;
+  }
+}
