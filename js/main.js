@@ -2143,14 +2143,16 @@ const CASES_DATA = [
   }, { threshold: 0.15 });
   gridObs.observe(grid);
 
-  // Cursor-follow glow
-  cards.forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty('--gx', ((e.clientX - rect.left) / rect.width * 100) + '%');
-      card.style.setProperty('--gy', ((e.clientY - rect.top) / rect.height * 100) + '%');
+  // Cursor-follow glow — so em desktop (mouse fine)
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    cards.forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--gx', ((e.clientX - rect.left) / rect.width  * 100) + '%');
+        card.style.setProperty('--gy', ((e.clientY - rect.top)  / rect.height * 100) + '%');
+      });
     });
-  });
+  }
 })();
 
 /* CURSOR TRAIL removido a pedido — sem bola de cursor */
