@@ -7952,10 +7952,10 @@ html {
 }
 .qs-flip__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 18px;
   width: 100%;
-  max-width: 1480px;
+  max-width: 1200px;
   perspective: 2000px;
 }
 
@@ -8013,60 +8013,47 @@ html {
   width: 100%;
 }
 .qs-flip-card__face--front .card-content > * { text-align: center; }
-/* CARD 2 BRANCO — regra travada */
+/* CARD 2 — front laranja (rev31, era branco) */
 .qs-flip-card--2 .qs-flip-card__face--front {
-  background: #ffffff !important;
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(255,255,255,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(0,0,0,.12) 0%, transparent 60%),
+    linear-gradient(180deg, #db5500 0%, #b84800 100%) !important;
   -webkit-backdrop-filter: none;
           backdrop-filter: none;
-  border-color: rgba(219, 85, 0, .35);
-  color: #0d1b2a;
+  border-color: rgba(255,255,255,.35);
   box-shadow:
-    0 30px 60px -20px rgba(13, 27, 42, .25),
-    0 8px 20px -6px rgba(13, 27, 42, .12),
-    0 0 48px -16px rgba(219, 85, 0, .25),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
+    0 30px 60px -20px rgba(184,72,0,.45),
+    0 8px 20px -6px rgba(13,27,42,.25),
+    0 0 60px -16px rgba(255,140,40,.5),
+    inset 0 1px 0 rgba(255,255,255,.25);
 }
-.qs-flip-card--2 .qs-flip-card__face--front .card-eyebrow { color: #db5500 !important; }
+.qs-flip-card--2 .qs-flip-card__face--front .card-eyebrow {
+  color: rgba(255,255,255,.95) !important;
+}
+.qs-flip-card--2 .qs-flip-card__face--front .card-eyebrow::before {
+  background: #fff !important;
+  box-shadow: 0 0 12px rgba(255,255,255,.9);
+}
 .qs-flip-card--2 .qs-flip-card__face--front h3,
-.qs-flip-card--2 .qs-flip-card__face--front h3 span { color: #0d1b2a !important; }
-.qs-flip-card--2 .qs-flip-card__face--front h3 span[style*="color"] { color: #db5500 !important; }
-.qs-flip-card--2 .qs-flip-card__face--front p { color: rgba(13, 27, 42, .7) !important; }
-.qs-flip-card--2 .qs-flip-card__face--front .card-top-line {
-  background: linear-gradient(90deg, transparent, rgba(219, 85, 0, .85), transparent);
+.qs-flip-card--2 .qs-flip-card__face--front h3 span,
+.qs-flip-card--2 .qs-flip-card__face--front h3 span[style*="color"] {
+  color: #ede7e1 !important;
+  text-shadow: 0 2px 24px rgba(0,0,0,.25);
+}
+.qs-flip-card--2 .qs-flip-card__face--front p {
+  color: rgba(255,255,255,.88) !important;
 }
 .qs-flip-card--2 .qs-flip-card__face--front .card-corner {
-  border-color: rgba(219, 85, 0, .55);
+  border-color: rgba(255,255,255,.7) !important;
+}
+.qs-flip-card--2 .qs-flip-card__face--front .card-top-line {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.4) 15%, rgba(255,255,255,1) 50%, rgba(255,255,255,.4) 85%, transparent 100%) !important;
+  box-shadow: 0 0 20px rgba(255,255,255,.5), 0 2px 14px rgba(255,255,255,.3) !important;
 }
 .qs-flip-card--2 .qs-flip-card__face--front .card-scan {
-  background: linear-gradient(180deg, transparent, rgba(219, 85, 0, .25), transparent);
-}
-
-/* CARD 4 BRANCO — espelha Card 2 (pedido user 2026-04-29 rev14) */
-.qs-flip-card--4 .qs-flip-card__face--front {
-  background: #ffffff !important;
-  -webkit-backdrop-filter: none;
-          backdrop-filter: none;
-  border-color: rgba(219, 85, 0, .35);
-  color: #0d1b2a;
-  box-shadow:
-    0 30px 60px -20px rgba(13, 27, 42, .25),
-    0 8px 20px -6px rgba(13, 27, 42, .12),
-    0 0 48px -16px rgba(219, 85, 0, .25),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-.qs-flip-card--4 .qs-flip-card__face--front .card-eyebrow { color: #db5500 !important; }
-.qs-flip-card--4 .qs-flip-card__face--front h3,
-.qs-flip-card--4 .qs-flip-card__face--front h3 span { color: #0d1b2a !important; }
-.qs-flip-card--4 .qs-flip-card__face--front h3 span[style*="color"] { color: #db5500 !important; }
-.qs-flip-card--4 .qs-flip-card__face--front p { color: rgba(13, 27, 42, .7) !important; }
-.qs-flip-card--4 .qs-flip-card__face--front .card-top-line {
-  background: linear-gradient(90deg, transparent, rgba(219, 85, 0, .85), transparent);
-}
-.qs-flip-card--4 .qs-flip-card__face--front .card-corner {
-  border-color: rgba(219, 85, 0, .55);
-}
-.qs-flip-card--4 .qs-flip-card__face--front .card-scan {
-  background: linear-gradient(180deg, transparent, rgba(219, 85, 0, .25), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.95) 50%, transparent) !important;
+  box-shadow: 0 0 12px rgba(255,255,255,.5) !important;
 }
 
 /* BACK — bg navy mesmo do front; padding e position herdados do base. */
@@ -8162,7 +8149,7 @@ html {
   font-weight: 700;
 }
 
-/* Mobile — 2x2 grid (rev30) */
+/* Mobile — flex wrap (rev31): 2 por linha, 3o centra embaixo */
 @media (max-width: 900px) {
   .qs-flip__stage {
     height: auto;
@@ -8170,11 +8157,16 @@ html {
     padding: 32px 16px 64px;
   }
   .qs-flip__grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 14px;
     max-width: 560px;
   }
-  .qs-flip-card { height: 380px; }
+  .qs-flip-card {
+    flex: 0 1 calc(50% - 7px);
+    height: 380px;
+  }
   .qs-flip-card__face { padding: 22px 16px; }
 
   /* tipografia mais compacta no card */
