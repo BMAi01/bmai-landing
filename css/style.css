@@ -8084,7 +8084,7 @@ html {
 }
 .qs-flip-card__face--back .qs-flip-card__brand {
   position: absolute;
-  bottom: 24px;
+  top: 24px;
   left: 0; right: 0;
 }
 .qs-flip-card__letter {
