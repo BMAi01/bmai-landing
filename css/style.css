@@ -8192,45 +8192,47 @@ html {
   font-weight: 700;
 }
 
-/* Mobile — 3 cards em linha (rev33) */
+/* Mobile — carrossel horizontal scroll-snap (rev35) */
 @media (max-width: 900px) {
   .qs-flip__stage {
     height: auto;
-    padding: 32px 12px 64px;
+    padding: 32px 0 64px;
+    perspective: 1800px;
   }
+
   .qs-flip__grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    max-width: 100%;
-  }
-  .qs-flip-card { height: 420px; }
-  .qs-flip-card__face { padding: 18px 10px; }
+    display: flex;
+    grid-template-columns: none;
+    gap: 16px;
 
-  .card-content h3 {
-    font-size: clamp(0.95rem, 3vw, 1.3rem);
-    line-height: 1.1;
-  }
-  .card-content p {
-    font-size: 0.7rem;
-    line-height: 1.45;
-    max-width: 100%;
-  }
-  .card-eyebrow {
-    font-size: 8px;
-    letter-spacing: .12em;
-    gap: 6px;
-  }
-  .card-eyebrow::before { width: 4px; height: 4px; }
-  .card-corner { width: 10px; height: 10px; }
-  .card-corner--tl { top: 8px; left: 8px; }
-  .card-corner--tr { top: 8px; right: 8px; }
-  .card-corner--bl { bottom: 8px; left: 8px; }
-  .card-corner--br { bottom: 8px; right: 8px; }
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 
-  .qs-flip-card__letter { width: 75%; max-height: 70%; }
-  .qs-flip-card__brand {
-    font-size: 8px;
-    letter-spacing: .2em;
+    padding: 24px clamp(20px, calc((100vw - 300px) / 2), 60px);
+
+    width: 100%;
+    max-width: 100%;
+
+    scrollbar-width: none;
+  }
+  .qs-flip__grid::-webkit-scrollbar { display: none; }
+
+  .qs-flip-card {
+    flex: 0 0 300px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    height: 460px;
+  }
+
+  .qs-flip-card__face { padding: 28px 20px; }
+
+  /* hint mobile: indica swipe horizontal */
+  .qs-flip__hint::after {
+    content: ' ←→';
+    letter-spacing: normal;
   }
 }
 

@@ -1416,22 +1416,30 @@ if (document.readyState === 'loading') {
     if (!inners.length) return;
     stage.dataset.fxInit = '1';
 
-    /* Mobile: sem pin/scrub (apenas IntersectionObserver flipa cada card
-       um pouco depois que entra no viewport — UX touch-friendly). */
+    /* Mobile: carrossel horizontal scroll-snap. Flippa cada card quando
+       centraliza no carrossel (intersection ratio >= 0.75 com root=grid). */
     const isMobile = matchMedia('(max-width: 900px)').matches;
     if (isMobile || LOW_MOTION || !('IntersectionObserver' in window)) {
-      const flipMobile = (el, delay = 0) => setTimeout(() => {
+      const grid = stage.querySelector('.qs-flip__grid');
+
+      const flipCard = (el) => {
+        if (el.dataset.flipped === '1') return;
+        el.dataset.flipped = '1';
         el.style.transition = 'transform 1s cubic-bezier(.22, 1, .36, 1)';
         el.style.transform = 'rotateY(180deg)';
-      }, delay);
+      };
+
       const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const idx = inners.indexOf(entry.target);
-          flipMobile(entry.target, idx * 500);
-          io.unobserve(entry.target);
+          if (entry.intersectionRatio >= 0.75) {
+            setTimeout(() => flipCard(entry.target), 250);
+          }
         });
-      }, { threshold: 0.4 });
+      }, {
+        root: grid,
+        threshold: [0, 0.5, 0.75, 1],
+      });
+
       inners.forEach(el => io.observe(el));
       return;
     }
