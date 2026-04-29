@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260429-carousel6">
+  <link rel="stylesheet" href="css/style.css?v=20260429-flip1">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -245,90 +245,102 @@
       <circle cx="920"  cy="220" r="1"   class="particle particle--orange"/>
     </svg>
     <div class="container">
-      <div class="section__center">
+      <div class="section__center qs-flip__intro">
         <h2 class="section__title" data-i18n="qs.title">O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span></h2>
         <p class="section__sub" data-i18n="qs.sub">Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.</p>
+        <p class="qs-flip__hint" aria-hidden="true">role para virar</p>
       </div>
-      <div class="qs__scroll-container">
-       <div class="qs__sticky">
-      <div class="qs__grid qs__grid--animated qs__grid--side">
-        <div class="qs-carousel">
-        <div class="card-stack card-stack--carousel" data-stack="qs">
-          <article class="card-stack__item card-stack__item--1">
-            <div class="card-top-line"></div>
-            <span class="card-corner card-corner--tl" aria-hidden="true"></span>
-            <span class="card-corner card-corner--tr" aria-hidden="true"></span>
-            <span class="card-corner card-corner--bl" aria-hidden="true"></span>
-            <span class="card-corner card-corner--br" aria-hidden="true"></span>
-            <span class="card-scan" aria-hidden="true"></span>
-            <div class="card-content">
-              <span class="card-eyebrow" data-i18n="qs.card1_eyebrow">Fase 01 · Processo Estruturado</span>
-              <h3 data-i18n="qs.card1_h3">Estruturamos<br><span style="color:var(--orange)">o processo.</span></h3>
-              <p data-i18n="qs.card1_p">Identificamos e estruturamos o processo que a IA vai trabalhar — preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.</p>
-            </div>
-          </article>
-          <article class="card-stack__item card-stack__item--2">
-            <div class="card-top-line"></div>
-            <span class="card-corner card-corner--tl" aria-hidden="true"></span>
-            <span class="card-corner card-corner--tr" aria-hidden="true"></span>
-            <span class="card-corner card-corner--bl" aria-hidden="true"></span>
-            <span class="card-corner card-corner--br" aria-hidden="true"></span>
-            <span class="card-scan" aria-hidden="true"></span>
-            <div class="card-content">
-              <span class="card-eyebrow" data-i18n="qs.card2_eyebrow">Fase 02 · Inteligência Personalizada</span>
-              <h3 data-i18n="qs.card2_h3">Construímos<br><span style="color:var(--orange)">IA sob medida.</span></h3>
-              <p data-i18n="qs.card2_p">Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.</p>
-            </div>
-          </article>
-          <article class="card-stack__item card-stack__item--3">
-            <div class="card-top-line"></div>
-            <span class="card-corner card-corner--tl" aria-hidden="true"></span>
-            <span class="card-corner card-corner--tr" aria-hidden="true"></span>
-            <span class="card-corner card-corner--bl" aria-hidden="true"></span>
-            <span class="card-corner card-corner--br" aria-hidden="true"></span>
-            <span class="card-scan" aria-hidden="true"></span>
-            <div class="card-content">
-              <span class="card-eyebrow" data-i18n="qs.card3_eyebrow">Fase 03 · Operação Contínua</span>
-              <h3 data-i18n="qs.card3_h3">Operamos<br><span style="color:var(--orange)">e refinamos.</span></h3>
-              <p data-i18n="qs.card3_p">O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda — IA viva, não projeto entregue e esquecido.</p>
-            </div>
-          </article>
-        </div>
-        </div>
-        <!-- ===== Cena animada: enxurrada de clientes → agente resolve ===== -->
-        <div class="qs-scene-wrap" aria-hidden="true">
-          <!-- 4 divs de fade com cor do bg (var(--bmai-navy) #0d1b2a) — Etapa 3 universal,
-               sem depender de mask-composite. Cobrem 5% de cada borda criando ilusao de
-               "cards flutuando no bg" sem cortes em linha reta. -->
-          <span class="qs-fade qs-fade--top" aria-hidden="true"></span>
-          <span class="qs-fade qs-fade--bottom" aria-hidden="true"></span>
-          <span class="qs-fade qs-fade--left" aria-hidden="true"></span>
-          <span class="qs-fade qs-fade--right" aria-hidden="true"></span>
-          <div class="qs-scene" id="qsScene">
-            <div class="qs-stage" id="qsStage">
+    </div>
+    <div class="qs-flip__stage" id="qsFlipStage">
+      <div class="qs-flip__grid">
 
-              <!-- RINGS (leitura) -->
-              <svg class="qs-rings" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                <circle class="qs-ring qs-ring--1" cx="50" cy="50" r="0" fill="none" stroke="var(--bmai-orange)" stroke-width=".35"/>
-                <circle class="qs-ring qs-ring--2" cx="50" cy="50" r="0" fill="none" stroke="var(--bmai-orange)" stroke-width=".25"/>
-                <circle class="qs-ring qs-ring--3" cx="50" cy="50" r="0" fill="none" stroke="#FFA866" stroke-width=".2"/>
-              </svg>
-
-            </div>
-
-            <!-- BRAND BMAi — FORA do .qs-stage (fora do preserve-3d) pra sobrepor de verdade -->
-            <div class="qs-brand" id="qsBrand">
-              <div class="qs-brand__halo"></div>
-              <div class="qs-brand__logo" aria-hidden="true">
-                <img src="assets/images/simbolo-laranja.svg" alt=""/>
+        <article class="qs-flip-card qs-flip-card--1">
+          <div class="qs-flip-card__inner" data-flip-card>
+            <div class="qs-flip-card__face qs-flip-card__face--front">
+              <div class="card-top-line"></div>
+              <span class="card-corner card-corner--tl" aria-hidden="true"></span>
+              <span class="card-corner card-corner--tr" aria-hidden="true"></span>
+              <span class="card-corner card-corner--bl" aria-hidden="true"></span>
+              <span class="card-corner card-corner--br" aria-hidden="true"></span>
+              <span class="card-scan" aria-hidden="true"></span>
+              <div class="card-content">
+                <span class="card-eyebrow" data-i18n="qs.card1_eyebrow">Fase 01 · Processo Estruturado</span>
+                <h3 data-i18n="qs.card1_h3">Estruturamos<br><span style="color:var(--orange)">o processo.</span></h3>
+                <p data-i18n="qs.card1_p">Identificamos e estruturamos o processo que a IA vai trabalhar — preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.</p>
               </div>
-              <img src="assets/images/logo-laranja.svg" alt="BMAI" class="qs-brand__wordmark"/>
-              <div class="qs-brand__tag" data-i18n="qs.brand_tag">integrando IA…</div>
+            </div>
+            <div class="qs-flip-card__face qs-flip-card__face--back">
+              <span class="qs-flip-card__tag">como entregamos</span>
+              <ul class="qs-flip-card__list">
+                <li>Mapeamento dos gargalos do fluxo atual</li>
+                <li>Definição de quem decide o quê em cada etapa</li>
+                <li>Métricas-base antes de qualquer prompt</li>
+              </ul>
+              <div class="qs-flip-card__rule"></div>
+              <blockquote class="qs-flip-card__quote">"Diagnóstico antes de prompt."</blockquote>
+              <span class="qs-flip-card__brand">FASE 01 · BMAi</span>
             </div>
           </div>
-        </div>
-      </div>
-       </div>
+        </article>
+
+        <article class="qs-flip-card qs-flip-card--2">
+          <div class="qs-flip-card__inner" data-flip-card>
+            <div class="qs-flip-card__face qs-flip-card__face--front">
+              <div class="card-top-line"></div>
+              <span class="card-corner card-corner--tl" aria-hidden="true"></span>
+              <span class="card-corner card-corner--tr" aria-hidden="true"></span>
+              <span class="card-corner card-corner--bl" aria-hidden="true"></span>
+              <span class="card-corner card-corner--br" aria-hidden="true"></span>
+              <span class="card-scan" aria-hidden="true"></span>
+              <div class="card-content">
+                <span class="card-eyebrow" data-i18n="qs.card2_eyebrow">Fase 02 · Inteligência Personalizada</span>
+                <h3 data-i18n="qs.card2_h3">Construímos<br><span style="color:var(--orange)">IA sob medida.</span></h3>
+                <p data-i18n="qs.card2_p">Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.</p>
+              </div>
+            </div>
+            <div class="qs-flip-card__face qs-flip-card__face--back">
+              <span class="qs-flip-card__tag">o que construímos</span>
+              <ul class="qs-flip-card__list">
+                <li>Agente moldado ao fluxo, sem template genérico</li>
+                <li>Integrações com seus sistemas existentes</li>
+                <li>Ajuste fino feito junto com seu time</li>
+              </ul>
+              <div class="qs-flip-card__rule"></div>
+              <blockquote class="qs-flip-card__quote">"Especialista, não generalista."</blockquote>
+              <span class="qs-flip-card__brand">FASE 02 · BMAi</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="qs-flip-card qs-flip-card--3">
+          <div class="qs-flip-card__inner" data-flip-card>
+            <div class="qs-flip-card__face qs-flip-card__face--front">
+              <div class="card-top-line"></div>
+              <span class="card-corner card-corner--tl" aria-hidden="true"></span>
+              <span class="card-corner card-corner--tr" aria-hidden="true"></span>
+              <span class="card-corner card-corner--bl" aria-hidden="true"></span>
+              <span class="card-corner card-corner--br" aria-hidden="true"></span>
+              <span class="card-scan" aria-hidden="true"></span>
+              <div class="card-content">
+                <span class="card-eyebrow" data-i18n="qs.card3_eyebrow">Fase 03 · Operação Contínua</span>
+                <h3 data-i18n="qs.card3_h3">Operamos<br><span style="color:var(--orange)">e refinamos.</span></h3>
+                <p data-i18n="qs.card3_p">O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda — IA viva, não projeto entregue e esquecido.</p>
+              </div>
+            </div>
+            <div class="qs-flip-card__face qs-flip-card__face--back">
+              <span class="qs-flip-card__tag">o que monitora</span>
+              <ul class="qs-flip-card__list">
+                <li>Métricas-chave em tempo real</li>
+                <li>Iteração de prompt quando o negócio muda</li>
+                <li>Suporte contínuo, não projeto fechado</li>
+              </ul>
+              <div class="qs-flip-card__rule"></div>
+              <blockquote class="qs-flip-card__quote">"IA viva, não entregue e esquecida."</blockquote>
+              <span class="qs-flip-card__brand">FASE 03 · BMAi</span>
+            </div>
+          </div>
+        </article>
+
       </div>
     </div>
   </section>
@@ -778,7 +790,7 @@
   </nav>
 
   <script defer src="js/i18n.js?v=20260429-perf"></script>
-  <script defer src="js/main.js?v=20260429-carousel6"></script>
+  <script defer src="js/main.js?v=20260429-flip1"></script>
 
   <script>
   /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */

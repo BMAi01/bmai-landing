@@ -7915,3 +7915,204 @@ html {
   }
 }
 
+/* ================================================================
+   2026-04-29 (rev12) — QUEM SOMOS: 3D flip cards + scroll-pin (GSAP)
+   Adaptacao do React/Tailwind component pra vanilla. Pinned section
+   onde cada card vira no eixo Y conforme scroll, em stagger.
+   Card 2 branco no front mantido (regra travada).
+   ================================================================ */
+
+.qs-flip__intro { padding-bottom: 12px; }
+.qs-flip__hint {
+  display: inline-block;
+  margin-top: 22px;
+  font-size: 11px;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--gray1, #798086);
+  font-family: var(--mono, ui-monospace, monospace);
+  opacity: .8;
+  animation: qsFlipHintBounce 2.4s ease-in-out infinite;
+}
+@keyframes qsFlipHintBounce {
+  0%, 100% { transform: translateY(0); opacity: .55; }
+  50%      { transform: translateY(4px); opacity: 1; }
+}
+
+/* Stage = 100vh, pinada pelo GSAP */
+.qs-flip__stage {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 clamp(16px, 3vw, 48px);
+  perspective: 2000px;
+  position: relative;
+  z-index: 2;
+}
+.qs-flip__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+  max-width: 1280px;
+  perspective: 2000px;
+}
+
+/* Card flip envolve as 2 faces */
+.qs-flip-card {
+  height: 540px;
+  width: 100%;
+  perspective: 1800px;
+}
+.qs-flip-card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform;
+}
+.qs-flip-card__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 44px 40px;
+  border: 1.5px solid rgba(219, 85, 0, .26);
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, .55),
+    0 8px 20px -6px rgba(0, 0, 0, .3),
+    0 0 48px -16px rgba(219, 85, 0, .2),
+    inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+
+/* FRONT — herda visual original do card-stack BMAi */
+.qs-flip-card__face--front {
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(219, 85, 0, .1) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(219, 85, 0, .08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(18, 28, 44, .96) 0%, rgba(10, 18, 30, .96) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+          backdrop-filter: blur(20px) saturate(140%);
+  justify-content: center;
+}
+/* CARD 2 BRANCO — regra travada */
+.qs-flip-card--2 .qs-flip-card__face--front {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  border-color: rgba(219, 85, 0, .35);
+  color: #0d1b2a;
+  box-shadow:
+    0 30px 60px -20px rgba(13, 27, 42, .25),
+    0 8px 20px -6px rgba(13, 27, 42, .12),
+    0 0 48px -16px rgba(219, 85, 0, .25),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+.qs-flip-card--2 .qs-flip-card__face--front .card-eyebrow { color: #db5500 !important; }
+.qs-flip-card--2 .qs-flip-card__face--front h3,
+.qs-flip-card--2 .qs-flip-card__face--front h3 span { color: #0d1b2a !important; }
+.qs-flip-card--2 .qs-flip-card__face--front h3 span[style*="color"] { color: #db5500 !important; }
+.qs-flip-card--2 .qs-flip-card__face--front p { color: rgba(13, 27, 42, .7) !important; }
+.qs-flip-card--2 .qs-flip-card__face--front .card-top-line {
+  background: linear-gradient(90deg, transparent, rgba(219, 85, 0, .85), transparent);
+}
+.qs-flip-card--2 .qs-flip-card__face--front .card-corner {
+  border-color: rgba(219, 85, 0, .55);
+}
+.qs-flip-card--2 .qs-flip-card__face--front .card-scan {
+  background: linear-gradient(180deg, transparent, rgba(219, 85, 0, .25), transparent);
+}
+
+/* BACK — fundo escuro com grid de linhas (Forbes/blackground) */
+.qs-flip-card__face--back {
+  transform: rotateY(180deg);
+  background: #050708;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, .05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, .05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  border-color: rgba(219, 85, 0, .35);
+  color: #ede7e1;
+  justify-content: space-between;
+  padding: 44px 40px;
+}
+.qs-flip-card__tag {
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10.5px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--bmai-orange, #db5500);
+  align-self: flex-start;
+  padding: 4px 10px;
+  border: 1px solid rgba(219, 85, 0, .4);
+  border-radius: 100px;
+  background: rgba(219, 85, 0, .08);
+}
+.qs-flip-card__list {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0 0 0 18px;
+  border-left: 2px solid var(--bmai-orange, #db5500);
+}
+.qs-flip-card__list li {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: rgba(237, 231, 225, .9);
+  padding: 8px 0;
+  position: relative;
+}
+.qs-flip-card__list li + li {
+  border-top: 1px dashed rgba(255, 255, 255, .08);
+}
+.qs-flip-card__rule {
+  width: 48px;
+  height: 3px;
+  background: var(--bmai-orange, #db5500);
+  margin: 24px 0 12px;
+  border-radius: 2px;
+}
+.qs-flip-card__quote {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.4;
+  letter-spacing: -.01em;
+  color: #fff;
+  margin: 0 0 18px;
+  font-weight: 600;
+}
+.qs-flip-card__brand {
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10px;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: rgba(237, 231, 225, .55);
+  font-weight: 700;
+}
+
+/* Mobile — flip ainda funciona, mas em coluna */
+@media (max-width: 900px) {
+  .qs-flip__stage {
+    height: auto;
+    min-height: 0;
+    padding: 32px 16px 64px;
+  }
+  .qs-flip__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 480px;
+  }
+  .qs-flip-card { height: 460px; }
+  .qs-flip-card__face { padding: 36px 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qs-flip-card__inner { transform: none !important; }
+  .qs-flip__hint { animation: none; }
+}

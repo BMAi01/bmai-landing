@@ -1402,6 +1402,79 @@ if (document.readyState === 'loading') {
   _initCardStackFx();
 }
 
+/* ============================================
+   2026-04-29 (rev12) — QUEM SOMOS flip cards 3D
+   Pin a section + scrub: cada card vira (rotateY 180) em stagger
+   conforme o user rola pela area pinada. Fallback CSS: cards
+   ja respondem a hover se GSAP nao carregar.
+   ============================================ */
+(function initQsFlipCards() {
+  const init = () => {
+    const stage = document.getElementById('qsFlipStage');
+    if (!stage || stage.dataset.fxInit === '1') return;
+    const inners = Array.from(stage.querySelectorAll('[data-flip-card]'));
+    if (!inners.length) return;
+    stage.dataset.fxInit = '1';
+
+    /* Mobile: sem pin/scrub (apenas IntersectionObserver flipa cada card
+       um pouco depois que entra no viewport — UX touch-friendly). */
+    const isMobile = matchMedia('(max-width: 900px)').matches;
+    if (isMobile || LOW_MOTION || !('IntersectionObserver' in window)) {
+      const flipMobile = (el, delay = 0) => setTimeout(() => {
+        el.style.transition = 'transform 1s cubic-bezier(.22, 1, .36, 1)';
+        el.style.transform = 'rotateY(180deg)';
+      }, delay);
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = inners.indexOf(entry.target);
+          flipMobile(entry.target, idx * 350);
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.4 });
+      inners.forEach(el => io.observe(el));
+      return;
+    }
+
+    /* Desktop: GSAP ScrollTrigger pin + scrub */
+    const tryBuild = () => {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        return setTimeout(tryBuild, 80);
+      }
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* Estado inicial — todos cards mostrando o front */
+      gsap.set(inners, { rotationY: 0, transformPerspective: 1800, transformOrigin: 'center center' });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: stage,
+          start: 'top top',
+          end: '+=300%',           // 3 cards = 3 viewports de scroll
+          pin: true,
+          scrub: 2,                // inercia suave
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      inners.forEach((card, index) => {
+        tl.to(card, {
+          rotationY: 180,
+          ease: 'power2.inOut',
+          duration: 1,
+        }, index * 0.45);          // stagger entre cards
+      });
+    };
+    tryBuild();
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
 /* 2026-04-26: video do time — som ATIVA quando o video entra no viewport
    (e o user ja interagiu com a pagina). Som desativa quando sai do viewport. */
 (function initTeamVideo() {
