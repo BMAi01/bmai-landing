@@ -1428,7 +1428,7 @@ if (document.readyState === 'loading') {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const idx = inners.indexOf(entry.target);
-          flipMobile(entry.target, idx * 350);
+          flipMobile(entry.target, idx * 500);
           io.unobserve(entry.target);
         });
       }, { threshold: 0.4 });
@@ -1450,7 +1450,7 @@ if (document.readyState === 'loading') {
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: '+=200%',
+          end: '+=350%',
           pin: true,
           scrub: 2,
           anticipatePin: 1,
@@ -1458,16 +1458,12 @@ if (document.readyState === 'loading') {
         },
       });
 
-      // 2026-04-29 (rev27): SYNC flip (sem stagger). Stagger faz cards
-      // ficarem em rotacoes diferentes mid-flip, e a perspectiva 3D
-      // foreshortening (cos law) deixa o card mais virado parecer
-      // estreito enquanto outros estao chapados — visualmente "tamanhos
-      // diferentes". User exigiu cards mesmo tamanho. Sync resolve:
-      // todos os 4 sempre na mesma rotacao = mesmo "tamanho aparente".
+      // 2026-04-29 (rev33): efeito dominó — cada card 0.5 depois do anterior.
       tl.to(inners, {
         rotationY: 180,
         ease: 'power2.inOut',
-        duration: 1,
+        duration: 0.8,
+        stagger: 0.5,
       }, 0);
     };
     tryBuild();

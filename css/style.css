@@ -8177,38 +8177,56 @@ html {
   font-weight: 700;
 }
 
-/* Mobile — flex wrap (rev31): 2 por linha, 3o centra embaixo */
+/* Mobile — 3 cards em linha (rev33) */
 @media (max-width: 900px) {
   .qs-flip__stage {
     height: auto;
-    min-height: 0;
-    padding: 32px 16px 64px;
+    padding: 32px 12px 64px;
   }
   .qs-flip__grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px;
-    max-width: 560px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 100%;
   }
-  .qs-flip-card {
-    flex: 0 1 calc(50% - 7px);
-    height: 380px;
-  }
-  .qs-flip-card__face { padding: 22px 16px; }
+  .qs-flip-card { height: 420px; }
+  .qs-flip-card__face { padding: 18px 10px; }
 
-  /* tipografia mais compacta no card */
-  .card-content h3 { font-size: clamp(1.4rem, 4.5vw, 1.8rem); }
-  .card-content p { font-size: 0.85rem; line-height: 1.5; }
-  .card-eyebrow { font-size: 10px; letter-spacing: .18em; gap: 8px; }
-  .qs-flip-card__letter { width: 70%; max-height: 65%; }
+  .card-content h3 {
+    font-size: clamp(0.95rem, 3vw, 1.3rem);
+    line-height: 1.1;
+  }
+  .card-content p {
+    font-size: 0.7rem;
+    line-height: 1.45;
+    max-width: 100%;
+  }
+  .card-eyebrow {
+    font-size: 8px;
+    letter-spacing: .12em;
+    gap: 6px;
+  }
+  .card-eyebrow::before { width: 4px; height: 4px; }
+  .card-corner { width: 10px; height: 10px; }
+  .card-corner--tl { top: 8px; left: 8px; }
+  .card-corner--tr { top: 8px; right: 8px; }
+  .card-corner--bl { bottom: 8px; left: 8px; }
+  .card-corner--br { bottom: 8px; right: 8px; }
+
+  .qs-flip-card__letter { width: 75%; max-height: 70%; }
+  .qs-flip-card__brand {
+    font-size: 8px;
+    letter-spacing: .2em;
+  }
 }
 
-/* telas bem pequenas (< 380px) */
+/* telas bem estreitas — ultima protecao */
 @media (max-width: 380px) {
-  .qs-flip__grid { gap: 10px; }
-  .qs-flip-card { height: 340px; }
-  .qs-flip-card__face { padding: 18px 12px; }
+  .qs-flip__grid { gap: 6px; }
+  .qs-flip-card { height: 380px; }
+  .qs-flip-card__face { padding: 14px 8px; }
+  .card-content h3 { font-size: 0.9rem; }
+  .card-content p { font-size: 0.65rem; }
+  .card-eyebrow { font-size: 7px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
