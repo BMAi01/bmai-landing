@@ -8029,6 +8029,34 @@ html {
   background: linear-gradient(180deg, transparent, rgba(219, 85, 0, .25), transparent);
 }
 
+/* CARD 4 BRANCO — espelha Card 2 (pedido user 2026-04-29 rev14) */
+.qs-flip-card--4 .qs-flip-card__face--front {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  border-color: rgba(219, 85, 0, .35);
+  color: #0d1b2a;
+  box-shadow:
+    0 30px 60px -20px rgba(13, 27, 42, .25),
+    0 8px 20px -6px rgba(13, 27, 42, .12),
+    0 0 48px -16px rgba(219, 85, 0, .25),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+.qs-flip-card--4 .qs-flip-card__face--front .card-eyebrow { color: #db5500 !important; }
+.qs-flip-card--4 .qs-flip-card__face--front h3,
+.qs-flip-card--4 .qs-flip-card__face--front h3 span { color: #0d1b2a !important; }
+.qs-flip-card--4 .qs-flip-card__face--front h3 span[style*="color"] { color: #db5500 !important; }
+.qs-flip-card--4 .qs-flip-card__face--front p { color: rgba(13, 27, 42, .7) !important; }
+.qs-flip-card--4 .qs-flip-card__face--front .card-top-line {
+  background: linear-gradient(90deg, transparent, rgba(219, 85, 0, .85), transparent);
+}
+.qs-flip-card--4 .qs-flip-card__face--front .card-corner {
+  border-color: rgba(219, 85, 0, .55);
+}
+.qs-flip-card--4 .qs-flip-card__face--front .card-scan {
+  background: linear-gradient(180deg, transparent, rgba(219, 85, 0, .25), transparent);
+}
+
 /* BACK — fundo escuro com grid de linhas (Forbes/blackground) */
 .qs-flip-card__face--back {
   transform: rotateY(180deg);
