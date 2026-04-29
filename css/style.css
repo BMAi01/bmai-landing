@@ -7627,7 +7627,58 @@ html { scroll-padding-top: 84px; }
 .qs-notif--n48 { left: 11%; top: 82%; --notif-delay: 1.88s; }
 .qs-notif--n49 { left: 28%; top: 84%; --notif-delay: 1.92s; }
 .qs-notif--n50 { left: 45%; top: 88%; --notif-delay: 1.96s; }
-/* Mobile: mostra so primeiros 12 cards (esconde n13-n50) — evita saturacao */
+/* +50 novas (n51-n100) — Motion lotado */
+.qs-notif--n51 { left: 4.9%;  top: 4.5%;  --notif-delay: 2s;    }
+.qs-notif--n52 { left: 12.8%; top: 5.8%;  --notif-delay: 2.04s; }
+.qs-notif--n53 { left: 24.7%; top: 3.5%;  --notif-delay: 2.08s; }
+.qs-notif--n54 { left: 35.4%; top: 5.7%;  --notif-delay: 2.12s; }
+.qs-notif--n55 { left: 44.5%; top: 4.5%;  --notif-delay: 2.16s; }
+.qs-notif--n56 { left: 2%;    top: 14.1%; --notif-delay: 2.2s;  }
+.qs-notif--n57 { left: 14.9%; top: 11%;   --notif-delay: 2.24s; }
+.qs-notif--n58 { left: 25.4%; top: 14%;   --notif-delay: 2.28s; }
+.qs-notif--n59 { left: 35.6%; top: 12.3%; --notif-delay: 2.32s; }
+.qs-notif--n60 { left: 43.7%; top: 14.3%; --notif-delay: 2.36s; }
+.qs-notif--n61 { left: 4.8%;  top: 23.8%; --notif-delay: 2.4s;  }
+.qs-notif--n62 { left: 14.6%; top: 21.2%; --notif-delay: 2.44s; }
+.qs-notif--n63 { left: 22.2%; top: 20.7%; --notif-delay: 2.48s; }
+.qs-notif--n64 { left: 35.7%; top: 22.1%; --notif-delay: 2.52s; }
+.qs-notif--n65 { left: 44.4%; top: 20.6%; --notif-delay: 2.56s; }
+.qs-notif--n66 { left: 3.2%;  top: 30.6%; --notif-delay: 2.6s;  }
+.qs-notif--n67 { left: 12.8%; top: 30.1%; --notif-delay: 2.64s; }
+.qs-notif--n68 { left: 25.2%; top: 29.1%; --notif-delay: 2.68s; }
+.qs-notif--n69 { left: 34.3%; top: 32.1%; --notif-delay: 2.72s; }
+.qs-notif--n70 { left: 46.9%; top: 30.1%; --notif-delay: 2.76s; }
+.qs-notif--n71 { left: 3.6%;  top: 40.2%; --notif-delay: 2.8s;  }
+.qs-notif--n72 { left: 15.4%; top: 38.7%; --notif-delay: 2.84s; }
+.qs-notif--n73 { left: 24.8%; top: 38.1%; --notif-delay: 2.88s; }
+.qs-notif--n74 { left: 35.3%; top: 39.7%; --notif-delay: 2.92s; }
+.qs-notif--n75 { left: 45.1%; top: 39.6%; --notif-delay: 2.96s; }
+.qs-notif--n76 { left: 5%;    top: 49.3%; --notif-delay: 3s;    }
+.qs-notif--n77 { left: 15.1%; top: 48.4%; --notif-delay: 3.04s; }
+.qs-notif--n78 { left: 22.5%; top: 50.7%; --notif-delay: 3.08s; }
+.qs-notif--n79 { left: 32.9%; top: 49.2%; --notif-delay: 3.12s; }
+.qs-notif--n80 { left: 45.9%; top: 49%;   --notif-delay: 3.16s; }
+.qs-notif--n81 { left: 1.5%;  top: 58.3%; --notif-delay: 3.2s;  }
+.qs-notif--n82 { left: 14.3%; top: 59.7%; --notif-delay: 3.24s; }
+.qs-notif--n83 { left: 24.5%; top: 56.7%; --notif-delay: 3.28s; }
+.qs-notif--n84 { left: 33.3%; top: 59.5%; --notif-delay: 3.32s; }
+.qs-notif--n85 { left: 44.9%; top: 57.3%; --notif-delay: 3.36s; }
+.qs-notif--n86 { left: 3.1%;  top: 65.6%; --notif-delay: 3.4s;  }
+.qs-notif--n87 { left: 15.5%; top: 65.8%; --notif-delay: 3.44s; }
+.qs-notif--n88 { left: 25.5%; top: 65.1%; --notif-delay: 3.48s; }
+.qs-notif--n89 { left: 35%;   top: 67.7%; --notif-delay: 3.52s; }
+.qs-notif--n90 { left: 45.7%; top: 67.1%; --notif-delay: 3.56s; }
+.qs-notif--n91 { left: 3.2%;  top: 75.9%; --notif-delay: 3.6s;  }
+.qs-notif--n92 { left: 12.7%; top: 75.3%; --notif-delay: 3.64s; }
+.qs-notif--n93 { left: 22.4%; top: 76.3%; --notif-delay: 3.68s; }
+.qs-notif--n94 { left: 34.1%; top: 77.3%; --notif-delay: 3.72s; }
+.qs-notif--n95 { left: 44.1%; top: 74.1%; --notif-delay: 3.76s; }
+.qs-notif--n96 { left: 3.2%;  top: 85.6%; --notif-delay: 3.8s;  }
+.qs-notif--n97 { left: 12.8%; top: 85.5%; --notif-delay: 3.84s; }
+.qs-notif--n98 { left: 25%;   top: 83.2%; --notif-delay: 3.88s; }
+.qs-notif--n99 { left: 36%;   top: 84.3%; --notif-delay: 3.92s; }
+.qs-notif--n100{ left: 46.9%; top: 83.5%; --notif-delay: 3.96s; }
+/* Mobile: mostra so primeiros 12 cards (esconde n13-n100) — evita saturacao */
 @media (max-width: 768px) {
   .qs-notif--n13, .qs-notif--n14, .qs-notif--n15, .qs-notif--n16,
   .qs-notif--n17, .qs-notif--n18, .qs-notif--n19, .qs-notif--n20,
@@ -7638,7 +7689,19 @@ html { scroll-padding-top: 84px; }
   .qs-notif--n37, .qs-notif--n38, .qs-notif--n39, .qs-notif--n40,
   .qs-notif--n41, .qs-notif--n42, .qs-notif--n43, .qs-notif--n44,
   .qs-notif--n45, .qs-notif--n46, .qs-notif--n47, .qs-notif--n48,
-  .qs-notif--n49, .qs-notif--n50 {
+  .qs-notif--n49, .qs-notif--n50, .qs-notif--n51, .qs-notif--n52,
+  .qs-notif--n53, .qs-notif--n54, .qs-notif--n55, .qs-notif--n56,
+  .qs-notif--n57, .qs-notif--n58, .qs-notif--n59, .qs-notif--n60,
+  .qs-notif--n61, .qs-notif--n62, .qs-notif--n63, .qs-notif--n64,
+  .qs-notif--n65, .qs-notif--n66, .qs-notif--n67, .qs-notif--n68,
+  .qs-notif--n69, .qs-notif--n70, .qs-notif--n71, .qs-notif--n72,
+  .qs-notif--n73, .qs-notif--n74, .qs-notif--n75, .qs-notif--n76,
+  .qs-notif--n77, .qs-notif--n78, .qs-notif--n79, .qs-notif--n80,
+  .qs-notif--n81, .qs-notif--n82, .qs-notif--n83, .qs-notif--n84,
+  .qs-notif--n85, .qs-notif--n86, .qs-notif--n87, .qs-notif--n88,
+  .qs-notif--n89, .qs-notif--n90, .qs-notif--n91, .qs-notif--n92,
+  .qs-notif--n93, .qs-notif--n94, .qs-notif--n95, .qs-notif--n96,
+  .qs-notif--n97, .qs-notif--n98, .qs-notif--n99, .qs-notif--n100 {
     display: none !important;
   }
 }
