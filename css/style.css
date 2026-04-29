@@ -7982,6 +7982,9 @@ html {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   padding: 32px 26px;
   border: 1.5px solid rgba(219, 85, 0, .26);
   box-shadow:
@@ -8002,9 +8005,14 @@ html {
     linear-gradient(180deg, rgba(18, 28, 44, .96) 0%, rgba(10, 18, 30, .96) 100%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
           backdrop-filter: blur(20px) saturate(140%);
-  justify-content: center;
   transform: rotateY(180deg);
 }
+.qs-flip-card__face--front .card-content {
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+.qs-flip-card__face--front .card-content > * { text-align: center; }
 /* CARD 2 BRANCO — regra travada */
 .qs-flip-card--2 .qs-flip-card__face--front {
   background: #ffffff !important;
@@ -8070,8 +8078,8 @@ html {
   background-size: 32px 32px;
   border-color: rgba(219, 85, 0, .35);
   color: #ede7e1;
-  justify-content: space-between;
   padding: 32px 26px;
+  gap: 14px;
 }
 .qs-flip-card__tag {
   font-family: var(--mono, ui-monospace, monospace);
@@ -8087,9 +8095,10 @@ html {
 }
 .qs-flip-card__list {
   list-style: none;
-  margin: 28px 0 0;
-  padding: 0 0 0 18px;
-  border-left: 2px solid var(--bmai-orange, #db5500);
+  margin: 14px 0 0;
+  padding: 0;
+  text-align: center;
+  max-width: 92%;
 }
 .qs-flip-card__list li {
   font-size: 1rem;
@@ -8105,7 +8114,7 @@ html {
   width: 48px;
   height: 3px;
   background: var(--bmai-orange, #db5500);
-  margin: 24px 0 12px;
+  margin: 14px auto 8px;
   border-radius: 2px;
 }
 .qs-flip-card__quote {
