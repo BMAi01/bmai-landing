@@ -8087,13 +8087,16 @@ html {
   top: 24px;
   left: 0; right: 0;
 }
-/* SVG do logo BMAi (mesmo do header), cropado por viewBox em cada card */
+/* SVG do logo BMAi (mesmo do header), cropado por viewBox em cada card.
+   2026-04-29 (rev21): viewBox unificado 260x470 com letra centralizada
+   pra todas as 4 cards renderizarem letras no mesmo tamanho visual. */
 .qs-flip-card__letter {
   display: block;
-  width: 70%;
-  max-width: 280px;
+  width: 50%;
+  max-width: 200px;
   height: auto;
-  max-height: 60%;
+  max-height: 50%;
+  margin: auto;            /* centra horizontal+vertical no flex parent */
   color: var(--bmai-orange, #db5500);
   filter: drop-shadow(0 0 40px rgba(219, 85, 0, .35));
   user-select: none;
