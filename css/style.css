@@ -3931,7 +3931,7 @@ h1, h2, h3, p, span, li, a {
   flex-direction: column;
   gap: 16px;
   overflow: hidden;
-  touch-action: pan-y;   /* libera scroll vertical mesmo dentro do card */
+  touch-action: pan-x;   /* rev38: cases vira carrossel horizontal — pan-x pra swipe lateral funcionar */
   /* reveal */
   opacity: 0;
   transform: translateY(24px);
