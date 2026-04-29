@@ -7560,4 +7560,46 @@ html { scroll-padding-top: 84px; }
   .qs-notif { animation: none !important; }
 }
 
+/* ============================================
+   2026-04-28 — 19 NOTIFs FIXAS COM POSICOES + FADE-IN RAPIDO
+   Substitui o sistema antigo de posicoes inline + waves.
+   Cada card .qs-notif--nN tem left/top fixos. Fade-in 400ms com stagger
+   ate 1.45s total. Cards na zona left 5-58% (resto reservado pros laterais).
+   ============================================ */
+@keyframes qsNotif19FadeIn {
+  from { opacity: 0; transform: translate(-4px, 6px) scale(.94); }
+  to   { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+.qs-notif[class*="qs-notif--n"] {
+  /* Override: posicao via classe modificadora, sem inline style */
+  animation: qsNotif19FadeIn 400ms cubic-bezier(.22, 1, .36, 1) forwards;
+  animation-delay: var(--notif-delay, 0s);
+  opacity: 0;
+}
+.qs-notif--n1  { left: 8%;  top: 12%; --notif-delay: 0s;    }
+.qs-notif--n2  { left: 28%; top: 8%;  --notif-delay: 0.05s; }
+.qs-notif--n3  { left: 50%; top: 14%; --notif-delay: 0.1s;  }
+.qs-notif--n4  { left: 5%;  top: 28%; --notif-delay: 0.15s; }
+.qs-notif--n5  { left: 25%; top: 32%; --notif-delay: 0.2s;  }
+.qs-notif--n6  { left: 48%; top: 28%; --notif-delay: 0.3s;  }
+.qs-notif--n7  { left: 12%; top: 48%; --notif-delay: 0.4s;  }
+.qs-notif--n8  { left: 35%; top: 52%; --notif-delay: 0.5s;  }
+.qs-notif--n9  { left: 55%; top: 48%; --notif-delay: 0.6s;  }
+.qs-notif--n10 { left: 8%;  top: 65%; --notif-delay: 0.7s;  }
+.qs-notif--n11 { left: 30%; top: 70%; --notif-delay: 0.8s;  }
+.qs-notif--n12 { left: 52%; top: 68%; --notif-delay: 0.9s;  }
+.qs-notif--n13 { left: 15%; top: 85%; --notif-delay: 1.0s;  }
+.qs-notif--n14 { left: 38%; top: 88%; --notif-delay: 1.1s;  }
+.qs-notif--n15 { left: 58%; top: 85%; --notif-delay: 1.2s;  }
+.qs-notif--n16 { left: 18%; top: 18%; --notif-delay: 1.3s;  }
+.qs-notif--n17 { left: 42%; top: 40%; --notif-delay: 1.35s; }
+.qs-notif--n18 { left: 22%; top: 60%; --notif-delay: 1.4s;  }
+.qs-notif--n19 { left: 45%; top: 78%; --notif-delay: 1.45s; }
+@media (prefers-reduced-motion: reduce) {
+  .qs-notif[class*="qs-notif--n"] {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
 
