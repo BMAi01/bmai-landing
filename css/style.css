@@ -7913,3 +7913,63 @@ html {
     max-width: 100% !important;
   }
 }
+
+/* ============================================
+   2026-04-29 — TEAM VIDEO UNMUTE OVERLAY
+   Botao "Ativar audio" sobreposto ao video. Visivel enquanto video.muted=true.
+   Click destrava som (politica de autoplay browser exige user gesture).
+   ============================================ */
+.team-video__frame { position: relative; }
+.team-video__unmute {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(13, 27, 42, .9);
+  color: #fff;
+  border: 1px solid rgba(219, 85, 0, .55);
+  border-radius: 100px;
+  font-family: var(--mono, inherit);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 0 1px rgba(219, 85, 0, .25);
+  transition: opacity .25s ease, transform .25s ease, background .25s ease, border-color .25s ease;
+  animation: teamUnmutePulse 2.5s ease-in-out infinite;
+}
+.team-video__unmute:hover {
+  background: rgba(219, 85, 0, .92);
+  border-color: rgba(255, 255, 255, .35);
+  transform: translateY(-1px);
+}
+.team-video__unmute:focus-visible {
+  outline: 2px solid #db5500;
+  outline-offset: 3px;
+}
+.team-video__unmute.is-hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+@keyframes teamUnmutePulse {
+  0%, 100% { box-shadow: 0 6px 20px rgba(0, 0, 0, .35), 0 0 0 1px rgba(219, 85, 0, .25); }
+  50%      { box-shadow: 0 6px 24px rgba(0, 0, 0, .45), 0 0 0 4px rgba(219, 85, 0, .25); }
+}
+@media (max-width: 768px) {
+  .team-video__unmute {
+    bottom: 12px;
+    right: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .team-video__unmute { animation: none; }
+}

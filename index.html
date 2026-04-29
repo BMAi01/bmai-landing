@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Automatizamos processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
-  <link rel="stylesheet" href="css/style.css?v=20260429-motion-redesign">
+  <link rel="stylesheet" href="css/style.css?v=20260429-unmute">
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -526,14 +526,25 @@
           <span class="team-video__corner team-video__corner--bl" aria-hidden="true"></span>
           <span class="team-video__corner team-video__corner--br" aria-hidden="true"></span>
           <video class="team-video"
-                 muted loop playsinline
+                 loop playsinline
                  preload="metadata"
                  poster="assets/images/team-matheus-resized.webp"
                  disablepictureinpicture disableremoteplayback
                  aria-label="Apresentacao do time BMAi"
                  onerror="this.classList.add('team-video--failed')">
-            <source src="assets/videos/team.mp4?v=20260429-motion-redesign" type="video/mp4">
+            <source src="assets/videos/team.mp4?v=20260429-unmute" type="video/mp4">
           </video>
+          <!-- Overlay "Ativar audio" — mostrado enquanto video.muted === true.
+               Click destrava som (politica de autoplay exige user gesture) -->
+          <button type="button" class="team-video__unmute" id="teamVideoUnmute"
+                  aria-label="Ativar audio do video">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="23" y1="9" x2="17" y2="15"/>
+              <line x1="17" y1="9" x2="23" y2="15"/>
+            </svg>
+            <span>Ativar áudio</span>
+          </button>
           <!-- Fallback estatico se video falhar (codec, autoplay bloqueado, conexao lenta) -->
           <div class="team-video__fallback" aria-hidden="true">
             <img src="assets/images/team-matheus-resized.webp" alt="" loading="lazy"/>
@@ -756,8 +767,8 @@
     <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
-  <script src="js/i18n.js?v=20260429-motion-redesign"></script>
-  <script defer src="js/main.js?v=20260429-motion-redesign"></script>
+  <script src="js/i18n.js?v=20260429-unmute"></script>
+  <script defer src="js/main.js?v=20260429-unmute"></script>
 
   <script>
   /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */

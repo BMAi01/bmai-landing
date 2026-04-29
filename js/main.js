@@ -1339,35 +1339,43 @@ if (document.readyState === 'loading') {
     const handleLeave = () => {
       if (stallTimer) { clearTimeout(stallTimer); stallTimer = null; }
       if (!video.paused) video.pause();
-      // Re-muta ao sair (audio so toca em-secao + apos user activation)
-      if (!video.muted) video.muted = true;
+      // 2026-04-29: NAO re-muta ao sair. Estado de mute eh decisao do user
+      // (via botao de overlay) e persiste ao voltar pra secao.
     };
 
-    // Audio: so desmuta se user JA interagiu E secao esta visivel
-    const applyAudio = () => {
-      const shouldUnmute = userActivated && inSection;
-      if (shouldUnmute && video.muted) {
+    // 2026-04-29: video comeca mutado VIA PROPRIEDADE (nao atributo HTML)
+    // pra permitir autoplay silencioso. User destrava som via overlay.
+    video.muted = true;
+    video.defaultMuted = true;
+
+    // Botao overlay "Ativar audio": click destrava som imediato.
+    const unmuteBtn = document.getElementById('teamVideoUnmute');
+    const updateUnmuteBtn = () => {
+      if (!unmuteBtn) return;
+      unmuteBtn.classList.toggle('is-hidden', !video.muted);
+    };
+    if (unmuteBtn) {
+      unmuteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         video.muted = false;
         video.volume = 1;
-      }
-    };
-    const ACTIVATE_EVENTS = ['click', 'touchstart', 'keydown', 'wheel', 'pointerdown', 'mousedown'];
-    const onActivate = () => {
-      if (userActivated) return;
-      userActivated = true;
-      applyAudio();
-      ACTIVATE_EVENTS.forEach(ev =>
-        window.removeEventListener(ev, onActivate, true)
-      );
-    };
-    ACTIVATE_EVENTS.forEach(ev =>
-      window.addEventListener(ev, onActivate, { capture: true, passive: true })
-    );
-    // Click direto no video tambem desmuta imediato (atalho explicito)
+        if (video.paused) tryPlay();
+        updateUnmuteBtn();
+      });
+    }
+    // Click no proprio video tambem destrava (atalho)
     video.addEventListener('click', () => {
-      onActivate();
-      if (video.muted) { video.muted = false; video.volume = 1; }
+      if (video.muted) {
+        video.muted = false;
+        video.volume = 1;
+      } else {
+        video.muted = true;
+      }
+      updateUnmuteBtn();
     });
+    // Sincroniza botao com mudancas de estado
+    video.addEventListener('volumechange', updateUnmuteBtn);
+    updateUnmuteBtn();
 
     // IntersectionObserver: play/pause + audio mute control
     const target = stage || video;
