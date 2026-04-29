@@ -1450,22 +1450,23 @@ if (document.readyState === 'loading') {
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: '+=150%',           // pin curto — flip rapido e sincronizado
+          end: '+=400%',
           pin: true,
-          scrub: 2,                // inercia suave
+          scrub: 2,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      // 2026-04-29 (rev25): TODOS flippam juntos (sem stagger).
-      // Stagger criava estados mistos feios — cards em rotacoes diferentes,
-      // alguns estreitos pela perspectiva, outros chapados.
-      tl.to(inners, {
-        rotationY: 180,
-        ease: 'power2.inOut',
-        duration: 1,
-      }, 0);
+      // 2026-04-29 (rev26): match exato do codigo de referencia React.
+      // Stagger 0.35 entre cards.
+      inners.forEach((card, index) => {
+        tl.to(card, {
+          rotationY: 180,
+          ease: 'power2.inOut',
+          duration: 1,
+        }, index * 0.35);
+      });
     };
     tryBuild();
   };
