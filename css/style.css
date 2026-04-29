@@ -8079,8 +8079,41 @@ html {
   border-color: rgba(219, 85, 0, .35);
   color: #ede7e1;
   padding: 32px 26px;
-  gap: 14px;
+  gap: 24px;
+  position: relative;
 }
+.qs-flip-card__face--back .qs-flip-card__brand {
+  position: absolute;
+  bottom: 24px;
+  left: 0; right: 0;
+}
+.qs-flip-card__letter {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(8rem, 18vw, 14rem);
+  line-height: .85;
+  letter-spacing: -.06em;
+  color: transparent;
+  background: linear-gradient(180deg, var(--bmai-orange, #db5500) 0%, #ff7a2a 50%, var(--bmai-orange, #db5500) 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 60px rgba(219, 85, 0, .25);
+  user-select: none;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+.qs-flip-card__letter::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(ellipse at center, rgba(219, 85, 0, .2), transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(20px);
+}
+
 .qs-flip-card__tag {
   font-family: var(--mono, ui-monospace, monospace);
   font-size: 10.5px;
