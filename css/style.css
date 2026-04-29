@@ -8071,20 +8071,25 @@ html {
 
 /* BACK — fundo escuro com grid de linhas (Forbes/blackground) */
 .qs-flip-card__face--back {
-  background: #050708;
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%,     rgba(219, 85, 0, .1) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(219, 85, 0, .08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(18, 28, 44, .96) 0%, rgba(10, 18, 30, .96) 100%);
+  background-color: var(--bmai-navy, #0d1b2a);
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, .05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, .05) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, .035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, .035) 1px, transparent 1px);
   background-size: 32px 32px;
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+          backdrop-filter: blur(20px) saturate(140%);
   border-color: rgba(219, 85, 0, .35);
   color: #ede7e1;
-  padding: 32px 26px;
-  gap: 24px;
+  padding: 60px 28px 28px;
   position: relative;
 }
 .qs-flip-card__face--back .qs-flip-card__brand {
   position: absolute;
-  top: 24px;
+  top: 22px;
   left: 0; right: 0;
 }
 /* SVG do logo BMAi (mesmo do header), cropado por viewBox em cada card.
@@ -8092,17 +8097,17 @@ html {
    pra todas as 4 cards renderizarem letras no mesmo tamanho visual. */
 .qs-flip-card__letter {
   display: block;
-  width: 70%;
-  max-width: 280px;
-  height: auto;
-  max-height: 70%;
-  margin: auto;            /* centra horizontal+vertical no flex parent */
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  margin: 0;
   color: var(--bmai-orange, #db5500);
   filter: drop-shadow(0 0 50px rgba(219, 85, 0, .4));
   user-select: none;
   pointer-events: none;
   position: relative;
   z-index: 2;
+  /* preserveAspectRatio="xMidYMid meet" no SVG centra a letra dentro do espaco */
 }
 
 .qs-flip-card__tag {
