@@ -7787,7 +7787,7 @@ html {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
-    perspective: none !important;
+    perspective: 1500px !important;
     min-height: 0 !important;
   }
   .card-stack--side-by-side .card-stack__item {
@@ -7795,32 +7795,52 @@ html {
     inset: auto !important;
     opacity: 0 !important;
     transform: translate3d(0, 40px, 0) !important;
+    transform-origin: center;
     transition:
       opacity .8s cubic-bezier(.22, 1, .36, 1),
-      transform .35s cubic-bezier(.22, 1, .36, 1),
-      box-shadow .35s ease,
-      border-color .35s ease !important;
-    will-change: transform, opacity;
+      transform .5s ease,
+      filter .5s ease,
+      box-shadow .5s ease,
+      border-color .5s ease !important;
+    will-change: transform, opacity, filter;
   }
   .card-stack--side-by-side .card-stack__item.is-visible {
     opacity: 1 !important;
     transform: translate3d(0, 0, 0) !important;
   }
-  /* Hover lift + glow laranja */
+
+  /* Spotlight: ao passar mouse em qualquer card do container,
+     TODOS recuam (apagados, menores, blur leve) por padrão */
+  .card-stack--side-by-side:hover .card-stack__item.is-visible {
+    opacity: .4 !important;
+    transform: scale(.97) !important;
+    filter: blur(1px);
+  }
+  /* O card sob o cursor volta destacado, com lift + glow laranja */
   .card-stack--side-by-side .card-stack__item.is-visible:hover {
-    transform: translate3d(0, -8px, 0) !important;
+    opacity: 1 !important;
+    transform: scale(1.04) translateY(-10px) !important;
+    filter: blur(0);
+    z-index: 2;
     box-shadow:
-      0 22px 50px -10px rgba(0, 0, 0, .55),
-      0 0 60px -8px rgba(219, 85, 0, .45),
+      0 22px 60px -10px rgba(0, 0, 0, .55),
+      0 0 60px -4px rgba(219, 85, 0, .45),
       inset 0 1px 0 rgba(255, 255, 255, .06) !important;
     border-color: rgba(219, 85, 0, .5) !important;
   }
   .card-stack--side-by-side .card-stack__item--2.is-visible:hover {
     box-shadow:
-      0 24px 50px -10px rgba(13, 27, 42, .35),
-      0 0 60px -8px rgba(219, 85, 0, .55),
+      0 24px 60px -10px rgba(13, 27, 42, .35),
+      0 0 60px -4px rgba(219, 85, 0, .55),
       inset 0 1px 0 rgba(255, 255, 255, 1) !important;
     border-color: rgba(219, 85, 0, .65) !important;
+  }
+  /* Tilt: card vizinho "olha" pro card destacado */
+  .card-stack--side-by-side .card-stack__item--1.is-visible:hover ~ .card-stack__item.is-visible {
+    transform: scale(.97) rotateY(-8deg) translateX(-10px) !important;
+  }
+  .card-stack--side-by-side:has(.card-stack__item--2.is-visible:hover) .card-stack__item--1.is-visible {
+    transform: scale(.97) rotateY(8deg) translateX(10px) !important;
   }
 }
 
