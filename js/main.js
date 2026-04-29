@@ -1450,7 +1450,7 @@ if (document.readyState === 'loading') {
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: '+=' + (inners.length * 100) + '%', // N cards = N viewports
+          end: '+=150%',           // pin curto — flip rapido e sincronizado
           pin: true,
           scrub: 2,                // inercia suave
           anticipatePin: 1,
@@ -1458,13 +1458,14 @@ if (document.readyState === 'loading') {
         },
       });
 
-      inners.forEach((card, index) => {
-        tl.to(card, {
-          rotationY: 180,
-          ease: 'power2.inOut',
-          duration: 1,
-        }, index * 0.45);          // stagger entre cards
-      });
+      // 2026-04-29 (rev25): TODOS flippam juntos (sem stagger).
+      // Stagger criava estados mistos feios — cards em rotacoes diferentes,
+      // alguns estreitos pela perspectiva, outros chapados.
+      tl.to(inners, {
+        rotationY: 180,
+        ease: 'power2.inOut',
+        duration: 1,
+      }, 0);
     };
     tryBuild();
   };
