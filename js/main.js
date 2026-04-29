@@ -1196,10 +1196,24 @@ function _initCardStackFx() {
     if (!items.length) return;
     const len = items.length;
 
+    const dots    = Array.from(document.querySelectorAll('#qsCarouselDots .qs-carousel__dot'));
+    const prevBtn = document.querySelector('.qs-carousel__nav--prev');
+    const nextBtn = document.querySelector('.qs-carousel__nav--next');
+
     let activeIdx = 0;
     const setActive = (idx) => {
       activeIdx = idx;
-      items.forEach((it, i) => it.classList.toggle('is-active', i === idx));
+      items.forEach((it, i) => {
+        const on = i === idx;
+        it.classList.toggle('is-active', on);
+        it.setAttribute('aria-hidden', on ? 'false' : 'true');
+      });
+      dots.forEach((d, i) => {
+        const on = i === idx;
+        d.classList.toggle('is-active', on);
+        d.setAttribute('aria-selected', on ? 'true' : 'false');
+        d.setAttribute('tabindex', on ? '0' : '-1');
+      });
     };
 
     /* Wrap modular — idx pode ser negativo ou > len, sempre cai em [0, len-1] */
@@ -1297,6 +1311,26 @@ function _initCardStackFx() {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stopAuto();
       else startAuto();
+    });
+
+    /* Setas + dots + teclado (brief: navegacao acessivel) */
+    if (prevBtn) prevBtn.addEventListener('click', () => { stopAuto(); scrollToIdx(activeIdx - 1); setTimeout(startAuto, 2000); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { stopAuto(); scrollToIdx(activeIdx + 1); setTimeout(startAuto, 2000); });
+    dots.forEach((d) => {
+      d.addEventListener('click', () => {
+        stopAuto();
+        const i = parseInt(d.dataset.idx, 10);
+        if (!isNaN(i)) scrollToIdx(i);
+        setTimeout(startAuto, 2000);
+      });
+    });
+    /* Teclado: setas <- / -> navegam quando o carrossel ou seus controles tem foco */
+    const keyboardTarget = stack.parentElement || stack;
+    keyboardTarget.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); stopAuto(); scrollToIdx(activeIdx - 1); setTimeout(startAuto, 2000); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); stopAuto(); scrollToIdx(activeIdx + 1); setTimeout(startAuto, 2000); }
+      if (e.key === 'Home')       { e.preventDefault(); stopAuto(); scrollToIdx(0);             setTimeout(startAuto, 2000); }
+      if (e.key === 'End')        { e.preventDefault(); stopAuto(); scrollToIdx(len - 1);       setTimeout(startAuto, 2000); }
     });
 
     /* Estado inicial */
