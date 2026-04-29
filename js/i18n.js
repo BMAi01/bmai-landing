@@ -24,7 +24,7 @@
       'hero.stat3':   'Dias de implementação',
 
       /* QUEM SOMOS */
-      'qs.title':     'O processo vem antes.<br><span style="color:var(--orange)">A IA vem depois.</span>',
+      'qs.title':     'O que nós fazemos<br><span style="color:var(--orange)">na prática.</span>',
 
       /* Section seals */
       'seal.qs':     'Quem somos',
@@ -227,7 +227,7 @@
       'hero.stat2': 'Customer satisfaction',
       'hero.stat3': 'Days to implement',
 
-      'qs.title':     'Process comes first.<br><span style="color:var(--orange)">AI comes second.</span>',
+      'qs.title':     'What we do<br><span style="color:var(--orange)">in practice.</span>',
 
       /* Section seals */
       'seal.qs':     'About us',
@@ -422,7 +422,7 @@
       'hero.stat2': 'Satisfacción de los clientes',
       'hero.stat3': 'Días de implementación',
 
-      'qs.title':     'El proceso viene primero.<br><span style="color:var(--orange)">La IA viene después.</span>',
+      'qs.title':     'Lo que hacemos<br><span style="color:var(--orange)">en la práctica.</span>',
 
       /* Section seals */
       'seal.qs':     'Quiénes somos',
