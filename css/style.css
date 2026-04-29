@@ -7639,7 +7639,7 @@ html {
 /* Layout: grid 1fr 1fr -> single column. Brand fica em cima, cards abaixo. */
 .qs__grid--animated {
   grid-template-columns: 1fr !important;
-  gap: 48px !important;
+  gap: 20px !important;
   max-width: 1200px !important;
 }
 .qs__scroll-container { height: auto !important; }
@@ -7652,7 +7652,7 @@ html {
 /* qs-scene-wrap (Motion antigo) — agora so contem o brand BMAi central
    ja que notifs foram removidas. Reduz altura. */
 .qs-scene-wrap {
-  min-height: 320px;
+  min-height: 200px;
   z-index: 2;
 }
 /* Card-stack: 2 cards lado a lado (era absolute scroll-stack) */
@@ -7776,11 +7776,11 @@ html {
   .qs__grid--side {
     display: flex !important;
     flex-direction: column;
-    gap: 32px;
+    gap: 16px !important;
     grid-template-columns: none !important;
     max-width: 1080px;
   }
-  .qs__grid--side > .qs-scene-wrap { order: 1 !important; min-height: 320px; }
+  .qs__grid--side > .qs-scene-wrap { order: 1 !important; min-height: 200px; }
   .qs__grid--side > .card-stack--side-by-side { order: 2 !important; }
 
   .card-stack--side-by-side {
