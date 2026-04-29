@@ -8088,11 +8088,11 @@ html {
   left: 0; right: 0;
 }
 .qs-flip-card__letter {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 900;
-  font-size: clamp(8rem, 18vw, 14rem);
-  line-height: .85;
-  letter-spacing: -.06em;
+  font-family: var(--fm, 'General Sans'), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(12rem, 26vw, 20rem);
+  line-height: .82;
+  letter-spacing: -.05em;
   color: transparent;
   background: linear-gradient(180deg, var(--bmai-orange, #db5500) 0%, #ff7a2a 50%, var(--bmai-orange, #db5500) 100%);
   -webkit-background-clip: text;
