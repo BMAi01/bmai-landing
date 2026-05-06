@@ -2940,7 +2940,7 @@ html { scrollbar-gutter: stable; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 56px;
-  align-items: start;
+  align-items: center;
 }
 .form-copy__lead {
   font-size: 15px;
@@ -4352,6 +4352,7 @@ section h2.shimmer-active::after,
   box-shadow: 0 4px 18px rgba(0,0,0,.04);
   animation: fbIn .35s cubic-bezier(.2,.9,.3,1.1);
 }
+.form-feedback[hidden] { display: none !important; }
 .form-feedback .fb-ico { flex-shrink: 0; }
 .form-feedback .fb-msg { flex: 1; }
 .form-feedback--success {
