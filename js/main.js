@@ -2063,6 +2063,7 @@ const CASES_DATA = [
     const cargo    = val('f-cargo');
     const segmento = val('f-segmento');
     const colab    = val('f-colab');
+    const dor      = val('f-dor');
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const telOk = telefone.replace(/\D/g, '').length >= 10;
@@ -2070,7 +2071,7 @@ const CASES_DATA = [
       ['f-nome', !!nome], ['f-empresa', !!empresa],
       ['f-email', !!email && emailOk], ['f-tel', !!telefone && telOk],
       ['f-cargo', !!cargo], ['f-segmento', !!segmento],
-      ['f-colab', !!colab]
+      ['f-colab', !!colab], ['f-dor', !!dor]
     ];
     // ignora campos que não existem no DOM (compat com HTML antigo)
     const campos = camposRaw.filter(([id]) => document.getElementById(id));
@@ -2101,18 +2102,18 @@ const CASES_DATA = [
       const res = await fetch('https://anna.bmai.space/lead-site', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab })
+        body: JSON.stringify({ nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab, dor })
       });
       if (!res.ok) {
         const txt = await res.text().catch(() => '');
         throw new Error('HTTP ' + res.status + ' ' + txt);
       }
 
-      showFeedback('success', 'Recebido! O time da BMAi vai entrar em contato em até 24h.');
+      showFeedback('success', '🟠 Recebido! 🎯 Anna já tá olhando o seu caso 🔍 e em até 24h ✨ entra em contato pelo WhatsApp 📲 pra alinhar o próximo passo 🚀');
       form.reset();
     } catch (err) {
       console.error('[bmai-form] Falha no envio:', err);
-      showFeedback('error', 'Não conseguimos enviar agora. Tente novamente em instantes ou chame o time da BMAi no WhatsApp.');
+      showFeedback('error', '⚠️ Algo travou no envio. Tenta de novo em instantes ou chama a Anna direto no WhatsApp 🟠📲');
     } finally {
       btn.disabled = false;
       btn.innerHTML = btnDefaultHTML;
