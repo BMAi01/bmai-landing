@@ -2109,7 +2109,7 @@ const CASES_DATA = [
         throw new Error('HTTP ' + res.status + ' ' + txt);
       }
 
-      showFeedback('success', '🟠 Recebido! 🎯 Anna já tá olhando o seu caso 🔍 e em até 24h ✨ entra em contato pelo WhatsApp 📲 pra alinhar o próximo passo 🚀');
+      showFeedback('success', 'Recebido! Anna já tá olhando o seu caso e em até 24h entra em contato pelo WhatsApp pra alinhar o próximo passo 🚀');
       form.reset();
     } catch (err) {
       console.error('[bmai-form] Falha no envio:', err);
