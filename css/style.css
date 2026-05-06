@@ -974,6 +974,22 @@ html { scrollbar-gutter: stable; }
 }
 .hero__stat-sep { width: 1px; height: 56px; background: rgba(255,255,255,.12); flex-shrink: 0; }
 
+.hero__stats-source {
+  margin: 14px auto 0;
+  text-align: center;
+  font-family: var(--fm, "JetBrains Mono", monospace);
+  font-size: 11px;
+  letter-spacing: .05em;
+  color: rgba(255,255,255,.42);
+  text-transform: uppercase;
+  padding: 0 16px;
+  max-width: 720px;
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .hero__stats-source { font-size: 10px; letter-spacing: .03em; }
+}
+
 @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ============================================
@@ -2617,8 +2633,15 @@ html { scrollbar-gutter: stable; }
 /* Nav cols (direita) */
 .footer__cols {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 56px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+.footer__cnpj {
+  font-size: 14px;
+  color: rgba(255, 255, 255, .35);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -.005em;
 }
 .footer__col {
   display: flex;
@@ -2749,6 +2772,15 @@ html { scrollbar-gutter: stable; }
   color: rgba(255, 255, 255, .4);
   margin: 0;
 }
+.footer__bottom-legal {
+  flex-basis: 100%;
+  margin-top: 8px !important;
+  font-size: 10.5px !important;
+  letter-spacing: .03em !important;
+  color: rgba(255, 255, 255, .25) !important;
+  line-height: 1.55;
+  max-width: 720px;
+}
 .footer__backtop {
   font-family: var(--fm);
   font-size: 11px;
@@ -2776,11 +2808,15 @@ html { scrollbar-gutter: stable; }
     gap: 40px;
     padding: 0 32px 40px;
   }
-  .footer__cols { gap: 32px; }
+  .footer__cols { grid-template-columns: repeat(3, 1fr); gap: 32px; }
   .footer__logo-mark { height: 28px; }
   .footer__logo-symbol { width: 32px; height: 32px; }
-  .footer__bottom { padding: 20px 32px 24px; flex-direction: column; gap: 12px; }
+  .footer__bottom { padding: 20px 32px 24px; flex-direction: column; gap: 12px; align-items: flex-start; text-align: left; }
+  .footer__bottom-legal { text-align: left; }
   .footer { padding-top: 64px; }
+}
+@media (max-width: 700px) {
+  .footer__cols { grid-template-columns: repeat(2, 1fr); gap: 32px; }
 }
 @media (max-width: 480px) {
   .footer__cols { grid-template-columns: 1fr; gap: 24px; }

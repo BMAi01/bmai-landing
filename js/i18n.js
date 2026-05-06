@@ -21,7 +21,8 @@
       'hero.cta':     'Falar com o time da BMAi',
       'hero.stat1':   'Projetos realizados',
       'hero.stat2':   'Satisfação dos clientes',
-      'hero.stat3':   'Dias de implementação',
+      'hero.stat3':   'Dias até ir ao ar',
+      'hero.stats_source': 'Médias apuradas em projetos BMAi entregues entre 2024 e 2026 · prazos variam por complexidade',
 
       /* QUEM SOMOS */
       'qs.title':     'O que nós fazemos<br><span style="color:var(--orange)">na prática.</span>',
@@ -114,7 +115,7 @@
       'cs0.result':    '<span class="cs-card__metric">+40%</span> em conversões — <span class="cs-card__metric">+20%</span> pacientes/mês com 0 contratações extras',
 
       'cs_hero.sector': 'Saúde',
-      'cs_hero.quote':  '"A BMAi reorganizou nossa operação por completo: estruturou um CRM que finalmente faz sentido, automatizou o preenchimento das planilhas comerciais e implementou IA no atendimento. O resultado foi um aumento de 40% nas conversões e 20% no número de pacientes — sem precisar contratar mais ninguém."',
+      'cs_hero.quote':  '"A BMAi reorganizou nossa operação por completo: estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. O resultado foi um aumento de 40% nas conversões e 20% no número de pacientes — sem precisar contratar mais ninguém."',
       'cs_hero.role':   'CEO na GastroObesi',
       'cs_hero.s1':     'em conversões',
       'cs_hero.s2':     'pacientes/mês',
@@ -126,12 +127,12 @@
       'cs1.role':   'CEO · Mataco',
 
       'cs2.sector': 'Material de Construção',
-      'cs2.result': '<span class="cs-card__metric">+40%</span> no faturamento com prospecção e atendimento <span class="cs-card__metric">24h</span> automatizados — estoque <span class="cs-card__metric">100%</span> sob controle',
+      'cs2.result': '<span class="cs-card__metric">+40%</span> no faturamento com prospecção e atendimento <span class="cs-card__metric">24h</span> via IA — estoque <span class="cs-card__metric">100%</span> sob controle',
       'cs2.quote':  '"A IA virou o motor da operação: estoque organizado e monitorado em tempo real, prospecção ativa rodando sozinha e agente de atendimento disponível 24 horas por dia. Em pouco tempo, o faturamento subiu 40% sem que a gente precisasse aumentar a equipe."',
       'cs2.role':   'CEO · Só Hydráulica',
 
       'cs3.sector': 'Engenharia',
-      'cs3.result': '<span class="cs-card__metric">Operação</span> mais previsível — <span class="cs-card__metric">processos</span> automatizados — <span class="cs-card__metric">visibilidade</span> total',
+      'cs3.result': '<span class="cs-card__metric">Operação</span> mais previsível — <span class="cs-card__metric">processos</span> com IA aplicada — <span class="cs-card__metric">visibilidade</span> total',
       'cs3.quote':  '"A parceria com a BMAi trouxe organização e visibilidade pra processos que antes eram manuais. Hoje conseguimos focar no que realmente importa: entregar projetos de engenharia com mais previsibilidade."',
       'cs3.name':   '[CEO MGP Engenharia]',
       'cs3.role':   'CEO · MGP Engenharia',
@@ -199,13 +200,18 @@
       /* FOOTER */
       'footer.kind':    'Engenharia de inteligência aplicada.',
       'footer.h_site':  'Site',
+      'footer.h_legal': 'Legal',
       'footer.h_ctc':   'Contato',
       'footer.l_quem':  'Quem somos',
       'footer.l_met':   'Método DEIA',
       'footer.l_cases': 'Cases',
       'footer.l_team':  'Team',
       'footer.l_faq':   'FAQ',
+      'footer.l_priv':  'Política de Privacidade',
+      'footer.l_termos':'Termos de Uso',
+      'footer.l_cnpj':  'CNPJ em breve',
       'footer.copy':    '© <span id="footerYear">2026</span> BMAi · Todos os direitos reservados',
+      'footer.legal_disclaim': 'BMAi é marca de soluções de IA aplicada a processos de negócio. Resultados citados refletem médias de projetos próprios e podem variar conforme o contexto de cada cliente.',
       'footer.backtop': 'Voltar ao topo'
     },
 
@@ -225,7 +231,8 @@
       'hero.cta':   'Chat with the BMAi team',
       'hero.stat1': 'Projects delivered',
       'hero.stat2': 'Customer satisfaction',
-      'hero.stat3': 'Days to implement',
+      'hero.stat3': 'Days to go live',
+      'hero.stats_source': 'Averages from BMAi projects delivered between 2024 and 2026 · timing varies with complexity',
 
       'qs.title':     'What we do<br><span style="color:var(--orange)">in practice.</span>',
 
@@ -314,7 +321,7 @@
       'cs0.result':    '<span class="cs-card__metric">+40%</span> in conversions — <span class="cs-card__metric">+20%</span> patients/month with 0 extra hires',
 
       'cs_hero.sector': 'Healthcare',
-      'cs_hero.quote':  '"BMAi completely reorganized our operation: it structured a CRM that finally makes sense, automated the commercial spreadsheets and put AI into customer support. The result was a 40% increase in conversions and 20% more patients — without having to hire anyone else."',
+      'cs_hero.quote':  '"BMAi completely reorganized our operation: it structured a CRM that finally makes sense, brought AI to the commercial spreadsheets and put AI into customer support. The result was a 40% increase in conversions and 20% more patients — without having to hire anyone else."',
       'cs_hero.role':   'CEO at GastroObesi',
       'cs_hero.s1':     'in conversions',
       'cs_hero.s2':     'patients/month',
@@ -326,12 +333,12 @@
       'cs1.role':   'CEO · Mataco',
 
       'cs2.sector': 'Construction Materials',
-      'cs2.result': '<span class="cs-card__metric">+40%</span> in revenue with prospecting and <span class="cs-card__metric">24h</span> support automated — inventory <span class="cs-card__metric">100%</span> under control',
+      'cs2.result': '<span class="cs-card__metric">+40%</span> in revenue with AI-driven prospecting and <span class="cs-card__metric">24h</span> support — inventory <span class="cs-card__metric">100%</span> under control',
       'cs2.quote':  '"AI became the engine of the operation: inventory organized and monitored in real time, active prospecting running on its own, and a support agent available 24 hours a day. In a short time, revenue jumped 40% without us having to grow the team."',
       'cs2.role':   'CEO · Só Hydráulica',
 
       'cs3.sector': 'Engineering',
-      'cs3.result': '<span class="cs-card__metric">Operations</span> more predictable — <span class="cs-card__metric">processes</span> automated — <span class="cs-card__metric">visibility</span> end-to-end',
+      'cs3.result': '<span class="cs-card__metric">Operations</span> more predictable — <span class="cs-card__metric">AI-applied</span> processes — <span class="cs-card__metric">visibility</span> end-to-end',
       'cs3.quote':  '"The partnership with BMAi brought organization and visibility to processes that used to be manual. Today we can focus on what really matters: delivering engineering projects with more predictability."',
       'cs3.name':   '[CEO MGP Engenharia]',
       'cs3.role':   'CEO · MGP Engenharia',
@@ -394,13 +401,18 @@
 
       'footer.kind':    'Applied intelligence engineering.',
       'footer.h_site':  'Site',
+      'footer.h_legal': 'Legal',
       'footer.h_ctc':   'Contact',
       'footer.l_quem':  'About',
       'footer.l_met':   'DEIA Method',
       'footer.l_cases': 'Cases',
       'footer.l_team':  'Team',
       'footer.l_faq':   'FAQ',
+      'footer.l_priv':  'Privacy Policy',
+      'footer.l_termos':'Terms of Use',
+      'footer.l_cnpj':  'CNPJ coming soon',
       'footer.copy':    '© <span id="footerYear">2026</span> BMAi · All rights reserved',
+      'footer.legal_disclaim': 'BMAi is a brand of AI solutions applied to business processes. Numbers shown reflect averages from our own projects and may vary by client context.',
       'footer.backtop': 'Back to top'
     },
 
@@ -420,7 +432,8 @@
       'hero.cta':   'Hablar con el equipo BMAi',
       'hero.stat1': 'Proyectos entregados',
       'hero.stat2': 'Satisfacción de los clientes',
-      'hero.stat3': 'Días de implementación',
+      'hero.stat3': 'Días para salir en vivo',
+      'hero.stats_source': 'Promedios de proyectos BMAi entregados entre 2024 y 2026 · los plazos varían según la complejidad',
 
       'qs.title':     'Lo que hacemos<br><span style="color:var(--orange)">en la práctica.</span>',
 
@@ -509,7 +522,7 @@
       'cs0.result':    '<span class="cs-card__metric">+40%</span> en conversiones — <span class="cs-card__metric">+20%</span> pacientes/mes con 0 contrataciones extras',
 
       'cs_hero.sector': 'Salud',
-      'cs_hero.quote':  '"BMAi reorganizó por completo nuestra operación: estructuró un CRM que finalmente tiene sentido, automatizó el llenado de las planillas comerciales e implementó IA en la atención. El resultado fue un aumento del 40% en las conversiones y 20% en el número de pacientes — sin necesidad de contratar a nadie más."',
+      'cs_hero.quote':  '"BMAi reorganizó por completo nuestra operación: estructuró un CRM que finalmente tiene sentido, organizó el llenado de las planillas comerciales con IA e implementó IA en la atención. El resultado fue un aumento del 40% en las conversiones y 20% en el número de pacientes — sin necesidad de contratar a nadie más."',
       'cs_hero.role':   'CEO en GastroObesi',
       'cs_hero.s1':     'en conversiones',
       'cs_hero.s2':     'pacientes/mes',
@@ -521,12 +534,12 @@
       'cs1.role':   'CEO · Mataco',
 
       'cs2.sector': 'Materiales de Construcción',
-      'cs2.result': '<span class="cs-card__metric">+40%</span> en facturación con prospección y atención <span class="cs-card__metric">24h</span> automatizadas — stock <span class="cs-card__metric">100%</span> bajo control',
+      'cs2.result': '<span class="cs-card__metric">+40%</span> en facturación con prospección y atención <span class="cs-card__metric">24h</span> con IA — stock <span class="cs-card__metric">100%</span> bajo control',
       'cs2.quote':  '"La IA se convirtió en el motor de la operación: stock organizado y monitoreado en tiempo real, prospección activa funcionando sola y agente de atención disponible 24 horas al día. En poco tiempo, la facturación subió 40% sin que tuviéramos que aumentar el equipo."',
       'cs2.role':   'CEO · Só Hydráulica',
 
       'cs3.sector': 'Ingeniería',
-      'cs3.result': '<span class="cs-card__metric">Operación</span> más previsible — <span class="cs-card__metric">procesos</span> automatizados — <span class="cs-card__metric">visibilidad</span> total',
+      'cs3.result': '<span class="cs-card__metric">Operación</span> más previsible — <span class="cs-card__metric">procesos</span> con IA aplicada — <span class="cs-card__metric">visibilidad</span> total',
       'cs3.quote':  '"La asociación con BMAi trajo organización y visibilidad a procesos que antes eran manuales. Hoy podemos enfocarnos en lo que realmente importa: entregar proyectos de ingeniería con más previsibilidad."',
       'cs3.name':   '[CEO MGP Engenharia]',
       'cs3.role':   'CEO · MGP Engenharia',
@@ -589,13 +602,18 @@
 
       'footer.kind':    'Ingeniería de inteligencia aplicada.',
       'footer.h_site':  'Sitio',
+      'footer.h_legal': 'Legal',
       'footer.h_ctc':   'Contacto',
       'footer.l_quem':  'Quiénes somos',
       'footer.l_met':   'Método DEIA',
       'footer.l_cases': 'Casos',
       'footer.l_team':  'Equipo',
       'footer.l_faq':   'FAQ',
+      'footer.l_priv':  'Política de Privacidad',
+      'footer.l_termos':'Términos de Uso',
+      'footer.l_cnpj':  'CNPJ próximamente',
       'footer.copy':    '© <span id="footerYear">2026</span> BMAi · Todos los derechos reservados',
+      'footer.legal_disclaim': 'BMAi es una marca de soluciones de IA aplicada a procesos de negocio. Los resultados citados reflejan promedios de proyectos propios y pueden variar según el contexto de cada cliente.',
       'footer.backtop': 'Volver arriba'
     }
   };
