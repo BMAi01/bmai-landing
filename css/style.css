@@ -916,7 +916,8 @@ html { scrollbar-gutter: stable; }
   z-index: 4;
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: clamp(72px, 6vw, 108px);
   margin-bottom: 0;
 }
