@@ -1,4 +1,106 @@
 /* ============================================
+   META PIXEL TRACKER — helpers + eventos
+   Pixel ID: 1211008134323057
+   Eventos browser: PageView (auto), Lead, CompleteRegistration,
+   Contact, ViewContent, Search.
+   Pareamento com CAPI server-side via event_id (deduplicação Meta).
+   ============================================ */
+window.bmTracker = (function () {
+  const fired = new Set();
+
+  function uuid() {
+    if (crypto?.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function getCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
+  // _fbc é montado a partir de ?fbclid=... se o cookie ainda não existe
+  function getFbc() {
+    const cookie = getCookie('_fbc');
+    if (cookie) return cookie;
+    const params = new URLSearchParams(location.search);
+    const fbclid = params.get('fbclid');
+    if (!fbclid) return '';
+    return 'fb.1.' + Date.now() + '.' + fbclid;
+  }
+
+  function getFbp() {
+    return getCookie('_fbp');
+  }
+
+  function track(eventName, custom, opts) {
+    if (typeof fbq !== 'function') return null;
+    const eventID = (opts && opts.eventID) || uuid();
+    fbq('track', eventName, custom || {}, { eventID });
+    return eventID;
+  }
+
+  function trackOnce(key, eventName, custom) {
+    if (fired.has(key)) return null;
+    fired.add(key);
+    return track(eventName, custom);
+  }
+
+  return { uuid, getFbp, getFbc, getCookie, track, trackOnce };
+})();
+
+/* META PIXEL — Contact (WhatsApp / mailto) */
+document.addEventListener('click', function (e) {
+  const a = e.target.closest && e.target.closest('a[href]');
+  if (!a) return;
+  const href = a.getAttribute('href') || '';
+  if (/wa\.me|api\.whatsapp\.com/i.test(href)) {
+    window.bmTracker.track('Contact', { content_name: 'whatsapp' });
+  } else if (href.toLowerCase().startsWith('mailto:')) {
+    window.bmTracker.track('Contact', { content_name: 'email' });
+  }
+}, { passive: true });
+
+/* META PIXEL — ViewContent em seções-chave (1x por sessão por seção) */
+(function () {
+  const targets = ['quem-somos', 'cases', 'para-quem', 'form'];
+  const els = targets.map(id => document.getElementById(id)).filter(Boolean);
+  if (!els.length || !('IntersectionObserver' in window)) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting && en.intersectionRatio >= 0.5) {
+        const id = en.target.id;
+        window.bmTracker.trackOnce('vc:' + id, 'ViewContent', { content_name: id });
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  els.forEach(el => obs.observe(el));
+})();
+
+/* META PIXEL — Search no scroll dos cases (1x por sessão, depois de ≥2 cards visíveis) */
+(function () {
+  const grid = document.getElementById('csGrid');
+  if (!grid || !('IntersectionObserver' in window)) return;
+  const cards = grid.querySelectorAll('.cs-card');
+  if (cards.length < 2) return;
+  const seen = new Set();
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) seen.add(en.target);
+      if (seen.size >= 2) {
+        window.bmTracker.trackOnce('search:cases', 'Search', { search_string: 'cases', content_category: 'cases' });
+        obs.disconnect();
+      }
+    });
+  }, { threshold: 0.6 });
+  cards.forEach(c => obs.observe(c));
+})();
+
+/* ============================================
    PERFORMANCE GATE — desliga animações pesadas
    em mobile, touch devices e prefers-reduced-motion
    ============================================ */
@@ -2098,16 +2200,35 @@ const CASES_DATA = [
 
     const whatsapp = telefone.replace(/\D/g, '');
 
+    // event_ids gerados aqui pra parear browser Pixel <-> servidor CAPI (deduplicação Meta)
+    const eventIdLead = window.bmTracker.uuid();
+    const eventIdRegister = window.bmTracker.uuid();
+    const fbp = window.bmTracker.getFbp();
+    const fbc = window.bmTracker.getFbc();
+
     try {
       const res = await fetch('https://anna.bmai.space/lead-site', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab, dor })
+        body: JSON.stringify({
+          nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab, dor,
+          // tracking Meta — Anna repassa pro bmai-capi
+          _meta: {
+            event_id_lead: eventIdLead,
+            event_id_register: eventIdRegister,
+            fbp, fbc,
+            event_source_url: location.href
+          }
+        })
       });
       if (!res.ok) {
         const txt = await res.text().catch(() => '');
         throw new Error('HTTP ' + res.status + ' ' + txt);
       }
+
+      // Pixel browser-side com os mesmos event_ids → Meta deduplica com o que veio via CAPI
+      window.bmTracker.track('Lead', {}, { eventID: eventIdLead });
+      window.bmTracker.track('CompleteRegistration', {}, { eventID: eventIdRegister });
 
       showFeedback('success', 'Recebido! Anna já tá olhando o seu caso e em até 24h entra em contato pelo WhatsApp pra alinhar o próximo passo 🚀');
       form.reset();
