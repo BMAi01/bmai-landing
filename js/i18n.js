@@ -623,38 +623,55 @@
       return (DICT[this.lang] || DICT.pt)[key] ?? DICT.pt[key] ?? key;
     },
 
-    apply() {
+    apply(isLangChange) {
       document.documentElement.lang = this.t('html.lang');
 
-      // Elementos com data-i18n → innerHTML
-      document.querySelectorAll('[data-i18n]').forEach(el => {
+      // Elementos com data-i18n: textContent é mais barato que innerHTML quando
+      // o valor não tem tag HTML — evita parser, reduz layout/paint em massa.
+      const HTML_RE = /[<&]/;
+      const nodes = document.querySelectorAll('[data-i18n]');
+      for (let i = 0; i < nodes.length; i++) {
+        const el = nodes[i];
         const key = el.getAttribute('data-i18n');
         const val = this.t(key);
-        if (val !== undefined) el.innerHTML = val;
-      });
+        if (val === undefined) continue;
+        if (HTML_RE.test(val)) {
+          if (el.innerHTML !== val) el.innerHTML = val;
+        } else {
+          if (el.textContent !== val) el.textContent = val;
+        }
+      }
 
       // Atributos via data-i18n-attr="attr:key[,attr:key]"
-      document.querySelectorAll('[data-i18n-attr]').forEach(el => {
-        el.getAttribute('data-i18n-attr').split(',').forEach(pair => {
-          const [attr, key] = pair.trim().split(':');
+      const attrNodes = document.querySelectorAll('[data-i18n-attr]');
+      for (let i = 0; i < attrNodes.length; i++) {
+        const el = attrNodes[i];
+        const pairs = el.getAttribute('data-i18n-attr').split(',');
+        for (let j = 0; j < pairs.length; j++) {
+          const [attr, key] = pairs[j].trim().split(':');
           const val = this.t(key);
-          if (val !== undefined) el.setAttribute(attr, val);
-        });
-      });
+          if (val !== undefined && el.getAttribute(attr) !== val) {
+            el.setAttribute(attr, val);
+          }
+        }
+      }
 
       // Restaura ano dinâmico no footer (innerHTML pode ter resetado o span)
       const y = document.getElementById('footerYear');
       if (y) y.textContent = new Date().getFullYear();
 
-      // Notifica outros módulos (ARIA_DATA, FAQ etc se precisar)
-      window.dispatchEvent(new CustomEvent('i18n:change', { detail: { lang: this.lang } }));
+      // Só dispara evento quando idioma muda de fato (init não precisa recalcular
+      // ARIA stack / ScrollTrigger porque DOM já estava no idioma original).
+      if (isLangChange) {
+        window.dispatchEvent(new CustomEvent('i18n:change', { detail: { lang: this.lang } }));
+      }
     },
 
     set(lang) {
-      if (!DICT[lang]) return;
+      if (!DICT[lang] || lang === this.lang) return;
       this.lang = lang;
       try { localStorage.setItem('bmai-lang', lang); } catch (e) {}
-      this.apply();
+      this.apply(true);
     },
 
     init() {

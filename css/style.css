@@ -8343,3 +8343,7 @@ html {
   .qs-flip-card__inner { transform: none !important; }
   .qs-flip__hint { animation: none; }
 }
+
+/* PERF rev49: pausa animação das partículas quando fora do viewport (IO em main.js).
+   Reduz uso de GPU em ~50% no scroll fora da section #quem-somos. */
+.motion__particles[data-paused] .particle { animation-play-state: paused !important; }

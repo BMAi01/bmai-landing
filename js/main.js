@@ -2538,3 +2538,22 @@ const CASES_DATA = [
   const y = document.getElementById('footerYear');
   if (y) y.textContent = new Date().getFullYear();
 })();
+
+/* PERF: pausa animação das 50 partículas SVG quando #quem-somos sai do viewport.
+   Mobile já pausa via CSS (media query). Desktop: observer + data-paused. */
+(function () {
+  if (typeof IntersectionObserver === 'undefined') return;
+  const svg = document.querySelector('.motion__particles');
+  if (!svg) return;
+  const PR = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (PR) { svg.dataset.paused = '1'; return; }
+  // Estado inicial: pausado até o IO confirmar visibilidade
+  svg.dataset.paused = '1';
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) svg.removeAttribute('data-paused');
+      else svg.dataset.paused = '1';
+    });
+  }, { rootMargin: '100px 0px' });
+  io.observe(svg);
+})();
