@@ -35,4 +35,28 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   <FilesMatch "\.(html)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
+
+  # ── Headers de segurança ────────────────────────────────────────────────
+  # O site é estático, mas posta leads pro webhook da Anna e carrega o pixel
+  # da Meta — os headers abaixo barram clickjacking, MIME-sniffing e vazamento
+  # de Referer, e forçam HTTPS no browser (HSTS).
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  # HSTS — 2 anos, subdomínios, preload. Só aplica via HTTPS (browser ignora em HTTP).
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  # CSP — allowlist verificada contra o que o index.html realmente carrega:
+  #   script: cdnjs (GSAP+ScrollTrigger), jsdelivr (lenis), connect.facebook.net (Meta Pixel)
+  #   connect: anna.bmai.space (webhook de leads via fetch) + facebook (pixel)
+  #   img https: liberado (beacon do pixel /tr + og images). 'unsafe-inline'
+  #   é necessário pros scripts/styles inline e handlers onclick do site.
+  # Trava frame-ancestors (anti-clickjacking), object-src e base-uri.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://anna.bmai.space https://www.facebook.com https://connect.facebook.net; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://anna.bmai.space"
 </IfModule>
+
+# Bloqueia acesso a fontes/temporários que não devem ser servidos (defesa extra
+# caso algum arquivo não-rastreado pelo git acabe no diretório do deploy).
+<FilesMatch "(^\.|\.(py|bak|sh|env|map|log)$|^\.tmp_)">
+  Require all denied
+</FilesMatch>
