@@ -1030,19 +1030,20 @@ html { scrollbar-gutter: stable; }
 .ticker__logo img {
   max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;
 }
-/* 2026-06-22: cor original só nas logos que combinam com a IDV BMAi (warm/neutros):
-   Dr.Túlio (tan), Rede Construir (âmbar), Mataco (cinza). As de cor off-brand vão
-   a branco p/ coesão+legibilidade no navy: Só Hydráulica + Sebrae (--white),
-   O Canto (verde), Claves (ícone azul), Mantris (teal). Luciana removida. */
+/* 2026-06-22: TODAS as logos em COR ORIGINAL (sem filtro branco). As de cor escura
+   (azul/navy — Só Hydráulica, Sebrae (--white) e Mantris) ganham um tile branco atrás
+   p/ aparecerem legíveis no navy; as warm/claras ficam soltas na cor original. */
 .ticker__logo--white img,
-.ticker__logo--ocanto img,
-.ticker__logo--claves img,
-.ticker__logo--mantris img { filter: brightness(0) invert(1); }
+.ticker__logo--mantris img {
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
 .ticker__logo--mantris { width: 200px; }
-.ticker__logo--mantris img { transform: scale(1.18); }
-.ticker__logo--claves img { transform: scale(1.05); }      /* versão White oficial — já clara */
+.ticker__logo--claves img { transform: scale(1.05); }
 .ticker__logo--mataco { width: 200px; }
-.ticker__logo--mataco img { transform: scale(0.78); opacity: .9; }  /* marca cinza clara (fundo removido) */
+.ticker__logo--mataco img { transform: scale(0.82); opacity: .95; }  /* marca cinza (fundo removido) */
 /* MGP Engenharia: logo ja eh branca no PNG (regenerada via PIL em 2026-04-28
    a partir da versao preta MGP_vertical_preto_nbg). Sem filter — direto. */
 .ticker__logo--mgp img { transform: scale(0.95); }
@@ -8423,26 +8424,4 @@ html {
 .cs-card__avatar-fb {
   width: 100%; height: 100%;
   align-items: center; justify-content: center;
-}
-
-/* ── TAREFA 5.2: retrato do time na face frontal dos flip cards ── */
-.qs-flip-card__photo {
-  width: 68px; height: 68px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto 14px;
-  border: 2px solid rgba(219, 85, 0, .5);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
-}
-.qs-flip-card--2 .qs-flip-card__photo {       /* front laranja */
-  border-color: rgba(255, 255, 255, .85);
-  box-shadow: 0 6px 18px rgba(184, 72, 0, .35);
-}
-.qs-flip-card--4 .qs-flip-card__photo {       /* front branco */
-  border-color: rgba(219, 85, 0, .55);
-  box-shadow: 0 6px 18px rgba(13, 27, 42, .18);
-}
-@media (max-width: 900px) {
-  .qs-flip-card__photo { width: 60px; height: 60px; margin-bottom: 12px; }
 }
