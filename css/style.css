@@ -787,17 +787,19 @@ html { scrollbar-gutter: stable; }
   z-index: 3;
   pointer-events: none;
 }
-/* 2026-06-22: scrim CENTRAL — protege a copy centralizada por cima da estrela 3D. */
+/* Proteção do texto à esquerda — fade sobre o fx */
 .hero::before {
   content: '';
   position: absolute;
-  inset: 0;
+  left: 0; top: 0; bottom: 0;
+  width: 55%;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(ellipse 72% 62% at 50% 47%,
-    rgba(13,27,42,.74) 0%,
-    rgba(13,27,42,.42) 42%,
-    rgba(13,27,42,0) 72%);
+  background: linear-gradient(to right,
+    #0d1b2a 0%,
+    #0d1b2a 55%,
+    rgba(13,27,42,.6) 80%,
+    transparent 100%);
 }
 
 @media (max-width: 1023px) {
@@ -858,18 +860,6 @@ html { scrollbar-gutter: stable; }
   justify-content: flex-start;
   flex-wrap: wrap; gap: 12px;
 }
-/* 2026-06-22: copy do hero CENTRALIZADA (pedido do user — simetria com a estrela 3D). */
-#hero .hero__content {
-  max-width: 760px;
-  margin-left: auto !important; margin-right: auto !important;
-  text-align: center !important;
-  display: flex; flex-direction: column; align-items: center;
-}
-#hero .hero__title,
-#hero .hero__sub,
-#hero .hero__badge { text-align: center !important; margin-left: auto !important; margin-right: auto !important; }
-#hero .hero__title { align-items: center; }
-#hero .hero__ctas { justify-content: center !important; }
 .hero__badge {
   font-family: var(--mono); font-size: 13px; font-weight: 600;
   text-transform: uppercase;

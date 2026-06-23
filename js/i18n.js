@@ -134,8 +134,8 @@
       'cs3.sector': 'Engenharia',
       'cs3.result': '<span class="cs-card__metric">Operação</span> mais previsível — <span class="cs-card__metric">processos</span> com IA aplicada — <span class="cs-card__metric">visibilidade</span> total',
       'cs3.quote':  '"A parceria com a BMAi trouxe organização e visibilidade pra processos que antes eram manuais. Hoje conseguimos focar no que realmente importa: entregar projetos de engenharia com mais previsibilidade."',
-      'cs3.name':   'MGP Engenharia',
-      'cs3.role':   'Cliente BMAi · Engenharia',
+      'cs3.name':   'Marcos Leite',
+      'cs3.role':   'CEO · MGP Engenharia',
 
       /* TEAM */
       'team.title':        'Nosso time entende<br><span style="color:var(--orange)">o seu negócio.</span>',
@@ -339,8 +339,8 @@
       'cs3.sector': 'Engineering',
       'cs3.result': '<span class="cs-card__metric">Operations</span> more predictable — <span class="cs-card__metric">AI-applied</span> processes — <span class="cs-card__metric">visibility</span> end-to-end',
       'cs3.quote':  '"The partnership with BMAi brought organization and visibility to processes that used to be manual. Today we can focus on what really matters: delivering engineering projects with more predictability."',
-      'cs3.name':   'MGP Engenharia',
-      'cs3.role':   'BMAi client · Engineering',
+      'cs3.name':   'Marcos Leite',
+      'cs3.role':   'CEO · MGP Engenharia',
 
       'team.title':        'Our team understands<br><span style="color:var(--orange)">your business.</span>',
       'team.scroll_hint':  'Meet the BMAi founders',
@@ -539,8 +539,8 @@
       'cs3.sector': 'Ingeniería',
       'cs3.result': '<span class="cs-card__metric">Operación</span> más previsible — <span class="cs-card__metric">procesos</span> con IA aplicada — <span class="cs-card__metric">visibilidad</span> total',
       'cs3.quote':  '"La asociación con BMAi trajo organización y visibilidad a procesos que antes eran manuales. Hoy podemos enfocarnos en lo que realmente importa: entregar proyectos de ingeniería con más previsibilidad."',
-      'cs3.name':   'MGP Engenharia',
-      'cs3.role':   'Cliente BMAi · Ingeniería',
+      'cs3.name':   'Marcos Leite',
+      'cs3.role':   'CEO · MGP Engenharia',
 
       'team.title':        'Nuestro equipo entiende<br><span style="color:var(--orange)">tu negocio.</span>',
       'team.scroll_hint':  'Conoce a los fundadores de BMAi',
