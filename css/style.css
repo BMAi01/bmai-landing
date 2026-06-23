@@ -4064,10 +4064,10 @@ h1, h2, h3, p, span, li, a {
 .cs-card__logo--sh {
   filter: none;
   opacity: 1;
-  height: 32px;
+  height: 48px;
   background: #fff;
-  border-radius: 6px;
-  padding: 4px 7px;
+  border-radius: 7px;
+  padding: 3px 8px;
   box-sizing: border-box;
 }
 .cs-card__logo-fb {
