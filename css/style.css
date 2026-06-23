@@ -612,13 +612,10 @@ html { scrollbar-gutter: stable; }
 .hero-visual,
 .hero-visual-fade { display: none !important; }
 
-/* Cases: Dr. Tulio no carrossel é só mobile (desktop já tem no .cs-hero) */
-@media (min-width: 769px) {
-  .cs-card--mobileonly { display: none !important; }
-}
-@media (max-width: 768px) {
-  .cs-hero-container { display: none !important; }
-}
+/* Cases: o card hero do Dr. Túlio agora aparece em TODAS as larguras — no
+   mobile ele empilha (foto em cima, conteúdo embaixo), mesmo padrão do desktop.
+   O card duplicado do carrossel fica sempre oculto. */
+.cs-card--mobileonly { display: none !important; }
 @media (max-width: 900px) {
   .hero {
     /* Mobile: sem imagem de fundo (o pedestal é o .hero__pedestal inline) */
@@ -8445,6 +8442,11 @@ html {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 18%;
+}
+/* No mobile o painel da foto empilha no topo — dá altura p/ retrato */
+@media (max-width: 768px) {
+  .cs-hero__visual { min-height: 300px !important; padding: 0 !important; }
 }
 .cs-hero__avatar-fb,
 .cs-card__avatar-fb {
