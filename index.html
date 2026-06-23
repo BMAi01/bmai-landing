@@ -6,8 +6,8 @@
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Aplicamos IA em processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
   <!-- CSS não-bloqueante via preload+onload (mantém fallback no noscript) -->
-  <link rel="preload" as="style" href="css/style.min.css?v=20260622-rev57" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260622-rev57"></noscript>
+  <link rel="preload" as="style" href="css/style.min.css?v=20260622-rev58" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260622-rev58"></noscript>
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -526,7 +526,7 @@
             </div>
             <span class="cs-card__sector" data-i18n="cs_hero.sector">Saúde</span>
           </div>
-          <p class="cs-card__result" data-i18n="cs0.result"><span class="cs-card__metric">8/10</span> leads viram pacientes — <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões, com 0 novas contratações</p>
+          <p class="cs-card__result" data-i18n="cs0.result"><span class="cs-card__metric">8/10</span> leads viram pacientes — <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões</p>
           <blockquote class="cs-card__quote" data-i18n="cs_hero.quote">"A BMAi criou um sistema com IA, estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. Antes nós perdíamos pacientes antes do primeiro contato; hoje, com a IA criada pela BMAi, a cada 10 leads transformamos 8 em pacientes — sem precisar contratar mais ninguém."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
@@ -545,7 +545,7 @@
           <div class="cs-card__glow"></div>
           <div class="cs-card__top">
             <div class="cs-card__brand">
-              <img src="assets/images/logo-mataco.webp" alt="Mataco" class="cs-card__logo" loading="lazy"
+              <img src="slides/logo-mataco.webp" alt="Mataco" class="cs-card__logo" loading="lazy"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
               <span class="cs-card__logo-fb" style="display:none">Mataco</span>
             </div>
@@ -898,8 +898,8 @@
     <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
-  <script defer src="js/i18n.min.js?v=20260622-rev57"></script>
-  <script defer src="js/main.min.js?v=20260622-rev57"></script>
+  <script defer src="js/i18n.min.js?v=20260622-rev58"></script>
+  <script defer src="js/main.min.js?v=20260622-rev58"></script>
 
   <script>
   /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */
@@ -979,7 +979,7 @@
       var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
       camera.position.set(0, 0, 9);
       var group = new THREE.Group();
-      group.position.x = 2.4;                  // empurra a estrela p/ a direita (texto fica à esquerda)
+      group.position.x = 0;                    // estrela centralizada (copy centralizada por cima)
       scene.add(group);
 
       var loader = new THREE.SVGLoader();
@@ -987,7 +987,8 @@
       var shapes = [];
       loader.parse(svg).paths.forEach(function(p){ THREE.SVGLoader.createShapes(p).forEach(function(s){ shapes.push(s); }); });
       var geo = new THREE.ExtrudeGeometry(shapes, { depth: 90, bevelEnabled: true, bevelThickness: 10, bevelSize: 7, bevelSegments: 5, curveSegments: 32 });
-      geo.center(); geo.scale(0.0072, -0.0072, 0.0072); geo.computeVertexNormals();
+      geo.center(); geo.scale(0.0058, -0.0058, 0.0058); geo.computeVertexNormals();
+      var YOFF = -1.15;                        // empurra a estrela p/ baixo (título limpo acima)
       var mat = new THREE.MeshStandardMaterial({ color: ORANGE, metalness: 0.5, roughness: 0.32, emissive: new THREE.Color('#7a2f00'), emissiveIntensity: 0.3, side: THREE.DoubleSide });
       group.add(new THREE.Mesh(geo, mat));
 
@@ -1022,13 +1023,13 @@
       if (!REDUCE) window.addEventListener('mousemove', function(e){ mouse.tx=(e.clientX/window.innerWidth-0.5); mouse.ty=(e.clientY/window.innerHeight-0.5); });
 
       var clock = new THREE.Clock(), raf = null, visible = true;
-      function renderOnce(){ group.rotation.set(0.12,0.5,0); renderer.render(scene,camera); }
+      function renderOnce(){ group.rotation.set(0.12,0.5,0); group.position.y=YOFF; renderer.render(scene,camera); }
       function frame(){
         if(!visible){ raf=null; return; }
         raf=requestAnimationFrame(frame);
         var t=clock.getElapsedTime();
         group.rotation.y=Math.sin(t*0.4)*0.8; group.rotation.x=Math.cos(t*0.32)*0.22; group.rotation.z=Math.sin(t*0.25)*0.05;
-        group.position.y=Math.sin(t*0.8)*0.12;
+        group.position.y=YOFF+Math.sin(t*0.8)*0.12;
         if(points){ var pp=points.geometry.attributes.position.array;
           for(var i=0;i<pd.N;i++){ pd.ang[i]+=pd.spd[i]*0.01; var r=pd.rad[i];
             pp[i*3]=Math.cos(pd.ang[i])*r; pp[i*3+1]=Math.sin(pd.ang[i])*r*0.5+pd.tilt[i]+Math.sin(t*0.5+i)*0.05; pp[i*3+2]=Math.sin(pd.ang[i])*r; }
