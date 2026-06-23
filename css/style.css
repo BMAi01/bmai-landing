@@ -1030,10 +1030,13 @@ html { scrollbar-gutter: stable; }
 .ticker__logo img {
   max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;
 }
-/* 2026-06-22: cores originais no ticker (Luciana removida). O Canto volta ao
-   verde original. Mantêm filtro branco por contraste no navy: Só Hydráulica +
-   Sebrae (--white) e Mantris (--mantris, teal escuro #02597C ilegível no navy). */
+/* 2026-06-22: cor original só nas logos que combinam com a IDV BMAi (warm/neutros):
+   Dr.Túlio (tan), Rede Construir (âmbar), Mataco (cinza). As de cor off-brand vão
+   a branco p/ coesão+legibilidade no navy: Só Hydráulica + Sebrae (--white),
+   O Canto (verde), Claves (ícone azul), Mantris (teal). Luciana removida. */
 .ticker__logo--white img,
+.ticker__logo--ocanto img,
+.ticker__logo--claves img,
 .ticker__logo--mantris img { filter: brightness(0) invert(1); }
 .ticker__logo--mantris { width: 200px; }
 .ticker__logo--mantris img { transform: scale(1.18); }
@@ -7321,8 +7324,8 @@ html { scroll-padding-top: 84px; }
   top: 43% !important;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
-  width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
-  aspect-ratio: 1;
+  width: clamp(420px, 42vw, 700px);             /* painel 3D landscape no lado direito */
+  aspect-ratio: 16 / 9;                          /* 2026-06-22: casa com o render 3D (16:9) */
   pointer-events: none;
   z-index: 1;
 }
@@ -7401,16 +7404,23 @@ html { scroll-padding-top: 84px; }
   0%, 100% { transform: translate(-50%, -50%); }
   50%      { transform: translate(-50%, calc(-50% - 6px)); }
 }
-/* 2026-06-22: núcleo 3D "cara de IA" (render do simbolo BMAi) no centro dos anéis.
-   Círculo mascarado com borda difusa pra fundir no navy; herda o float do base. */
+/* 2026-06-22: arte 3D "cara de IA" como PAINEL limpo — sem círculo, sem máscara,
+   sem anel orbital. Render natural, cantos arredondados, leve sombra/halo. */
 .hero__symbol-mark--3d {
-  width: 86%;
-  height: 86%;
-  border-radius: 50%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  border-radius: 22px;
   overflow: hidden;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 56%, transparent 75%);
-          mask-image: radial-gradient(circle at 50% 50%, #000 56%, transparent 75%);
-  filter: drop-shadow(0 0 34px rgba(219, 85, 0, .4));
+  -webkit-mask-image: none;
+          mask-image: none;
+  filter: none;
+  animation: none;
+  box-shadow:
+    0 24px 60px -18px rgba(0, 0, 0, .55),
+    0 0 56px -14px rgba(219, 85, 0, .3);
 }
 .hero__symbol-mark--3d img {
   display: block;

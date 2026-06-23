@@ -6,8 +6,8 @@
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Aplicamos IA em processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
   <!-- CSS não-bloqueante via preload+onload (mantém fallback no noscript) -->
-  <link rel="preload" as="style" href="css/style.min.css?v=20260622-rev51" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260622-rev51"></noscript>
+  <link rel="preload" as="style" href="css/style.min.css?v=20260622-rev52" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260622-rev52"></noscript>
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -127,15 +127,9 @@
     <!-- 2026-04-26: hero-fx + hero-aria.png removidos — hero limpo, so texto -->
     <!-- 2026-04-27: simbolo BMAi com aneis tech no lado direito (so desktop) -->
     <div class="hero__symbol" aria-hidden="true">
-      <span class="hero__symbol-grid"></span>
+      <!-- 2026-06-22: arte 3D "cara de IA" — painel limpo, SEM círculo e SEM anel
+           orbital (pedido do user). Render natural com cantos arredondados. -->
       <span class="hero__symbol-glow"></span>
-      <span class="hero__symbol-vlines">
-        <span></span><span></span><span></span><span></span><span></span>
-      </span>
-      <span class="hero__symbol-ring hero__symbol-ring--outer"></span>
-      <span class="hero__symbol-ring hero__symbol-ring--inner"></span>
-      <!-- 2026-06-22: arte 3D "cara de IA" (render do simbolo BMAi) como núcleo central,
-           mascarado em círculo p/ fundir no navy. Substitui o SVG plano anterior. -->
       <picture class="hero__symbol-mark hero__symbol-mark--3d">
         <source srcset="assets/images/simbolo-3d-close.webp" type="image/webp">
         <img src="assets/images/simbolo-3d-close.png" alt="" loading="eager" decoding="async"/>
@@ -921,8 +915,8 @@
     <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
-  <script defer src="js/i18n.min.js?v=20260622-rev51"></script>
-  <script defer src="js/main.min.js?v=20260622-rev51"></script>
+  <script defer src="js/i18n.min.js?v=20260622-rev52"></script>
+  <script defer src="js/main.min.js?v=20260622-rev52"></script>
 
   <script>
   /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */
