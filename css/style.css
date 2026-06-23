@@ -8494,3 +8494,11 @@ html {
 .cs-hero__stats {
   justify-content: center;
 }
+/* Os 3 cards do grid (Mataco/SH/MGP) também com a copy centralizada (pedido do
+   user). Mantém o topo (logo + setor) com seu layout; centraliza result/quote/autor. */
+.cs-card { text-align: center; }
+.cs-card .cs-card__quote {
+  border-left: none;
+  padding-left: 0;
+}
+.cs-card__author { justify-content: center; }
