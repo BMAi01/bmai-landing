@@ -8431,6 +8431,21 @@ html {
   object-fit: contain;
   padding: 5px;
 }
+/* Avatar com logo dourada (Dr. Túlio Cunha) — fundo branco p/ contraste */
+.cs-hero__avatar--logo { background: #fff; }
+.cs-hero__avatar--logo img {
+  object-fit: contain;
+  padding: 4px;
+  border-radius: 50%;
+}
+/* Foto no painel visual do card hero (ocupa toda a área, no lugar da logo) */
+.cs-hero__visual-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .cs-hero__avatar-fb,
 .cs-card__avatar-fb {
   width: 100%; height: 100%;
