@@ -1041,12 +1041,17 @@ html { scrollbar-gutter: stable; }
 }
 /* 2026-06-22: TODAS as logos em COR ORIGINAL, sem fundo/tile (pedido do user). */
 .ticker__logo--mantris { width: 200px; }
+/* Mantris: logo é navy escuro em fundo transparente — sumia/ficava estranha no
+   ticker escuro. Branqueada p/ contraste (igual às outras logos do ticker). */
+.ticker__logo--mantris img { filter: brightness(0) invert(1); transform: scale(1.15); }
 .ticker__logo--claves img { transform: scale(1.05); }
 .ticker__logo--mataco { width: 200px; }
 .ticker__logo--mataco img { transform: scale(0.82); opacity: .95; }  /* marca cinza (fundo removido) */
+/* Sebrae: aumentada (pedido do user). */
+.ticker__logo--sebrae img { transform: scale(1.28); }
 /* MGP Engenharia: logo ja eh branca no PNG (regenerada via PIL em 2026-04-28
-   a partir da versao preta MGP_vertical_preto_nbg). Sem filter — direto. */
-.ticker__logo--mgp img { transform: scale(0.95); }
+   a partir da versao preta MGP_vertical_preto_nbg). Sem filter — direto. Aumentada. */
+.ticker__logo--mgp img { transform: scale(1.25); }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ============================================
@@ -4544,7 +4549,8 @@ section h2.shimmer-active::after,
     font-weight: 700 !important;
     line-height: 1 !important;
     letter-spacing: -.02em !important;
-    text-shadow: none !important;
+    color: var(--orange) !important;                 /* igual ao desktop */
+    text-shadow: 0 0 20px rgba(219,85,0,.4), 0 0 40px rgba(219,85,0,.2) !important;  /* glow igual ao desktop */
     margin-bottom: 0 !important;
   }
   .hero__stat-label {

@@ -17,7 +17,7 @@
       /* HERO */
       'hero.badge':   '+10.000 horas economizadas com IA',
       'hero.title':   '<span class="h-line">IA não precisa ser complicada,</span><span class="h-line">mas precisa dar <span class="hero-resultado">resultado</span></span>',
-      'hero.sub':     'DEVOLVEMOS O CONTROLE DO NEGÓCIO AO EMPREENDEDOR QUE DEIXA DE OPERAR NO IMPROVISO<br>E PASSA A TOMAR DECISÕES BASEADO EM DADOS.',
+      'hero.sub':     'Devolvemos o controle do negócio ao empreendedor que deixa de operar no improviso<br>e passa a tomar decisões baseado em dados.',
       'hero.cta':     'Falar com o time da BMAi',
       'hero.stat1':   'Projetos realizados',
       'hero.stat2':   'Satisfação dos clientes',
@@ -226,7 +226,7 @@
 
       'hero.badge': '+10,000 hours saved with AI',
       'hero.title': '<span class="h-line">AI doesn\'t have to be complicated,</span><span class="h-line">it just has to deliver <span class="hero-resultado">results</span></span>',
-      'hero.sub':   'WE GIVE CONTROL OF THE BUSINESS BACK TO THE OWNER WHO STOPS OPERATING ON GUESSWORK<br>AND STARTS MAKING DECISIONS BASED ON DATA.',
+      'hero.sub':   'We give control of the business back to the owner who stops operating on guesswork<br>and starts making decisions based on data.',
       'hero.cta':   'Chat with the BMAi team',
       'hero.stat1': 'Projects delivered',
       'hero.stat2': 'Customer satisfaction',
@@ -426,7 +426,7 @@
 
       'hero.badge': '+10.000 horas ahorradas con IA',
       'hero.title': '<span class="h-line">La IA no necesita ser complicada,</span><span class="h-line">pero necesita entregar <span class="hero-resultado">resultados</span></span>',
-      'hero.sub':   'DEVOLVEMOS EL CONTROL DEL NEGOCIO AL EMPRENDEDOR QUE DEJA DE OPERAR POR INTUICIÓN<br>Y PASA A TOMAR DECISIONES BASADAS EN DATOS.',
+      'hero.sub':   'Devolvemos el control del negocio al emprendedor que deja de operar por intuición<br>y pasa a tomar decisiones basadas en datos.',
       'hero.cta':   'Hablar con el equipo BMAi',
       'hero.stat1': 'Proyectos entregados',
       'hero.stat2': 'Satisfacción de los clientes',
