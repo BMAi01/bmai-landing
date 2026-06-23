@@ -8426,6 +8426,11 @@ html {
   border-radius: 50%;
   display: block;
 }
+/* Avatar com logo (ex.: MGP) — logo branca contida no círculo laranja da marca */
+.cs-card__avatar--logo img {
+  object-fit: contain;
+  padding: 5px;
+}
 .cs-hero__avatar-fb,
 .cs-card__avatar-fb {
   width: 100%; height: 100%;
