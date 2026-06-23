@@ -1041,9 +1041,15 @@ html { scrollbar-gutter: stable; }
 }
 /* 2026-06-22: TODAS as logos em COR ORIGINAL, sem fundo/tile (pedido do user). */
 .ticker__logo--mantris { width: 200px; }
-/* Mantris: logo é navy escuro em fundo transparente — sumia/ficava estranha no
-   ticker escuro. Branqueada p/ contraste (igual às outras logos do ticker). */
-.ticker__logo--mantris img { filter: brightness(0) invert(1); transform: scale(1.15); }
+/* Mantris: logo é navy escuro em fundo transparente — sumia no ticker escuro.
+   Mostra a cor original num chip branco (mesma ideia da logo da SH nos cases). */
+.ticker__logo--mantris img {
+  filter: none;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+}
 .ticker__logo--claves img { transform: scale(1.05); }
 .ticker__logo--mataco { width: 200px; }
 .ticker__logo--mataco img { transform: scale(0.82); opacity: .95; }  /* marca cinza (fundo removido) */
