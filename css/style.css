@@ -4059,6 +4059,17 @@ h1, h2, h3, p, span, li, a {
 }
 /* MGP: logo ja branca no PNG (regenerada). Sem filter no card. */
 .cs-card__logo--mgp { height: 28px; }
+/* SH: logo colorida (azul+vinho) com FUNDO BRANCO opaco — o filtro de branco
+   transformava tudo num retângulo branco. Mostra a logo original num chip branco. */
+.cs-card__logo--sh {
+  filter: none;
+  opacity: 1;
+  height: 32px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 4px 7px;
+  box-sizing: border-box;
+}
 .cs-card__logo-fb {
   font-family: var(--fd);
   font-size: 18px; font-weight: 700; color: var(--white);
