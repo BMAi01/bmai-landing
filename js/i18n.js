@@ -112,7 +112,7 @@
       'cases.lead':    '"Eles viram nosso negócio como único, me trataram como parceiro e me senti visto e ouvido de verdade para desenvolver uma solução de IA para a minha empresa."',
       'cases.btn':     'Quero ser o próximo case',
 
-      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads viram pacientes — <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões, com 0 novas contratações',
+      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads viram pacientes — <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões',
 
       'cs_hero.sector': 'Saúde',
       'cs_hero.quote':  '"A BMAi criou um sistema com IA, estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. Antes nós perdíamos pacientes antes do primeiro contato; hoje, com a IA criada pela BMAi, a cada 10 leads transformamos 8 em pacientes — sem precisar contratar mais ninguém."',
@@ -120,7 +120,6 @@
       'cs_hero.s1':     'leads viram pacientes',
       'cs_hero.s2':     'pacientes sem custo extra',
       'cs_hero.s3':     'em conversões',
-      'cs_hero.s4':     'novas contratações',
 
       'cs1.sector': 'Marketing Digital',
       'cs1.result': 'Agente de prospecção rodando <span class="cs-card__metric">24h em 3 canais</span> — zero leads esquecidos, <span class="cs-card__metric">+4h/dia</span> devolvidas ao time, <span class="cs-card__metric">+60%</span> faturamento',
@@ -318,7 +317,7 @@
       'cases.lead':    '"They saw our business as unique, treated me as a partner, and I felt truly seen and heard in building an AI solution for my company."',
       'cases.btn':     'I want to be the next case',
 
-      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads become patients — <span class="cs-card__metric">+20</span> patients and <span class="cs-card__metric">+40%</span> in conversions, with 0 new hires',
+      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads become patients — <span class="cs-card__metric">+20</span> patients and <span class="cs-card__metric">+40%</span> in conversions',
 
       'cs_hero.sector': 'Healthcare',
       'cs_hero.quote':  '"BMAi built an AI system, structured a CRM that finally makes sense, organized the filling of the commercial spreadsheets with AI and put AI into customer support. We used to lose patients before the first contact; today, with the AI built by BMAi, for every 10 leads we turn 8 into patients — without having to hire anyone else."',
@@ -326,7 +325,6 @@
       'cs_hero.s1':     'leads become patients',
       'cs_hero.s2':     'patients at no extra cost',
       'cs_hero.s3':     'in conversions',
-      'cs_hero.s4':     'new hires',
 
       'cs1.sector': 'Digital Marketing',
       'cs1.result': 'Prospecting agent running <span class="cs-card__metric">24/7 on 3 channels</span> — zero leads forgotten, <span class="cs-card__metric">+4h/day</span> given back to the team, <span class="cs-card__metric">+60%</span> revenue',
@@ -519,7 +517,7 @@
       'cases.lead':    '"Vieron nuestro negocio como único, me trataron como socio y me sentí realmente visto y escuchado para desarrollar una solución de IA para mi empresa."',
       'cases.btn':     'Quiero ser el próximo caso',
 
-      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads se vuelven pacientes — <span class="cs-card__metric">+20</span> pacientes y <span class="cs-card__metric">+40%</span> en conversiones, con 0 nuevas contrataciones',
+      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads se vuelven pacientes — <span class="cs-card__metric">+20</span> pacientes y <span class="cs-card__metric">+40%</span> en conversiones',
 
       'cs_hero.sector': 'Salud',
       'cs_hero.quote':  '"BMAi creó un sistema con IA, estructuró un CRM que finalmente tiene sentido, organizó el llenado de las planillas comerciales con IA e implementó IA en la atención. Antes perdíamos pacientes antes del primer contacto; hoy, con la IA creada por BMAi, de cada 10 leads convertimos 8 en pacientes — sin necesidad de contratar a nadie más."',
@@ -527,7 +525,6 @@
       'cs_hero.s1':     'leads se vuelven pacientes',
       'cs_hero.s2':     'pacientes sin costo extra',
       'cs_hero.s3':     'en conversiones',
-      'cs_hero.s4':     'nuevas contrataciones',
 
       'cs1.sector': 'Marketing Digital',
       'cs1.result': 'Agente de prospección funcionando <span class="cs-card__metric">24h en 3 canales</span> — cero leads olvidados, <span class="cs-card__metric">+4h/día</span> devueltas al equipo, <span class="cs-card__metric">+60%</span> facturación',

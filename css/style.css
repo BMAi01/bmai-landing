@@ -827,6 +827,18 @@ html { scrollbar-gutter: stable; }
   .hero-fx__symbol-glow { animation: none !important; }
 }
 
+/* 2026-06-22: canvas Three.js da arte 3D (Claude Design) — atrás do conteúdo.
+   O ::before do hero (z-index 1) cobre os 55% esquerdos, protegendo o texto.
+   Desktop only (perf + mantém mobile text-only). */
+.hero__three {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+@media (max-width: 1024px) { .hero__three { display: none; } }
+
 .hero__wrap { position: relative; z-index: 2; }
 .hero__content {
   max-width: 640px;
