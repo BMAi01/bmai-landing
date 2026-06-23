@@ -8477,3 +8477,20 @@ html {
   width: 100%; height: 100%;
   align-items: center; justify-content: center;
 }
+/* Card hero dos cases: copy CENTRALIZADA no texto (pedido do user — sem texto
+   torto). Centraliza o conteúdo vertical e horizontalmente; a citação perde a
+   barra lateral (que com texto centralizado ficava torta). */
+.cs-hero__content {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+.cs-hero__quote {
+  border-left: none;
+  padding-left: 0;
+}
+.cs-hero__badge,
+.cs-hero__attr,
+.cs-hero__stats {
+  justify-content: center;
+}
