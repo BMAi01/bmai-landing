@@ -6,14 +6,15 @@
   <meta name="description" content="BMAI — Hub de soluções com IA integrada. Aplicamos IA em processos, reduzimos custos e escalamos resultados com o método ARIA.">
   <title>BMAI </title>
   <!-- CSS não-bloqueante via preload+onload (mantém fallback no noscript) -->
-  <link rel="preload" as="style" href="css/style.min.css?v=20260519-rev50" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260519-rev50"></noscript>
+  <link rel="preload" as="style" href="css/style.min.css?v=20260622-rev51" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260622-rev51"></noscript>
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
 
   <!-- Preload de fontes críticas + símbolo da marca (usado na composição hero em código) -->
   <link rel="preload" as="image" href="assets/images/simbolo-laranja.svg" type="image/svg+xml" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/images/simbolo-3d-close.webp" type="image/webp" media="(min-width: 1025px)" fetchpriority="high">
   <link rel="preload" as="image" href="assets/images/team-pedro-resized.webp" type="image/webp" media="(max-width: 768px)">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Regular.woff2" crossorigin fetchpriority="high">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Bold.woff2" crossorigin fetchpriority="high">
@@ -133,7 +134,12 @@
       </span>
       <span class="hero__symbol-ring hero__symbol-ring--outer"></span>
       <span class="hero__symbol-ring hero__symbol-ring--inner"></span>
-      <img src="assets/images/simbolo-laranja.svg" alt="" class="hero__symbol-mark"/>
+      <!-- 2026-06-22: arte 3D "cara de IA" (render do simbolo BMAi) como núcleo central,
+           mascarado em círculo p/ fundir no navy. Substitui o SVG plano anterior. -->
+      <picture class="hero__symbol-mark hero__symbol-mark--3d">
+        <source srcset="assets/images/simbolo-3d-close.webp" type="image/webp">
+        <img src="assets/images/simbolo-3d-close.png" alt="" loading="eager" decoding="async"/>
+      </picture>
     </div>
     <div class="container hero__wrap">
       <div class="hero__content">
@@ -179,40 +185,61 @@
   <!-- ========== TICKER ========== -->
   <div class="ticker">
     <div class="ticker__track ticker__track--logos">
+      <!-- 2026-06-22: logos em cor original (filtro branco removido) onde legível no navy.
+           Mantidas claras por contraste: Só Hydráulica (azul+vinho), Sebrae (azul), Mantris (teal escuro).
+           +Claves (versão White oficial), +Mataco (fundo branco removido), +Mantris. -Luciana. -->
       <!-- Set 1 -->
       <span class="ticker__logo ticker__logo--mgp"><img loading="lazy" decoding="async" src="slides/logo-mgp.png" alt="MGP Engenharia"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo ticker__logo--white"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.webp" alt="Só Hydráulica"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo"><img loading="lazy" decoding="async" src="slides/logo-drtulio.webp" alt="Dr. Túlio Cunha"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo ticker__logo--ocanto"><img loading="lazy" decoding="async" src="slides/logo-ocanto.webp" alt="O Canto"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--luciana"><img loading="lazy" decoding="async" src="slides/logo-luciana.webp" alt="Luciana Rodrigues"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--claves"><img loading="lazy" decoding="async" src="slides/logo-claves.webp" alt="Claves"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--mataco"><img loading="lazy" decoding="async" src="slides/logo-mataco.webp" alt="Mataco"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.webp" alt="Rede Construir"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo ticker__logo--white"><img loading="lazy" decoding="async" src="slides/logo-sebrae.png" alt="Sebrae"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--mantris"><img loading="lazy" decoding="async" src="slides/logo-mantris.webp" alt="Mantris"/></span><span class="ticker__dot"></span>
       <!-- Set 2 -->
       <span class="ticker__logo ticker__logo--mgp"><img loading="lazy" decoding="async" src="slides/logo-mgp.png" alt="MGP Engenharia"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo ticker__logo--white"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.webp" alt="Só Hydráulica"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo"><img loading="lazy" decoding="async" src="slides/logo-drtulio.webp" alt="Dr. Túlio Cunha"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo ticker__logo--ocanto"><img loading="lazy" decoding="async" src="slides/logo-ocanto.webp" alt="O Canto"/></span><span class="ticker__dot"></span>
-      <span class="ticker__logo ticker__logo--luciana"><img loading="lazy" decoding="async" src="slides/logo-luciana.webp" alt="Luciana Rodrigues"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--claves"><img loading="lazy" decoding="async" src="slides/logo-claves.webp" alt="Claves"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--mataco"><img loading="lazy" decoding="async" src="slides/logo-mataco.webp" alt="Mataco"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.webp" alt="Rede Construir"/></span><span class="ticker__dot"></span>
       <span class="ticker__logo ticker__logo--white"><img loading="lazy" decoding="async" src="slides/logo-sebrae.png" alt="Sebrae"/></span><span class="ticker__dot"></span>
+      <span class="ticker__logo ticker__logo--mantris"><img loading="lazy" decoding="async" src="slides/logo-mantris.webp" alt="Mantris"/></span><span class="ticker__dot"></span>
       <!-- Clone (aria-hidden) - Set 3 -->
       <span class="ticker__logo ticker__logo--mgp" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mgp.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-drtulio.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo ticker__logo--ocanto" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-ocanto.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--luciana" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-luciana.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--claves" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-claves.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--mataco" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mataco.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sebrae.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--mantris" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mantris.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <!-- Clone (aria-hidden) - Set 4 -->
       <span class="ticker__logo ticker__logo--mgp" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mgp.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sohydraulica.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-drtulio.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo ticker__logo--ocanto" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-ocanto.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
-      <span class="ticker__logo ticker__logo--luciana" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-luciana.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--claves" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-claves.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--mataco" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mataco.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-redeconstruir.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
       <span class="ticker__logo ticker__logo--white" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-sebrae.png" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
+      <span class="ticker__logo ticker__logo--mantris" aria-hidden="true"><img loading="lazy" decoding="async" src="slides/logo-mantris.webp" alt=""/></span><span class="ticker__dot" aria-hidden="true"></span>
     </div>
   </div>
+
+  <!-- ========== MANIFESTO ========== -->
+  <!-- 2026-06-22: faixa-manifesto full-width entre ticker e "O que fazemos".
+       Texto-base do PDF tinha "resolucionar"/"está te incômodo" — usamos a versão
+       corrigida ("solucionar"/"incomodando") por padrão. -->
+  <section class="manifesto" aria-label="Manifesto BMAi">
+    <div class="container">
+      <p class="manifesto__frase" data-i18n="manifesto.frase">Construímos um sistema de Inteligência Artificial para <span class="manifesto__hl">solucionar um problema</span> que está te incomodando dentro da operação da sua empresa.</p>
+    </div>
+  </section>
 
   <!-- ========== QUEM SOMOS ========== -->
   <section class="section" id="quem-somos">
@@ -272,7 +299,6 @@
     <div class="container">
       <div class="section__center qs-flip__intro">
         <h2 class="section__title" data-i18n="qs.title">O que nós fazemos<br><span style="color:var(--orange)">na prática.</span></h2>
-        <p class="section__sub" data-i18n="qs.sub">Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.</p>
         <p class="qs-flip__hint" aria-hidden="true">role para virar</p>
       </div>
     </div>
@@ -289,6 +315,8 @@
               <span class="card-corner card-corner--br" aria-hidden="true"></span>
               <span class="card-scan" aria-hidden="true"></span>
               <div class="card-content">
+                <!-- TODO: foto do Brugin — placeholder gerado. Trocar assets/images/team-brugin-resized.{webp,jpg} pelo retrato real. -->
+                <img class="qs-flip-card__photo" src="assets/images/team-brugin-resized.webp" onerror="this.onerror=null;this.src='assets/images/team-brugin-resized.jpg'" alt="Brugin — time BMAi" loading="lazy" decoding="async"/>
                 <span class="card-eyebrow" data-i18n="qs.card1_eyebrow">Fase 01 · Processo Estruturado</span>
                 <h3 data-i18n="qs.card1_h3">Mapeamos<br><span style="color:var(--orange)">o processo.</span></h3>
                 <p data-i18n="qs.card1_p">Identificamos e estruturamos o processo que a IA vai trabalhar — preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.</p>
@@ -319,6 +347,7 @@
               <span class="card-corner card-corner--br" aria-hidden="true"></span>
               <span class="card-scan" aria-hidden="true"></span>
               <div class="card-content">
+                <img class="qs-flip-card__photo" src="assets/images/team-pedro-resized.webp" onerror="this.onerror=null;this.src='assets/images/team-pedro-resized.jpg'" alt="Pedro — time BMAi" loading="lazy" decoding="async"/>
                 <span class="card-eyebrow" data-i18n="qs.card2_eyebrow">Fase 02 · Inteligência Personalizada</span>
                 <h3 data-i18n="qs.card2_h3">Construímos<br><span style="color:var(--orange)">IA sob medida.</span></h3>
                 <p data-i18n="qs.card2_p">Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.</p>
@@ -349,6 +378,8 @@
               <span class="card-corner card-corner--br" aria-hidden="true"></span>
               <span class="card-scan" aria-hidden="true"></span>
               <div class="card-content">
+                <!-- TODO: foto genérica do time p/ quadrantes 3 e 4 — usando Matheus/Thiago existentes. -->
+                <img class="qs-flip-card__photo" src="assets/images/team-matheus-resized.webp" onerror="this.onerror=null;this.src='assets/images/team-matheus-resized.jpg'" alt="Time BMAi" loading="lazy" decoding="async"/>
                 <span class="card-eyebrow" data-i18n="qs.card3_eyebrow">Fase 03 · Operação Contínua</span>
                 <h3 data-i18n="qs.card3_h3">Operamos<br><span style="color:var(--orange)">e refinamos.</span></h3>
                 <p data-i18n="qs.card3_p">O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda — IA viva, não projeto entregue e esquecido.</p>
@@ -379,6 +410,7 @@
               <span class="card-corner card-corner--br" aria-hidden="true"></span>
               <span class="card-scan" aria-hidden="true"></span>
               <div class="card-content">
+                <img class="qs-flip-card__photo" src="assets/images/team-thiago-resized.webp" onerror="this.onerror=null;this.src='assets/images/team-thiago-resized.jpg'" alt="Time BMAi" loading="lazy" decoding="async"/>
                 <span class="card-eyebrow" data-i18n="qs.card4_eyebrow">Fase 04 · Escala Estratégica</span>
                 <h3 data-i18n="qs.card4_h3">Escalamos<br><span style="color:var(--orange)">o resultado.</span></h3>
                 <p data-i18n="qs.card4_p">Quando um agente prova valor, replicamos o modelo para outras funções e times — multiplicando o ganho de produtividade sem reinventar a roda a cada projeto.</p>
@@ -450,7 +482,8 @@
   </section>
   ============================================================== -->
   <!-- ========== CASES DE SUCESSO ========== -->
-  <section id="cases" class="cs">
+  <!-- 2026-06-22: cs--light = tema claro escopado (contraste com o resto navy). -->
+  <section id="cases" class="cs cs--light">
     <div class="container" style="text-align:center;">
       <h2 class="cs__heading" data-i18n="cases.heading">Preferido pelas empresas que<br/><span style="color:var(--orange)">lideram com IA.</span></h2>
       <p class="section__sub" style="max-width:720px;margin:12px auto 0;" data-i18n="cases.lead">"Eles viram nosso negócio como único, me trataram como parceiro e me senti visto e ouvido de verdade para desenvolver uma solução de IA para a minha empresa."</p>
@@ -463,26 +496,35 @@
           <div class="cs-hero__badge">
             <span class="cs-hero__sector" data-i18n="cs_hero.sector">Saúde</span>
           </div>
-          <blockquote class="cs-hero__quote" data-i18n="cs_hero.quote">"A BMAi reorganizou nossa operação por completo: estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. O resultado foi um aumento de 40% nas conversões e 20% no número de pacientes — sem precisar contratar mais ninguém."</blockquote>
+          <blockquote class="cs-hero__quote" data-i18n="cs_hero.quote">"A BMAi criou um sistema com IA, estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. Antes nós perdíamos pacientes antes do primeiro contato; hoje, com a IA criada pela BMAi, a cada 10 leads transformamos 8 em pacientes — sem precisar contratar mais ninguém."</blockquote>
           <div class="cs-hero__attr">
-            <div class="cs-hero__avatar">T</div>
+            <!-- TODO: foto real do Dr. Túlio — placeholder gerado, trocar client-drtulio.{webp,jpg}. -->
+            <div class="cs-hero__avatar">
+              <img src="assets/images/client-drtulio.webp" alt="Dr. Túlio" loading="lazy" decoding="async"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <span class="cs-hero__avatar-fb" style="display:none">T</span>
+            </div>
             <div>
-              <strong>Dr. Tulio</strong>
+              <strong>Dr. Túlio</strong>
               <span data-i18n="cs_hero.role">CEO na GastroObesi</span>
             </div>
           </div>
           <div class="cs-hero__stats">
             <div class="cs-hero__stat">
-              <span class="cs-hero__stat-val">+40%</span>
-              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s1">em conversões</span>
+              <span class="cs-hero__stat-val">8/10</span>
+              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s1">leads viram pacientes</span>
             </div>
             <div class="cs-hero__stat">
-              <span class="cs-hero__stat-val">+20%</span>
-              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s2">pacientes/mês</span>
+              <span class="cs-hero__stat-val">+20</span>
+              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s2">pacientes sem custo extra</span>
+            </div>
+            <div class="cs-hero__stat">
+              <span class="cs-hero__stat-val">+40%</span>
+              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s3">em conversões</span>
             </div>
             <div class="cs-hero__stat">
               <span class="cs-hero__stat-val">0</span>
-              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s3">contratações extras</span>
+              <span class="cs-hero__stat-lbl" data-i18n="cs_hero.s4">novas contratações</span>
             </div>
           </div>
         </div>
@@ -507,12 +549,16 @@
             </div>
             <span class="cs-card__sector" data-i18n="cs_hero.sector">Saúde</span>
           </div>
-          <p class="cs-card__result" data-i18n="cs0.result"><span class="cs-card__metric">+40%</span> em conversões — <span class="cs-card__metric">+20%</span> pacientes/mês com 0 contratações extras</p>
-          <blockquote class="cs-card__quote" data-i18n="cs_hero.quote">"A BMAi reorganizou nossa operação por completo: estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. O resultado foi um aumento de 40% nas conversões e 20% no número de pacientes — sem precisar contratar mais ninguém."</blockquote>
+          <p class="cs-card__result" data-i18n="cs0.result"><span class="cs-card__metric">8/10</span> leads viram pacientes — <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões, com 0 novas contratações</p>
+          <blockquote class="cs-card__quote" data-i18n="cs_hero.quote">"A BMAi criou um sistema com IA, estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. Antes nós perdíamos pacientes antes do primeiro contato; hoje, com a IA criada pela BMAi, a cada 10 leads transformamos 8 em pacientes — sem precisar contratar mais ninguém."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
-              <div class="cs-card__avatar">T</div>
-              <div><strong>Dr. Tulio</strong><span data-i18n="cs_hero.role">CEO · GastroObesi</span></div>
+              <div class="cs-card__avatar">
+                <img src="assets/images/client-drtulio.webp" alt="Dr. Túlio" loading="lazy" decoding="async"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                <span class="cs-card__avatar-fb" style="display:none">T</span>
+              </div>
+              <div><strong>Dr. Túlio</strong><span data-i18n="cs_hero.role">CEO · GastroObesi</span></div>
             </div>
           </div>
         </div>
@@ -532,7 +578,11 @@
           <blockquote class="cs-card__quote" data-i18n="cs1.quote">"Antes a gente perdia lead todo dia. Agora o agente nunca dorme — Instagram, WhatsApp, e-mail, tudo coberto."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
-              <div class="cs-card__avatar">A</div>
+              <div class="cs-card__avatar">
+                <img src="assets/images/client-arthur.webp" alt="Arthur" loading="lazy" decoding="async"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                <span class="cs-card__avatar-fb" style="display:none">A</span>
+              </div>
               <div><strong>Arthur</strong><span data-i18n="cs1.role">CEO · Mataco</span></div>
             </div>
           </div>
@@ -553,7 +603,11 @@
           <blockquote class="cs-card__quote" data-i18n="cs2.quote">"A IA virou o motor da operação: estoque organizado e monitorado em tempo real, prospecção ativa rodando sozinha e agente de atendimento disponível 24 horas por dia. Em pouco tempo, o faturamento subiu 40% sem que a gente precisasse aumentar a equipe."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
-              <div class="cs-card__avatar">M</div>
+              <div class="cs-card__avatar">
+                <img src="assets/images/client-mariangela.webp" alt="Mariangela" loading="lazy" decoding="async"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                <span class="cs-card__avatar-fb" style="display:none">M</span>
+              </div>
               <div><strong>Mariangela</strong><span data-i18n="cs2.role">CEO · Só Hydráulica</span></div>
             </div>
           </div>
@@ -574,7 +628,12 @@
           <blockquote class="cs-card__quote" data-i18n="cs3.quote">"A parceria com a BMAi trouxe organização e visibilidade pra processos que antes eram manuais. Hoje conseguimos focar no que realmente importa: entregar projetos de engenharia com mais previsibilidade."</blockquote>
           <div class="cs-card__footer">
             <div class="cs-card__author">
-              <div class="cs-card__avatar">M</div>
+              <div class="cs-card__avatar">
+                <!-- TODO: foto do responsável MGP — placeholder, trocar client-mgp.{webp,jpg}. -->
+                <img src="assets/images/client-mgp.webp" alt="MGP Engenharia" loading="lazy" decoding="async"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                <span class="cs-card__avatar-fb" style="display:none">M</span>
+              </div>
               <div><strong data-i18n="cs3.name">[CEO MGP Engenharia]</strong><span data-i18n="cs3.role">CEO · MGP Engenharia</span></div>
             </div>
           </div>
@@ -862,8 +921,8 @@
     <a class="sd" href="#contato" data-target="contato" aria-label="Contato" title="Contato"></a>
   </nav>
 
-  <script defer src="js/i18n.min.js?v=20260519-rev50"></script>
-  <script defer src="js/main.min.js?v=20260519-rev50"></script>
+  <script defer src="js/i18n.min.js?v=20260622-rev51"></script>
+  <script defer src="js/main.min.js?v=20260622-rev51"></script>
 
   <script>
   /* Lang switcher — driver do I18N (vanilla, instantâneo, zero rede) */

@@ -318,6 +318,10 @@ reveal('.personas__card', true);
 reveal('.faq__item', true);
 reveal('.team-card-wrap:not(:has(#tc-1))', true);  /* Pedro (#tc-1) sem fade-in de entrada */
 reveal('.cs-card', true);
+/* 2026-06-22: quadrante de fases entra escalonado no scroll (fade+slide no card
+   externo). Não interfere no flip 3D, que roda no .qs-flip-card__inner.
+   reveal() já trata LOW_MOTION (revela na hora) e dispara antes do pin GSAP. */
+reveal('.qs-flip-card', true);
 
 /* ============================================
    QS CARD STACK — reveal suave on scroll (equivalente whileInView, once)

@@ -1030,10 +1030,16 @@ html { scrollbar-gutter: stable; }
 .ticker__logo img {
   max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;
 }
-.ticker__logo--luciana { width: 360px; }
-.ticker__logo--luciana img { transform: scale(1.7); filter: brightness(0) invert(1); }
-.ticker__logo--ocanto img { filter: brightness(0) invert(1); }
-.ticker__logo--white img { filter: brightness(0) invert(1); }
+/* 2026-06-22: cores originais no ticker (Luciana removida). O Canto volta ao
+   verde original. Mantêm filtro branco por contraste no navy: Só Hydráulica +
+   Sebrae (--white) e Mantris (--mantris, teal escuro #02597C ilegível no navy). */
+.ticker__logo--white img,
+.ticker__logo--mantris img { filter: brightness(0) invert(1); }
+.ticker__logo--mantris { width: 200px; }
+.ticker__logo--mantris img { transform: scale(1.18); }
+.ticker__logo--claves img { transform: scale(1.05); }      /* versão White oficial — já clara */
+.ticker__logo--mataco { width: 200px; }
+.ticker__logo--mataco img { transform: scale(0.78); opacity: .9; }  /* marca cinza clara (fundo removido) */
 /* MGP Engenharia: logo ja eh branca no PNG (regenerada via PIL em 2026-04-28
    a partir da versao preta MGP_vertical_preto_nbg). Sem filter — direto. */
 .ticker__logo--mgp img { transform: scale(0.95); }
@@ -7395,6 +7401,25 @@ html { scroll-padding-top: 84px; }
   0%, 100% { transform: translate(-50%, -50%); }
   50%      { transform: translate(-50%, calc(-50% - 6px)); }
 }
+/* 2026-06-22: núcleo 3D "cara de IA" (render do simbolo BMAi) no centro dos anéis.
+   Círculo mascarado com borda difusa pra fundir no navy; herda o float do base. */
+.hero__symbol-mark--3d {
+  width: 86%;
+  height: 86%;
+  border-radius: 50%;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 56%, transparent 75%);
+          mask-image: radial-gradient(circle at 50% 50%, #000 56%, transparent 75%);
+  filter: drop-shadow(0 0 34px rgba(219, 85, 0, .4));
+}
+.hero__symbol-mark--3d img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
 /* 2026-04-28 (rev3): scanline horizontal removida — pedido cliente.
    Mantidos: glow, grid, vlines, aneis, simbolo. */
 .hero__symbol-vlines {
@@ -8347,3 +8372,147 @@ html {
 /* PERF rev49: pausa animação das partículas quando fora do viewport (IO em main.js).
    Reduz uso de GPU em ~50% no scroll fora da section #quem-somos. */
 .motion__particles[data-paused] .particle { animation-play-state: paused !important; }
+
+/* ============================================================
+   2026-06-22 (rev51) — UPDATES
+   ============================================================ */
+
+/* ── TAREFA 7: faixa-manifesto full-width ── */
+.manifesto {
+  position: relative;
+  padding: clamp(56px, 9vw, 104px) 0;
+  text-align: center;
+}
+.manifesto__frase {
+  font-family: var(--fd);
+  font-weight: 700;
+  font-size: clamp(23px, 3.4vw, 44px);
+  line-height: 1.24;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  max-width: 1060px;
+  margin: 0 auto;
+  text-wrap: balance;
+}
+.manifesto__hl { color: var(--orange); }
+
+/* TAREFA 4.2: hero passou de 3 p/ 4 stats — permite quebra elegante sem overflow */
+.cs-hero__stats { flex-wrap: wrap; gap: 22px 26px; }
+
+/* ── TAREFA 4.3: fotos reais nos avatares (fallback = inicial) ── */
+.cs-hero__avatar,
+.cs-card__avatar { overflow: hidden; }
+.cs-hero__avatar img,
+.cs-card__avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.cs-hero__avatar-fb,
+.cs-card__avatar-fb {
+  width: 100%; height: 100%;
+  align-items: center; justify-content: center;
+}
+
+/* ── TAREFA 5.2: retrato do time na face frontal dos flip cards ── */
+.qs-flip-card__photo {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 14px;
+  border: 2px solid rgba(219, 85, 0, .5);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+}
+.qs-flip-card--2 .qs-flip-card__photo {       /* front laranja */
+  border-color: rgba(255, 255, 255, .85);
+  box-shadow: 0 6px 18px rgba(184, 72, 0, .35);
+}
+.qs-flip-card--4 .qs-flip-card__photo {       /* front branco */
+  border-color: rgba(219, 85, 0, .55);
+  box-shadow: 0 6px 18px rgba(13, 27, 42, .18);
+}
+@media (max-width: 900px) {
+  .qs-flip-card__photo { width: 60px; height: 60px; margin-bottom: 12px; }
+}
+
+/* ── TAREFA 2: CASES com tema CLARO (escopado a .cs--light) ── */
+.cs.cs--light {
+  background: #f5f3f0;
+}
+/* respiro/divisória sutil entre a seção navy anterior/seguinte e a faixa clara */
+.cs.cs--light::before,
+.cs.cs--light::after {
+  content: "";
+  position: absolute; left: 0; right: 0;
+  height: 40px; pointer-events: none;
+}
+.cs.cs--light::before { top: 0;    background: linear-gradient(180deg, rgba(13,27,42,.10), transparent); }
+.cs.cs--light::after  { bottom: 0; background: linear-gradient(0deg,   rgba(13,27,42,.10), transparent); }
+
+.cs--light .cs__heading { color: var(--bg); }
+.cs--light .section__sub { color: rgba(13, 27, 42, .62); }
+
+/* hero card */
+.cs--light .cs-hero {
+  background: #ffffff;
+  border-color: rgba(13, 27, 42, .08);
+  box-shadow: 0 8px 30px rgba(13, 27, 42, .06);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cs--light .cs-hero:hover {
+    border-color: rgba(219, 85, 0, .28);
+    box-shadow: 0 20px 50px rgba(13, 27, 42, .12), 0 0 40px rgba(219, 85, 0, .05);
+  }
+}
+.cs--light .cs-hero__quote { color: var(--bg); border-left-color: var(--orange); }
+.cs--light .cs-hero__sector {
+  color: rgba(13, 27, 42, .55);
+  background: rgba(13, 27, 42, .04);
+  border-color: rgba(13, 27, 42, .1);
+}
+.cs--light .cs-hero__attr strong { color: var(--bg); }
+.cs--light .cs-hero__attr span   { color: rgba(13, 27, 42, .5); }
+.cs--light .cs-hero__stats { border-top-color: rgba(13, 27, 42, .1); }
+.cs--light .cs-hero__stat-lbl { color: rgba(13, 27, 42, .55); }
+.cs--light .cs-hero__visual {
+  background: linear-gradient(135deg, rgba(219, 85, 0, .07), rgba(219, 85, 0, .02));
+  border-left-color: rgba(13, 27, 42, .06);
+}
+/* logos do showcase/cards viram silhueta escura — uniformes e sempre legíveis no claro
+   (originais variam de branco a tan claro; brand color cede à legibilidade). */
+.cs--light .cs-hero__visual-logo,
+.cs--light .cs-card__logo {
+  filter: brightness(0) saturate(0%);
+  opacity: .72;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cs--light .cs-card:hover .cs-card__logo { filter: brightness(0) saturate(0%); opacity: .95; }
+}
+
+/* grid cards */
+.cs--light .cs-card {
+  background: #ffffff;
+  border-color: rgba(13, 27, 42, .08);
+  box-shadow: 0 8px 30px rgba(13, 27, 42, .06);
+}
+.cs--light .cs-card__glow { display: none; }   /* glow navy não rende em fundo claro */
+@media (hover: hover) and (pointer: fine) {
+  .cs--light .cs-card:hover {
+    border-color: rgba(219, 85, 0, .3);
+    box-shadow: 0 16px 40px rgba(13, 27, 42, .12);
+  }
+}
+.cs--light .cs-card__result { color: rgba(13, 27, 42, .72); }
+.cs--light .cs-card__quote {
+  color: rgba(13, 27, 42, .6);
+  border-left-color: rgba(219, 85, 0, .45);
+}
+.cs--light .cs-card__sector { color: rgba(13, 27, 42, .45); }
+.cs--light .cs-card__footer { border-top-color: rgba(13, 27, 42, .1); }
+.cs--light .cs-card__author strong { color: var(--bg); }
+.cs--light .cs-card__author span   { color: rgba(13, 27, 42, .5); }
+/* shine branco some no claro */
+.cs--light .cs-card::after { display: none; }
+/* métricas e stat-val permanecem laranja (herdados) — contraste AA garantido no branco */
