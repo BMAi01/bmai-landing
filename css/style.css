@@ -5001,8 +5001,8 @@ html { scroll-padding-top: 84px; }
   position: relative;
   margin: 0 auto;
   width: auto;
-  max-width: min(580px, 100%);
-  max-height: 560px;
+  max-width: min(480px, 100%);
+  max-height: 460px;
   aspect-ratio: var(--video-aspect, 16 / 9);
   isolation: isolate;
   transition: transform .5s cubic-bezier(.22, 1, .36, 1);
