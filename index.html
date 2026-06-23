@@ -978,7 +978,7 @@
       var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
       camera.position.set(0, 0, 9);
       var group = new THREE.Group();
-      group.position.x = 2.4;                  // estrela à direita (texto à esquerda)
+      group.position.x = 2.65;                 // estrela à direita (texto à esquerda)
       scene.add(group);
 
       var loader = new THREE.SVGLoader();
@@ -986,7 +986,7 @@
       var shapes = [];
       loader.parse(svg).paths.forEach(function(p){ THREE.SVGLoader.createShapes(p).forEach(function(s){ shapes.push(s); }); });
       var geo = new THREE.ExtrudeGeometry(shapes, { depth: 90, bevelEnabled: true, bevelThickness: 10, bevelSize: 7, bevelSegments: 5, curveSegments: 32 });
-      geo.center(); geo.scale(0.0072, -0.0072, 0.0072); geo.computeVertexNormals();
+      geo.center(); geo.scale(0.0068, -0.0068, 0.0068); geo.computeVertexNormals();
       var mat = new THREE.MeshStandardMaterial({ color: ORANGE, metalness: 0.5, roughness: 0.32, emissive: new THREE.Color('#7a2f00'), emissiveIntensity: 0.3, side: THREE.DoubleSide });
       group.add(new THREE.Mesh(geo, mat));
 
