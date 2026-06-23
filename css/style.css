@@ -3823,7 +3823,8 @@ h1, h2, h3, p, span, li, a {
 /* ── Hero card ── */
 .cs-hero {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
+  align-items: stretch;
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 20px;
   background: rgba(255,255,255,0.02);
@@ -3843,10 +3844,10 @@ h1, h2, h3, p, span, li, a {
 }
 
 .cs-hero__content {
-  padding: 48px;
+  padding: 36px 40px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
 }
 .cs-hero__badge {
   display: flex;
@@ -3873,7 +3874,7 @@ h1, h2, h3, p, span, li, a {
 }
 .cs-hero__quote {
   font-family: var(--ff);
-  font-size: clamp(18px, 2vw, 22px);
+  font-size: clamp(15px, 1.5vw, 18px);
   font-weight: 600;
   color: var(--white);
   line-height: 1.55;
@@ -3925,7 +3926,7 @@ h1, h2, h3, p, span, li, a {
   justify-content: center;
   background: linear-gradient(135deg, rgba(219,85,0,0.04), rgba(219,85,0,0.01));
   border-left: 1px solid rgba(255,255,255,0.04);
-  min-height: 320px;
+  min-height: 260px;
 }
 .cs-hero__glow {
   position: absolute;
