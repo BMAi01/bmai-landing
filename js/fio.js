@@ -102,8 +102,13 @@
   } catch (e) {}
 
   // ---- state ---------------------------------------------------------------
-  // path stops at the team video; sections AFTER the video are intentionally excluded
+  // path stops at the team video; sections AFTER the video are intentionally excluded.
+  // SIDES is explicit (not alternating): the tall #metodo MUST share its side with
+  // its neighbours so the thread runs STRAIGHT down through it — any weave inside the
+  // tall sticky section reads as the thread darting side-to-side. Weave lives at the
+  // top (manifesto↔quem-somos) and bottom (cases→video) instead.
   var SECTIONS = ['.manifesto', '#quem-somos', '#metodo', '#cases'];
+  var SIDES    = ['left',       'right',       'right',    'right'];
   var len = 0, prog = 0, target = 0, raf = null, t0 = 0;
   var endScroll = 1;
   var built = false, lastVW = -1, lastDocH = -1;
@@ -164,16 +169,13 @@
       // section centre. The horizontal swing is spread across the whole gap
       // between section centres → smooth wave, no sharp boundary S-curves.
       var pts = [start];
-      var idx = 0;
       for (var i = 0; i < SECTIONS.length; i++) {
         var s = document.querySelector(SECTIONS[i]);
         if (!s) continue;
         var r = s.getBoundingClientRect();
         if (r.height < 2) continue;
         var cy = r.top + sy + r.height / 2;
-        var side = idx % 2 === 0 ? 'left' : 'right';
-        pts.push({ x: laneFor(side), y: cy });
-        idx++;
+        pts.push({ x: laneFor(SIDES[i] || 'right'), y: cy });
       }
 
       // terminus: stop ABOVE the team video and fade out there — nothing ever
