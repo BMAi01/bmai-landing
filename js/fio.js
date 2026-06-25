@@ -260,12 +260,15 @@
 
       // Bulletproof #metodo hide: whenever the metodo section occupies the viewport
       // centre, fade the WHOLE thread out (runtime, viewport-based — no geometry math).
-      var metEl = document.getElementById('metodo');
-      if (metEl) {
-        var mr = metEl.getBoundingClientRect();
-        var overlap = Math.min(mr.bottom, vh) - Math.max(mr.top, 0);   // metodo px on screen
-        // fades out as metodo covers the viewport (entering), back in as it leaves (end)
-        svg.style.opacity = clamp(1 - overlap / (vh * 0.6), 0, 1).toFixed(3);
+      // #metodo isn't reliably in the DOM, so detect it as the GAP between the
+      // (always-present) #quem-somos and #cases: when the viewport centre sits in
+      // that gap you're in the metodo region → fade the whole thread out.
+      var qsE = document.querySelector('#quem-somos'), csE = document.querySelector('#cases');
+      if (qsE && csE) {
+        var qb = qsE.getBoundingClientRect().bottom, ct = csE.getBoundingClientRect().top;
+        var cC = vh * 0.5, Tt = vh * 0.3;
+        var dEdge = Math.min(cC - qb, ct - cC);   // >0 → centre is in the gap (= metodo)
+        svg.style.opacity = clamp(-dEdge / Tt, 0, 1).toFixed(3);
       } else { svg.style.opacity = '1'; }
 
       var drawn = clamp(lenAtY(sy + vh * TIP_VH), 0, len);
