@@ -157,14 +157,14 @@
 
       // #metodo band — hidden by the mask so the thread "disappears" there and
       // re-enters at cases (right). #metodo may be absent in some renders → skip.
-      // Hide the whole gap BETWEEN #quem-somos and #cases (= the #metodo region).
-      // Robust: doesn't depend on #metodo's volatile sticky/scrub geometry.
+      // Hide from the TOP of #metodo to the TOP of #cases (= the whole metodo span).
+      // Uses section START positions (rect.top), which are stable even when metodo
+      // pins/scrubs — unlike #quem-somos.bottom, which balloons past cases when it flips.
       var mTop = 0, mBot = 0;
-      var qsEl = document.querySelector('#quem-somos'), csEl = document.querySelector('#cases');
-      if (qsEl && csEl) {
-        var qr = qsEl.getBoundingClientRect(), cr = csEl.getBoundingClientRect();
-        mTop = qr.bottom + sy; mBot = cr.top + sy;
-        if (mBot - mTop < 2) { mTop = 0; mBot = 0; }
+      var metEl = document.getElementById('metodo'), csEl = document.querySelector('#cases');
+      if (metEl && csEl) {
+        var t = metEl.getBoundingClientRect().top + sy, b = csEl.getBoundingClientRect().top + sy;
+        if (b - t > 2) { mTop = t; mBot = b; }
       }
 
       // Reveal mask: WHITE = visible, BLACK = hidden. Black-out the hero band and
