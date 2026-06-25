@@ -49,7 +49,7 @@
     // transparent sections (manifesto/quem-somos/cases/para-quem) and is naturally
     // hidden behind the opaque ones (hero/form/contato). The mask also blanks the
     // #metodo band so the thread "disappears" there and re-enters at cases.
-    '#fioOverlay{position:absolute;top:0;left:0;width:100%;height:0;z-index:0;' +
+    '#fioOverlay{position:absolute;top:0;left:0;width:100%;height:0;z-index:70;' +
       'pointer-events:none;overflow:visible;contain:layout style;}' +
     '#fioOverlay .fio-line{filter:drop-shadow(0 0 6px rgba(219,85,0,.5));}' +
     '#fioOverlay .fio-head{filter:drop-shadow(0 0 14px rgba(219,85,0,.75));}' +
@@ -158,8 +158,13 @@
       // #metodo band — hidden by the mask so the thread "disappears" there and
       // re-enters at cases (right). #metodo may be absent in some renders → skip.
       var mTop = 0, mBot = 0;
-      var mEl = document.getElementById('metodo');
-      if (mEl) { var mrct = mEl.getBoundingClientRect(); if (mrct.height > 2) { mTop = mrct.top + sy; mBot = mTop + mrct.height; } }
+      var mEl = document.getElementById('metodo') || document.getElementById('metodoScrollContainer') || document.querySelector('.metodo');
+      var mC = document.getElementById('metodoScrollContainer');
+      if (mEl) {
+        var ma = mEl.getBoundingClientRect(), t1 = ma.top + sy, b1 = t1 + ma.height;
+        if (mC) { var mb = mC.getBoundingClientRect(); t1 = Math.min(t1, mb.top + sy); b1 = Math.max(b1, mb.top + sy + mb.height); }
+        if (b1 - t1 > 2) { mTop = t1; mBot = b1; }
+      }
 
       // Reveal mask: WHITE = visible, BLACK = hidden. Black-out the hero band and
       // the #metodo band, white elsewhere (smooth fades). userSpaceOnUse over docH.
