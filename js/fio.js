@@ -71,19 +71,17 @@
   var wrap = el('g', { mask: 'url(#fioMask)' });        // everything inside is hero-masked
 
   var ghost = el('path', { fill: 'none', stroke: 'rgba(219,85,0,0.12)', 'stroke-width': 1.5, 'stroke-linecap': 'round' });
-  var nodes = el('g', {});
   var fio   = el('path', { fill: 'none', stroke: 'url(#fioGrad)', 'stroke-width': 2.4, 'stroke-linecap': 'round' });
   fio.setAttribute('class', 'fio-line');
 
-  // head = guide-star carrying the BMAi symbol on the tip
+  // head = just the BMAi symbol riding the tip (no rings/dots)
   var head    = el('g', {}); head.setAttribute('class', 'fio-head');
-  var headHalo = el('circle', { r: 20, fill: 'none', stroke: ACCENT, 'stroke-width': 1.2, opacity: 0.28 });
-  var headDot  = el('circle', { r: 4, fill: ACCENT_HOT });        // fallback until symbol loads
+  var headDot  = el('circle', { r: 4, fill: ACCENT_HOT });        // fallback only until symbol loads
   var headSym  = el('path', { fill: ACCENT, 'fill-rule': 'evenodd' });
   headSym.style.display = 'none';
-  head.appendChild(headHalo); head.appendChild(headDot); head.appendChild(headSym);
+  head.appendChild(headDot); head.appendChild(headSym);
 
-  wrap.appendChild(ghost); wrap.appendChild(nodes); wrap.appendChild(fio); wrap.appendChild(head);
+  wrap.appendChild(ghost); wrap.appendChild(fio); wrap.appendChild(head);
   svg.appendChild(wrap);
   document.body.appendChild(svg);
 
@@ -98,8 +96,8 @@
   // ---- state ---------------------------------------------------------------
   // path stops at the team video; sections AFTER the video are intentionally excluded
   var SECTIONS = ['.manifesto', '#quem-somos', '#metodo', '#cases'];
-  var len = 0, prog = 0, target = 0, nodeList = [], raf = null, t0 = 0;
-  var endScroll = 1, metodoBand = null, isDesktop = true;
+  var len = 0, prog = 0, target = 0, raf = null, t0 = 0;
+  var endScroll = 1, metodoBand = null;
   var built = false, lastVW = -1, lastDocH = -1, symScale = 30 / 800;
 
   function lenAt(path, targetY) {
@@ -123,7 +121,6 @@
       // #metodo with invalidateOnRefresh:true → rebuilding mid-scroll = the glitch).
       if (!force && built && vw === lastVW && Math.abs(docH - lastDocH) < 2) { onScroll(); return; }
       lastVW = vw; lastDocH = docH; built = true;
-      isDesktop = vw >= 1025;
 
       svg.setAttribute('viewBox', '0 0 ' + vw + ' ' + docH);
       svg.style.height = docH + 'px';
@@ -168,7 +165,6 @@
       // the side-swaps happen at the boundary between sections (the padding gap),
       // so the thread weaves the full width without sitting over copy.
       var pts = [start];
-      var anchorPts = [];
       var prevBottom = null, idx = 0;
       for (var i = 0; i < SECTIONS.length; i++) {
         var s = document.querySelector(SECTIONS[i]);
@@ -183,7 +179,6 @@
         if (prevBottom !== null) pts.push({ x: midX, y: (prevBottom + top) / 2 });
         pts.push({ x: lx, y: top + padIn });
         pts.push({ x: lx, y: bot - padIn });
-        anchorPts.push({ x: lx, y: top + h / 2 });
         prevBottom = bot; idx++;
       }
 
@@ -196,7 +191,7 @@
         var vx = clamp((vr.left + vr.right) / 2, margin, vw - margin);
         var vy = vTop + Math.min(34, vr.height * 0.16);
         if (prevBottom !== null) pts.push({ x: midX, y: (prevBottom + vTop) / 2 });
-        pts.push({ x: vx, y: vy }); anchorPts.push({ x: vx, y: vy });
+        pts.push({ x: vx, y: vy });
         endDocY = vCenter;
       } else {
         pts.push({ x: midX, y: docH - 8 });
@@ -217,21 +212,6 @@
         var mr = mEl.getBoundingClientRect();
         var mTop = mr.top + sy, mBot = mTop + mr.height;
         metodoBand = { a: lenAt(fio, mTop), b: lenAt(fio, mBot) };
-      }
-
-      // section nodes (desktop only)
-      while (nodes.firstChild) nodes.removeChild(nodes.firstChild);
-      nodeList = [];
-      if (isDesktop) {
-        for (var j = 0; j < anchorPts.length; j++) {
-          var p = anchorPts[j];
-          var ring = el('circle', { cx: p.x, cy: p.y, r: 10, fill: 'none', stroke: ACCENT, 'stroke-width': 1.4 });
-          ring.style.opacity = '0.22';
-          var dot = el('circle', { cx: p.x, cy: p.y, r: 3, fill: ACCENT });
-          dot.style.opacity = '0.32';
-          nodes.appendChild(ring); nodes.appendChild(dot);
-          nodeList.push({ ring: ring, dot: dot, len: lenAt(fio, p.y) });
-        }
       }
 
       onScroll(); apply();
@@ -255,20 +235,14 @@
       var pt = fio.getPointAtLength(at);
       var bob = (!REDUCE && prog < 0.04) ? Math.sin(t0 * 0.0008) * 4 : 0;
       head.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + (pt.y + bob).toFixed(1) + ')');
-      head.style.opacity = prog >= 0.999 ? '0.92' : '1';
+      // fade the tip out as it homes in on the video → fully invisible on arrival
+      head.style.opacity = prog <= 0.80 ? '1' : clamp((0.95 - prog) / 0.15, 0, 1).toFixed(3);
 
-      // symbol: slow self-rotation around its own centre (viewBox 800)
+      // symbol: slow self-rotation around its OWN centre (translate centre→origin, then rotate)
       if (headSym.style.display !== 'none') {
         var deg = REDUCE ? 0 : (t0 * 0.006) % 360;
         headSym.setAttribute('transform',
-          'scale(' + symScale.toFixed(5) + ') rotate(' + deg.toFixed(1) + ' 400 400) translate(-400 -400)');
-      }
-
-      for (var i = 0; i < nodeList.length; i++) {
-        var n = nodeList[i], reached = at >= n.len - 6;
-        n.dot.style.opacity = reached ? '1' : '0.32';
-        n.ring.style.opacity = reached ? '0.7' : '0.22';
-        n.dot.setAttribute('r', reached ? 4 : 3);
+          'scale(' + symScale.toFixed(5) + ') rotate(' + deg.toFixed(1) + ') translate(-400 -400)');
       }
     } catch (e) {}
   }
