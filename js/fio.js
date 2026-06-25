@@ -262,9 +262,10 @@
       // centre, fade the WHOLE thread out (runtime, viewport-based — no geometry math).
       var metEl = document.getElementById('metodo');
       if (metEl) {
-        var mr = metEl.getBoundingClientRect(), c = vh * 0.5, T = vh * 0.3;
-        var dd = Math.min(c - mr.top, mr.bottom - c);   // >0 → viewport centre inside metodo
-        svg.style.opacity = clamp(-dd / T, 0, 1).toFixed(3);
+        var mr = metEl.getBoundingClientRect();
+        var overlap = Math.min(mr.bottom, vh) - Math.max(mr.top, 0);   // metodo px on screen
+        // fades out as metodo covers the viewport (entering), back in as it leaves (end)
+        svg.style.opacity = clamp(1 - overlap / (vh * 0.6), 0, 1).toFixed(3);
       } else { svg.style.opacity = '1'; }
 
       var drawn = clamp(lenAtY(sy + vh * TIP_VH), 0, len);
