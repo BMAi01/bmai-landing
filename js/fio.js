@@ -45,7 +45,11 @@
   // ---- style ---------------------------------------------------------------
   var style = document.createElement('style');
   style.textContent =
-    '#fioOverlay{position:absolute;top:0;left:0;width:100%;height:0;z-index:70;' +
+    // z-index 0 → BEHIND the sections (which are z-index:1). Shows through the
+    // transparent sections (manifesto/quem-somos/cases/para-quem) and is naturally
+    // hidden behind the opaque ones (hero/form/contato). The mask also blanks the
+    // #metodo band so the thread "disappears" there and re-enters at cases.
+    '#fioOverlay{position:absolute;top:0;left:0;width:100%;height:0;z-index:0;' +
       'pointer-events:none;overflow:visible;contain:layout style;}' +
     '#fioOverlay .fio-line{filter:drop-shadow(0 0 6px rgba(219,85,0,.5));}' +
     '#fioOverlay .fio-head{filter:drop-shadow(0 0 14px rgba(219,85,0,.75));}' +
@@ -62,9 +66,9 @@
         '<stop offset="0" stop-color="' + ACCENT_HOT + '"/>' +
         '<stop offset="0.5" stop-color="' + ACCENT + '"/>' +
         '<stop offset="1" stop-color="' + ACCENT_HOT + '"/></linearGradient>' +
-      // vertical reveal: black (hidden) above the hero bottom, white (shown) below
-      '<linearGradient id="fioReveal" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient>' +
+      // vertical reveal mask: stops built in build() to BLACK-out (hide) the hero
+      // band and the #metodo band, WHITE (show) elsewhere. userSpaceOnUse over docH.
+      '<linearGradient id="fioReveal" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"></linearGradient>' +
       '<mask id="fioMask" maskUnits="userSpaceOnUse"><rect id="fioMaskRect" fill="url(#fioReveal)"/></mask>' +
     '</defs>';
 
@@ -109,9 +113,9 @@
   // top (manifesto↔quem-somos) and bottom (cases→video) instead.
   var SECTIONS = ['.manifesto', '#quem-somos', '#metodo', '#cases'];
   var SIDES    = ['left',       'right',       'right',    'right'];
-  var len = 0, prog = 0, target = 0, raf = null, t0 = 0;
-  var endScroll = 1;
+  var len = 0, raf = null, t0 = 0, ySamp = [], lenSamp = [];
   var built = false, lastVW = -1, lastDocH = -1;
+  var TIP_VH = 0.6;   // tip rides at 60% of the viewport → draw follows the scroll
 
   // ---- build the path geometry --------------------------------------------
   function build(force) {
@@ -123,7 +127,7 @@
 
       // Skip redundant rebuilds (ScrollTrigger 'refresh' fires repeatedly during
       // #metodo with invalidateOnRefresh:true → rebuilding mid-scroll = the glitch).
-      if (!force && built && vw === lastVW && Math.abs(docH - lastDocH) < 2) { onScroll(); return; }
+      if (!force && built && vw === lastVW && Math.abs(docH - lastDocH) < 2) { render(); return; }
       lastVW = vw; lastDocH = docH; built = true;
 
       svg.setAttribute('viewBox', '0 0 ' + vw + ' ' + docH);
@@ -151,7 +155,14 @@
         start = { x: clamp(hr.left + hr.width * 0.72, midX, vw - margin), y: hr.top + sy + hr.height * 0.46 };
       }
 
-      // hero reveal band: hidden until ~hero bottom, fully visible just after
+      // #metodo band — hidden by the mask so the thread "disappears" there and
+      // re-enters at cases (right). #metodo may be absent in some renders → skip.
+      var mTop = 0, mBot = 0;
+      var mEl = document.getElementById('metodo');
+      if (mEl) { var mrct = mEl.getBoundingClientRect(); if (mrct.height > 2) { mTop = mrct.top + sy; mBot = mTop + mrct.height; } }
+
+      // Reveal mask: WHITE = visible, BLACK = hidden. Black-out the hero band and
+      // the #metodo band, white elsewhere (smooth fades). userSpaceOnUse over docH.
       var maskRect = svg.querySelector('#fioMaskRect');
       var reveal = svg.querySelector('#fioReveal');
       var mask = svg.querySelector('#fioMask');
@@ -160,9 +171,29 @@
         mask.setAttribute('width', vw); mask.setAttribute('height', docH);
         maskRect.setAttribute('x', 0); maskRect.setAttribute('y', 0);
         maskRect.setAttribute('width', vw); maskRect.setAttribute('height', docH);
-        var fadeTop = Math.max(0, heroBottom - 90), fadeBot = heroBottom + 30;
-        reveal.setAttribute('x1', 0); reveal.setAttribute('y1', fadeTop);
-        reveal.setAttribute('x2', 0); reveal.setAttribute('y2', fadeBot);
+        reveal.setAttribute('x1', 0); reveal.setAttribute('y1', 0);
+        reveal.setAttribute('x2', 0); reveal.setAttribute('y2', docH);
+        var F = 70, stops = [[0, '#000']];
+        stops.push([Math.max(1, heroBottom - 90), '#000']);
+        stops.push([heroBottom + 30, '#fff']);
+        if (mBot > mTop) {
+          stops.push([mTop - 12, '#fff']);
+          stops.push([mTop + F, '#000']);
+          stops.push([mBot - F, '#000']);
+          stops.push([mBot + F, '#fff']);
+        }
+        stops.push([docH, '#fff']);
+        // sort + strictly-increasing offsets, then rebuild <stop> children
+        stops.sort(function (a, b) { return a[0] - b[0]; });
+        while (reveal.firstChild) reveal.removeChild(reveal.firstChild);
+        var prevOff = -1;
+        for (var si = 0; si < stops.length; si++) {
+          var off = clamp(stops[si][0] / docH, 0, 1);
+          if (off <= prevOff) off = Math.min(1, prevOff + 0.0001);
+          prevOff = off;
+          var st = el('stop', {}); st.setAttribute('offset', off.toFixed(5)); st.setAttribute('stop-color', stops[si][1]);
+          reveal.appendChild(st);
+        }
       }
 
       // Gentle serpentine: ONE anchor per section, alternating sides at the
@@ -178,59 +209,70 @@
         pts.push({ x: laneFor(SIDES[i] || 'right'), y: cy });
       }
 
-      // terminus: stop ABOVE the team video and fade out there — nothing ever
-      // draws on top of the video.
-      var endDocY = docH;
+      // terminus: stop ABOVE the team video — nothing ever draws on it.
       var stage = document.getElementById('teamVideoStage');
       if (stage) {
         var vr = stage.getBoundingClientRect();
-        var vTop = vr.top + sy;
-        pts.push({ x: midX, y: vTop - 56 });          // last point sits above the video
-        endDocY = vTop;
+        pts.push({ x: midX, y: vr.top + sy - 56 });
       } else {
         pts.push({ x: midX, y: docH - 8 });
       }
-      // finish drawing just as the video edge reaches ~45% of the viewport
-      endScroll = Math.max(40, endDocY - window.innerHeight * 0.45);
 
       var d = smooth(pts, margin, vw - margin);
       fio.setAttribute('d', d);
       len = fio.getTotalLength();
       fio.style.strokeDasharray = len;
 
-      onScroll(); apply();
+      // doc-Y → arc-length map, so the draw tracks SCROLL position (not arc length).
+      // Forced monotonic in y (gentle horizontal swings never go backwards anyway).
+      ySamp = []; lenSamp = [];
+      var SAMP = 240, prevY = -1e9;
+      for (var k = 0; k <= SAMP; k++) {
+        var ll = len * k / SAMP, pp = fio.getPointAtLength(ll), yy = pp.y;
+        if (yy < prevY) yy = prevY; prevY = yy;
+        ySamp.push(yy); lenSamp.push(ll);
+      }
+
+      render();
     } catch (e) { /* never throw into the page */ }
   }
 
-  // ---- scroll -> target (completes when the video is reached) ---------------
-  function onScroll() {
-    var sc = window.scrollY || document.documentElement.scrollTop || 0;
-    target = endScroll > 0 ? clamp(sc / endScroll, 0, 1) : 0;
+  // length where the path reaches a given document-Y (binary search on the map)
+  function lenAtY(y) {
+    var n = ySamp.length;
+    if (!n) return 0;
+    if (y <= ySamp[0]) return 0;
+    if (y >= ySamp[n - 1]) return len;
+    var lo = 0, hi = n - 1;
+    while (lo + 1 < hi) { var mid = (lo + hi) >> 1; if (ySamp[mid] < y) lo = mid; else hi = mid; }
+    var y0 = ySamp[lo], y1 = ySamp[hi], t = y1 > y0 ? (y - y0) / (y1 - y0) : 0;
+    return lenSamp[lo] + t * (lenSamp[hi] - lenSamp[lo]);
   }
 
   // ---- per-frame draw ------------------------------------------------------
-  function apply() {
+  // The tip is pinned to a document-Y that tracks scroll (scrollY + TIP_VH·vh), so
+  // the drawn portion ALWAYS follows the scroll — no lag, no arc-length drift.
+  function render() {
     if (!len) return;
     try {
-      var drawn = len * prog;
+      var sy = window.scrollY || document.documentElement.scrollTop || 0;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var drawn = clamp(lenAtY(sy + vh * TIP_VH), 0, len);
+      var prog = drawn / len;
       fio.style.strokeDashoffset = len - drawn;
 
       var at = clamp(drawn, 0.0001, len - 0.001);
       var pt = fio.getPointAtLength(at);
       var bob = (!REDUCE && prog < 0.04) ? Math.sin(t0 * 0.0008) * 4 : 0;
-      // symbol stays glued to the tip (no rotation → can't drift off)
       head.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + (pt.y + bob).toFixed(1) + ')');
-      // fade out as it reaches the video terminus → gone on arrival, line never on the video
-      head.style.opacity = prog <= 0.88 ? '1' : clamp((1 - prog) / 0.12, 0, 1).toFixed(3);
+      // fade the tip out as it reaches the terminus above the video
+      head.style.opacity = prog <= 0.9 ? '1' : clamp((1 - prog) / 0.1, 0, 1).toFixed(3);
     } catch (e) {}
   }
 
-  // Draw is locked DIRECTLY to scroll (Lenis already smooths it) → zero lag,
-  // no catch-up jitter in #metodo.
   function tick(ts) {
     t0 = ts || 0;
-    prog = target;
-    apply();
+    render();
     raf = requestAnimationFrame(tick);
   }
 
@@ -238,7 +280,7 @@
   var rt = null;
   function rebuild() { clearTimeout(rt); rt = setTimeout(function () { build(false); }, 120); }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', render, { passive: true });   // rAF also renders; this keeps it crisp
   window.addEventListener('resize', rebuild, { passive: true });
   window.addEventListener('load', function () { build(true); });
 
