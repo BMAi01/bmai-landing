@@ -157,15 +157,9 @@
 
       // #metodo band — hidden by the mask so the thread "disappears" there and
       // re-enters at cases (right). #metodo may be absent in some renders → skip.
-      // Hide from the TOP of #metodo to the TOP of #cases (= the whole metodo span).
-      // Uses section START positions (rect.top), which are stable even when metodo
-      // pins/scrubs — unlike #quem-somos.bottom, which balloons past cases when it flips.
+      // #metodo is hidden at RUNTIME (see render → overlay opacity) because its
+      // sticky/scrub geometry can't be captured here. Mask only handles the hero.
       var mTop = 0, mBot = 0;
-      var metEl = document.getElementById('metodo'), csEl = document.querySelector('#cases');
-      if (metEl && csEl) {
-        var t = metEl.getBoundingClientRect().top + sy, b = csEl.getBoundingClientRect().top + sy;
-        if (b - t > 2) { mTop = t; mBot = b; }
-      }
 
       // Reveal mask: WHITE = visible, BLACK = hidden. Black-out the hero band and
       // the #metodo band, white elsewhere (smooth fades). userSpaceOnUse over docH.
@@ -263,6 +257,16 @@
     try {
       var sy = window.scrollY || document.documentElement.scrollTop || 0;
       var vh = window.innerHeight || document.documentElement.clientHeight;
+
+      // Bulletproof #metodo hide: whenever the metodo section occupies the viewport
+      // centre, fade the WHOLE thread out (runtime, viewport-based — no geometry math).
+      var metEl = document.getElementById('metodo');
+      if (metEl) {
+        var mr = metEl.getBoundingClientRect(), c = vh * 0.5, T = vh * 0.3;
+        var dd = Math.min(c - mr.top, mr.bottom - c);   // >0 → viewport centre inside metodo
+        svg.style.opacity = clamp(-dd / T, 0, 1).toFixed(3);
+      } else { svg.style.opacity = '1'; }
+
       var drawn = clamp(lenAtY(sy + vh * TIP_VH), 0, len);
       var prog = drawn / len;
       fio.style.strokeDashoffset = len - drawn;
