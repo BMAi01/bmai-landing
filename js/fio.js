@@ -70,7 +70,7 @@
 
   var wrap = el('g', { mask: 'url(#fioMask)' });        // everything inside is hero-masked
 
-  var ghost = el('path', { fill: 'none', stroke: 'rgba(219,85,0,0.12)', 'stroke-width': 1.5, 'stroke-linecap': 'round' });
+  // only the drawn portion is ever shown — no ghost/preview of the path ahead
   var fio   = el('path', { fill: 'none', stroke: 'url(#fioGrad)', 'stroke-width': 2.4, 'stroke-linecap': 'round' });
   fio.setAttribute('class', 'fio-line');
 
@@ -81,7 +81,7 @@
   headSym.style.display = 'none';
   head.appendChild(headDot); head.appendChild(headSym);
 
-  wrap.appendChild(ghost); wrap.appendChild(fio); wrap.appendChild(head);
+  wrap.appendChild(fio); wrap.appendChild(head);
   svg.appendChild(wrap);
   document.body.appendChild(svg);
 
@@ -161,25 +161,20 @@
         reveal.setAttribute('x2', 0); reveal.setAttribute('y2', fadeBot);
       }
 
-      // Serpentine: each section runs down ONE side gutter (no text crossing);
-      // the side-swaps happen at the boundary between sections (the padding gap),
-      // so the thread weaves the full width without sitting over copy.
+      // Gentle serpentine: ONE anchor per section, alternating sides at the
+      // section centre. The horizontal swing is spread across the whole gap
+      // between section centres → smooth wave, no sharp boundary S-curves.
       var pts = [start];
-      var prevBottom = null, idx = 0;
+      var idx = 0;
       for (var i = 0; i < SECTIONS.length; i++) {
         var s = document.querySelector(SECTIONS[i]);
         if (!s) continue;
         var r = s.getBoundingClientRect();
         if (r.height < 2) continue;
-        var top = r.top + sy, h = r.height, bot = top + h;
+        var cy = r.top + sy + r.height / 2;
         var side = idx % 2 === 0 ? 'left' : 'right';
-        var lx = laneFor(side);
-        var padIn = Math.min(h * 0.14, 110);
-        // cross to this side in the gap between the previous section and this one
-        if (prevBottom !== null) pts.push({ x: midX, y: (prevBottom + top) / 2 });
-        pts.push({ x: lx, y: top + padIn });
-        pts.push({ x: lx, y: bot - padIn });
-        prevBottom = bot; idx++;
+        pts.push({ x: laneFor(side), y: cy });
+        idx++;
       }
 
       // terminus: land the tip ON the team video (centered, near its top edge)
@@ -190,7 +185,6 @@
         var vTop = vr.top + sy, vCenter = vTop + vr.height / 2;
         var vx = clamp((vr.left + vr.right) / 2, margin, vw - margin);
         var vy = vTop + Math.min(34, vr.height * 0.16);
-        if (prevBottom !== null) pts.push({ x: midX, y: (prevBottom + vTop) / 2 });
         pts.push({ x: vx, y: vy });
         endDocY = vCenter;
       } else {
@@ -200,7 +194,6 @@
       endScroll = Math.max(40, endDocY - window.innerHeight * 0.5);
 
       var d = smooth(pts, margin, vw - margin);
-      ghost.setAttribute('d', d);
       fio.setAttribute('d', d);
       len = fio.getTotalLength();
       fio.style.strokeDasharray = len;
