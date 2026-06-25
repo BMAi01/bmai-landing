@@ -89,7 +89,15 @@
   try {
     fetch('assets/images/simbolo-laranja.svg').then(function (r) { return r.text(); }).then(function (txt) {
       var m = txt.match(/\sd="([^"]+)"/);
-      if (m) { headSym.setAttribute('d', m[1]); headSym.style.display = ''; headDot.style.display = 'none'; }
+      if (!m) return;
+      headSym.setAttribute('d', m[1]); headSym.style.display = ''; headDot.style.display = 'none';
+      // centre on the symbol's REAL bbox (it isn't perfectly 400,400) so it sits
+      // exactly on the tip — no orbit/offset.
+      try {
+        var bb = headSym.getBBox(), s = 30 / Math.max(bb.width, bb.height);
+        var cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2;
+        headSym.setAttribute('transform', 'scale(' + s.toFixed(5) + ') translate(' + (-cx).toFixed(1) + ' ' + (-cy).toFixed(1) + ')');
+      } catch (e2) {}
     }).catch(function () {});
   } catch (e) {}
 
@@ -97,17 +105,8 @@
   // path stops at the team video; sections AFTER the video are intentionally excluded
   var SECTIONS = ['.manifesto', '#quem-somos', '#metodo', '#cases'];
   var len = 0, prog = 0, target = 0, raf = null, t0 = 0;
-  var endScroll = 1, metodoBand = null;
-  var built = false, lastVW = -1, lastDocH = -1, symScale = 30 / 800;
-
-  function lenAt(path, targetY) {
-    var best = 0, bd = 1e9;
-    for (var i = 0; i <= 80; i++) {
-      var l = (i / 80) * len, pt = path.getPointAtLength(l), dd = Math.abs(pt.y - targetY);
-      if (dd < bd) { bd = dd; best = l; }
-    }
-    return best;
-  }
+  var endScroll = 1;
+  var built = false, lastVW = -1, lastDocH = -1;
 
   // ---- build the path geometry --------------------------------------------
   function build(force) {
@@ -177,35 +176,25 @@
         idx++;
       }
 
-      // terminus: land the tip ON the team video (centered, near its top edge)
+      // terminus: stop ABOVE the team video and fade out there — nothing ever
+      // draws on top of the video.
       var endDocY = docH;
       var stage = document.getElementById('teamVideoStage');
       if (stage) {
         var vr = stage.getBoundingClientRect();
-        var vTop = vr.top + sy, vCenter = vTop + vr.height / 2;
-        var vx = clamp((vr.left + vr.right) / 2, margin, vw - margin);
-        var vy = vTop + Math.min(34, vr.height * 0.16);
-        pts.push({ x: vx, y: vy });
-        endDocY = vCenter;
+        var vTop = vr.top + sy;
+        pts.push({ x: midX, y: vTop - 56 });          // last point sits above the video
+        endDocY = vTop;
       } else {
         pts.push({ x: midX, y: docH - 8 });
       }
-      // finish drawing when the video is comfortably in view
-      endScroll = Math.max(40, endDocY - window.innerHeight * 0.5);
+      // finish drawing just as the video edge reaches ~45% of the viewport
+      endScroll = Math.max(40, endDocY - window.innerHeight * 0.45);
 
       var d = smooth(pts, margin, vw - margin);
       fio.setAttribute('d', d);
       len = fio.getTotalLength();
       fio.style.strokeDasharray = len;
-
-      // slowdown band = the #metodo stretch (measured along the path)
-      metodoBand = null;
-      var mEl = document.getElementById('metodo');
-      if (mEl) {
-        var mr = mEl.getBoundingClientRect();
-        var mTop = mr.top + sy, mBot = mTop + mr.height;
-        metodoBand = { a: lenAt(fio, mTop), b: lenAt(fio, mBot) };
-      }
 
       onScroll(); apply();
     } catch (e) { /* never throw into the page */ }
@@ -227,27 +216,18 @@
       var at = clamp(drawn, 0.0001, len - 0.001);
       var pt = fio.getPointAtLength(at);
       var bob = (!REDUCE && prog < 0.04) ? Math.sin(t0 * 0.0008) * 4 : 0;
+      // symbol stays glued to the tip (no rotation → can't drift off)
       head.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + (pt.y + bob).toFixed(1) + ')');
-      // fade the tip out as it homes in on the video → fully invisible on arrival
-      head.style.opacity = prog <= 0.80 ? '1' : clamp((0.95 - prog) / 0.15, 0, 1).toFixed(3);
-
-      // symbol: slow self-rotation around its OWN centre (translate centre→origin, then rotate)
-      if (headSym.style.display !== 'none') {
-        var deg = REDUCE ? 0 : (t0 * 0.006) % 360;
-        headSym.setAttribute('transform',
-          'scale(' + symScale.toFixed(5) + ') rotate(' + deg.toFixed(1) + ') translate(-400 -400)');
-      }
+      // fade out as it reaches the video terminus → gone on arrival, line never on the video
+      head.style.opacity = prog <= 0.88 ? '1' : clamp((1 - prog) / 0.12, 0, 1).toFixed(3);
     } catch (e) {}
   }
 
+  // Draw is locked DIRECTLY to scroll (Lenis already smooths it) → zero lag,
+  // no catch-up jitter in #metodo.
   function tick(ts) {
     t0 = ts || 0;
-    var drawn = len * prog;
-    // slower, smoother follow through the #metodo band (it glitches there)
-    var alpha = 0.18;
-    if (metodoBand && drawn >= metodoBand.a - 4 && drawn <= metodoBand.b + 4) alpha = 0.05;
-    prog += (target - prog) * alpha;
-    if (Math.abs(target - prog) < 0.0002) prog = target;
+    prog = target;
     apply();
     raf = requestAnimationFrame(tick);
   }
