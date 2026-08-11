@@ -6,6 +6,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://bmai.com.br/ia-para-agencias.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://bmai.com.br/ia-para-clinicas.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
