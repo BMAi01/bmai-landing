@@ -6,6 +6,16 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://bmai.com.br/blog.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://bmai.com.br/como-escolher-empresa-de-ia-brasilia.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
