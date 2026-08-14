@@ -1247,14 +1247,137 @@
 
 /* Capa da propria materia (og:image), quando o veiculo declara uma.
    Sem imagem declarada, o item simplesmente nao tem capa: nunca entra
-   foto de outro assunto pra preencher espaco. */
+   foto de outro assunto pra preencher espaco.
+   Servida por api.bmai.com.br, ja cortada em 1200x675. */
+.bl-radar__fig {
+  position: relative;
+  display: block;
+  border-bottom: 1px solid var(--blog-rule);
+}
+/* Escurecimento so no pe da imagem, pra o selo ter contraste sobre
+   qualquer foto sem apagar a foto inteira. */
+.bl-radar__fig::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 52%;
+  background: linear-gradient(to top, rgba(13, 27, 42, .78), transparent);
+  pointer-events: none;
+}
 .bl-radar__cover {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-bottom: 1px solid var(--blog-rule);
   background: var(--bg-3);
+}
+/* A marca vai POR CIMA da imagem, em CSS, e nao gravada no arquivo: a foto
+   continua sendo do veiculo, e o credito dele fica no texto logo abaixo. */
+.bl-radar__stamp {
+  position: absolute;
+  left: 12px; bottom: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px 6px 8px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 100px;
+  background: rgba(13, 27, 42, .8);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.bl-radar__stamp img { width: 14px; height: 14px; display: block; }
+
+/* Classificacao do agente. NAO existe selo de confianca aqui: a verificacao
+   do pipeline registra `sem_busca_web_confia_fonte`, entao exibir "90% de
+   confianca" seria vender rigor que nao houve. Tag e empresa sao o que o
+   agente de fato apurou. */
+.bl-radar__class {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 11px;
+}
+.bl-radar__tag {
+  padding: 3px 9px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 100px;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--blog-ink-3);
+}
+.bl-radar__tag--empresa {
+  border-color: rgba(219, 85, 0, .32);
+  color: var(--orange-l);
+}
+
+/* ---------- COMUNIDADE NO WHATSAPP ----------
+   Fica no radar porque e o mesmo conteudo: o agente manda pra comunidade
+   a cada rodada, e o site publica o corte semanal. Dizer que "chega antes"
+   e verdade verificavel, nao promessa. */
+.bl-comunidade {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+  padding: 18px 22px;
+  border: 1px solid rgba(219, 85, 0, .26);
+  border-radius: var(--r-sm);
+  background: rgba(219, 85, 0, .06);
+  transition: border-color .25s var(--ease), background .25s var(--ease);
+}
+.bl-comunidade:hover {
+  border-color: rgba(219, 85, 0, .5);
+  background: rgba(219, 85, 0, .1);
+}
+.bl-comunidade__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(219, 85, 0, .14);
+  color: var(--orange-l);
+}
+.bl-comunidade__icon svg { width: 22px; height: 22px; }
+.bl-comunidade__copy { display: block; min-width: 0; }
+.bl-comunidade__copy strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.bl-comunidade__copy span {
+  display: block;
+  font-size: .87rem;
+  line-height: 1.5;
+  color: var(--blog-ink-2);
+}
+.bl-comunidade__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  font-size: .86rem;
+  font-weight: 700;
+  color: var(--orange-l);
+}
+.bl-comunidade__go svg { width: 15px; height: 15px; transition: transform .2s var(--ease); }
+.bl-comunidade:hover .bl-comunidade__go svg { transform: translateX(3px); }
+
+@media (max-width: 620px) {
+  .bl-comunidade { grid-template-columns: 44px minmax(0, 1fr); row-gap: 12px; }
+  .bl-comunidade__go { grid-column: 2; }
 }
 @media (hover: hover) and (pointer: fine) {
   .bl-radar__item:hover { border-color: var(--blog-rule-2); transform: translateY(-2px); }

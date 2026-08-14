@@ -211,30 +211,54 @@
           // nome real a partir do dominio da materia.
           fonte = esc(it.source || ''),
           url = safeUrl(it.url),
-          capa = safeUrl(it.image || ''),
+          // A capa vem servida pela propria API, entao chega como caminho
+          // relativo e precisa da origem na frente.
+          capa = it.image ? safeUrl(/^https?:/i.test(it.image) ? it.image : API + it.image) : '',
           quando = dataCurta(it.published_at || it.date);
+
       var titulo = url
         ? '<a class="bl-radar__title" href="' + url + '" target="_blank" rel="noopener noreferrer">' + t + '</a>'
         : '<h3 class="bl-radar__title">' + t + '</h3>';
       var resumo = (fonte ? '<span class="bl-radar__src">' + fonte + '.</span> ' : '') + s;
-      // alt vazio de proposito: a capa e decorativa aqui, quem descreve a
+
+      // Classificacao do agente: o que ele de fato apurou. Sem selo de
+      // confianca, porque a verificacao do pipeline confia na fonte sem
+      // checar, e um numero ali daria ao leitor a impressao contraria.
+      var classes = []
+        .concat((it.tags || []).map(function (x) { return '<span class="bl-radar__tag">' + esc(x) + '</span>'; }))
+        .concat((it.empresas || []).map(function (x) { return '<span class="bl-radar__tag bl-radar__tag--empresa">' + esc(x) + '</span>'; }))
+        .join('');
+
+      // alt vazio de proposito: a capa e ilustrativa, quem descreve a
       // materia e o titulo logo abaixo. alt repetindo o titulo faria o
       // leitor de tela ouvir a mesma frase duas vezes.
+      var figura = capa
+        ? '<span class="bl-radar__fig">' +
+            '<img class="bl-radar__cover" src="' + capa + '" alt="" loading="lazy" decoding="async" width="1200" height="675">' +
+            '<span class="bl-radar__stamp">' +
+              '<img src="assets/images/simbolo-laranja.svg" alt="" width="14" height="14">Radar BMAi' +
+            '</span>' +
+          '</span>'
+        : '';
+
       return '<article class="bl-radar__item">' +
-               (capa ? '<img class="bl-radar__cover" src="' + capa + '" alt="" loading="lazy" decoding="async">' : '') +
+               figura +
                '<div class="bl-radar__body">' +
                  (quando ? '<span class="bl-radar__time">' + quando + '</span>' : '') +
                  titulo +
+                 (classes ? '<div class="bl-radar__class">' + classes + '</div>' : '') +
                  (resumo.trim() ? '<p class="bl-radar__sum">' + resumo + '</p>' : '') +
                '</div>' +
              '</article>';
     }).join('');
 
-    // Rede de segurança: a API confere cada capa quando monta a edição, mas
-    // um CDN pode mudar de comportamento no meio da semana. Capa que não
-    // carrega SOME, em vez de virar ícone de imagem quebrada no card.
+    // Rede de segurança: a capa some inteira se falhar, com selo e tudo, em
+    // vez de sobrar um retângulo escuro com a marca da BMAi e nenhuma foto.
     [].forEach.call(grade.querySelectorAll('.bl-radar__cover'), function (img) {
-      img.addEventListener('error', function () { img.remove(); });
+      img.addEventListener('error', function () {
+        var fig = img.closest('.bl-radar__fig');
+        (fig || img).remove();
+      });
     });
 
     secao.hidden = false;
