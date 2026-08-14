@@ -8502,3 +8502,26 @@ html {
   padding-left: 0;
 }
 .cs-card__author { justify-content: center; }
+
+/* ============================================================
+   Marca — cabeçalho + rodapé para páginas de conteúdo (blog e SEO)
+   Reforça logo, símbolo e voz da BMAI (Brand Book).
+   ============================================================ */
+.pgnav{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:20px;
+  padding:13px 24px;background:rgba(13,27,42,.9);backdrop-filter:blur(12px);
+  border-bottom:1px solid #202f3f;font-family:var(--ff,'General Sans',sans-serif)}
+.pgnav__logo{display:flex;align-items:center}
+.pgnav__logo img{height:24px;display:block}
+.pgnav__spacer{margin-left:auto}
+.pgnav a{color:#ede7e1;text-decoration:none;font-size:14px}
+.pgnav a:hover{color:#db5500}
+.pgnav__cta{padding:8px 16px;border-radius:100px;background:#db5500;color:#fff!important;
+  font-weight:600;font-size:13px}
+.pgnav__cta:hover{background:#c84d01;color:#fff!important}
+.pgfoot{border-top:1px solid #202f3f;background:#0d1b2a;padding:44px 24px;text-align:center;
+  font-family:var(--ff,'General Sans',sans-serif);color:#798086}
+.pgfoot__sym{width:38px;height:38px;opacity:.92;margin:0 auto 12px;display:block;
+  filter:drop-shadow(0 0 20px rgba(219,85,0,.4))}
+.pgfoot__kind{color:#ede7e1;font-weight:600;font-size:15px;margin:0 0 6px;letter-spacing:-.01em}
+.pgfoot__meta{font-size:13px;margin:0}
+.pgfoot__meta a{color:#db5500;text-decoration:none}
