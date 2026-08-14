@@ -38,9 +38,8 @@
     .mag-top__bar{ height:4px; background:linear-gradient(90deg,var(--mg-orange),var(--mg-orange-l),var(--mg-orange)); }
     .mag-top__inner{ max-width:1200px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:20px; }
     .mag-brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--mg-white); }
-    .mag-brand img{ width:30px; height:30px; }
-    .mag-brand b{ font-size:20px; font-weight:800; letter-spacing:-0.02em; }
-    .mag-brand span{ font-family:var(--fm,monospace); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--mg-orange); }
+    .mag-brand__logo{ height:26px; display:block; }
+    .mag-brand__tag{ font-family:var(--fm,monospace); font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--mg-orange); padding-left:12px; border-left:1px solid var(--mg-border); }
     .mag-nav{ margin-left:auto; display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
     .mag-nav a{ font-family:var(--fm,monospace); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--mg-gray); text-decoration:none; }
     .mag-nav a:hover{ color:var(--mg-orange); }
@@ -140,9 +139,9 @@
   <header class="mag-top">
     <div class="mag-top__bar"></div>
     <div class="mag-top__inner">
-      <a href="/blog.html" class="mag-brand">
-        <img src="assets/images/simbolo-laranja.svg" alt="">
-        <b>Blog</b><span>BMAI</span>
+      <a href="/" class="mag-brand" aria-label="BMAI — início">
+        <img src="assets/images/logo-laranja.svg" alt="BMAI" class="mag-brand__logo">
+        <span class="mag-brand__tag">Blog</span>
       </a>
       <nav class="mag-nav" aria-label="Categorias do blog">
         <a href="#novidades">Novidades</a>
