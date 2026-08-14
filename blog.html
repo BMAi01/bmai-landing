@@ -255,7 +255,7 @@
   (function(){
     // ===== Radar BMAI — feed de notícias do agente (BMAI News, na VPS) =====
     // Preencher com o endpoint público JSON exposto pela VPS (CORS liberado p/ bmai.com.br).
-    var NEWS_FEED_URL = ""; // ex.: "https://news.bmai.space/feed.json"  — vazio = mantém o exemplo
+    var NEWS_FEED_URL = "https://evo-novo-bmai-radar.oz07ed.easypanel.host/radar"; // BMAI News (radar_api.py na VPS) — fallback pro exemplo se estiver fora
     var SYMBOL = "assets/images/simbolo-laranja.svg";
     if (!NEWS_FEED_URL) return;
 
