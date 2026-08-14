@@ -21,24 +21,23 @@
   var nav = document.getElementById('nav');
 
   if (burger && nav) {
-    burger.addEventListener('click', function () {
-      burger.classList.toggle('active');
-      var open = nav.classList.toggle('active');
+    // O botão já nasce com aria-expanded="false" no HTML. Quem usa leitor de
+    // tela só sabe que o menu abriu se esse atributo acompanhar o estado.
+    function setNav(open) {
+      burger.classList.toggle('active', open);
+      nav.classList.toggle('active', open);
       document.body.classList.toggle('nav-open', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    burger.addEventListener('click', function () {
+      setNav(!nav.classList.contains('active'));
     });
     nav.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', function () {
-        burger.classList.remove('active');
-        nav.classList.remove('active');
-        document.body.classList.remove('nav-open');
-      });
+      a.addEventListener('click', function () { setNav(false); });
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('active')) {
-        burger.classList.remove('active');
-        nav.classList.remove('active');
-        document.body.classList.remove('nav-open');
-      }
+      if (e.key === 'Escape' && nav.classList.contains('active')) setNav(false);
     });
   }
 

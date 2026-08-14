@@ -1,5 +1,5 @@
 /* ============================================
-   I18N — traduções curadas PT/EN/ES
+   I18N: traduções curadas PT/EN/ES
    Switch instantâneo via dictionary (zero network).
    ============================================ */
 (function () {
@@ -38,21 +38,21 @@
       'manifesto.frase': 'Construímos um sistema de Inteligência Artificial para <span class="manifesto__hl">solucionar um problema</span> que está te incomodando dentro da operação da sua empresa.',
       'qs.card1_eyebrow': 'Fase 01 · Processo Estruturado',
       'qs.card1_h3':      'Mapeamos<br><span style="color:var(--orange)">o processo.</span>',
-      'qs.card1_p':       'Identificamos e estruturamos o processo que a IA vai trabalhar — preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.',
+      'qs.card1_p':       'Identificamos e estruturamos o processo que a IA vai trabalhar: preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.',
       'qs.card2_eyebrow': 'Fase 02 · Inteligência Personalizada',
       'qs.card2_h3':      'Construímos<br><span style="color:var(--orange)">IA sob medida.</span>',
-      'qs.card2_p':       'Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.',
+      'qs.card2_p':       'Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo, não a um template genérico, para potencializar a função definida na etapa anterior.',
       'qs.card3_eyebrow': 'Fase 03 · Operação Contínua',
       'qs.card3_h3':      'Operamos<br><span style="color:var(--orange)">e refinamos.</span>',
-      'qs.card3_p':       'O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda — IA viva, não projeto entregue e esquecido.',
+      'qs.card3_p':       'O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda, IA viva, não projeto entregue e esquecido.',
       'qs.card4_eyebrow': 'Fase 04 · Escala Estratégica',
       'qs.card4_h3':      'Escalamos<br><span style="color:var(--orange)">o resultado.</span>',
-      'qs.card4_p':       'Quando um agente prova valor, replicamos o modelo para outras funções e times — multiplicando o ganho de produtividade sem reinventar a roda a cada projeto.',
+      'qs.card4_p':       'Quando um agente prova valor, replicamos o modelo para outras funções e times, multiplicando o ganho de produtividade sem reinventar a roda a cada projeto.',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
       'metodo.title': 'Do diagnóstico<br><span style="color:var(--orange)">à escala real.</span>',
-      'metodo.sub':   'Quatro fases, uma lógica: entender, organizar, construir, sustentar. Nenhuma é pulada — cada uma constrói em cima da anterior.',
+      'metodo.sub':   'Quatro fases, uma lógica: entender, organizar, construir, sustentar. Nenhuma é pulada, cada uma constrói em cima da anterior.',
 
       /* ARIA method labels + cards */
       'aria.label.d': 'Diagnóstico',
@@ -61,7 +61,7 @@
       'aria.label.a': 'Acompanhamento',
       'aria.d.title':    'Diagnóstico',
       'aria.d.subtitle': 'Entender antes de agir.',
-      'aria.d.desc':     'Mapeamos fluxos reais, medimos onde a operação sangra e identificamos onde a IA vai gerar tração. Sem contexto, toda tecnologia vira custo — por isso nada é configurado antes desse passo.',
+      'aria.d.desc':     'Mapeamos fluxos reais, medimos onde a operação sangra e identificamos onde a IA vai gerar tração. Sem contexto, toda tecnologia vira custo, por isso nada é configurado antes desse passo.',
       'aria.d.b1': 'Mapeamento do processo comercial',
       'aria.d.b2': 'Identificação de perdas invisíveis',
       'aria.d.b3': 'Entrevistas com time e gestão',
@@ -73,7 +73,7 @@
 
       'aria.e.title':    'Estruturação',
       'aria.e.subtitle': 'Preparamos o terreno antes de plantar inteligência.',
-      'aria.e.desc':     'Reorganizamos processos, definimos KPIs mensuráveis e desenhamos a arquitetura dos agentes. IA em cima de caos é caos acelerado — por isso estruturamos primeiro.',
+      'aria.e.desc':     'Reorganizamos processos, definimos KPIs mensuráveis e desenhamos a arquitetura dos agentes. IA em cima de caos é caos acelerado, por isso estruturamos primeiro.',
       'aria.e.b1': 'Arquitetura dos agentes e fluxos',
       'aria.e.b2': 'KPIs mensuráveis e metas concretas',
       'aria.e.b3': 'Projeção de ROI por frente',
@@ -85,7 +85,7 @@
 
       'aria.i.title':    'Implementação',
       'aria.i.subtitle': 'Inteligência integrada onde gera impacto.',
-      'aria.i.desc':     'Construímos agentes de IA sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado — nada lançado no escuro.',
+      'aria.i.desc':     'Construímos agentes de IA sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado, nada lançado no escuro.',
       'aria.i.b1': 'Construção sob medida dos agentes',
       'aria.i.b2': 'Integração com as ferramentas já em uso',
       'aria.i.b3': 'Validação em produção antes da escala',
@@ -96,7 +96,7 @@
       'aria.i.result': 'Entregável: sistema funcionando em produção',
 
       'aria.a.title':    'Acompanhamento',
-      'aria.a.subtitle': 'Cliente BMAi vira parceiro — não só mais um.',
+      'aria.a.subtitle': 'Cliente BMAi vira parceiro, não só mais um.',
       'aria.a.desc':     'Monitoramos indicadores, ajustamos prompts e lógica conforme o negócio evolui e você tem acesso ao nosso SaaS interno de métricas. Se a gente construiu, a gente mantém.',
       'aria.a.b1': 'Monitoramento contínuo de indicadores',
       'aria.a.b2': 'Ajuste de prompts conforme o negócio evolui',
@@ -112,27 +112,27 @@
       'cases.lead':    '"Eles viram nosso negócio como único, me trataram como parceiro e me senti visto e ouvido de verdade para desenvolver uma solução de IA para a minha empresa."',
       'cases.btn':     'Quero ser o próximo case',
 
-      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads viram pacientes — <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões',
+      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads viram pacientes, <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões',
 
       'cs_hero.sector': 'Saúde',
-      'cs_hero.quote':  '"A BMAi criou um sistema com IA, estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. Antes nós perdíamos pacientes antes do primeiro contato; hoje, com a IA criada pela BMAi, a cada 10 leads transformamos 8 em pacientes — sem precisar contratar mais ninguém."',
+      'cs_hero.quote':  '"A BMAi criou um sistema com IA, estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. Antes nós perdíamos pacientes antes do primeiro contato; hoje, com a IA criada pela BMAi, a cada 10 leads transformamos 8 em pacientes, sem precisar contratar mais ninguém."',
       'cs_hero.role':   'CEO na GastroObesi',
       'cs_hero.s1':     'leads viram pacientes',
       'cs_hero.s2':     'pacientes sem custo extra',
       'cs_hero.s3':     'em conversões',
 
       'cs1.sector': 'Marketing Digital',
-      'cs1.result': 'Agente de prospecção rodando <span class="cs-card__metric">24h em 3 canais</span> — zero leads esquecidos, <span class="cs-card__metric">+4h/dia</span> devolvidas ao time, <span class="cs-card__metric">+60%</span> faturamento',
-      'cs1.quote':  '"Antes a gente perdia lead todo dia. Agora o agente nunca dorme — Instagram, WhatsApp, e-mail, tudo coberto."',
+      'cs1.result': 'Agente de prospecção rodando <span class="cs-card__metric">24h em 3 canais</span>, zero leads esquecidos, <span class="cs-card__metric">+4h/dia</span> devolvidas ao time, <span class="cs-card__metric">+60%</span> faturamento',
+      'cs1.quote':  '"Antes a gente perdia lead todo dia. Agora o agente nunca dorme: Instagram, WhatsApp, e-mail, tudo coberto."',
       'cs1.role':   'CEO · Mataco',
 
       'cs2.sector': 'Material de Construção',
-      'cs2.result': '<span class="cs-card__metric">+40%</span> no faturamento com prospecção e atendimento <span class="cs-card__metric">24h</span> via IA — estoque <span class="cs-card__metric">100%</span> sob controle',
+      'cs2.result': '<span class="cs-card__metric">+40%</span> no faturamento com prospecção e atendimento <span class="cs-card__metric">24h</span> via IA, estoque <span class="cs-card__metric">100%</span> sob controle',
       'cs2.quote':  '"A IA virou o motor da operação: estoque organizado e monitorado em tempo real, prospecção ativa rodando sozinha e agente de atendimento disponível 24 horas por dia. Em pouco tempo, o faturamento subiu 40% sem que a gente precisasse aumentar a equipe."',
       'cs2.role':   'CEO · Só Hydráulica',
 
       'cs3.sector': 'Engenharia',
-      'cs3.result': '<span class="cs-card__metric">Operação</span> mais previsível — <span class="cs-card__metric">processos</span> com IA aplicada — <span class="cs-card__metric">visibilidade</span> total',
+      'cs3.result': '<span class="cs-card__metric">Operação</span> mais previsível, <span class="cs-card__metric">processos</span> com IA aplicada, <span class="cs-card__metric">visibilidade</span> total',
       'cs3.quote':  '"A parceria com a BMAi trouxe organização e visibilidade pra processos que antes eram manuais. Hoje conseguimos focar no que realmente importa: entregar projetos de engenharia com mais previsibilidade."',
       'cs3.name':   'Marcos Leite',
       'cs3.role':   'CEO · MGP Engenharia',
@@ -141,33 +141,33 @@
       'team.title':        'Nosso time entende<br><span style="color:var(--orange)">o seu negócio.</span>',
       'team.scroll_hint':  'Conheça os fundadores da BMAi',
       'team.matheus.role': 'Sócio Fundador',
-      'team.matheus.bio':  'Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura — o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.',
+      'team.matheus.bio':  'Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura, o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.',
       'team.matheus.sig':  'Sócio Fundador · BMAI',
       'team.pedro.role':   'Sócio Fundador',
-      'team.pedro.bio':    'Acredito que gerar valor verdadeiro às pessoas e às empresas é a única forma de resultado real e sustentável. Cada solução que a BMAi entrega precisa gerar impacto real — tempo de volta pro dono, previsibilidade de receita e um negócio que cresce sem depender de improviso.',
+      'team.pedro.bio':    'Acredito que gerar valor verdadeiro às pessoas e às empresas é a única forma de resultado real e sustentável. Cada solução que a BMAi entrega precisa gerar impacto real, tempo de volta pro dono, previsibilidade de receita e um negócio que cresce sem depender de improviso.',
       'team.pedro.sig':    'Sócio Fundador · BMAI',
       'team.anna.role':    'Atendente',
-      'team.anna.bio':     'Cada cliente que chega na BMAI tem uma história. Meu trabalho é ouvir essa história, entender o momento do negócio e garantir que a conversa certa aconteça com a pessoa certa. Relacionamento não é protocolo — é presença.',
+      'team.anna.bio':     'Cada cliente que chega na BMAI tem uma história. Meu trabalho é ouvir essa história, entender o momento do negócio e garantir que a conversa certa aconteça com a pessoa certa. Relacionamento não é protocolo, é presença.',
       'team.anna.sig':     'Atendente · BMAI',
 
       /* FAQ */
       'faq.title': 'Perguntas frequentes.',
       'faq.1.q':   'Como funciona?',
-      'faq.1.a':   'Primeiro é realizada uma avaliação do seu negócio — processos, momento e maturidade — pra validar se existe algo em que a BMAi consegue te ajudar. Precisamos conhecer a fundo o negócio, suas nuances e fluxos, pra desenhar algo que encaixe perfeitamente pra você. Depois, com a solução adequada definida, começam as implementações e evoluções dos agentes — e os primeiros resultados já aparecem. Ao final, tudo ajustado e funcionando, você acompanha os resultados e trabalha a melhoria contínua junto com a gente.',
+      'faq.1.a':   'Primeiro é realizada uma avaliação do seu negócio, processos, momento e maturidade, pra validar se existe algo em que a BMAi consegue te ajudar. Precisamos conhecer a fundo o negócio, suas nuances e fluxos, pra desenhar algo que encaixe perfeitamente pra você. Depois, com a solução adequada definida, começam as implementações e evoluções dos agentes, e os primeiros resultados já aparecem. Ao final, tudo ajustado e funcionando, você acompanha os resultados e trabalha a melhoria contínua junto com a gente.',
       'faq.2.q':   'Preciso demitir meus colaboradores?',
-      'faq.2.a':   'Não. A IA não substitui seu time, potencializa. Trabalhos repetitivos, burocráticos, processos complexos e cheios de detalhes — é aí que a IA entra pra aliviar você e sua equipe. Isso permite realocar gente boa pra funções estratégicas e táticas, de maior valor e impacto no crescimento do negócio. A IA existe pra nos servir — o erro começa quando isso se inverte.',
+      'faq.2.a':   'Não. A IA não substitui seu time, potencializa. Trabalhos repetitivos, burocráticos, processos complexos e cheios de detalhes, é aí que a IA entra pra aliviar você e sua equipe. Isso permite realocar gente boa pra funções estratégicas e táticas, de maior valor e impacto no crescimento do negócio. A IA existe pra nos servir, o erro começa quando isso se inverte.',
       'faq.3.q':   'Preciso ter conhecimento técnico?',
-      'faq.3.a':   'Nenhum. Você nos conta como funciona a sua operação — e a BMAi transforma em IA. Toda a parte técnica (prompts, integrações, infra, deploy, ajustes) fica com o time da BMAi. Seu trabalho é validar o que faz sentido pro seu negócio. É como contratar um diretor operacional que também é engenheiro — sem precisar ser um.',
+      'faq.3.a':   'Nenhum. Você nos conta como funciona a sua operação, e a BMAi transforma em IA. Toda a parte técnica (prompts, integrações, infra, deploy, ajustes) fica com o time da BMAi. Seu trabalho é validar o que faz sentido pro seu negócio. É como contratar um diretor operacional que também é engenheiro, sem precisar ser um.',
       'faq.4.q':   'Não sei se funciona no meu segmento',
-      'faq.4.a':   'Já validamos soluções em segmentos muito diferentes. O que de fato importa é o processo: se ele está bem definido e você sabe o que precisa ser feito, fica mais fácil aplicar IA. Nosso trabalho começa justamente aí — mapeando e estruturando antes de construir qualquer inteligência.',
+      'faq.4.a':   'Já validamos soluções em segmentos muito diferentes. O que de fato importa é o processo: se ele está bem definido e você sabe o que precisa ser feito, fica mais fácil aplicar IA. Nosso trabalho começa justamente aí, mapeando e estruturando antes de construir qualquer inteligência.',
       'faq.5.q':   'IA no meu nicho não converte, precisa ser humanizado',
-      'faq.5.a':   'A IA realmente não faz tudo sozinha — mas nossos agentes são treinados com o tom da sua empresa, a linguagem do seu cliente e as nuances específicas do público. A gente consegue esse encaixe porque estuda bem o processo e o perfil do consumidor — então o que o agente fala é exatamente o que o cliente quer ouvir.',
+      'faq.5.a':   'A IA realmente não faz tudo sozinha, mas nossos agentes são treinados com o tom da sua empresa, a linguagem do seu cliente e as nuances específicas do público. A gente consegue esse encaixe porque estuda bem o processo e o perfil do consumidor, então o que o agente fala é exatamente o que o cliente quer ouvir.',
       'faq.6.q':   'Quanto custa?',
-      'faq.6.a':   'Não trabalhamos com tabela. Cada projeto é precificado com base no diagnóstico real: escopo da operação, número de frentes que a IA vai atender, nível de integração com os sistemas que você já usa e complexidade dos fluxos. Durante todo o processo, nosso time te receita uma solução que encaixe no seu negócio em todos os âmbitos — do operacional ao financeiro.',
+      'faq.6.a':   'Não trabalhamos com tabela. Cada projeto é precificado com base no diagnóstico real: escopo da operação, número de frentes que a IA vai atender, nível de integração com os sistemas que você já usa e complexidade dos fluxos. Durante todo o processo, nosso time te receita uma solução que encaixe no seu negócio em todos os âmbitos, do operacional ao financeiro.',
       'faq.7.q':   'Quanto tempo leva tudo isso?',
-      'faq.7.a':   'Cada solução é única e tem suas próprias nuances — isso é alinhado antes, durante e depois da implementação. Em média, pra projetos de complexidade média, entre 5 e 35 dias a solução já está 100% ativa.',
+      'faq.7.a':   'Cada solução é única e tem suas próprias nuances, isso é alinhado antes, durante e depois da implementação. Em média, pra projetos de complexidade média, entre 5 e 35 dias a solução já está 100% ativa.',
       'faq.8.q':   'O que acontece depois da implementação?',
-      'faq.8.a':   'Nosso time faz melhorias e manutenção constantes pra solução continuar funcionando bem e evoluindo. Você tem acesso direto ao suporte pra ajustar métricas e resolver o que for precisando — a parceria não termina no deploy, começa nele.',
+      'faq.8.a':   'Nosso time faz melhorias e manutenção constantes pra solução continuar funcionando bem e evoluindo. Você tem acesso direto ao suporte pra ajustar métricas e resolver o que for precisando, a parceria não termina no deploy, começa nele.',
 
       /* FORM */
       'form.tag':     'Fale com o time da BMAi',

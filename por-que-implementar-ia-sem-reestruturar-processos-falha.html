@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="A maioria dos projetos de IA falha porque a empresa coloca tecnologia em cima de um processo bagunçado. Entenda por que a ordem certa é reestruturar o processo primeiro e aplicar IA depois.">
   <title>Por que implementar IA sem reestruturar processos falha | BMAi</title>
-  <link rel="canonical" href="https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html">
+  <link rel="canonical" href="https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha">
   <link rel="alternate" type="application/rss+xml" title="Blog da BMAi" href="/feed.xml">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0d1b2a">
 
   <!-- Mesma folha do site + a camada do blog. Sem paleta local. -->
   <link rel="stylesheet" href="css/style.min.css?v=20260623-rev72">
-  <link rel="stylesheet" href="css/blog.css?v=20260814-rev2">
+  <link rel="stylesheet" href="css/blog.css?v=20260814-rev3">
 
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
@@ -27,7 +27,7 @@
   <meta property="og:site_name" content="BMAi">
   <meta property="og:title" content="Por que implementar IA sem reestruturar processos falha | BMAi">
   <meta property="og:description" content="Colocar IA em cima de processo bagunçado só acelera a bagunça. A ordem certa é processo primeiro, IA depois.">
-  <meta property="og:url" content="https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html">
+  <meta property="og:url" content="https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha">
   <meta property="og:image" content="https://bmai.com.br/assets/images/og-bmai.webp">
   <meta property="og:locale" content="pt_BR">
   <meta property="article:published_time" content="2026-08-12T09:00:00-03:00">
@@ -52,8 +52,8 @@
     "datePublished": "2026-08-12T09:00:00-03:00",
     "dateModified": "2026-08-12T09:00:00-03:00",
     "image": "https://bmai.com.br/assets/images/og-bmai.webp",
-    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html" },
-    "isPartOf": { "@type": "Blog", "name": "Blog da BMAi", "url": "https://bmai.com.br/blog.html" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha" },
+    "isPartOf": { "@type": "Blog", "name": "Blog da BMAi", "url": "https://bmai.com.br/blog" },
     "inLanguage": "pt-BR"
   }
   </script>
@@ -63,8 +63,8 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "BMAi", "item": "https://bmai.com.br/" },
-      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://bmai.com.br/blog.html" },
-      { "@type": "ListItem", "position": 3, "name": "Por que implementar IA sem reestruturar processos falha", "item": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html" }
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://bmai.com.br/blog" },
+      { "@type": "ListItem", "position": 3, "name": "Por que implementar IA sem reestruturar processos falha", "item": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha" }
     ]
   }
   </script>
@@ -100,7 +100,7 @@
 </head>
 <body>
 <!--
-  DIREÇÃO (2026-08-14) — página de artigo
+  DIREÇÃO (2026-08-14): página de artigo
   THESIS: um artigo do site, não uma landing solta. Mesma cara, mesmo menu,
     mesmo rodapé. Recusa a coluna de texto sem cabeçalho e sem saída.
   OWN-WORLD: navy #0d1b2a, laranja #db5500 só em link, marcador e botão,
@@ -118,7 +118,7 @@
 
   <div class="scroll-progress" id="scrollProgress"></div>
 
-  <!-- HEADER — mesmo componente da home -->
+  <!-- HEADER, mesmo componente da home -->
   <header class="header" id="header">
     <nav class="floatnav" id="nav" aria-label="Principal">
       <a href="/" class="nav-logo" aria-label="BMAi Home">
@@ -143,7 +143,7 @@
         </span>
         <span class="floatnav__text">FAQ</span>
       </a>
-      <a href="/blog.html" class="floatnav__item active">
+      <a href="/blog" class="floatnav__item active">
         <span class="floatnav__icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         </span>
@@ -167,54 +167,66 @@
       <div class="container">
         <article class="article">
 
-          <a href="/blog.html" class="article__back">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-            Voltar para o blog
-          </a>
+          <div class="enter">
+            <a href="/blog" class="article__back">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+              Voltar para o blog
+            </a>
 
-          <h1>Por que implementar IA sem reestruturar processos falha</h1>
-          <p class="article__meta">
-            <time datetime="2026-08-12">12 de agosto de 2026</time> · Leitura de 4 min · BMAi
-          </p>
+            <h1>Por que implementar IA sem reestruturar processos falha</h1>
+            <p class="article__meta">
+              <time datetime="2026-08-12">12 de agosto de 2026</time> · Leitura de 4 min · BMAi
+            </p>
 
-          <p class="article__lead">Toda semana surge uma empresa animada pra "colocar IA". Compra uma ferramenta, conecta no WhatsApp, e três meses depois a IA está parada e a frustração aumentou. O motivo é quase sempre o mesmo, e não tem nada a ver com a tecnologia.</p>
+            <p class="article__lead">Toda semana surge uma empresa animada pra "colocar IA". Compra uma ferramenta, conecta no WhatsApp, e três meses depois a IA está parada e a frustração aumentou. O motivo é quase sempre o mesmo, e não tem nada a ver com a tecnologia.</p>
+          </div>
 
           <div class="article__body">
-            <h2>O erro mais comum: colocar IA em cima da bagunça</h2>
-            <p>IA não organiza um processo. Ela <strong>acelera</strong> o processo que já existe. Se o seu comercial é desorganizado, os dados estão espalhados e ninguém segue o CRM, colocar IA em cima disso só faz a desorganização acontecer <strong>mais rápido</strong>. Você multiplica o erro em vez de corrigir.</p>
+            <div class="rise">
+              <h2>O erro mais comum: colocar IA em cima da bagunça</h2>
+              <p>IA não organiza um processo. Ela <strong>acelera</strong> o processo que já existe. Se o seu comercial é desorganizado, os dados estão espalhados e ninguém segue o CRM, colocar IA em cima disso só faz a desorganização acontecer <strong>mais rápido</strong>. Você multiplica o erro em vez de corrigir.</p>
+            </div>
 
-            <p class="article__pull">IA em cima de bagunça só acelera a bagunça.</p>
+            <p class="article__pull rise">IA em cima de bagunça só acelera a bagunça.</p>
 
-            <p>É por isso que tanto projeto de IA morre: a empresa tratou a IA como um interruptor mágico, quando ela é, na verdade, um multiplicador. E multiplicador de processo ruim dá resultado ruim, em escala.</p>
+            <p class="rise">É por isso que tanto projeto de IA morre: a empresa tratou a IA como um interruptor mágico, quando ela é, na verdade, um multiplicador. E multiplicador de processo ruim dá resultado ruim, em escala.</p>
 
-            <h2>Por que a ferramenta sozinha não resolve</h2>
-            <p>Ferramenta de prateleira não conhece o seu funil, o seu jeito de vender, as suas exceções. Ela assume um processo genérico que não é o seu. Quando a realidade da sua operação bate na porta, um convênio diferente, uma etapa a mais, uma regra específica, a ferramenta genérica trava. E aí volta tudo pro colo do dono.</p>
+            <div class="rise">
+              <h2>Por que a ferramenta sozinha não resolve</h2>
+              <p>Ferramenta de prateleira não conhece o seu funil, o seu jeito de vender, as suas exceções. Ela assume um processo genérico que não é o seu. Quando a realidade da sua operação bate na porta, um convênio diferente, uma etapa a mais, uma regra específica, a ferramenta genérica trava. E aí volta tudo pro colo do dono.</p>
+            </div>
 
-            <h2>O que reestruturar o processo significa na prática</h2>
-            <p>Não é virar a empresa do avesso. É deixar o processo <strong>explícito e previsível</strong> antes de aplicar tecnologia:</p>
-            <ul>
-              <li>Mapear o fluxo real, não o que "deveria" acontecer, mas o que <em>acontece</em>.</li>
-              <li>Achar onde o processo perde tempo, lead ou dinheiro.</li>
-              <li>Padronizar as etapas e as regras de decisão.</li>
-              <li>Definir o que é trabalho humano e o que a IA pode assumir.</li>
-            </ul>
-            <p>Só depois disso a IA entra, e entra encaixada, resolvendo o gargalo certo.</p>
+            <div class="rise">
+              <h2>O que reestruturar o processo significa na prática</h2>
+              <p>Não é virar a empresa do avesso. É deixar o processo <strong>explícito e previsível</strong> antes de aplicar tecnologia:</p>
+              <ul>
+                <li>Mapear o fluxo real, não o que "deveria" acontecer, mas o que <em>acontece</em>.</li>
+                <li>Achar onde o processo perde tempo, lead ou dinheiro.</li>
+                <li>Padronizar as etapas e as regras de decisão.</li>
+                <li>Definir o que é trabalho humano e o que a IA pode assumir.</li>
+              </ul>
+              <p>Só depois disso a IA entra, e entra encaixada, resolvendo o gargalo certo.</p>
+            </div>
 
-            <h2>A ordem certa: processo primeiro, IA depois</h2>
-            <p>Parece óbvio, mas quase ninguém faz. A sequência que funciona é simples:</p>
-            <ul>
-              <li><strong>Diagnóstico:</strong> onde a operação trava.</li>
-              <li><strong>Estruturação:</strong> organizar o processo antes da tecnologia.</li>
-              <li><strong>Implementação:</strong> a IA entra funcionando, integrada à rotina.</li>
-              <li><strong>Acompanhamento:</strong> ajuste contínuo com base em dados.</li>
-            </ul>
-            <p>É a diferença entre "compramos uma IA" e "resolvemos um problema com IA". A primeira vira assinatura esquecida. A segunda vira resultado.</p>
+            <div class="rise">
+              <h2>A ordem certa: processo primeiro, IA depois</h2>
+              <p>Parece óbvio, mas quase ninguém faz. A sequência que funciona é simples:</p>
+              <ul>
+                <li><strong>Diagnóstico:</strong> onde a operação trava.</li>
+                <li><strong>Estruturação:</strong> organizar o processo antes da tecnologia.</li>
+                <li><strong>Implementação:</strong> a IA entra funcionando, integrada à rotina.</li>
+                <li><strong>Acompanhamento:</strong> ajuste contínuo com base em dados.</li>
+              </ul>
+              <p>É a diferença entre "compramos uma IA" e "resolvemos um problema com IA". A primeira vira assinatura esquecida. A segunda vira resultado.</p>
+            </div>
 
-            <h2>Como saber se o seu processo está pronto pra IA</h2>
-            <p>Um teste rápido: se você sumir por uma semana, o processo continua rodando ou trava? Se trava, o problema não é falta de IA, é falta de processo. E é exatamente aí que a estruturação, com ou sem tecnologia, já devolve controle. A IA vem depois, pra multiplicar o que já funciona.</p>
+            <div class="rise">
+              <h2>Como saber se o seu processo está pronto pra IA</h2>
+              <p>Um teste rápido: se você sumir por uma semana, o processo continua rodando ou trava? Se trava, o problema não é falta de IA, é falta de processo. E é exatamente aí que a estruturação, com ou sem tecnologia, já devolve controle. A IA vem depois, pra multiplicar o que já funciona.</p>
+            </div>
 
-            <h2>Perguntas frequentes</h2>
-            <div class="article__faq">
+            <h2 class="rise">Perguntas frequentes</h2>
+            <div class="article__faq rise">
               <details>
                 <summary>
                   Preciso ter os processos perfeitos antes de aplicar IA?
@@ -239,7 +251,7 @@
             </div>
           </div>
 
-          <div class="article__close">
+          <div class="article__close rise">
             <h2>Antes de colocar IA, vamos olhar o seu processo</h2>
             <p>A BMAi começa pelo diagnóstico. A gente entende a sua operação antes de falar de ferramenta.</p>
             <a class="btn btn--primary btn--lg" href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20li%20o%20artigo%20sobre%20reestrutura%C3%A7%C3%A3o%20de%20processos%20e%20IA" target="_blank" rel="noopener">
@@ -253,7 +265,7 @@
     </section>
   </main>
 
-  <!-- FOOTER — mesmo componente da home -->
+  <!-- FOOTER, mesmo componente da home -->
   <footer class="footer">
     <div class="footer__inner">
       <div class="footer__brand">
@@ -272,14 +284,14 @@
             <li><a href="/#cases">Cases</a></li>
             <li><a href="/#para-quem">Team</a></li>
             <li><a href="/#faq">FAQ</a></li>
-            <li><a href="/blog.html">Blog</a></li>
+            <li><a href="/blog">Blog</a></li>
           </ul>
         </div>
         <div class="footer__col">
           <h3><span class="footer__col-dot"></span><span>Legal</span></h3>
           <ul>
-            <li><a href="/privacidade.html">Política de Privacidade</a></li>
-            <li><a href="/termos.html">Termos de Uso</a></li>
+            <li><a href="/privacidade">Política de Privacidade</a></li>
+            <li><a href="/termos">Termos de Uso</a></li>
           </ul>
         </div>
         <div class="footer__col">
@@ -323,6 +335,6 @@
     </div>
   </footer>
 
-  <script defer src="js/subpage.js?v=20260814-rev2"></script>
+  <script defer src="js/subpage.js?v=20260814-rev3"></script>
 </body>
 </html>

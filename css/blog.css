@@ -7,7 +7,8 @@
    Header, rodapé e botões são os componentes reais do site
    (.header/.floatnav/.footer/.btn), reaproveitados como estão.
    O que esta folha adiciona é só o que o site ainda não tinha:
-   destaque editorial, cards de case, radar e página de artigo.
+   a página de artigo (prefixo `article__`, usada pelo artigo e
+   pelas 5 páginas de SEO) e o índice do blog (prefixo `bl-`).
    ============================================================ */
 
 :root {
@@ -17,10 +18,22 @@
   --blog-ink-2:    rgba(237, 231, 225, .64);  /* apoio */
   --blog-ink-3:    rgba(255, 255, 255, .62);  /* micro-label */
   --blog-rule:     rgba(255, 255, 255, .08);
+  --blog-rule-2:   rgba(255, 255, 255, .16);  /* hairline de contorno de card */
   --blog-surface:  rgba(255, 255, 255, .02);
   --blog-border:   rgba(255, 255, 255, .06);
   --blog-reveal:   cubic-bezier(.16, 1, .3, 1);
 }
+
+/* ============================================================
+   `hidden` PRECISA VALER
+   ------------------------------------------------------------
+   O css/style.css declara `section, .section { display: block }`.
+   Declaração de autor vence o `display:none` que o navegador dá
+   ao atributo hidden, então, sem esta regra, a seção do radar
+   nasce visível e VAZIA. Mesma família do caso `.reveal`: o CSS
+   do site alcança a subpágina, e é preciso conferir antes.
+   ============================================================ */
+[hidden] { display: none !important; }
 
 /* ============================================================
    SHELL DE SUBPÁGINA
@@ -68,344 +81,11 @@
 }
 
 /* ============================================================
-   ABERTURA DO BLOG
+   CONTEXTO DE EMPILHAMENTO DAS SUBPÁGINAS
    ============================================================ */
 /* O campo de partículas é irmão do .container e vive em z-index 1,
    então o conteúdo da abertura sobe pra 2. */
 .subpage > section > .container { position: relative; z-index: 2; }
-
-.blog-intro { text-align: center; }
-.blog-intro .section__title { text-wrap: balance; }
-.blog-intro__sub {
-  max-width: 56ch;
-  margin: 18px auto 0;
-  font-size: 1.02rem;
-  line-height: 1.65;
-  color: var(--blog-ink-2);
-  text-wrap: balance;
-}
-
-/* ============================================================
-   DESTAQUE — o artigo mais recente, em escala de manchete.
-   Duas colunas de texto (título / resumo), sem media falsa.
-   O filete laranja acima ecoa o filete do rodapé do site.
-   ============================================================ */
-.lead {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: clamp(26px, 4vw, 60px);
-  align-items: start;
-  margin-top: clamp(30px, 4vw, 44px);
-  padding-top: clamp(24px, 2.8vw, 32px);
-  border-top: 1px solid var(--blog-rule);
-}
-.lead::before {
-  content: '';
-  position: absolute;
-  top: -1px; left: 0;
-  width: 96px; height: 1px;
-  background: var(--orange);
-}
-.lead__title {
-  font-size: clamp(1.85rem, 3.3vw, 2.9rem);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -.03em;
-  color: #fff;
-  text-wrap: balance;
-}
-.lead__title a { transition: color .25s var(--ease); }
-.lead__title a:hover { color: var(--orange-l); }
-.lead__dek {
-  font-size: 1.02rem;
-  line-height: 1.65;
-  color: var(--blog-ink);
-}
-.lead__meta {
-  margin: 16px 0 22px;
-  font-size: .82rem;
-  color: var(--blog-ink-3);
-}
-
-/* ============================================================
-   CABEÇALHO DE SEÇÃO (pilar)
-   Sem régua horizontal e sem rótulo em caixa alta: quem separa
-   é o espaço, como no resto do site.
-   ============================================================ */
-/* O ritmo vertical entre pilares é o do site (--section-spacing-*),
-   herdado pelo reset global de <section>. Nada de margem extra aqui. */
-.strip__head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 28px;
-  margin-bottom: clamp(24px, 3vw, 34px);
-}
-.strip__title {
-  font-size: clamp(1.45rem, 2.4vw, 2rem);
-  font-weight: 700;
-  line-height: 1.14;
-  letter-spacing: -.025em;
-  color: var(--white);
-}
-.strip__note {
-  margin-top: 10px;
-  max-width: 56ch;
-  font-size: .93rem;
-  line-height: 1.6;
-  color: var(--blog-ink-2);
-  text-wrap: balance;
-}
-.strip__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
-  padding-bottom: 4px;
-  font-size: .86rem;
-  font-weight: 600;
-  color: var(--orange);
-  white-space: nowrap;
-  transition: color .25s var(--ease);
-}
-.strip__link:hover { color: var(--orange-l); }
-.strip__link svg { transition: transform .25s var(--spring); }
-.strip__link:hover svg { transform: translateX(4px); }
-
-/* ============================================================
-   CARDS DE CASE — mesma matéria dos cards do site (.cs-card):
-   superfície 2%, hairline 6%, raio 16, lift de 4px no hover.
-   ============================================================ */
-.cases {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-}
-.case {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 26px;
-  border: 1px solid var(--blog-border);
-  border-radius: 16px;
-  background: var(--blog-surface);
-  overflow: hidden;
-  transition:
-    border-color .4s var(--ease),
-    box-shadow   .5s var(--ease),
-    transform    .5s var(--ease);
-}
-@media (hover: hover) and (pointer: fine) {
-  .case:hover {
-    border-color: rgba(219, 85, 0, .18);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, .3), 0 0 30px rgba(219, 85, 0, .05);
-    transform: translateY(-4px);
-  }
-  .case:hover .case__logo { opacity: 1; }
-}
-.case__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 30px;
-}
-.case__logo {
-  height: 25px;
-  width: auto;
-  max-width: 130px;
-  object-fit: contain;
-  object-position: left center;
-  filter: brightness(0) invert(1);   /* logo colorida some no navy */
-  opacity: .9;
-  transition: opacity .3s var(--ease);
-}
-.case__logo--sh {
-  filter: none;
-  opacity: 1;
-  height: 38px;
-  padding: 3px 8px;
-  border-radius: 7px;
-  background: #fff;   /* azul+vinho precisa de chip claro */
-}
-.case__sector {
-  font-size: .75rem;
-  font-weight: 500;
-  color: var(--blog-ink-3);
-  white-space: nowrap;
-}
-.case__result {
-  font-size: .95rem;
-  line-height: 1.62;
-  color: var(--blog-ink-2);
-}
-.case__metric {
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--orange);
-}
-.case__foot {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, .05);
-}
-.case__avatar {
-  width: 30px; height: 30px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  background: rgba(255, 255, 255, .06);
-}
-.case__avatar img { width: 100%; height: 100%; object-fit: cover; }
-.case__who strong {
-  display: block;
-  font-size: .83rem;
-  font-weight: 600;
-  color: var(--white);
-}
-.case__who span {
-  font-size: .75rem;
-  color: var(--blog-ink-3);
-}
-
-/* ============================================================
-   RADAR — lista densa. Aviso de conteúdo de exemplo primeiro,
-   pra ninguém ler manchete de exemplo como notícia publicada.
-   ============================================================ */
-.radar__notice {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: clamp(22px, 3vw, 30px);
-  padding: 14px 18px;
-  border: 1px solid rgba(219, 85, 0, .24);
-  border-radius: 14px;
-  background: rgba(219, 85, 0, .07);
-  font-size: .88rem;
-  line-height: 1.55;
-  color: var(--blog-ink);
-}
-.radar__notice svg { flex-shrink: 0; margin-top: 2px; color: var(--orange); }
-.radar__notice strong { color: #fff; font-weight: 600; }
-
-.radar__list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(28px, 4vw, 56px);
-  border-bottom: 1px solid var(--blog-rule);   /* fecha a lista */
-}
-.radar__item {
-  display: grid;
-  grid-template-columns: 62px minmax(0, 1fr);
-  gap: 18px;
-  padding: 18px 0;
-  border-top: 1px solid var(--blog-rule);
-}
-.radar__time {
-  padding-top: 3px;
-  font-size: .76rem;
-  line-height: 1.45;
-  color: var(--blog-ink-3);
-}
-/* Marcador por item enquanto o feed não trouxe notícia real. O aviso no
-   topo da seção some da tela ao rolar, então cada item carrega o seu. */
-.radar__time--exemplo {
-  color: var(--orange);
-  font-weight: 600;
-}
-.radar__title {
-  margin-bottom: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: -.01em;
-  color: var(--white);
-}
-.radar__item a.radar__title { display: block; transition: color .25s var(--ease); }
-.radar__item a.radar__title:hover { color: var(--orange-l); }
-.radar__sum {
-  font-size: .88rem;
-  line-height: 1.55;
-  color: var(--blog-ink-2);
-}
-.radar__src { font-weight: 600; color: var(--orange); }
-
-/* ============================================================
-   LISTA DE ARTIGOS — linhas largas, textura diferente dos
-   cards, pra página não virar uma parede de retângulos iguais.
-   ============================================================ */
-.posts { border-top: 1px solid var(--blog-rule); }
-.post-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto;
-  align-items: start;
-  gap: clamp(18px, 3vw, 44px);
-  padding: clamp(22px, 2.6vw, 30px) 0;
-  border-bottom: 1px solid var(--blog-rule);
-}
-.post-row__title {
-  font-size: clamp(1.12rem, 1.9vw, 1.45rem);
-  font-weight: 700;
-  line-height: 1.22;
-  letter-spacing: -.02em;
-  color: var(--white);
-  transition: color .25s var(--ease);
-}
-.post-row__dek {
-  font-size: .94rem;
-  line-height: 1.6;
-  color: var(--blog-ink-2);
-}
-.post-row__go {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px; height: 34px;
-  flex-shrink: 0;
-  border: 1px solid var(--blog-border);
-  border-radius: 50%;
-  color: var(--blog-ink-3);
-  transition: color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--spring);
-}
-@media (hover: hover) and (pointer: fine) {
-  .post-row:hover .post-row__title { color: var(--orange-l); }
-  .post-row:hover .post-row__go {
-    color: var(--orange);
-    border-color: rgba(219, 85, 0, .4);
-    transform: translateX(4px);
-  }
-}
-
-/* ============================================================
-   FECHAMENTO — mesmo fechamento do site: título grande,
-   segunda linha laranja, um botão. Sem painel com gradiente.
-   ============================================================ */
-.blog-close { text-align: center; }
-/* Um degrau abaixo do h1 da página. Mesma voz de display do site
-   (var(--fd) + caixa alta, como .section__title), escala menor:
-   o fechamento não pode ser um monumento do tamanho do título. */
-.blog-close__title {
-  font-family: var(--fd);
-  font-size: clamp(1.6rem, 2.7vw, 2.3rem);
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -.02em;
-  text-transform: uppercase;
-  color: var(--white);
-  text-wrap: balance;
-}
-.blog-close__sub {
-  max-width: 46ch;
-  margin: 16px auto 26px;
-  font-size: .98rem;
-  line-height: 1.6;
-  color: var(--blog-ink-2);
-}
 
 /* ============================================================
    ARTIGO
@@ -559,27 +239,1071 @@
 }
 
 /* ============================================================
+   PÁGINAS DE SERVIÇO, LOCAL E COMPARATIVO
+   ------------------------------------------------------------
+   As 5 páginas de SEO tinham cada uma o seu mini CSS no <head>,
+   com paleta e escala próprias. Passam a usar a mesma matéria do
+   artigo. O que muda é só a medida: elas carregam tabela, grade e
+   bloco de case, que não cabem nos 640px de leitura corrida.
+   ============================================================ */
+.article--wide { max-width: 760px; }
+
+.article__eyebrow {
+  margin-bottom: 14px;
+  font-family: var(--fm);
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--orange);
+}
+
+/* Grade de capacidades */
+.article__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0 28px;
+}
+.article__tile {
+  padding: 20px;
+  border: 1px solid var(--blog-border);
+  border-radius: 14px;
+  background: var(--blog-surface);
+  transition:
+    border-color .4s var(--ease),
+    box-shadow   .5s var(--ease),
+    transform    .5s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .article__tile:hover {
+    border-color: rgba(219, 85, 0, .18);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, .28);
+    transform: translateY(-3px);
+  }
+}
+.article__tile h3 {
+  margin-bottom: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--white);
+}
+.article__body .article__tile p,
+.article__tile p {
+  margin: 0;
+  font-size: .91rem;
+  line-height: 1.6;
+  color: var(--blog-ink-2);
+}
+
+/* Passo a passo numerado: o número é rótulo, não bolinha laranja */
+.article__steps {
+  counter-reset: step;
+  list-style: none;
+  margin: 24px 0 28px;
+  padding: 0;
+}
+.article__body .article__steps > li,
+.article__steps > li {
+  counter-increment: step;
+  position: relative;
+  margin-bottom: 12px;
+  padding: 18px 20px 18px 64px;
+  border: 1px solid var(--blog-border);
+  border-radius: 14px;
+  background: var(--blog-surface);
+  font-size: .95rem;
+  line-height: 1.62;
+  color: var(--blog-ink-2);
+  transition: border-color .4s var(--ease), transform .5s var(--ease);
+}
+.article__body .article__steps > li::before,
+.article__steps > li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 20px; top: 19px;
+  width: auto; height: auto;
+  border-radius: 0;
+  background: none;
+  font-family: var(--fm);
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--orange);
+}
+@media (hover: hover) and (pointer: fine) {
+  .article__steps > li:hover {
+    border-color: rgba(219, 85, 0, .18);
+    transform: translateX(3px);
+  }
+}
+.article__steps h3 {
+  margin-bottom: 5px;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--white);
+}
+.article__body .article__steps p,
+.article__steps p { margin: 0; font-size: .95rem; line-height: 1.62; color: var(--blog-ink-2); }
+
+/* Tabela comparativa */
+.article__table-wrap {
+  margin: 24px 0 28px;
+  overflow-x: auto;
+  border: 1px solid var(--blog-border);
+  border-radius: 14px;
+  background: var(--blog-surface);
+}
+.article__table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: .95rem;
+}
+.article__table th,
+.article__table td {
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--blog-rule);
+  color: var(--blog-ink);
+}
+.article__table tbody tr:last-child td { border-bottom: 0; }
+.article__table thead th {
+  font-family: var(--fm);
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--blog-ink-3);
+}
+.article__table thead th:last-child { color: var(--orange); }
+.article__table td:first-child {
+  width: 30%;
+  font-size: .88rem;
+  color: var(--blog-ink-3);
+}
+.article__table tbody tr { transition: background-color .3s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .article__table tbody tr:hover { background: rgba(255, 255, 255, .022); }
+}
+
+/* Ressalva / sinais de alerta.
+   Sem filete grosso de um lado só: o fundo laranja a 6% e o contorno já
+   marcam o bloco, e a barra lateral seria acento redundante. */
+.article__note {
+  margin: 24px 0 28px;
+  padding: 18px 22px;
+  border: 1px solid rgba(219, 85, 0, .2);
+  border-radius: 12px;
+  background: rgba(219, 85, 0, .06);
+}
+.article__body .article__note p,
+.article__note p { margin: 0; font-size: .96rem; line-height: 1.65; color: var(--blog-ink); }
+.article__note ul { margin: 0; }
+.article__body .article__note li:last-child { margin-bottom: 0; }
+
+/* Case com depoimento e números */
+.article__case {
+  margin: 26px 0 28px;
+  padding: clamp(22px, 3vw, 28px);
+  border: 1px solid var(--blog-border);
+  border-radius: 16px;
+  background: var(--blog-surface);
+}
+.article__case blockquote {
+  margin: 0;
+  font-size: 1.06rem;
+  line-height: 1.62;
+  color: var(--blog-ink);
+}
+.article__body .article__case-attr,
+.article__case-attr {
+  margin: 14px 0 20px;
+  font-size: .85rem;
+  color: var(--blog-ink-3);
+}
+.article__case-attr strong { color: var(--white); font-weight: 600; }
+.article__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px 36px;
+  padding-top: 18px;
+  border-top: 1px solid var(--blog-rule);
+}
+.article__stat-val {
+  display: block;
+  font-size: clamp(1.5rem, 3vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--orange);
+}
+.article__stat-lbl {
+  display: block;
+  margin-top: 7px;
+  font-size: .79rem;
+  line-height: 1.4;
+  color: var(--blog-ink-3);
+}
+
+/* ============================================================
+   MOTION
+   ------------------------------------------------------------
+   Duas famílias, e só duas:
+     .rise  → entra quando encosta na viewport (JS, ver subpage.js)
+     .enter → entra no load, para o que já está na primeira tela
+              e portanto nunca dispara o observer
+   A mesma regra do `.rise` vale aqui: o estado padrão é VISÍVEL.
+   Nenhuma animação pode ser o motivo de um texto não aparecer.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .enter > * { animation: enterUp .78s var(--blog-reveal) both; }
+  .enter > :nth-child(2) { animation-delay: .06s; }
+  .enter > :nth-child(3) { animation-delay: .12s; }
+  .enter > :nth-child(4) { animation-delay: .18s; }
+  .enter > :nth-child(5) { animation-delay: .24s; }
+  .enter > :nth-child(6) { animation-delay: .3s; }
+
+  /* Resposta do FAQ: acompanha a abertura em vez de piscar pronta */
+  .article__faq details[open] > :not(summary) {
+    animation: faqIn .36s var(--blog-reveal) both;
+  }
+
+  html { scroll-behavior: smooth; }
+}
+
+@keyframes enterUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes faqIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Link dentro do corpo: o sublinhado é desenhado, não aceso */
+.article__body a:not(.btn) {
+  color: var(--orange);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size .38s var(--blog-reveal), color .25s var(--ease);
+}
+.article__body a:not(.btn):hover {
+  color: var(--orange-l);
+  background-size: 100% 1px;
+}
+
+/* ============================================================
    RESPONSIVO
    ============================================================ */
-@media (max-width: 1024px) {
-  .cases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 900px) {
-  .lead { grid-template-columns: 1fr; gap: 22px; }
-  .radar__list { grid-template-columns: 1fr; }
-  .strip__head { flex-direction: column; align-items: flex-start; gap: 14px; }
-  .post-row { grid-template-columns: minmax(0, 1fr) auto; gap: 16px 22px; }
-  .post-row__dek { grid-column: 1 / -1; }
-}
 @media (max-width: 620px) {
   .subpage { padding-top: 92px; }
-  .cases { grid-template-columns: 1fr; }
-  .radar__item { grid-template-columns: 1fr; gap: 6px; }
-  .radar__time { padding-top: 0; }
-  .post-row__go { display: none; }
   .article__body p, .article__body li { font-size: 1.04rem; }
-  /* Sem quebra forçada: o balance distribui as linhas em vez de deixar
-     uma palavra sozinha na terceira. */
-  .blog-intro .section__title br,
-  .blog-close__title br { display: none; }
+}
+
+/* ============================================================
+   ÍNDICE DO BLOG — v2 (busca, filtro e barra lateral)
+   ------------------------------------------------------------
+   Prefixo `bl-` em TODAS as classes desta seção, sem exceção.
+   O css/style.css já define `.hero`, `.hero-visual`, `.tag` e
+   `.btn`; usar esses nomes aqui traria o estilo da home junto,
+   que é a mesma armadilha do `.reveal`. O `.btn` é o único
+   reaproveitado de propósito: o botão é componente do site.
+
+   Cor, raio e curva saem dos tokens do site (--bg-2, --bg-3,
+   --orange, --white, --r, --r-sm, --ease). Nenhuma paleta local.
+   ============================================================ */
+
+.bl-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--orange-l);
+}
+.bl-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--orange-l);
+  box-shadow: 0 0 0 4px rgba(219, 85, 0, .14);
+}
+
+/* ---------- ABERTURA ---------- */
+.bl-hero {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(680px 420px at 82% -8%, rgba(219, 85, 0, .16), transparent 60%);
+  /* O header do site é fixed, então a abertura precisa abrir o próprio
+     respiro (as outras subpáginas usam o .subpage do <main> pra isso).
+     O !important é obrigatório e não é preguiça: o style.css tem
+     `section { padding-top: 32px !important }` no bloco mobile, e sem
+     responder no mesmo tom a abertura fica embaixo do menu no celular. */
+  padding-top: clamp(112px, 13vw, 148px) !important;
+  padding-bottom: clamp(48px, 6vw, 64px) !important;
+}
+.bl-hero__grid {
+  display: grid;
+  /* A coluna de texto precisa segurar "colocando IA pra rodar." em UMA linha,
+     senão o <br> do título vira três linhas e a escada se perde. */
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, .8fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 56px);
+}
+.bl-hero__title {
+  margin: 18px 0 20px;
+  font-size: clamp(2rem, 3.9vw, 3.05rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  color: var(--white);
+  text-wrap: balance;
+}
+.bl-hero__title .bl-accent { color: var(--orange-l); }
+.bl-hero__lead {
+  max-width: 48ch;
+  margin-bottom: 30px;
+  font-size: 1.06rem;
+  line-height: 1.6;
+  color: var(--blog-ink-2);
+}
+
+/* ---------- BUSCA ---------- */
+.bl-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 460px;
+  padding: 6px 8px 6px 20px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 100px;
+  background: var(--bg-2);
+  transition: border-color .2s var(--ease);
+}
+.bl-search:focus-within { border-color: var(--orange); }
+.bl-search__icon {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  color: var(--blog-ink-3);
+}
+.bl-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  outline: none;
+  font-family: var(--ff);
+  font-size: .92rem;
+  color: var(--white);
+}
+.bl-search input::placeholder { color: var(--blog-ink-3); }
+.bl-search__clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px; height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s var(--ease);
+}
+.bl-search__clear:hover:not(:disabled) { background: var(--orange-l); }
+.bl-search__clear:disabled { opacity: .4; cursor: default; }
+.bl-search__clear svg { width: 16px; height: 16px; }
+
+/* ---------- MARCA GIRATÓRIA DA ABERTURA ---------- */
+.bl-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  /* Largura EXPLÍCITA, não `max-width` + `margin:0 auto`. Margem auto num
+     item de grid desliga o stretch e faz a caixa encolher até o conteúdo:
+     era por isso que o radar sumia e sobrava só o símbolo flutuando. */
+  width: min(100%, 440px);
+  margin: 0 auto;
+}
+.bl-visual__rings {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(circle, transparent 0, transparent 43px, var(--blog-rule) 44px),
+    radial-gradient(circle at center, rgba(219, 85, 0, .09), transparent 70%);
+}
+.bl-visual__sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: .85;
+  animation: blSpin 9s linear infinite;
+}
+.bl-visual__sweep::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(from 0deg, rgba(219, 85, 0, .28), transparent 26%);
+}
+.bl-visual__dots {
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background-image: radial-gradient(var(--blog-rule-2) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(circle, #000 55%, transparent 78%);
+          mask-image: radial-gradient(circle, #000 55%, transparent 78%);
+}
+.bl-visual__blip {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--orange-l);
+  box-shadow: 0 0 10px 3px rgba(219, 85, 0, .28);
+  animation: blBlip 2.6s ease-in-out infinite;
+}
+.bl-visual__blip--1 { top: 28%; left: 64%; animation-delay: .2s; }
+.bl-visual__blip--2 { top: 62%; left: 32%; animation-delay: 1.1s; }
+.bl-visual__blip--3 { top: 70%; left: 68%; animation-delay: 1.8s; }
+.bl-visual__mark {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px; height: 150px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 32px;
+  background: linear-gradient(155deg, rgba(237, 231, 225, .06), rgba(237, 231, 225, .015));
+  box-shadow: 0 0 60px -8px rgba(219, 85, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .05);
+  animation: blFloat 5s ease-in-out infinite;
+}
+.bl-visual__mark img {
+  width: 64px; height: 64px;
+  filter: drop-shadow(0 0 22px rgba(219, 85, 0, .65));
+}
+@keyframes blSpin  { to { transform: rotate(360deg); } }
+@keyframes blFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes blBlip  { 0%, 100% { opacity: 0; transform: scale(.6); } 50% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .bl-visual__sweep,
+  .bl-visual__mark,
+  .bl-visual__blip { animation: none; }
+  .bl-visual__blip { opacity: 1; }
+}
+
+/* ---------- FILTROS ---------- */
+.bl-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--blog-rule);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.bl-filters::-webkit-scrollbar { display: none; }
+.bl-pill {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 100px;
+  background: var(--bg-2);
+  font-family: var(--ff);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--blog-ink-2);
+  cursor: pointer;
+  transition: color .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
+}
+.bl-pill:hover { color: var(--white); border-color: var(--orange); }
+.bl-pill[aria-pressed="true"] {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+
+/* ---------- GRADE PRINCIPAL ---------- */
+.bl-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 328px;
+  align-items: start;
+  gap: 48px;
+  padding: 52px 0 0;
+}
+.bl-col { min-width: 0; }
+/* O bloco é um <section>, e o reset global do site dá 40/56/72px de padding
+   em cima e embaixo de toda <section>. Somado à margem daqui, abria um vão
+   de ~200px entre um bloco e o outro. Aqui quem controla o ritmo é a margem. */
+.bl-block { padding: 0; margin-bottom: 56px; }
+.bl-block:last-of-type { margin-bottom: 0; }
+.bl-block__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.bl-block__head h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: var(--white);
+}
+.bl-seeall {
+  flex-shrink: 0;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--orange-l);
+  transition: color .2s var(--ease);
+}
+.bl-seeall:hover { color: var(--orange); }
+
+/* ---------- CARDS DE ARTIGO ---------- */
+.bl-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 22px;
+}
+.bl-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.bl-card {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--blog-rule);
+  border-radius: var(--r);
+  background: var(--bg-2);
+  transition: transform .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bl-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--blog-rule-2);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .3);
+  }
+  .bl-card:hover .bl-card__link svg { transform: translateX(3px); }
+}
+/* Os filhos do card são <span> (o card inteiro é um <a>, e span evita
+   aninhar bloco dentro de link). Span nasce inline, e aspect-ratio,
+   padding vertical e margem não valem em inline: daí o display: block
+   explícito em cada um. Sem isto o card colapsa e a tag vira uma tira. */
+.bl-card__media,
+.bl-card__body,
+.bl-card__meta,
+.bl-card__excerpt { display: block; }
+
+.bl-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background:
+    radial-gradient(120% 90% at 20% 0%, rgba(219, 85, 0, .28), transparent 55%),
+    linear-gradient(160deg, var(--bg-3), var(--bg-2));
+}
+.bl-card--sm .bl-card__media { aspect-ratio: 16 / 7.2; }
+
+/* O destaque estica pra acompanhar a altura da pilha ao lado, e o texto dele
+   acaba antes: sem isto sobra um vazio de ~100px embaixo do link. A imagem
+   absorve a folga, e o corpo fica ancorado embaixo. */
+.bl-card--featured {
+  display: flex;
+  flex-direction: column;
+}
+.bl-card--featured .bl-card__media {
+  flex: 1 1 auto;
+  aspect-ratio: auto;
+  min-height: 190px;
+}
+.bl-card__mesh {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--blog-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blog-rule) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(circle at 25% 20%, #000, transparent 70%);
+          mask-image: radial-gradient(circle at 25% 20%, #000, transparent 70%);
+}
+.bl-tag {
+  position: absolute;
+  top: 14px; left: 14px;
+  padding: 6px 11px;
+  border-radius: 100px;
+  background: var(--orange);
+  font-size: .69rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.bl-tag--ghost {
+  border: 1px solid var(--blog-rule-2);
+  background: rgba(13, 27, 42, .7);
+  color: var(--white);
+}
+.bl-card__body { padding: 22px 22px 24px; }
+.bl-card--featured .bl-card__body { padding: 26px 28px 28px; }
+.bl-card--sm .bl-card__body { padding: 18px 20px 20px; }
+.bl-card__meta {
+  margin-bottom: 10px;
+  font-size: .78rem;
+  color: var(--blog-ink-3);
+}
+.bl-card__title {
+  margin-bottom: 10px;
+  font-size: 1.06rem;
+  font-weight: 700;
+  line-height: 1.32;
+  letter-spacing: -.01em;
+  color: var(--white);
+}
+.bl-card--featured .bl-card__title { font-size: 1.44rem; }
+.bl-card--sm .bl-card__title { font-size: .97rem; }
+.bl-card__excerpt {
+  margin-bottom: 16px;
+  font-size: .88rem;
+  line-height: 1.55;
+  color: var(--blog-ink-2);
+}
+.bl-card--sm .bl-card__excerpt { font-size: .84rem; margin-bottom: 10px; }
+.bl-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--orange-l);
+}
+.bl-card--sm .bl-card__link { font-size: .81rem; }
+.bl-card__link svg { width: 14px; height: 14px; transition: transform .18s var(--ease); }
+
+/* ---------- MINIATURA ----------
+   A BMAi não tem foto de artigo, e inventar uma seria a "cara de IA" que o
+   site recusa. A miniatura é a mesma matéria gráfica do card grande, na
+   escala menor: gradiente da marca com a malha por cima. */
+.bl-thumb {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--blog-rule);
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 90% at 20% 0%, rgba(219, 85, 0, .26), transparent 55%),
+    linear-gradient(160deg, var(--bg-3), var(--bg-2));
+}
+.bl-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--blog-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blog-rule) 1px, transparent 1px);
+  background-size: 16px 16px;
+  -webkit-mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
+          mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
+}
+
+/* ---------- MAIS RECENTES ---------- */
+.bl-rows { display: flex; flex-direction: column; }
+.bl-row {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 22px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--blog-rule);
+}
+.bl-row:first-child { border-top: 1px solid var(--blog-rule); }
+.bl-row .bl-thumb { width: 168px; aspect-ratio: 16 / 10; }
+.bl-row__copy { display: block; min-width: 0; }
+.bl-row__meta {
+  display: block;
+  margin-bottom: 8px;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--blog-ink-3);
+}
+.bl-row__title {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 1.16rem;
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -.015em;
+  color: var(--white);
+  transition: color .2s var(--ease);
+}
+.bl-row__dek {
+  display: block;
+  font-size: .88rem;
+  line-height: 1.55;
+  color: var(--blog-ink-2);
+}
+.bl-row__tag {
+  flex-shrink: 0;
+  align-self: start;
+  padding: 5px 12px;
+  border: 1px solid rgba(219, 85, 0, .3);
+  border-radius: 100px;
+  font-size: .67rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--orange-l);
+  white-space: nowrap;
+}
+@media (hover: hover) and (pointer: fine) {
+  .bl-row:hover .bl-row__title { color: var(--orange-l); }
+  .bl-row:hover .bl-thumb { border-color: var(--blog-rule-2); }
+}
+
+/* ---------- VER TODOS ---------- */
+.bl-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+.bl-more button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 100px;
+  background: var(--bg-2);
+  font-family: var(--ff);
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--white);
+  cursor: pointer;
+  transition: border-color .2s var(--ease), color .2s var(--ease);
+}
+.bl-more button:hover { border-color: var(--orange); color: var(--orange-l); }
+.bl-more svg { width: 15px; height: 15px; transition: transform .2s var(--ease); }
+.bl-more button[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* ---------- DESTAQUES DA LATERAL ---------- */
+.bl-hl { display: flex; flex-direction: column; }
+.bl-hl__item {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  align-items: center;
+  gap: 13px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--blog-rule);
+}
+.bl-hl__item:last-child { border-bottom: 0; }
+.bl-hl__item .bl-thumb { width: 62px; aspect-ratio: 1 / 1; border-radius: 8px; }
+.bl-hl__copy { display: block; min-width: 0; }
+.bl-hl__title {
+  display: block;
+  margin-bottom: 4px;
+  font-size: .84rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--white);
+  transition: color .2s var(--ease);
+}
+.bl-hl__date {
+  display: block;
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--blog-ink-3);
+}
+.bl-hl__item:hover .bl-hl__title { color: var(--orange-l); }
+
+/* ---------- NEWSLETTER ---------- */
+.bl-news {
+  padding: clamp(40px, 5vw, 56px) 0;
+  border-top: 1px solid var(--blog-rule);
+}
+.bl-news__box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  align-items: center;
+  gap: clamp(24px, 4vw, 48px);
+  padding: clamp(26px, 3.4vw, 36px);
+  border: 1px solid var(--blog-rule);
+  border-radius: var(--r);
+  background: var(--bg-2);
+}
+.bl-news__title {
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+  color: var(--white);
+}
+.bl-news__sub {
+  margin-top: 8px;
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--blog-ink-2);
+}
+.bl-news__form { display: flex; gap: 10px; }
+.bl-news__form input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 18px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 100px;
+  background: var(--bg);
+  font-family: var(--ff);
+  font-size: .9rem;
+  color: var(--white);
+  outline: none;
+  transition: border-color .2s var(--ease);
+}
+.bl-news__form input::placeholder { color: var(--blog-ink-3); }
+.bl-news__form input:focus { border-color: var(--orange); }
+.bl-news__msg {
+  margin-top: 10px;
+  min-height: 1.2em;
+  font-size: .82rem;
+  color: var(--blog-ink-2);
+}
+.bl-news__msg[data-estado="erro"] { color: var(--orange-l); }
+.bl-news__msg[data-estado="ok"] { color: var(--white); }
+
+/* ---------- RESPONSIVO DESTES BLOCOS ---------- */
+@media (max-width: 860px) {
+  .bl-news__box { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 620px) {
+  .bl-row { grid-template-columns: 96px minmax(0, 1fr); gap: 14px; }
+  .bl-row .bl-thumb { width: 96px; }
+  .bl-row__tag { grid-column: 2; justify-self: start; margin-top: 2px; }
+  .bl-row__dek { display: none; }
+  .bl-news__form { flex-direction: column; }
+  .bl-news__form .btn { justify-content: center; }
+}
+
+/* ---------- NADA ENCONTRADO ---------- */
+.bl-empty {
+  display: none;
+  padding: 60px 20px;
+  border: 1px dashed var(--blog-rule-2);
+  border-radius: var(--r);
+  text-align: center;
+  color: var(--blog-ink-2);
+}
+.bl-empty[data-show="true"] { display: block; }
+.bl-empty strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1rem;
+  color: var(--white);
+}
+
+/* ---------- BARRA LATERAL ---------- */
+.bl-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: sticky;
+  top: 108px;
+}
+.bl-widget {
+  padding: 22px;
+  border: 1px solid var(--blog-rule);
+  border-radius: var(--r);
+  background: var(--bg-2);
+}
+.bl-widget__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: .71rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--blog-ink-3);
+}
+.bl-widget__title svg { width: 14px; height: 14px; color: var(--orange-l); }
+.bl-cat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 11px 4px;
+  border: 0;
+  border-bottom: 1px solid var(--blog-rule);
+  background: none;
+  font-family: var(--ff);
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--blog-ink-2);
+  text-align: left;
+  cursor: pointer;
+  transition: color .18s var(--ease);
+}
+.bl-cat:last-child { border-bottom: 0; }
+.bl-cat:hover { color: var(--white); }
+.bl-cat__count {
+  padding: 2px 9px;
+  border-radius: 100px;
+  background: var(--bg-3);
+  font-size: .74rem;
+  font-weight: 700;
+  color: var(--blog-ink-3);
+}
+.bl-social { display: flex; flex-direction: column; gap: 2px; }
+.bl-social__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--blog-ink-2);
+  transition: color .18s var(--ease);
+}
+.bl-social__item:hover { color: var(--orange-l); }
+.bl-social__item svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--orange-l); }
+
+.bl-widget--cta {
+  border: 0;
+  background: linear-gradient(155deg, var(--orange) 0%, #a83f00 100%);
+  color: #fff;
+}
+.bl-widget--cta .bl-widget__title { color: rgba(255, 255, 255, .8); }
+.bl-widget--cta .bl-widget__title svg { color: #fff; }
+.bl-widget--cta h3 {
+  margin-bottom: 8px;
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+}
+.bl-widget--cta p {
+  margin-bottom: 18px;
+  font-size: .85rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .88);
+}
+.bl-widget--cta .btn {
+  width: 100%;
+  justify-content: center;
+  background: #fff;
+  border-color: #fff;
+  color: var(--orange);
+}
+.bl-widget--cta .btn:hover { background: var(--bg); border-color: var(--bg); color: #fff; }
+
+/* ---------- RADAR ----------
+   Nasce oculto e só aparece com notícia real do feed do agente.
+   Sem manchete de exemplo, logo sem aviso de exemplo pra explicar. */
+.bl-radar {
+  margin-top: 8px;
+  padding: clamp(48px, 6vw, 64px) 0;
+  border-top: 1px solid var(--blog-rule);
+  border-bottom: 1px solid var(--blog-rule);
+  background: var(--blog-surface);
+}
+.bl-radar__head { max-width: 640px; margin-bottom: 26px; }
+.bl-radar__head h2 {
+  margin: 14px 0 10px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: var(--white);
+}
+.bl-radar__head p { font-size: .95rem; line-height: 1.6; color: var(--blog-ink-2); }
+.bl-radar__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.bl-radar__item {
+  padding: 20px;
+  border: 1px solid var(--blog-rule);
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+  transition: border-color .2s var(--ease), transform .2s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bl-radar__item:hover { border-color: var(--blog-rule-2); transform: translateY(-2px); }
+}
+.bl-radar__time {
+  display: block;
+  margin-bottom: 10px;
+  font-size: .71rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--blog-ink-3);
+}
+.bl-radar__title {
+  display: block;
+  margin-bottom: 8px;
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--white);
+  transition: color .2s var(--ease);
+}
+a.bl-radar__title:hover { color: var(--orange-l); }
+.bl-radar__sum { font-size: .85rem; line-height: 1.5; color: var(--blog-ink-2); }
+.bl-radar__src { font-weight: 700; color: var(--orange-l); }
+
+/* ---------- FECHAMENTO ---------- */
+.bl-close {
+  padding: clamp(56px, 7vw, 80px) 0;
+  text-align: center;
+}
+.bl-close h2 {
+  max-width: 620px;
+  margin: 0 auto 14px;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--white);
+  text-wrap: balance;
+}
+.bl-close p {
+  margin-bottom: 30px;
+  font-size: 1rem;
+  color: var(--blog-ink-2);
+}
+
+/* ---------- RESPONSIVO ---------- */
+@media (max-width: 1080px) {
+  .bl-layout { grid-template-columns: minmax(0, 1fr); }
+  .bl-aside { position: static; flex-direction: row; flex-wrap: wrap; }
+  .bl-aside .bl-widget { flex: 1 1 240px; }
+}
+@media (max-width: 860px) {
+  .bl-hero__grid { grid-template-columns: minmax(0, 1fr); }
+  .bl-visual { order: -1; max-width: 260px; margin-bottom: 8px; }
+  .bl-visual__mark { width: 110px; height: 110px; border-radius: 26px; }
+  .bl-visual__mark img { width: 48px; height: 48px; }
+  .bl-grid { grid-template-columns: minmax(0, 1fr); }
+  .bl-aside { flex-direction: column; }
+}
+@media (max-width: 620px) {
+  .bl-case { grid-template-columns: 44px minmax(0, 1fr); row-gap: 8px; }
+  .bl-case__mono { width: 44px; height: 44px; font-size: 1rem; }
+  .bl-case__arrow { display: none; }
+  .bl-radar__grid { grid-template-columns: minmax(0, 1fr); }
 }

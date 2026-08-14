@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# Crawlers de IA — bem-vindos. A BMAI QUER ser lida e citada por assistentes de IA.
+# Crawlers de IA, bem-vindos. A BMAI QUER ser lida e citada por assistentes de IA.
 User-agent: GPTBot
 Allow: /
 

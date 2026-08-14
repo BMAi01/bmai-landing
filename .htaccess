@@ -2,6 +2,23 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# ── URL sem .html ──────────────────────────────────────────────────────────
+# Uma página, uma URL. Quem pedir o endereço antigo com .html é mandado de
+# volta pro novo com 301, então o link que já está no Google, no WhatsApp e
+# nas campanhas continua valendo e transfere a autoridade em vez de duplicar.
+# THE_REQUEST é a linha de requisição ORIGINAL: reescrita interna não passa
+# por aqui de novo, logo não existe laço entre as duas regras abaixo.
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^ / [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+([^\s?]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# /blog serve blog.html sem redirecionar (o endereço na barra continua limpo)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
   AddOutputFilterByType DEFLATE application/javascript text/javascript application/x-javascript
@@ -48,11 +65,18 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
   # CSP — allowlist verificada contra o que o index.html realmente carrega:
   #   script: cdnjs (GSAP+ScrollTrigger), jsdelivr (lenis), connect.facebook.net (Meta Pixel)
-  #   connect: anna.bmai.space (webhook de leads via fetch) + facebook (pixel)
+  #   connect: api.bmai.com.br (blog: posts, categorias, radar e newsletter),
+  #            anna.bmai.space (webhook de leads via fetch) + facebook (pixel)
+  #
+  # 2026-08-14: o blog chamava o radar direto em evo-novo-bmai-radar.oz07ed
+  # .easypanel.host, host que NUNCA esteve nesta lista — ou seja, o fetch
+  # vinha sendo bloqueado em produção desde que foi ligado. Resolvido pela
+  # raiz: o radar agora entra por proxy em api.bmai.com.br/blog/radar, então
+  # o site fala com UMA origem só e não há host novo a liberar aqui.
   #   img https: liberado (beacon do pixel /tr + og images). 'unsafe-inline'
   #   é necessário pros scripts/styles inline e handlers onclick do site.
   # Trava frame-ancestors (anti-clickjacking), object-src e base-uri.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://anna.bmai.space https://www.facebook.com https://connect.facebook.net; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://anna.bmai.space"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.bmai.com.br https://anna.bmai.space https://www.facebook.com https://connect.facebook.net; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://anna.bmai.space"
 </IfModule>
 
 # Bloqueia acesso a fontes/temporários que não devem ser servidos (defesa extra

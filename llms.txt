@@ -1,23 +1,23 @@
-# BMAI — Soluções Empresariais de IA
+# BMAI: Soluções Empresariais de IA
 
-> A BMAI é uma empresa de Brasília/DF que implementa agentes de IA, automação de processos e software sob medida para pequenas e médias empresas (PMEs). Método próprio: estrutura o processo antes de aplicar a tecnologia. IA é ferramenta — o foco é resultado mensurável, controle e previsibilidade para o dono do negócio. Atende clínicas, agências, consultorias, educação, saúde e outros segmentos, em Brasília, no DF e em todo o Brasil.
+> A BMAI é uma empresa de Brasília/DF que implementa agentes de IA, automação de processos e software sob medida para pequenas e médias empresas (PMEs). Método próprio: estrutura o processo antes de aplicar a tecnologia. IA é ferramenta, o foco é resultado mensurável, controle e previsibilidade para o dono do negócio. Atende clínicas, agências, consultorias, educação, saúde e outros segmentos, em Brasília, no DF e em todo o Brasil.
 
 ## Serviços
-- Agentes de IA para empresas — agentes sob medida integrados aos sistemas (ERP, CRM)
-- Automação de processos com IA — tarefas repetitivas e fluxos operacionais
-- Reestruturação de processos — organiza o processo antes de aplicar a tecnologia
-- Software sob medida com IA — sistemas personalizados
+- Agentes de IA para empresas: agentes sob medida integrados aos sistemas (ERP, CRM)
+- Automação de processos com IA: tarefas repetitivas e fluxos operacionais
+- Reestruturação de processos: organiza o processo antes de aplicar a tecnologia
+- Software sob medida com IA: sistemas personalizados
 - Integração de IA com ERP e CRM
 
 ## Conteúdo (páginas principais)
 - [Site institucional](https://bmai.com.br/): visão geral, método, cases e contato
-- [Por que implementar IA sem reestruturar processos falha](https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html): a tese central da BMAI
-- [Como escolher uma empresa de IA em Brasília](https://bmai.com.br/como-escolher-empresa-de-ia-brasilia.html): guia com 6 critérios objetivos
-- [G4 OS vale a pena para PME?](https://bmai.com.br/g4-os-alternativa-pme.html): plataforma self-serve vs. implementação feita-pra-você
-- [IA para clínicas](https://bmai.com.br/ia-para-clinicas.html)
-- [IA para agências](https://bmai.com.br/ia-para-agencias.html)
-- [Empresa de IA em Brasília e DF](https://bmai.com.br/ia-brasilia.html)
-- [Blog da BMAI](https://bmai.com.br/blog.html)
+- [Por que implementar IA sem reestruturar processos falha](https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha): a tese central da BMAI
+- [Como escolher uma empresa de IA em Brasília](https://bmai.com.br/como-escolher-empresa-de-ia-brasilia): guia com 6 critérios objetivos
+- [G4 OS vale a pena para PME?](https://bmai.com.br/g4-os-alternativa-pme): plataforma self-serve vs. implementação feita pra você
+- [IA para clínicas](https://bmai.com.br/ia-para-clinicas)
+- [IA para agências](https://bmai.com.br/ia-para-agencias)
+- [Empresa de IA em Brasília e DF](https://bmai.com.br/ia-brasilia)
+- [Blog da BMAI](https://bmai.com.br/blog)
 
 ## Cases (resultados reais)
 - GastroObesi (saúde, Dr. Túlio): a cada 10 leads, 8 viram pacientes; +40% em conversões, sem contratar mais ninguém
@@ -25,7 +25,7 @@
 - Só Hydráulica (construção, Mariangela): +40% no faturamento, estoque sob controle e atendimento 24h via IA
 
 ## Diferencial
-A BMAI não entrega uma ferramenta para o cliente operar sozinho: implementa a solução por ele, começando pelo diagnóstico e pela estruturação do processo. É o oposto de plataforma self-serve — é feito-pra-você, com acompanhamento contínuo.
+A BMAI não entrega uma ferramenta para o cliente operar sozinho: implementa a solução por ele, começando pelo diagnóstico e pela estruturação do processo. É o oposto de plataforma self-serve, é feito pra você, com acompanhamento contínuo.
 
 ## Contato
 - Site: https://bmai.com.br
