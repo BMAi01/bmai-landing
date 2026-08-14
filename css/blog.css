@@ -43,15 +43,20 @@
 .subpage > section:last-child { padding-bottom: clamp(48px, 6vw, 80px); }
 
 /* ============================================================
-   REVEAL — o único momento de motion da página.
-   Sem JS o conteúdo já está visível: a classe só entra quando
-   o script roda e o usuário não pediu menos movimento.
+   ENTRADA DOS CARDS DE CASE — o único momento de motion aqui.
+   ------------------------------------------------------------
+   ⚠️ NÃO usar a classe `.reveal`: o css/style.css já tem uma
+   (linha ~2873) que zera a opacidade de qualquer `.reveal` e
+   espera `.revealed` do main.js. Usar aquele nome deixava o
+   blog quase em branco quando o JS não rodava. Daí `.rise`.
+   Estado padrão é VISÍVEL. Só o JS opta por esconder, e só
+   quando o usuário não pediu menos movimento.
    ============================================================ */
-.js-reveal .reveal {
+.js-rise .rise {
   opacity: 0;
   transform: translateY(18px);
 }
-.js-reveal .reveal.is-in {
+.js-rise .rise.is-in {
   opacity: 1;
   transform: none;
   transition:
@@ -59,7 +64,7 @@
     transform .7s var(--blog-reveal) var(--d, 0s);
 }
 @media (prefers-reduced-motion: reduce) {
-  .js-reveal .reveal { opacity: 1; transform: none; }
+  .js-rise .rise { opacity: 1; transform: none; }
 }
 
 /* ============================================================
@@ -70,6 +75,7 @@
 .subpage > section > .container { position: relative; z-index: 2; }
 
 .blog-intro { text-align: center; }
+.blog-intro .section__title { text-wrap: balance; }
 .blog-intro__sub {
   max-width: 56ch;
   margin: 18px auto 0;
@@ -100,7 +106,6 @@
   top: -1px; left: 0;
   width: 96px; height: 1px;
   background: var(--orange);
-  box-shadow: 0 0 12px rgba(219, 85, 0, .5);
 }
 .lead__title {
   font-size: clamp(1.85rem, 3.3vw, 2.9rem);
@@ -307,6 +312,12 @@
   line-height: 1.45;
   color: var(--blog-ink-3);
 }
+/* Marcador por item enquanto o feed não trouxe notícia real. O aviso no
+   topo da seção some da tela ao rolar, então cada item carrega o seu. */
+.radar__time--exemplo {
+  color: var(--orange);
+  font-weight: 600;
+}
 .radar__title {
   margin-bottom: 6px;
   font-size: 1rem;
@@ -375,6 +386,19 @@
    segunda linha laranja, um botão. Sem painel com gradiente.
    ============================================================ */
 .blog-close { text-align: center; }
+/* Um degrau abaixo do h1 da página. Mesma voz de display do site
+   (var(--fd) + caixa alta, como .section__title), escala menor:
+   o fechamento não pode ser um monumento do tamanho do título. */
+.blog-close__title {
+  font-family: var(--fd);
+  font-size: clamp(1.6rem, 2.7vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-wrap: balance;
+}
 .blog-close__sub {
   max-width: 46ch;
   margin: 16px auto 26px;
@@ -387,7 +411,9 @@
    ARTIGO
    ============================================================ */
 .article {
-  max-width: 720px;   /* ~68ch no corpo de 18px */
+  /* Medida de leitura: 640px com o corpo em 1.09rem dá ~70 caracteres
+     por linha. Os 720px anteriores davam 94, bem acima do confortável. */
+  max-width: 640px;
   margin: 0 auto;
 }
 .article__back {
@@ -436,7 +462,7 @@
 }
 .article__body p,
 .article__body li {
-  font-size: 1.06rem;
+  font-size: 1.09rem;
   line-height: 1.75;
   color: var(--blog-ink);
 }
@@ -460,16 +486,19 @@
   border-radius: 50%;
   background: var(--orange);
 }
-/* Especificidade casada com `.article__body p`, senão o corpo vence o pull. */
+/* Especificidade casada com `.article__body p`, senão o corpo vence o pull.
+   Escala e peso separam do h2 de propósito: o h2 é menor e mais pesado
+   (700), o pull é maior e mais leve (500). No mobile os dois quase se
+   confundiam e a citação passava por título de seção. */
 .article__body .article__pull,
 .article__pull {
   margin: clamp(32px, 4vw, 44px) 0;
   padding: clamp(22px, 3vw, 28px) 0;
   border-top: 1px solid var(--blog-rule);
   border-bottom: 1px solid var(--blog-rule);
-  font-size: clamp(1.2rem, 2.3vw, 1.6rem);
-  font-weight: 600;
-  line-height: 1.32;
+  font-size: clamp(1.42rem, 2.9vw, 2rem);
+  font-weight: 500;
+  line-height: 1.28;
   letter-spacing: -.025em;
   color: #fff;
   text-wrap: balance;
@@ -548,5 +577,9 @@
   .radar__item { grid-template-columns: 1fr; gap: 6px; }
   .radar__time { padding-top: 0; }
   .post-row__go { display: none; }
-  .article__body p, .article__body li { font-size: 1.02rem; }
+  .article__body p, .article__body li { font-size: 1.04rem; }
+  /* Sem quebra forçada: o balance distribui as linhas em vez de deixar
+     uma palavra sozinha na terceira. */
+  .blog-intro .section__title br,
+  .blog-close__title br { display: none; }
 }

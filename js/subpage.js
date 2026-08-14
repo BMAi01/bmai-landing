@@ -63,12 +63,14 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  /* ---------- Reveal ---------- */
-  var targets = document.querySelectorAll('.reveal');
+  /* ---------- Entrada dos cards ----------
+     Classe `.rise`, NÃO `.reveal`: o style.css tem uma `.reveal` global que
+     zera a opacidade e espera `.revealed` do main.js. */
+  var targets = document.querySelectorAll('.rise');
   if (targets.length && !REDUCE && 'IntersectionObserver' in window) {
     // Só esconde depois de confirmar que o observer existe: sem JS,
     // sem suporte ou com reduced-motion, a página nasce visível.
-    document.documentElement.classList.add('js-reveal');
+    document.documentElement.classList.add('js-rise');
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
