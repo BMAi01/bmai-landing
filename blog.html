@@ -3,120 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Blog da BMAI: novidades e cases, radar de tecnologia monitorado pelos nossos agentes e conteúdos autorais sobre IA aplicada a negócios. Sem hype, foco em resultado.">
-  <title>Blog | BMAI — novidades, radar de tecnologia e conteúdos autorais</title>
+  <meta name="description" content="Blog da BMAi: cases reais dos nossos clientes, radar de tecnologia monitorado pelos nossos agentes e conteúdos autorais sobre IA aplicada a negócio. Sem hype, foco em resultado.">
+  <title>Blog | BMAi — cases, radar de tecnologia e conteúdos autorais</title>
   <link rel="canonical" href="https://bmai.com.br/blog.html">
-  <link rel="alternate" type="application/rss+xml" title="Blog da BMAI" href="/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="Blog da BMAi" href="/feed.xml">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0d1b2a">
-  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Mesma folha do site + a camada do blog. Sem paleta local. -->
+  <link rel="stylesheet" href="css/style.min.css?v=20260623-rev72">
+  <link rel="stylesheet" href="css/blog.css?v=20260814-rev1">
+
+  <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
+
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Regular.woff2" crossorigin fetchpriority="high">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Bold.woff2" crossorigin fetchpriority="high">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Semibold.woff2" crossorigin>
+  <link rel="preconnect" href="https://connect.facebook.net" crossorigin>
 
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="BMAI">
-  <meta property="og:title" content="Blog | BMAI — novidades, radar de tecnologia e conteúdos autorais">
-  <meta property="og:description" content="Novidades e cases da BMAI, radar de tecnologia dos nossos agentes e conteúdos autorais sobre IA aplicada.">
+  <meta property="og:site_name" content="BMAi">
+  <meta property="og:title" content="Blog | BMAi — cases, radar de tecnologia e conteúdos autorais">
+  <meta property="og:description" content="Cases reais dos nossos clientes, radar de tecnologia dos nossos agentes e conteúdos autorais sobre IA aplicada a negócio.">
   <meta property="og:url" content="https://bmai.com.br/blog.html">
   <meta property="og:image" content="https://bmai.com.br/assets/images/og-bmai.webp">
   <meta property="og:locale" content="pt_BR">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Blog | BMAI">
-  <meta name="twitter:description" content="Novidades, radar de tecnologia e conteúdos autorais sobre IA aplicada.">
+  <meta name="twitter:title" content="Blog | BMAi">
+  <meta name="twitter:description" content="Cases reais, radar de tecnologia e conteúdos autorais sobre IA aplicada a negócio.">
   <meta name="twitter:image" content="https://bmai.com.br/assets/images/og-bmai.webp">
-
-  <style>
-    :root{
-      --mg-bg:#0d1b2a; --mg-surface:#162534; --mg-surface-2:#1c2b3c; --mg-border:#25384b;
-      --mg-orange:#db5500; --mg-orange-l:#e87030; --mg-white:#ede7e1; --mg-gray:#8b95a0;
-    }
-    .mag, .mag-top{ font-family:var(--ff,'General Sans',sans-serif); color:var(--mg-white); }
-    .mag *{ box-sizing:border-box; }
-
-    /* ---------- Masthead ---------- */
-    .mag-top{ position:sticky; top:0; z-index:50; background:rgba(13,27,42,0.86); backdrop-filter:blur(14px);
-      border-bottom:1px solid var(--mg-border); }
-    .mag-top__bar{ height:4px; background:linear-gradient(90deg,var(--mg-orange),var(--mg-orange-l),var(--mg-orange)); }
-    .mag-top__inner{ max-width:1200px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:20px; }
-    .mag-brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--mg-white); }
-    .mag-brand img{ width:30px; height:30px; }
-    .mag-brand b{ font-size:20px; font-weight:800; letter-spacing:-0.02em; }
-    .mag-brand span{ font-family:var(--fm,monospace); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--mg-orange); }
-    .mag-nav{ margin-left:auto; display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
-    .mag-nav a{ font-family:var(--fm,monospace); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--mg-gray); text-decoration:none; }
-    .mag-nav a:hover{ color:var(--mg-orange); }
-    .mag-nav a.mag-nav__back{ color:var(--mg-white); }
-
-    /* ---------- Layout ---------- */
-    .mag{ max-width:1200px; margin:0 auto; padding:40px 24px 80px; }
-    .mag-sec{ margin-top:64px; }
-    .mag-sec__head{ display:flex; align-items:baseline; gap:14px; border-bottom:2px solid var(--mg-border); padding-bottom:12px; margin-bottom:26px; }
-    .mag-sec__head h2{ font-size:clamp(22px,3vw,30px); font-weight:800; letter-spacing:-0.02em; margin:0; color:#fff; }
-    .mag-sec__head span{ font-family:var(--fm,monospace); font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:var(--mg-gray); }
-    .mag-sec__head .mag-sec__all{ margin-left:auto; font-family:var(--fm,monospace); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--mg-orange); text-decoration:none; }
-
-    /* ---------- Hero / Destaque ---------- */
-    .mag-hero{ position:relative; display:grid; grid-template-columns:1.15fr 1fr; gap:0; border:1px solid var(--mg-border); border-radius:20px; overflow:hidden; background:var(--mg-surface); }
-    .mag-hero__media{ position:relative; min-height:340px; background:radial-gradient(120% 120% at 20% 10%, rgba(219,85,0,0.22), transparent 55%), linear-gradient(160deg,#12233a,#0a121e); display:flex; align-items:center; justify-content:center; overflow:hidden; }
-    .mag-hero__media img{ width:46%; max-width:220px; opacity:0.9; filter:drop-shadow(0 0 40px rgba(219,85,0,0.45)); }
-    .mag-hero__media::after{ content:""; position:absolute; inset:0; background:radial-gradient(60% 60% at 50% 50%, transparent 60%, rgba(13,27,42,0.5)); }
-    .mag-hero__body{ padding:clamp(24px,3vw,40px); display:flex; flex-direction:column; justify-content:center; }
-    .mag-eyebrow{ font-family:var(--fm,monospace); font-size:12px; text-transform:uppercase; letter-spacing:0.14em; color:var(--mg-orange); margin-bottom:14px; display:inline-flex; align-items:center; gap:8px; }
-    .mag-hero__body h1{ font-size:clamp(28px,3.6vw,42px); font-weight:800; line-height:1.1; letter-spacing:-0.025em; margin:0 0 14px; color:#fff; }
-    .mag-hero__body h1 a{ color:inherit; text-decoration:none; }
-    .mag-hero__body h1 a:hover{ color:var(--mg-orange-l); }
-    .mag-hero__dek{ font-size:17px; color:rgba(237,231,225,0.72); margin:0 0 18px; }
-    .mag-meta{ font-family:var(--fm,monospace); font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--mg-gray); }
-
-    /* ---------- Card grid ---------- */
-    .mag-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-    .mag-card{ display:flex; flex-direction:column; background:var(--mg-surface); border:1px solid var(--mg-border); border-radius:16px; padding:22px; text-decoration:none; color:var(--mg-white); transition:transform .2s, border-color .2s; }
-    .mag-card:hover{ transform:translateY(-3px); border-color:rgba(219,85,0,0.45); }
-    .mag-card__tag{ font-family:var(--fm,monospace); font-size:10.5px; text-transform:uppercase; letter-spacing:0.12em; color:var(--mg-orange); margin-bottom:10px; }
-    .mag-card h3{ font-size:19px; font-weight:700; line-height:1.25; letter-spacing:-0.01em; margin:0 0 8px; color:#fff; }
-    .mag-card p{ font-size:14px; color:rgba(237,231,225,0.66); margin:0 0 14px; flex:1; }
-    .mag-card__metric{ display:flex; gap:16px; margin-top:auto; }
-    .mag-card__metric b{ color:var(--mg-orange); font-size:20px; font-weight:800; display:block; line-height:1; }
-    .mag-card__metric small{ font-size:11px; color:var(--mg-gray); }
-
-    /* ---------- Radar / storystream (signature) ---------- */
-    .mag-stream{ display:grid; grid-template-columns:repeat(2,1fr); gap:0 40px; }
-    .stream-item{ display:grid; grid-template-columns:auto 1fr; gap:14px; padding:16px 0; border-bottom:1px solid var(--mg-border); }
-    .stream-item__rail{ display:flex; flex-direction:column; align-items:center; padding-top:3px; }
-    .stream-item__dot{ width:12px; height:12px; }
-    .stream-item__time{ font-family:var(--fm,monospace); font-size:10px; color:var(--mg-gray); letter-spacing:0.06em; white-space:nowrap; margin-bottom:6px; }
-    .stream-item h3{ font-size:16px; font-weight:600; line-height:1.35; margin:0 0 4px; color:var(--mg-white); }
-    .stream-item p{ font-size:13.5px; color:rgba(237,231,225,0.6); margin:0; }
-    .stream-item__src{ font-family:var(--fm,monospace); font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--mg-orange); }
-    .mag-radar__note{ font-family:var(--fm,monospace); font-size:11px; color:var(--mg-gray); margin-top:16px; display:flex; align-items:center; gap:8px; }
-    .pulse{ width:8px; height:8px; border-radius:50%; background:var(--mg-orange); box-shadow:0 0 0 0 rgba(219,85,0,0.6); animation:pulse 2.2s infinite; }
-    @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(219,85,0,0.5)} 70%{box-shadow:0 0 0 10px rgba(219,85,0,0)} 100%{box-shadow:0 0 0 0 rgba(219,85,0,0)} }
-
-    /* ---------- CTA ---------- */
-    .mag-cta{ margin-top:72px; padding:40px; border-radius:20px; text-align:center; background:linear-gradient(135deg, rgba(219,85,0,0.16), rgba(219,85,0,0.03)); border:1px solid rgba(219,85,0,0.3); }
-    .mag-cta h2{ font-size:clamp(22px,3vw,30px); font-weight:800; color:#fff; margin:0 0 8px; letter-spacing:-0.02em; }
-    .mag-cta p{ color:rgba(237,231,225,0.72); margin:0 0 18px; }
-    .mag-btn{ display:inline-block; padding:14px 30px; border-radius:100px; background:var(--mg-orange); color:#fff; font-weight:700; text-decoration:none; }
-    .mag-btn:hover{ background:#c84d01; }
-
-    @media (max-width:900px){
-      .mag-hero{ grid-template-columns:1fr; }
-      .mag-hero__media{ min-height:200px; }
-      .mag-grid{ grid-template-columns:1fr 1fr; }
-      .mag-stream{ grid-template-columns:1fr; gap:0; }
-    }
-    @media (max-width:560px){
-      .mag-grid{ grid-template-columns:1fr; }
-      .mag-nav{ display:none; }
-    }
-    @media (prefers-reduced-motion:reduce){ .pulse{ animation:none; } .mag-card{ transition:none; } }
-  </style>
 
   <script type="application/ld+json">
   {
-    "@context":"https://schema.org","@type":"Blog","name":"Blog da BMAI","url":"https://bmai.com.br/blog.html",
-    "publisher":{"@type":"Organization","name":"BMAI Soluções Empresariais de IA","url":"https://bmai.com.br"},
-    "inLanguage":"pt-BR",
-    "blogPost":[{"@type":"BlogPosting","headline":"Por que implementar IA sem reestruturar processos falha","url":"https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html"}]
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Blog da BMAi",
+    "url": "https://bmai.com.br/blog.html",
+    "description": "Cases, radar de tecnologia e conteúdos autorais sobre IA aplicada a negócio.",
+    "inLanguage": "pt-BR",
+    "publisher": {
+      "@type": "Organization",
+      "name": "BMAI Soluções Empresariais de IA",
+      "url": "https://bmai.com.br",
+      "logo": "https://bmai.com.br/assets/images/logo-laranja.svg"
+    },
+    "blogPost": [
+      { "@type": "BlogPosting", "headline": "Por que implementar IA sem reestruturar processos falha", "url": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html" },
+      { "@type": "BlogPosting", "headline": "Como escolher uma empresa de IA em Brasília", "url": "https://bmai.com.br/como-escolher-empresa-de-ia-brasilia.html" },
+      { "@type": "BlogPosting", "headline": "G4 OS vale a pena para PME?", "url": "https://bmai.com.br/g4-os-alternativa-pme.html" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "BMAi", "item": "https://bmai.com.br/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://bmai.com.br/blog.html" }
+    ]
   }
   </script>
 
@@ -133,159 +80,413 @@
     fbq('init', '1211008134323057');
     fbq('track', 'PageView');
   </script>
-  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1211008134323057&ev=PageView&noscript=1" alt=""/></noscript>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1211008134323057&ev=PageView&noscript=1"
+    alt=""/></noscript>
   <!-- End Meta Pixel Code -->
 </head>
 <body>
-  <header class="mag-top">
-    <div class="mag-top__bar"></div>
-    <div class="mag-top__inner">
-      <a href="/blog.html" class="mag-brand">
-        <img src="assets/images/simbolo-laranja.svg" alt="">
-        <b>Blog</b><span>BMAI</span>
+<!--
+  DIREÇÃO (2026-08-14) — blog.html
+  THESIS: o blog é o site continuando a falar, não uma revista colada nele.
+    Recusa o masthead editorial com nav de categorias e réguas de seção.
+  OWN-WORLD: navy #0d1b2a, laranja #db5500 como pontuação (nunca como faixa),
+    General Sans, hairline a 8%, cards de 16px sobre superfície a 2%.
+    Header, rodapé e botões são os componentes reais do site.
+  STORY: o leitor vê que a BMAi escreve sobre o que entrega, lê o destaque,
+    desce por cases reais, radar e artigos, e sai pelo diagnóstico.
+  FIRST VIEWPORT: título do blog centralizado com a segunda linha em laranja,
+    subtítulo curto e, logo abaixo, o destaque em duas colunas sob um filete laranja.
+  FORM: extensão de superfície dentro do mundo já estabelecido do site.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- HEADER — mesmo componente da home -->
+  <header class="header" id="header">
+    <nav class="floatnav" id="nav" aria-label="Principal">
+      <a href="/" class="nav-logo" aria-label="BMAi Home">
+        <img src="assets/images/logo-laranja.svg" alt="BMAi"/>
       </a>
-      <nav class="mag-nav" aria-label="Categorias do blog">
-        <a href="#novidades">Novidades</a>
-        <a href="#radar">Radar de tecnologia</a>
-        <a href="#autorais">Autorais</a>
-        <a href="/" class="mag-nav__back">← Site</a>
-      </nav>
-    </div>
+      <span class="nav-sep"></span>
+      <a href="/#para-quem" class="floatnav__item floatnav__item--team-desktop-only">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <span class="floatnav__text">Team</span>
+      </a>
+      <a href="/#cases" class="floatnav__item">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </span>
+        <span class="floatnav__text">Cases</span>
+      </a>
+      <a href="/#faq" class="floatnav__item">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </span>
+        <span class="floatnav__text">FAQ</span>
+      </a>
+      <a href="/blog.html" class="floatnav__item active" aria-current="page">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </span>
+        <span class="floatnav__text">Blog</span>
+      </a>
+      <span class="nav-sep"></span>
+      <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20vim%20pelo%20blog" target="_blank" rel="noopener" class="floatnav__cta">
+        <span class="floatnav__cta-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+        <span class="floatnav__cta-text">Falar com o time da BMAi</span>
+      </a>
+    </nav>
+    <button class="header__burger" id="burger" aria-label="Menu" aria-controls="nav" aria-expanded="false">
+      <span></span><span></span>
+    </button>
   </header>
 
-  <main class="mag">
+  <main class="subpage" id="main">
 
-    <!-- DESTAQUE -->
-    <section class="mag-hero">
-      <div class="mag-hero__media"><img src="assets/images/simbolo-laranja.svg" alt=""></div>
-      <div class="mag-hero__body">
-        <span class="mag-eyebrow">Destaque · Conteúdo autoral</span>
-        <h1><a href="/por-que-implementar-ia-sem-reestruturar-processos-falha.html">Por que implementar IA sem reestruturar processos falha</a></h1>
-        <p class="mag-hero__dek">A maioria dos projetos de IA quebra pelo mesmo motivo: jogam tecnologia em cima de um processo bagunçado. A ordem certa é processo primeiro, IA depois.</p>
-        <span class="mag-meta">Leitura de 4 min · BMAI</span>
+    <!-- ========== ABERTURA + DESTAQUE ========== -->
+    <section>
+      <!-- Mesmo campo de partículas do #quem-somos da home. Material do site,
+           não enfeite novo: some com prefers-reduced-motion e para no mobile. -->
+      <svg class="motion__particles" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 1200 800">
+        <circle cx="70"   cy="90"  r="2"   class="particle particle--orange"/>
+        <circle cx="205"  cy="160" r="1.5" class="particle particle--orange-dim"/>
+        <circle cx="330"  cy="70"  r="2.5" class="particle particle--orange"/>
+        <circle cx="470"  cy="200" r="1.5" class="particle particle--white-dim"/>
+        <circle cx="615"  cy="110" r="2"   class="particle particle--orange-dim"/>
+        <circle cx="760"  cy="60"  r="1.5" class="particle particle--white-dim"/>
+        <circle cx="900"  cy="175" r="2"   class="particle particle--orange"/>
+        <circle cx="1045" cy="95"  r="1.5" class="particle particle--orange-dim"/>
+        <circle cx="1150" cy="215" r="2"   class="particle particle--white-dim"/>
+        <circle cx="115"  cy="330" r="2"   class="particle particle--orange-dim"/>
+        <circle cx="265"  cy="420" r="1.5" class="particle particle--white-dim"/>
+        <circle cx="400"  cy="300" r="2.5" class="particle particle--orange"/>
+        <circle cx="560"  cy="470" r="1.5" class="particle particle--orange-dim"/>
+        <circle cx="705"  cy="345" r="2"   class="particle particle--white-dim"/>
+        <circle cx="855"  cy="430" r="1.5" class="particle particle--orange"/>
+        <circle cx="1000" cy="315" r="2"   class="particle particle--orange-dim"/>
+        <circle cx="1120" cy="460" r="1.5" class="particle particle--white-dim"/>
+        <circle cx="60"   cy="560" r="1.5" class="particle particle--white-dim"/>
+        <circle cx="215"  cy="650" r="2"   class="particle particle--orange-dim"/>
+        <circle cx="375"  cy="590" r="1.5" class="particle particle--orange"/>
+        <circle cx="530"  cy="700" r="2"   class="particle particle--white-dim"/>
+        <circle cx="690"  cy="610" r="1.5" class="particle particle--orange-dim"/>
+        <circle cx="840"  cy="720" r="2"   class="particle particle--orange"/>
+        <circle cx="985"  cy="640" r="1.5" class="particle particle--white-dim"/>
+        <circle cx="1135" cy="690" r="2"   class="particle particle--orange-dim"/>
+      </svg>
+
+      <div class="container">
+        <div class="blog-intro">
+          <h1 class="section__title">O que a gente aprende<br><span style="color:var(--orange)">colocando IA pra rodar.</span></h1>
+          <p class="blog-intro__sub">Cases reais dos nossos clientes, o que está mudando na tecnologia e a nossa leitura sobre IA aplicada a negócio. Sem hype e sem promessa mágica.</p>
+        </div>
+
+        <div class="lead reveal">
+          <h2 class="lead__title">
+            <a href="/por-que-implementar-ia-sem-reestruturar-processos-falha.html">Por que implementar IA sem reestruturar processos falha</a>
+          </h2>
+          <div>
+            <p class="lead__dek">A maioria dos projetos de IA quebra pelo mesmo motivo: joga tecnologia em cima de um processo bagunçado. A ordem certa é processo primeiro, IA depois.</p>
+            <p class="lead__meta">Leitura de 4 min · BMAi</p>
+            <a class="btn btn--primary" href="/por-que-implementar-ia-sem-reestruturar-processos-falha.html">
+              Ler o artigo
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- NOVIDADES BMAI -->
-    <section class="mag-sec" id="novidades">
-      <div class="mag-sec__head">
-        <h2>Novidades BMAI</h2><span>produtos &amp; cases</span>
-        <a class="mag-sec__all" href="/#cases">Ver cases →</a>
-      </div>
-      <div class="mag-grid">
-        <a class="mag-card" href="/ia-para-clinicas.html">
-          <span class="mag-card__tag">Case · Saúde</span>
-          <h3>GastroObesi: 8 em cada 10 leads viram pacientes</h3>
-          <p>Como a IA implementada pela BMAI estruturou o CRM e o atendimento da clínica do Dr. Túlio — sem contratar mais ninguém.</p>
-          <span class="mag-card__metric"><span><b>8/10</b><small>leads → pacientes</small></span><span><b>+40%</b><small>conversões</small></span></span>
-        </a>
-        <a class="mag-card" href="/ia-para-agencias.html">
-          <span class="mag-card__tag">Case · Marketing</span>
-          <h3>Mataco: prospecção 24/7 em 3 canais</h3>
-          <p>"O agente nunca dorme — Instagram, WhatsApp, e-mail, tudo coberto." A agência do Gabriel Lyra e o salto de faturamento.</p>
-          <span class="mag-card__metric"><span><b>+4h</b><small>por dia ao time</small></span><span><b>+60%</b><small>faturamento</small></span></span>
-        </a>
-        <a class="mag-card" href="/#cases">
-          <span class="mag-card__tag">Case · Construção</span>
-          <h3>Só Hydráulica: +40% no faturamento com IA</h3>
-          <p>Estoque sob controle em tempo real, prospecção ativa e atendimento 24h — o motor da operação virou IA.</p>
-          <span class="mag-card__metric"><span><b>+40%</b><small>faturamento</small></span><span><b>24h</b><small>atendimento</small></span></span>
-        </a>
+    <!-- ========== NOVIDADES BMAi (cases) ========== -->
+    <section id="novidades">
+      <div class="container">
+        <div class="strip__head reveal">
+          <div>
+            <h2 class="strip__title">Novidades BMAi</h2>
+            <p class="strip__note">O que a gente entregou e o resultado que apareceu na operação de cada cliente.</p>
+          </div>
+          <a class="strip__link" href="/#cases">
+            Ver todos os cases
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="cases">
+          <a class="case reveal" data-stagger="0" href="/ia-para-clinicas.html">
+            <span class="case__top">
+              <img class="case__logo" src="assets/images/logo-gastroobesi.webp" alt="GastroObesi" loading="lazy" decoding="async">
+              <span class="case__sector">Saúde</span>
+            </span>
+            <p class="case__result">
+              <span class="case__metric">8/10</span> leads viram pacientes, com <span class="case__metric">+20</span> pacientes sem custo extra e <span class="case__metric">+40%</span> em conversões.
+            </p>
+            <span class="case__foot">
+              <span class="case__avatar"><img src="assets/images/client-drtulio.jpg" alt="" loading="lazy" decoding="async"></span>
+              <span class="case__who"><strong>Dr. Túlio</strong><span>CEO · GastroObesi</span></span>
+            </span>
+          </a>
+
+          <a class="case reveal" data-stagger="1" href="/ia-para-agencias.html">
+            <span class="case__top">
+              <img class="case__logo" src="slides/logo-mataco.webp" alt="Mataco" loading="lazy" decoding="async">
+              <span class="case__sector">Marketing Digital</span>
+            </span>
+            <p class="case__result">
+              Agente de prospecção rodando <span class="case__metric">24h</span> em 3 canais, <span class="case__metric">+4h/dia</span> devolvidas ao time e <span class="case__metric">+60%</span> de faturamento.
+            </p>
+            <span class="case__foot">
+              <span class="case__avatar"><img src="assets/images/client-gabriel.jpg" alt="" loading="lazy" decoding="async"></span>
+              <span class="case__who"><strong>Gabriel Lyra</strong><span>CEO · Mataco</span></span>
+            </span>
+          </a>
+
+          <a class="case reveal" data-stagger="2" href="/#cases">
+            <span class="case__top">
+              <img class="case__logo case__logo--sh" src="assets/images/logo-sohydraulica.webp" alt="Só Hydráulica" loading="lazy" decoding="async">
+              <span class="case__sector">Material de Construção</span>
+            </span>
+            <p class="case__result">
+              <span class="case__metric">+40%</span> no faturamento com prospecção e atendimento <span class="case__metric">24h</span> via IA, com estoque <span class="case__metric">100%</span> sob controle.
+            </p>
+            <span class="case__foot">
+              <span class="case__avatar"><img src="assets/images/client-mariangela.jpg" alt="" style="object-position:50% 38%" loading="lazy" decoding="async"></span>
+              <span class="case__who"><strong>Mariangela</strong><span>CEO · Só Hydráulica</span></span>
+            </span>
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- RADAR DE TECNOLOGIA (storystream — assinatura) -->
-    <section class="mag-sec" id="radar">
-      <div class="mag-sec__head">
-        <h2>Radar de tecnologia</h2><span>monitorado pelos nossos agentes</span>
+    <!-- ========== RADAR DE TECNOLOGIA ========== -->
+    <section id="radar">
+      <div class="container">
+        <div class="strip__head reveal">
+          <div>
+            <h2 class="strip__title">Radar de tecnologia</h2>
+            <p class="strip__note">O que os nossos agentes de monitoramento estão lendo sobre IA aplicada a negócio.</p>
+          </div>
+        </div>
+
+        <p class="radar__notice reveal">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span><strong>Prévia com conteúdo de exemplo.</strong> As manchetes abaixo são ilustrativas. O radar passa a mostrar notícia real assim que o agente de monitoramento publicar o feed.</span>
+        </p>
+
+        <div class="radar__list">
+          <article class="radar__item reveal" data-stagger="0">
+            <p class="radar__time">Hoje<br>09:12</p>
+            <div>
+              <h3 class="radar__title">Agentes de IA autônomos passam a executar tarefas de ponta a ponta nas empresas</h3>
+              <p class="radar__sum"><span class="radar__src">Radar BMAi.</span> A virada de assistentes para agentes que agem sozinhos.</p>
+            </div>
+          </article>
+          <article class="radar__item reveal" data-stagger="1">
+            <p class="radar__time">Hoje<br>08:40</p>
+            <div>
+              <h3 class="radar__title">Por que 2026 está sendo chamado de o ano dos sistemas agênticos</h3>
+              <p class="radar__sum"><span class="radar__src">Radar BMAi.</span> O que muda na prática para quem tem uma PME.</p>
+            </div>
+          </article>
+          <article class="radar__item reveal" data-stagger="2">
+            <p class="radar__time">Ontem<br>17:05</p>
+            <div>
+              <h3 class="radar__title">Integrações via MCP viram padrão para conectar IA a sistemas empresariais</h3>
+              <p class="radar__sum"><span class="radar__src">Radar BMAi.</span> O protocolo que liga agentes ao ERP e ao CRM.</p>
+            </div>
+          </article>
+          <article class="radar__item reveal" data-stagger="3">
+            <p class="radar__time">Ontem<br>11:22</p>
+            <div>
+              <h3 class="radar__title">Investimento em IA aplicada a processos lidera a prioridade das PMEs</h3>
+              <p class="radar__sum"><span class="radar__src">Radar BMAi.</span> Onde as empresas estão colocando dinheiro.</p>
+            </div>
+          </article>
+        </div>
       </div>
-      <div class="mag-stream">
-        <article class="stream-item">
-          <div class="stream-item__rail"><img class="stream-item__dot" src="assets/images/simbolo-laranja.svg" alt=""></div>
-          <div><div class="stream-item__time">HOJE · 09:12</div><h3>Agentes de IA autônomos passam a executar tarefas de ponta a ponta nas empresas</h3><p><span class="stream-item__src">Radar BMAI</span> — a virada de assistentes para agentes que agem sozinhos.</p></div>
-        </article>
-        <article class="stream-item">
-          <div class="stream-item__rail"><img class="stream-item__dot" src="assets/images/simbolo-laranja.svg" alt=""></div>
-          <div><div class="stream-item__time">HOJE · 08:40</div><h3>Por que 2026 está sendo chamado de "o ano dos sistemas agênticos"</h3><p><span class="stream-item__src">Radar BMAI</span> — o que muda na prática pra quem tem PME.</p></div>
-        </article>
-        <article class="stream-item">
-          <div class="stream-item__rail"><img class="stream-item__dot" src="assets/images/simbolo-laranja.svg" alt=""></div>
-          <div><div class="stream-item__time">ONTEM · 17:05</div><h3>Integrações via MCP viram padrão para conectar IA a sistemas empresariais</h3><p><span class="stream-item__src">Radar BMAI</span> — o protocolo que liga agentes a ERP e CRM.</p></div>
-        </article>
-        <article class="stream-item">
-          <div class="stream-item__rail"><img class="stream-item__dot" src="assets/images/simbolo-laranja.svg" alt=""></div>
-          <div><div class="stream-item__time">ONTEM · 11:22</div><h3>Automação de processos com IA lidera prioridade de investimento em PMEs</h3><p><span class="stream-item__src">Radar BMAI</span> — onde as empresas estão colocando dinheiro.</p></div>
-        </article>
-      </div>
-      <p class="mag-radar__note"><span class="pulse"></span> Feed atualizado automaticamente pelo agente de monitoramento da BMAI · <em>prévia com conteúdo de exemplo</em></p>
     </section>
 
-    <!-- CONTEÚDOS AUTORAIS -->
-    <section class="mag-sec" id="autorais">
-      <div class="mag-sec__head"><h2>Conteúdos autorais</h2><span>direto ao ponto, sem hype</span></div>
-      <div class="mag-grid">
-        <a class="mag-card" href="/por-que-implementar-ia-sem-reestruturar-processos-falha.html">
-          <span class="mag-card__tag">Processos · IA</span>
-          <h3>Por que implementar IA sem reestruturar processos falha</h3>
-          <p>IA em cima de bagunça só automatiza a bagunça. A ordem certa e como saber se seu processo está pronto.</p>
-        </a>
-        <a class="mag-card" href="/como-escolher-empresa-de-ia-brasilia.html">
-          <span class="mag-card__tag">Guia · Decisão</span>
-          <h3>Como escolher uma empresa de IA em Brasília</h3>
-          <p>6 critérios objetivos, os sinais de alerta e as perguntas certas antes de contratar.</p>
-        </a>
-        <a class="mag-card" href="/g4-os-alternativa-pme.html">
-          <span class="mag-card__tag">Comparativo</span>
-          <h3>G4 OS vale a pena para PME?</h3>
-          <p>Plataforma que você opera vs. implementação feita-pra-você. Qual faz sentido pro seu negócio.</p>
-        </a>
+    <!-- ========== CONTEÚDOS AUTORAIS ========== -->
+    <section id="autorais">
+      <div class="container">
+        <div class="strip__head reveal">
+          <div>
+            <h2 class="strip__title">Conteúdos autorais</h2>
+            <p class="strip__note">A nossa opinião sobre IA aplicada a negócio, direto ao ponto.</p>
+          </div>
+        </div>
+
+        <div class="posts">
+          <a class="post-row reveal" data-stagger="0" href="/por-que-implementar-ia-sem-reestruturar-processos-falha.html">
+            <h3 class="post-row__title">Por que implementar IA sem reestruturar processos falha</h3>
+            <p class="post-row__dek">IA em cima de bagunça só acelera a bagunça. A ordem certa e como saber se o seu processo está pronto.</p>
+            <span class="post-row__go" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+          <a class="post-row reveal" data-stagger="1" href="/como-escolher-empresa-de-ia-brasilia.html">
+            <h3 class="post-row__title">Como escolher uma empresa de IA em Brasília</h3>
+            <p class="post-row__dek">Seis critérios objetivos, os sinais de alerta e as perguntas certas antes de contratar.</p>
+            <span class="post-row__go" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+          <a class="post-row reveal" data-stagger="2" href="/g4-os-alternativa-pme.html">
+            <h3 class="post-row__title">G4 OS vale a pena para PME?</h3>
+            <p class="post-row__dek">Plataforma que você opera contra implementação feita pra você. Qual das duas faz sentido pro seu negócio.</p>
+            <span class="post-row__go" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="mag-cta">
-      <h2>IA aplicada ao seu negócio começa por um diagnóstico</h2>
-      <p>Sem vender ferramenta antes de entender a sua operação.</p>
-      <a class="mag-btn" href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20vim%20pelo%20blog" target="_blank" rel="noopener">Falar com o time da BMAI</a>
+    <!-- ========== FECHAMENTO ========== -->
+    <section id="contato">
+      <div class="container blog-close">
+        <h2 class="section__title">IA aplicada ao seu negócio<br><span style="color:var(--orange)">começa por um diagnóstico.</span></h2>
+        <p class="blog-close__sub">A gente olha a sua operação antes de falar de ferramenta.</p>
+        <a class="btn btn--primary btn--lg" href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20vim%20pelo%20blog" target="_blank" rel="noopener">
+          Falar com o time da BMAi
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
     </section>
 
   </main>
 
+  <!-- FOOTER — mesmo componente da home -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="/" class="footer__logo" aria-label="BMAi — página inicial">
+          <img src="assets/images/simbolo-laranja.svg" alt="" class="footer__logo-symbol"/>
+          <img src="assets/images/logo-laranja.svg" alt="BMAi" class="footer__logo-mark"/>
+        </a>
+        <p class="footer__kind">Engenharia de inteligência aplicada.</p>
+      </div>
+
+      <div class="footer__cols">
+        <div class="footer__col">
+          <h3><span class="footer__col-dot"></span><span>Site</span></h3>
+          <ul>
+            <li><a href="/#quem-somos">Quem somos</a></li>
+            <li><a href="/#cases">Cases</a></li>
+            <li><a href="/#para-quem">Team</a></li>
+            <li><a href="/#faq">FAQ</a></li>
+            <li><a href="/blog.html">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3><span class="footer__col-dot"></span><span>Legal</span></h3>
+          <ul>
+            <li><a href="/privacidade.html">Política de Privacidade</a></li>
+            <li><a href="/termos.html">Termos de Uso</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3><span class="footer__col-dot"></span><span>Contato</span></h3>
+          <ul class="footer__social">
+            <li>
+              <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20tudo%20certo%3F" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                <span>WhatsApp</span>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:contato@bmai.space">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span>contato@bmai.space</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://instagram.com/bmai.oficial" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                <span>Instagram</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/company/bmaicompany/" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                <span>LinkedIn</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__divider" aria-hidden="true"></div>
+
+    <div class="footer__bottom">
+      <p>© <span id="footerYear">2026</span> BMAi · Todos os direitos reservados</p>
+      <p class="footer__bottom-legal">BMAi é marca de soluções de IA aplicada a processos de negócio. Resultados citados refletem médias de projetos próprios e podem variar conforme o contexto de cada cliente.</p>
+      <a href="#top" class="footer__backtop">Voltar ao topo <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></a>
+    </div>
+  </footer>
+
+  <script defer src="js/subpage.js?v=20260814-rev1"></script>
+
   <script>
-  (function(){
-    // ===== Radar BMAI — feed de notícias do agente (BMAI News, na VPS) =====
-    // Preencher com o endpoint público JSON exposto pela VPS (CORS liberado p/ bmai.com.br).
-    var NEWS_FEED_URL = ""; // ex.: "https://news.bmai.space/feed.json"  — vazio = mantém o exemplo
-    var SYMBOL = "assets/images/simbolo-laranja.svg";
+  (function () {
+    /* ===== Radar BMAi — feed do agente de monitoramento (BMAI News, na VPS) =====
+       Preencher com o endpoint público JSON exposto pela VPS (CORS liberado
+       p/ bmai.com.br). Vazio = mantém as manchetes de exemplo e o aviso. */
+    var NEWS_FEED_URL = ""; // ex.: "https://news.bmai.space/feed.json"
     if (!NEWS_FEED_URL) return;
 
-    function fmt(iso){
-      try{
-        var d=new Date(iso), now=new Date();
-        var hm=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-        if(d.toDateString()===now.toDateString()) return 'HOJE · '+hm;
-        var y=new Date(now); y.setDate(now.getDate()-1);
-        if(d.toDateString()===y.toDateString()) return 'ONTEM · '+hm;
-        return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).toUpperCase();
-      }catch(e){ return ''; }
+    function fmt(iso) {
+      try {
+        var d = new Date(iso), now = new Date();
+        var hm = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if (d.toDateString() === now.toDateString()) return 'Hoje<br>' + hm;
+        var y = new Date(now); y.setDate(now.getDate() - 1);
+        if (d.toDateString() === y.toDateString()) return 'Ontem<br>' + hm;
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+      } catch (e) { return ''; }
     }
-    function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+    function esc(s) {
+      return (s || '').replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
 
-    fetch(NEWS_FEED_URL,{cache:'no-store'})
-      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-      .then(function(items){
-        if(!Array.isArray(items) || !items.length) return;
-        var stream=document.querySelector('.mag-stream'); if(!stream) return;
-        stream.innerHTML = items.slice(0,8).map(function(it){
-          var t=esc(it.title), s=esc(it.summary||''), src=esc(it.source||'Radar BMAI'), time=fmt(it.published_at||it.date);
-          var a0=it.url?('<a href="'+esc(it.url)+'" style="text-decoration:none;color:inherit" target="_blank" rel="noopener">'):'', a1=it.url?'</a>':'';
-          return '<article class="stream-item"><div class="stream-item__rail"><img class="stream-item__dot" src="'+SYMBOL+'" alt=""></div>'+
-            '<div><div class="stream-item__time">'+time+'</div>'+a0+'<h3>'+t+'</h3>'+a1+
-            '<p><span class="stream-item__src">'+src+'</span>'+(s?(' — '+s):'')+'</p></div></article>';
+    fetch(NEWS_FEED_URL, { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (items) {
+        if (!Array.isArray(items) || !items.length) return;
+        var list = document.querySelector('.radar__list');
+        if (!list) return;
+
+        list.innerHTML = items.slice(0, 8).map(function (it) {
+          var t = esc(it.title),
+              s = esc(it.summary || ''),
+              src = esc(it.source || 'Radar BMAi'),
+              time = fmt(it.published_at || it.date),
+              url = it.url ? esc(it.url) : '';
+          var title = url
+            ? '<a class="radar__title" href="' + url + '" target="_blank" rel="noopener">' + t + '</a>'
+            : '<h3 class="radar__title">' + t + '</h3>';
+          return '<article class="radar__item">' +
+                   '<p class="radar__time">' + time + '</p>' +
+                   '<div>' + title +
+                     '<p class="radar__sum"><span class="radar__src">' + src + '.</span> ' + s + '</p>' +
+                   '</div>' +
+                 '</article>';
         }).join('');
-        var note=document.querySelector('.mag-radar__note em'); if(note) note.textContent='feed ao vivo';
+
+        // Feed real no ar: o aviso de conteúdo de exemplo sai da página.
+        var notice = document.querySelector('.radar__notice');
+        if (notice) notice.remove();
       })
-      .catch(function(){ /* endpoint fora do ar → mantém o conteúdo de exemplo */ });
+      .catch(function () { /* endpoint fora do ar: mantém exemplo + aviso */ });
   })();
   </script>
 </body>

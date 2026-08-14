@@ -1,0 +1,552 @@
+/* ============================================================
+   BLOG + ARTIGOS — camada sobre css/style.css
+   ------------------------------------------------------------
+   Regra desta folha: NÃO existe paleta própria aqui.
+   Cor, fonte, raio, sombra e espaçamento saem dos tokens do
+   site (--bg, --orange, --white, --gray1, --ease, --r...).
+   Header, rodapé e botões são os componentes reais do site
+   (.header/.floatnav/.footer/.btn), reaproveitados como estão.
+   O que esta folha adiciona é só o que o site ainda não tinha:
+   destaque editorial, cards de case, radar e página de artigo.
+   ============================================================ */
+
+:root {
+  /* Escalas de texto do blog, derivadas do off-white do site.
+     Percentuais escolhidos pra passar 4.5:1 sobre o navy. */
+  --blog-ink:      rgba(237, 231, 225, .86);  /* corpo */
+  --blog-ink-2:    rgba(237, 231, 225, .64);  /* apoio */
+  --blog-ink-3:    rgba(255, 255, 255, .62);  /* micro-label */
+  --blog-rule:     rgba(255, 255, 255, .08);
+  --blog-surface:  rgba(255, 255, 255, .02);
+  --blog-border:   rgba(255, 255, 255, .06);
+  --blog-reveal:   cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ============================================================
+   SHELL DE SUBPÁGINA
+   O site abre com hero (que já compensa o header fixo).
+   Subpágina não tem hero, então o respiro vem daqui.
+   ============================================================ */
+.subpage { padding-top: 104px; }
+@media (min-width: 1024px) { .subpage { padding-top: 132px; } }
+
+.subpage .container > * { min-width: 0; }
+
+/* Ritmo vertical do blog: mais apertado que o da home, que é feita de
+   seções cheias. Aqui o reset global (40/56/72) abria buracos entre os
+   pilares. Um valor só, pra cima e pra baixo, mantém a batida uniforme. */
+.subpage > section {
+  padding-top: clamp(26px, 3.4vw, 40px);
+  padding-bottom: clamp(26px, 3.4vw, 40px);
+}
+.subpage > section:first-child { padding-top: 0; }
+.subpage > section:last-child { padding-bottom: clamp(48px, 6vw, 80px); }
+
+/* ============================================================
+   REVEAL — o único momento de motion da página.
+   Sem JS o conteúdo já está visível: a classe só entra quando
+   o script roda e o usuário não pediu menos movimento.
+   ============================================================ */
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+.js-reveal .reveal.is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity   .7s var(--blog-reveal) var(--d, 0s),
+    transform .7s var(--blog-reveal) var(--d, 0s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .reveal { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   ABERTURA DO BLOG
+   ============================================================ */
+/* O campo de partículas é irmão do .container e vive em z-index 1,
+   então o conteúdo da abertura sobe pra 2. */
+.subpage > section > .container { position: relative; z-index: 2; }
+
+.blog-intro { text-align: center; }
+.blog-intro__sub {
+  max-width: 56ch;
+  margin: 18px auto 0;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--blog-ink-2);
+  text-wrap: balance;
+}
+
+/* ============================================================
+   DESTAQUE — o artigo mais recente, em escala de manchete.
+   Duas colunas de texto (título / resumo), sem media falsa.
+   O filete laranja acima ecoa o filete do rodapé do site.
+   ============================================================ */
+.lead {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(26px, 4vw, 60px);
+  align-items: start;
+  margin-top: clamp(30px, 4vw, 44px);
+  padding-top: clamp(24px, 2.8vw, 32px);
+  border-top: 1px solid var(--blog-rule);
+}
+.lead::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0;
+  width: 96px; height: 1px;
+  background: var(--orange);
+  box-shadow: 0 0 12px rgba(219, 85, 0, .5);
+}
+.lead__title {
+  font-size: clamp(1.85rem, 3.3vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -.03em;
+  color: #fff;
+  text-wrap: balance;
+}
+.lead__title a { transition: color .25s var(--ease); }
+.lead__title a:hover { color: var(--orange-l); }
+.lead__dek {
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--blog-ink);
+}
+.lead__meta {
+  margin: 16px 0 22px;
+  font-size: .82rem;
+  color: var(--blog-ink-3);
+}
+
+/* ============================================================
+   CABEÇALHO DE SEÇÃO (pilar)
+   Sem régua horizontal e sem rótulo em caixa alta: quem separa
+   é o espaço, como no resto do site.
+   ============================================================ */
+/* O ritmo vertical entre pilares é o do site (--section-spacing-*),
+   herdado pelo reset global de <section>. Nada de margem extra aqui. */
+.strip__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: clamp(24px, 3vw, 34px);
+}
+.strip__title {
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -.025em;
+  color: var(--white);
+}
+.strip__note {
+  margin-top: 10px;
+  max-width: 56ch;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: var(--blog-ink-2);
+  text-wrap: balance;
+}
+.strip__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding-bottom: 4px;
+  font-size: .86rem;
+  font-weight: 600;
+  color: var(--orange);
+  white-space: nowrap;
+  transition: color .25s var(--ease);
+}
+.strip__link:hover { color: var(--orange-l); }
+.strip__link svg { transition: transform .25s var(--spring); }
+.strip__link:hover svg { transform: translateX(4px); }
+
+/* ============================================================
+   CARDS DE CASE — mesma matéria dos cards do site (.cs-card):
+   superfície 2%, hairline 6%, raio 16, lift de 4px no hover.
+   ============================================================ */
+.cases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.case {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 26px;
+  border: 1px solid var(--blog-border);
+  border-radius: 16px;
+  background: var(--blog-surface);
+  overflow: hidden;
+  transition:
+    border-color .4s var(--ease),
+    box-shadow   .5s var(--ease),
+    transform    .5s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .case:hover {
+    border-color: rgba(219, 85, 0, .18);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .3), 0 0 30px rgba(219, 85, 0, .05);
+    transform: translateY(-4px);
+  }
+  .case:hover .case__logo { opacity: 1; }
+}
+.case__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 30px;
+}
+.case__logo {
+  height: 25px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+  object-position: left center;
+  filter: brightness(0) invert(1);   /* logo colorida some no navy */
+  opacity: .9;
+  transition: opacity .3s var(--ease);
+}
+.case__logo--sh {
+  filter: none;
+  opacity: 1;
+  height: 38px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  background: #fff;   /* azul+vinho precisa de chip claro */
+}
+.case__sector {
+  font-size: .75rem;
+  font-weight: 500;
+  color: var(--blog-ink-3);
+  white-space: nowrap;
+}
+.case__result {
+  font-size: .95rem;
+  line-height: 1.62;
+  color: var(--blog-ink-2);
+}
+.case__metric {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--orange);
+}
+.case__foot {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, .05);
+}
+.case__avatar {
+  width: 30px; height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .06);
+}
+.case__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.case__who strong {
+  display: block;
+  font-size: .83rem;
+  font-weight: 600;
+  color: var(--white);
+}
+.case__who span {
+  font-size: .75rem;
+  color: var(--blog-ink-3);
+}
+
+/* ============================================================
+   RADAR — lista densa. Aviso de conteúdo de exemplo primeiro,
+   pra ninguém ler manchete de exemplo como notícia publicada.
+   ============================================================ */
+.radar__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: clamp(22px, 3vw, 30px);
+  padding: 14px 18px;
+  border: 1px solid rgba(219, 85, 0, .24);
+  border-radius: 14px;
+  background: rgba(219, 85, 0, .07);
+  font-size: .88rem;
+  line-height: 1.55;
+  color: var(--blog-ink);
+}
+.radar__notice svg { flex-shrink: 0; margin-top: 2px; color: var(--orange); }
+.radar__notice strong { color: #fff; font-weight: 600; }
+
+.radar__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(28px, 4vw, 56px);
+  border-bottom: 1px solid var(--blog-rule);   /* fecha a lista */
+}
+.radar__item {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px 0;
+  border-top: 1px solid var(--blog-rule);
+}
+.radar__time {
+  padding-top: 3px;
+  font-size: .76rem;
+  line-height: 1.45;
+  color: var(--blog-ink-3);
+}
+.radar__title {
+  margin-bottom: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -.01em;
+  color: var(--white);
+}
+.radar__item a.radar__title { display: block; transition: color .25s var(--ease); }
+.radar__item a.radar__title:hover { color: var(--orange-l); }
+.radar__sum {
+  font-size: .88rem;
+  line-height: 1.55;
+  color: var(--blog-ink-2);
+}
+.radar__src { font-weight: 600; color: var(--orange); }
+
+/* ============================================================
+   LISTA DE ARTIGOS — linhas largas, textura diferente dos
+   cards, pra página não virar uma parede de retângulos iguais.
+   ============================================================ */
+.posts { border-top: 1px solid var(--blog-rule); }
+.post-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: clamp(18px, 3vw, 44px);
+  padding: clamp(22px, 2.6vw, 30px) 0;
+  border-bottom: 1px solid var(--blog-rule);
+}
+.post-row__title {
+  font-size: clamp(1.12rem, 1.9vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -.02em;
+  color: var(--white);
+  transition: color .25s var(--ease);
+}
+.post-row__dek {
+  font-size: .94rem;
+  line-height: 1.6;
+  color: var(--blog-ink-2);
+}
+.post-row__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  flex-shrink: 0;
+  border: 1px solid var(--blog-border);
+  border-radius: 50%;
+  color: var(--blog-ink-3);
+  transition: color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--spring);
+}
+@media (hover: hover) and (pointer: fine) {
+  .post-row:hover .post-row__title { color: var(--orange-l); }
+  .post-row:hover .post-row__go {
+    color: var(--orange);
+    border-color: rgba(219, 85, 0, .4);
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================================
+   FECHAMENTO — mesmo fechamento do site: título grande,
+   segunda linha laranja, um botão. Sem painel com gradiente.
+   ============================================================ */
+.blog-close { text-align: center; }
+.blog-close__sub {
+  max-width: 46ch;
+  margin: 16px auto 26px;
+  font-size: .98rem;
+  line-height: 1.6;
+  color: var(--blog-ink-2);
+}
+
+/* ============================================================
+   ARTIGO
+   ============================================================ */
+.article {
+  max-width: 720px;   /* ~68ch no corpo de 18px */
+  margin: 0 auto;
+}
+.article__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 26px;
+  font-size: .86rem;
+  font-weight: 500;
+  color: var(--blog-ink-3);
+  transition: color .25s var(--ease);
+}
+.article__back:hover { color: var(--orange); }
+.article__back svg { transition: transform .25s var(--spring); }
+.article__back:hover svg { transform: translateX(-3px); }
+
+.article h1 {
+  font-size: clamp(2rem, 4.2vw, 3.05rem);
+  font-weight: 700;
+  line-height: 1.07;
+  letter-spacing: -.03em;
+  color: #fff;
+  text-wrap: balance;
+}
+.article__meta {
+  margin-top: 18px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--blog-rule);
+  font-size: .84rem;
+  color: var(--blog-ink-3);
+}
+.article__lead {
+  margin-top: 30px;
+  font-size: 1.16rem;
+  line-height: 1.62;
+  color: var(--blog-ink);
+}
+.article__body { margin-top: 8px; }
+.article__body h2 {
+  margin: clamp(38px, 5vw, 54px) 0 14px;
+  font-size: clamp(1.28rem, 2.2vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+  color: var(--white);
+}
+.article__body p,
+.article__body li {
+  font-size: 1.06rem;
+  line-height: 1.75;
+  color: var(--blog-ink);
+}
+.article__body p { margin-bottom: 18px; }
+.article__body strong { color: #fff; font-weight: 600; }
+.article__body ul {
+  margin: 0 0 20px;
+  padding-left: 0;
+  list-style: none;
+}
+.article__body li {
+  position: relative;
+  margin-bottom: 11px;
+  padding-left: 22px;
+}
+.article__body li::before {
+  content: '';
+  position: absolute;
+  left: 2px; top: .72em;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+/* Especificidade casada com `.article__body p`, senão o corpo vence o pull. */
+.article__body .article__pull,
+.article__pull {
+  margin: clamp(32px, 4vw, 44px) 0;
+  padding: clamp(22px, 3vw, 28px) 0;
+  border-top: 1px solid var(--blog-rule);
+  border-bottom: 1px solid var(--blog-rule);
+  font-size: clamp(1.2rem, 2.3vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -.025em;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* FAQ do artigo */
+.article__faq { margin-top: 10px; border-top: 1px solid var(--blog-rule); }
+.article__faq details { border-bottom: 1px solid var(--blog-rule); }
+.article__faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--white);
+  transition: color .25s var(--ease);
+}
+.article__faq summary::-webkit-details-marker { display: none; }
+.article__faq summary:hover { color: var(--orange-l); }
+.article__faq summary svg {
+  flex-shrink: 0;
+  color: var(--orange);
+  transition: transform .3s var(--ease);
+}
+.article__faq details[open] summary svg { transform: rotate(180deg); }
+.article__faq details p {
+  margin: 0;
+  padding: 0 0 20px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--blog-ink-2);
+}
+
+/* Fechamento do artigo */
+.article__close {
+  margin-top: clamp(46px, 6vw, 64px);
+  padding-top: clamp(30px, 4vw, 40px);
+  border-top: 1px solid var(--blog-rule);
+  text-align: center;
+}
+.article__close h2 {
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -.025em;
+  color: var(--white);
+}
+.article__close p {
+  max-width: 48ch;
+  margin: 14px auto 24px;
+  font-size: .98rem;
+  line-height: 1.6;
+  color: var(--blog-ink-2);
+}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width: 1024px) {
+  .cases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .lead { grid-template-columns: 1fr; gap: 22px; }
+  .radar__list { grid-template-columns: 1fr; }
+  .strip__head { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .post-row { grid-template-columns: minmax(0, 1fr) auto; gap: 16px 22px; }
+  .post-row__dek { grid-column: 1 / -1; }
+}
+@media (max-width: 620px) {
+  .subpage { padding-top: 92px; }
+  .cases { grid-template-columns: 1fr; }
+  .radar__item { grid-template-columns: 1fr; gap: 6px; }
+  .radar__time { padding-top: 0; }
+  .post-row__go { display: none; }
+  .article__body p, .article__body li { font-size: 1.02rem; }
+}

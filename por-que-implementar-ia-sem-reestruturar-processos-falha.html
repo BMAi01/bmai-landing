@@ -3,57 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A maioria dos projetos de IA falha porque a empresa automatiza um processo bagunçado. Entenda por que a ordem certa é reestruturar o processo primeiro e aplicar IA depois.">
-  <title>Por que implementar IA sem reestruturar processos falha | BMAI</title>
+  <meta name="description" content="A maioria dos projetos de IA falha porque a empresa coloca tecnologia em cima de um processo bagunçado. Entenda por que a ordem certa é reestruturar o processo primeiro e aplicar IA depois.">
+  <title>Por que implementar IA sem reestruturar processos falha | BMAi</title>
   <link rel="canonical" href="https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html">
+  <link rel="alternate" type="application/rss+xml" title="Blog da BMAi" href="/feed.xml">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0d1b2a">
-  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Mesma folha do site + a camada do blog. Sem paleta local. -->
+  <link rel="stylesheet" href="css/style.min.css?v=20260623-rev72">
+  <link rel="stylesheet" href="css/blog.css?v=20260814-rev1">
+
+  <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
+
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Regular.woff2" crossorigin fetchpriority="high">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Bold.woff2" crossorigin fetchpriority="high">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-Semibold.woff2" crossorigin>
+  <link rel="preconnect" href="https://connect.facebook.net" crossorigin>
 
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="BMAI">
-  <meta property="og:title" content="Por que implementar IA sem reestruturar processos falha | BMAI">
-  <meta property="og:description" content="Jogar IA em cima de processo bagunçado só automatiza a bagunça. A ordem certa é processo primeiro, IA depois.">
+  <meta property="og:site_name" content="BMAi">
+  <meta property="og:title" content="Por que implementar IA sem reestruturar processos falha | BMAi">
+  <meta property="og:description" content="Colocar IA em cima de processo bagunçado só acelera a bagunça. A ordem certa é processo primeiro, IA depois.">
   <meta property="og:url" content="https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html">
   <meta property="og:image" content="https://bmai.com.br/assets/images/og-bmai.webp">
   <meta property="og:locale" content="pt_BR">
+  <meta property="article:published_time" content="2026-08-12T09:00:00-03:00">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Por que implementar IA sem reestruturar processos falha">
   <meta name="twitter:description" content="A ordem certa é processo primeiro, IA depois. Entenda por quê.">
   <meta name="twitter:image" content="https://bmai.com.br/assets/images/og-bmai.webp">
 
-  <style>
-    .post { padding: 130px 24px 40px; max-width: 760px; margin: 0 auto; color: rgba(255,255,255,0.85); font-family: var(--ff); line-height: 1.75; }
-    .post__back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 24px; font-size: 13px; font-family: var(--fm); text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.55); text-decoration: none; }
-    .post__back:hover { color: var(--orange); }
-    .post__tag { font-family: var(--fm); font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--orange); margin-bottom: 12px; }
-    .post h1 { font-size: clamp(30px, 5vw, 44px); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 22px; color: #fff; }
-    .post__lead { font-size: 19px; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
-    .post h2 { font-size: clamp(21px, 3.4vw, 27px); margin-top: 40px; margin-bottom: 12px; color: var(--orange); letter-spacing: -0.01em; }
-    .post p, .post li { font-size: 17px; color: rgba(255,255,255,0.8); margin-bottom: 14px; }
-    .post strong { color: #fff; }
-    .post ul { padding-left: 22px; margin-bottom: 16px; }
-    .post__pull { margin: 26px 0; padding: 18px 22px; border-left: 3px solid var(--orange); background: rgba(219,85,0,0.06); font-size: 18px; color: #fff; }
-    .post details { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 0; }
-    .post summary { cursor: pointer; font-weight: 600; color: #fff; font-size: 16px; }
-    .post details p { margin-top: 10px; margin-bottom: 0; }
-    .post__cta { margin: 48px 0 8px; padding: 28px; border-radius: 16px; background: linear-gradient(135deg, rgba(219,85,0,0.14), rgba(219,85,0,0.04)); border: 1px solid rgba(219,85,0,0.3); text-align: center; }
-    .post__cta h2 { color: #fff; margin-top: 0; }
-    .post__btn { display: inline-block; margin-top: 10px; padding: 14px 28px; border-radius: 100px; background: var(--orange); color: #fff; font-weight: 700; text-decoration: none; font-size: 16px; }
-    .post__btn:hover { background: #c84d01; }
-  </style>
-
-  <!-- SEO: dados estruturados -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": "Por que implementar IA sem reestruturar processos falha",
-    "description": "A maioria dos projetos de IA falha porque a empresa automatiza um processo bagunçado. A ordem certa é reestruturar o processo primeiro e aplicar IA depois.",
-    "author": { "@type": "Organization", "name": "BMAI Soluções Empresariais de IA" },
-    "publisher": { "@type": "Organization", "name": "BMAI Soluções Empresariais de IA", "url": "https://bmai.com.br" },
-    "mainEntityOfPage": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html",
+    "description": "A maioria dos projetos de IA falha porque a empresa coloca tecnologia em cima de um processo bagunçado. A ordem certa é reestruturar o processo primeiro e aplicar IA depois.",
+    "author": { "@type": "Organization", "name": "BMAI Soluções Empresariais de IA", "url": "https://bmai.com.br" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "BMAI Soluções Empresariais de IA",
+      "url": "https://bmai.com.br",
+      "logo": { "@type": "ImageObject", "url": "https://bmai.com.br/assets/images/logo-laranja.svg" }
+    },
+    "datePublished": "2026-08-12T09:00:00-03:00",
+    "dateModified": "2026-08-12T09:00:00-03:00",
+    "image": "https://bmai.com.br/assets/images/og-bmai.webp",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html" },
+    "isPartOf": { "@type": "Blog", "name": "Blog da BMAi", "url": "https://bmai.com.br/blog.html" },
     "inLanguage": "pt-BR"
   }
   </script>
@@ -62,7 +62,7 @@
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "BMAI", "item": "https://bmai.com.br/" },
+      { "@type": "ListItem", "position": 1, "name": "BMAi", "item": "https://bmai.com.br/" },
       { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://bmai.com.br/blog.html" },
       { "@type": "ListItem", "position": 3, "name": "Por que implementar IA sem reestruturar processos falha", "item": "https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha.html" }
     ]
@@ -73,9 +73,9 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      { "@type": "Question", "name": "Preciso ter os processos perfeitos antes de aplicar IA?", "acceptedAnswer": { "@type": "Answer", "text": "Não perfeitos, mas definidos. O importante é saber qual é o fluxo e onde ele trava. A reestruturação acontece junto com a implementação — não é uma etapa infinita antes dela." } },
-      { "@type": "Question", "name": "Reestruturar processo não atrasa o projeto de IA?", "acceptedAnswer": { "@type": "Answer", "text": "Ao contrário: é o que evita retrabalho. Automatizar um processo quebrado significa refazer tudo depois. Estruturar antes é o que faz a IA funcionar de primeira e durar." } },
-      { "@type": "Question", "name": "Como a BMAI faz isso na prática?", "acceptedAnswer": { "@type": "Answer", "text": "Começamos pelo diagnóstico e pela estruturação do processo, e só depois aplicamos a IA sob medida, com acompanhamento. É o que garante resultado mensurável em vez de mais uma ferramenta parada." } }
+      { "@type": "Question", "name": "Preciso ter os processos perfeitos antes de aplicar IA?", "acceptedAnswer": { "@type": "Answer", "text": "Não perfeitos, mas definidos. O importante é saber qual é o fluxo e onde ele trava. A reestruturação acontece junto com a implementação, não é uma etapa infinita antes dela." } },
+      { "@type": "Question", "name": "Reestruturar processo não atrasa o projeto de IA?", "acceptedAnswer": { "@type": "Answer", "text": "Ao contrário: é o que evita retrabalho. Colocar IA num processo quebrado significa refazer tudo depois. Estruturar antes é o que faz a IA funcionar de primeira e durar." } },
+      { "@type": "Question", "name": "Como a BMAi faz isso na prática?", "acceptedAnswer": { "@type": "Answer", "text": "Começamos pelo diagnóstico e pela estruturação do processo, e só depois aplicamos a IA sob medida, com acompanhamento. É o que garante resultado mensurável em vez de mais uma ferramenta parada." } }
     ]
   }
   </script>
@@ -99,62 +99,227 @@
   <!-- End Meta Pixel Code -->
 </head>
 <body>
-  <main class="post">
-    <a href="/blog.html" class="post__back">← Blog</a>
-    <p class="post__tag">Processos · IA</p>
-    <h1>Por que implementar IA sem reestruturar processos falha</h1>
-    <p class="post__lead">Toda semana surge uma empresa animada pra "colocar IA". Compra uma ferramenta, conecta no WhatsApp, e três meses depois a IA está parada e a frustração aumentou. O motivo é quase sempre o mesmo — e não tem nada a ver com a tecnologia.</p>
+<!--
+  DIREÇÃO (2026-08-14) — página de artigo
+  THESIS: um artigo do site, não uma landing solta. Mesma cara, mesmo menu,
+    mesmo rodapé. Recusa a coluna de texto sem cabeçalho e sem saída.
+  OWN-WORLD: navy #0d1b2a, laranja #db5500 só em link, marcador e botão,
+    General Sans, hairline a 8%, medida de leitura de 720px.
+  STORY: o leitor chega pelo blog ou pela busca, entende a tese em um parágrafo,
+    percorre quatro blocos curtos, tira dúvida no FAQ e sai pelo diagnóstico.
+  FIRST VIEWPORT: volta pro blog, título grande em duas ou três linhas, data e
+    tempo de leitura sobre um hairline, e o parágrafo de abertura em corpo maior.
+  FORM: extensão de superfície dentro do mundo já estabelecido do site.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
 
-    <h2>O erro mais comum: automatizar a bagunça</h2>
-    <p>IA não organiza um processo. Ela <strong>acelera</strong> o processo que já existe. Se o seu comercial é desorganizado, os dados estão espalhados e ninguém segue o CRM, colocar IA em cima disso só faz a desorganização acontecer <strong>mais rápido</strong>. Você automatiza o erro em vez de corrigir.</p>
-    <div class="post__pull">IA em cima de bagunça só automatiza a bagunça.</div>
-    <p>É por isso que tanto projeto de IA morre: a empresa tratou a IA como um interruptor mágico, quando ela é, na verdade, um multiplicador. E multiplicador de processo ruim dá resultado ruim, em escala.</p>
+  <div class="scroll-progress" id="scrollProgress"></div>
 
-    <h2>Por que a ferramenta sozinha não resolve</h2>
-    <p>Ferramenta de prateleira não conhece o seu funil, o seu jeito de vender, as suas exceções. Ela assume um processo "genérico" que não é o seu. Quando a realidade da sua operação bate na porta — um convênio diferente, uma etapa a mais, uma regra específica — a automação genérica trava. E aí volta tudo pro colo do dono.</p>
+  <!-- HEADER — mesmo componente da home -->
+  <header class="header" id="header">
+    <nav class="floatnav" id="nav" aria-label="Principal">
+      <a href="/" class="nav-logo" aria-label="BMAi Home">
+        <img src="assets/images/logo-laranja.svg" alt="BMAi"/>
+      </a>
+      <span class="nav-sep"></span>
+      <a href="/#para-quem" class="floatnav__item floatnav__item--team-desktop-only">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <span class="floatnav__text">Team</span>
+      </a>
+      <a href="/#cases" class="floatnav__item">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </span>
+        <span class="floatnav__text">Cases</span>
+      </a>
+      <a href="/#faq" class="floatnav__item">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </span>
+        <span class="floatnav__text">FAQ</span>
+      </a>
+      <a href="/blog.html" class="floatnav__item active">
+        <span class="floatnav__icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </span>
+        <span class="floatnav__text">Blog</span>
+      </a>
+      <span class="nav-sep"></span>
+      <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20vim%20pelo%20blog" target="_blank" rel="noopener" class="floatnav__cta">
+        <span class="floatnav__cta-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+        <span class="floatnav__cta-text">Falar com o time da BMAi</span>
+      </a>
+    </nav>
+    <button class="header__burger" id="burger" aria-label="Menu" aria-controls="nav" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </header>
 
-    <h2>O que "reestruturar o processo" significa na prática</h2>
-    <p>Não é virar a empresa do avesso. É deixar o processo <strong>explícito e previsível</strong> antes de automatizar:</p>
-    <ul>
-      <li>Mapear o fluxo real (não o que "deveria" acontecer, o que <em>acontece</em>).</li>
-      <li>Achar onde o processo perde tempo, lead ou dinheiro.</li>
-      <li>Padronizar as etapas e as regras de decisão.</li>
-      <li>Definir o que é trabalho humano e o que é repetição automatizável.</li>
-    </ul>
-    <p>Só depois disso a IA entra — e entra encaixada, resolvendo o gargalo certo.</p>
+  <main class="subpage" id="main">
+    <section>
+      <div class="container">
+        <article class="article">
 
-    <h2>A ordem certa: processo primeiro, IA depois</h2>
-    <p>Parece óbvio, mas quase ninguém faz. A sequência que funciona é simples:</p>
-    <ul>
-      <li><strong>Diagnóstico</strong> — onde a operação trava.</li>
-      <li><strong>Estruturação</strong> — organizar o processo antes da tecnologia.</li>
-      <li><strong>Implementação</strong> — a IA entra funcionando, integrada à rotina.</li>
-      <li><strong>Acompanhamento</strong> — ajuste contínuo com base em dados.</li>
-    </ul>
-    <p>É a diferença entre "compramos uma IA" e "resolvemos um problema com IA". A primeira vira assinatura esquecida. A segunda vira resultado.</p>
+          <a href="/blog.html" class="article__back">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+            Voltar para o blog
+          </a>
 
-    <h2>Como saber se seu processo está pronto pra IA</h2>
-    <p>Um teste rápido: se você sumir por uma semana, o processo continua rodando ou trava? Se trava, o problema não é falta de IA — é falta de processo. E é exatamente aí que a estruturação (com ou sem tecnologia) já devolve controle. A IA vem depois, pra multiplicar o que já funciona.</p>
+          <h1>Por que implementar IA sem reestruturar processos falha</h1>
+          <p class="article__meta">
+            <time datetime="2026-08-12">12 de agosto de 2026</time> · Leitura de 4 min · BMAi
+          </p>
 
-    <h2>Perguntas frequentes</h2>
-    <details>
-      <summary>Preciso ter os processos perfeitos antes de aplicar IA?</summary>
-      <p>Não perfeitos, mas definidos. O importante é saber qual é o fluxo e onde ele trava. A reestruturação acontece junto com a implementação — não é uma etapa infinita antes dela.</p>
-    </details>
-    <details>
-      <summary>Reestruturar processo não atrasa o projeto de IA?</summary>
-      <p>Ao contrário: é o que evita retrabalho. Automatizar um processo quebrado significa refazer tudo depois. Estruturar antes é o que faz a IA funcionar de primeira e durar.</p>
-    </details>
-    <details>
-      <summary>Como a BMAI faz isso na prática?</summary>
-      <p>Começamos pelo diagnóstico e pela estruturação do processo, e só depois aplicamos a IA sob medida, com acompanhamento. É o que garante resultado mensurável em vez de mais uma ferramenta parada.</p>
-    </details>
+          <p class="article__lead">Toda semana surge uma empresa animada pra "colocar IA". Compra uma ferramenta, conecta no WhatsApp, e três meses depois a IA está parada e a frustração aumentou. O motivo é quase sempre o mesmo, e não tem nada a ver com a tecnologia.</p>
 
-    <div class="post__cta">
-      <h2>Antes de "colocar IA", vamos olhar o seu processo</h2>
-      <p>A BMAI começa pelo diagnóstico — sem vender ferramenta antes de entender o seu negócio.</p>
-      <a class="post__btn" href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20li%20o%20artigo%20sobre%20reestrutura%C3%A7%C3%A3o%20de%20processos%20e%20IA" target="_blank" rel="noopener">Falar com o time da BMAI</a>
-    </div>
+          <div class="article__body">
+            <h2>O erro mais comum: colocar IA em cima da bagunça</h2>
+            <p>IA não organiza um processo. Ela <strong>acelera</strong> o processo que já existe. Se o seu comercial é desorganizado, os dados estão espalhados e ninguém segue o CRM, colocar IA em cima disso só faz a desorganização acontecer <strong>mais rápido</strong>. Você multiplica o erro em vez de corrigir.</p>
+
+            <p class="article__pull">IA em cima de bagunça só acelera a bagunça.</p>
+
+            <p>É por isso que tanto projeto de IA morre: a empresa tratou a IA como um interruptor mágico, quando ela é, na verdade, um multiplicador. E multiplicador de processo ruim dá resultado ruim, em escala.</p>
+
+            <h2>Por que a ferramenta sozinha não resolve</h2>
+            <p>Ferramenta de prateleira não conhece o seu funil, o seu jeito de vender, as suas exceções. Ela assume um processo genérico que não é o seu. Quando a realidade da sua operação bate na porta, um convênio diferente, uma etapa a mais, uma regra específica, a ferramenta genérica trava. E aí volta tudo pro colo do dono.</p>
+
+            <h2>O que reestruturar o processo significa na prática</h2>
+            <p>Não é virar a empresa do avesso. É deixar o processo <strong>explícito e previsível</strong> antes de aplicar tecnologia:</p>
+            <ul>
+              <li>Mapear o fluxo real, não o que "deveria" acontecer, mas o que <em>acontece</em>.</li>
+              <li>Achar onde o processo perde tempo, lead ou dinheiro.</li>
+              <li>Padronizar as etapas e as regras de decisão.</li>
+              <li>Definir o que é trabalho humano e o que a IA pode assumir.</li>
+            </ul>
+            <p>Só depois disso a IA entra, e entra encaixada, resolvendo o gargalo certo.</p>
+
+            <h2>A ordem certa: processo primeiro, IA depois</h2>
+            <p>Parece óbvio, mas quase ninguém faz. A sequência que funciona é simples:</p>
+            <ul>
+              <li><strong>Diagnóstico:</strong> onde a operação trava.</li>
+              <li><strong>Estruturação:</strong> organizar o processo antes da tecnologia.</li>
+              <li><strong>Implementação:</strong> a IA entra funcionando, integrada à rotina.</li>
+              <li><strong>Acompanhamento:</strong> ajuste contínuo com base em dados.</li>
+            </ul>
+            <p>É a diferença entre "compramos uma IA" e "resolvemos um problema com IA". A primeira vira assinatura esquecida. A segunda vira resultado.</p>
+
+            <h2>Como saber se o seu processo está pronto pra IA</h2>
+            <p>Um teste rápido: se você sumir por uma semana, o processo continua rodando ou trava? Se trava, o problema não é falta de IA, é falta de processo. E é exatamente aí que a estruturação, com ou sem tecnologia, já devolve controle. A IA vem depois, pra multiplicar o que já funciona.</p>
+
+            <h2>Perguntas frequentes</h2>
+            <div class="article__faq">
+              <details>
+                <summary>
+                  Preciso ter os processos perfeitos antes de aplicar IA?
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </summary>
+                <p>Não perfeitos, mas definidos. O importante é saber qual é o fluxo e onde ele trava. A reestruturação acontece junto com a implementação, não é uma etapa infinita antes dela.</p>
+              </details>
+              <details>
+                <summary>
+                  Reestruturar processo não atrasa o projeto de IA?
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </summary>
+                <p>Ao contrário: é o que evita retrabalho. Colocar IA num processo quebrado significa refazer tudo depois. Estruturar antes é o que faz a IA funcionar de primeira e durar.</p>
+              </details>
+              <details>
+                <summary>
+                  Como a BMAi faz isso na prática?
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </summary>
+                <p>Começamos pelo diagnóstico e pela estruturação do processo, e só depois aplicamos a IA sob medida, com acompanhamento. É o que garante resultado mensurável em vez de mais uma ferramenta parada.</p>
+              </details>
+            </div>
+          </div>
+
+          <div class="article__close">
+            <h2>Antes de colocar IA, vamos olhar o seu processo</h2>
+            <p>A BMAi começa pelo diagnóstico. A gente entende a sua operação antes de falar de ferramenta.</p>
+            <a class="btn btn--primary btn--lg" href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20li%20o%20artigo%20sobre%20reestrutura%C3%A7%C3%A3o%20de%20processos%20e%20IA" target="_blank" rel="noopener">
+              Falar com o time da BMAi
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+
+        </article>
+      </div>
+    </section>
   </main>
+
+  <!-- FOOTER — mesmo componente da home -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="/" class="footer__logo" aria-label="BMAi — página inicial">
+          <img src="assets/images/simbolo-laranja.svg" alt="" class="footer__logo-symbol"/>
+          <img src="assets/images/logo-laranja.svg" alt="BMAi" class="footer__logo-mark"/>
+        </a>
+        <p class="footer__kind">Engenharia de inteligência aplicada.</p>
+      </div>
+
+      <div class="footer__cols">
+        <div class="footer__col">
+          <h3><span class="footer__col-dot"></span><span>Site</span></h3>
+          <ul>
+            <li><a href="/#quem-somos">Quem somos</a></li>
+            <li><a href="/#cases">Cases</a></li>
+            <li><a href="/#para-quem">Team</a></li>
+            <li><a href="/#faq">FAQ</a></li>
+            <li><a href="/blog.html">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3><span class="footer__col-dot"></span><span>Legal</span></h3>
+          <ul>
+            <li><a href="/privacidade.html">Política de Privacidade</a></li>
+            <li><a href="/termos.html">Termos de Uso</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3><span class="footer__col-dot"></span><span>Contato</span></h3>
+          <ul class="footer__social">
+            <li>
+              <a href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20tudo%20certo%3F" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                <span>WhatsApp</span>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:contato@bmai.space">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span>contato@bmai.space</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://instagram.com/bmai.oficial" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                <span>Instagram</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/company/bmaicompany/" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                <span>LinkedIn</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__divider" aria-hidden="true"></div>
+
+    <div class="footer__bottom">
+      <p>© <span id="footerYear">2026</span> BMAi · Todos os direitos reservados</p>
+      <p class="footer__bottom-legal">BMAi é marca de soluções de IA aplicada a processos de negócio. Resultados citados refletem médias de projetos próprios e podem variar conforme o contexto de cada cliente.</p>
+      <a href="#top" class="footer__backtop">Voltar ao topo <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></a>
+    </div>
+  </footer>
+
+  <script defer src="js/subpage.js?v=20260814-rev1"></script>
 </body>
 </html>
