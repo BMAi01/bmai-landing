@@ -1232,14 +1232,29 @@
 .bl-radar__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;   /* card com capa e card sem capa tem alturas diferentes;
+                           esticar deixaria um vazio no rodape do mais curto */
   gap: 16px;
 }
 .bl-radar__item {
-  padding: 20px;
+  overflow: hidden;
   border: 1px solid var(--blog-rule);
   border-radius: var(--r-sm);
   background: var(--bg-2);
   transition: border-color .2s var(--ease), transform .2s var(--ease);
+}
+.bl-radar__body { padding: 20px; }
+
+/* Capa da propria materia (og:image), quando o veiculo declara uma.
+   Sem imagem declarada, o item simplesmente nao tem capa: nunca entra
+   foto de outro assunto pra preencher espaco. */
+.bl-radar__cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--blog-rule);
+  background: var(--bg-3);
 }
 @media (hover: hover) and (pointer: fine) {
   .bl-radar__item:hover { border-color: var(--blog-rule-2); transform: translateY(-2px); }

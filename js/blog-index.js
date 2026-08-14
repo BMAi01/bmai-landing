@@ -207,21 +207,35 @@
     grade.innerHTML = news.slice(0, 8).map(function (it) {
       var t = esc(it.title),
           s = esc(it.summary || ''),
-          // Sem fonte declarada, não creditamos a BMAi por notícia de
-          // terceiro: o campo simplesmente não aparece.
+          // Quem publicou foi o veiculo, nao a BMAi. A API ja resolve o
+          // nome real a partir do dominio da materia.
           fonte = esc(it.source || ''),
           url = safeUrl(it.url),
+          capa = safeUrl(it.image || ''),
           quando = dataCurta(it.published_at || it.date);
       var titulo = url
         ? '<a class="bl-radar__title" href="' + url + '" target="_blank" rel="noopener noreferrer">' + t + '</a>'
         : '<h3 class="bl-radar__title">' + t + '</h3>';
       var resumo = (fonte ? '<span class="bl-radar__src">' + fonte + '.</span> ' : '') + s;
+      // alt vazio de proposito: a capa e decorativa aqui, quem descreve a
+      // materia e o titulo logo abaixo. alt repetindo o titulo faria o
+      // leitor de tela ouvir a mesma frase duas vezes.
       return '<article class="bl-radar__item">' +
-               (quando ? '<span class="bl-radar__time">' + quando + '</span>' : '') +
-               titulo +
-               (resumo.trim() ? '<p class="bl-radar__sum">' + resumo + '</p>' : '') +
+               (capa ? '<img class="bl-radar__cover" src="' + capa + '" alt="" loading="lazy" decoding="async">' : '') +
+               '<div class="bl-radar__body">' +
+                 (quando ? '<span class="bl-radar__time">' + quando + '</span>' : '') +
+                 titulo +
+                 (resumo.trim() ? '<p class="bl-radar__sum">' + resumo + '</p>' : '') +
+               '</div>' +
              '</article>';
     }).join('');
+
+    // Rede de segurança: a API confere cada capa quando monta a edição, mas
+    // um CDN pode mudar de comportamento no meio da semana. Capa que não
+    // carrega SOME, em vez de virar ícone de imagem quebrada no card.
+    [].forEach.call(grade.querySelectorAll('.bl-radar__cover'), function (img) {
+      img.addEventListener('error', function () { img.remove(); });
+    });
 
     secao.hidden = false;
     var chip = document.getElementById('blPillRadar');
