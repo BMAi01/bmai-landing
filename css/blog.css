@@ -636,11 +636,14 @@
   background: var(--bg-2);
   box-shadow: 0 24px 70px -20px rgba(0, 0, 0, .55);
 }
-.bl-hero__video {
+/* O canvas do hero-3d.js. O fundo fica no CSS, não no desenho: assim a
+   caixa já nasce na cor certa e não pisca branco enquanto a edição do
+   radar não chegou. */
+.bl-hero__cena {
   display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
-  object-fit: cover;
+  background: radial-gradient(120% 120% at 50% 42%, #16283d 0%, #0d1b2a 52%, #081320 100%);
 }
 /* Um respiro de laranja pra a peça pertencer à paleta em vez de ficar
    como um retângulo de vídeo colado na página. */
@@ -810,6 +813,24 @@
   aspect-ratio: auto;
   min-height: 190px;
 }
+/* ---------- A capa do artigo ----------
+   Gerada por tools/gerar-capas-artigos.js. A imagem é posicionada em
+   absoluto porque o `.bl-tag` ("Destaque", "Negócio") já mora aqui e
+   precisa continuar por cima. */
+.bl-card__media img,
+.bl-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* O símbolo desenhado pelo ::after existia pra o card sem imagem não ler
+   como imagem quebrada. Com capa, ele viraria uma segunda marca por cima
+   da primeira, porque a capa já traz o símbolo assinando. */
+.bl-card__media:has(img)::after,
+.bl-row .bl-thumb:has(img)::before { content: none; }
+
 /* O simbolo da marca no meio da area de imagem. Sem ele, o card sem foto
    lia como imagem que nao carregou; com ele, lê como capa da BMAi. */
 .bl-card__media::after {

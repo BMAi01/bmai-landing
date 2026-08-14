@@ -140,16 +140,24 @@
 
   /* ==================== HIDRATAÇÃO ==================== */
 
-  // Contadores: o HTML nasce com 0 e a API diz o número real. Categoria sem
-  // post algum sai da lateral e da barra de chips.
-  json('/blog/categorias').then(function (d) {
-    var total = {};
-    (d.categorias || []).forEach(function (c) { total[c.slug] = c.total; });
+  // Contadores. Cada assunto soma ARTIGO e NOTÍCIA, porque o filtro alcança
+  // os dois: o radar entrega `eixo` com os mesmos quatro slugs das chips.
+  // Contar só artigo esconderia "Tecnologia" e "Regulação", que hoje não têm
+  // artigo nenhum e têm dezenas de notícias.
+  var contagem = { artigos: {}, radar: {} };
+
+  function atualizarContadores() {
+    var soma = {};
+    ['artigos', 'radar'].forEach(function (fonte) {
+      Object.keys(contagem[fonte]).forEach(function (k) {
+        soma[k] = (soma[k] || 0) + contagem[fonte][k];
+      });
+    });
 
     [].forEach.call(document.querySelectorAll('[data-count-for]'), function (el) {
       var slug = el.getAttribute('data-count-for');
       if (slug === 'radar') return;               // o radar tem vida própria
-      var n = total[slug] || 0;
+      var n = soma[slug] || 0;
       el.textContent = n;
       var botao = el.closest('.bl-cat');
       if (botao) botao.hidden = n === 0;
@@ -158,8 +166,13 @@
     [].forEach.call(document.querySelectorAll('.bl-pill[data-filter]'), function (p) {
       var slug = p.getAttribute('data-filter');
       if (slug === 'all' || slug === 'radar') return;
-      p.hidden = !total[slug];
+      p.hidden = !soma[slug];
     });
+  }
+
+  json('/blog/categorias').then(function (d) {
+    (d.categorias || []).forEach(function (c) { contagem.artigos[c.slug] = c.total; });
+    atualizarContadores();
   }).catch(function () { /* API fora: o HTML já se sustenta */ });
 
   // Posts publicados no backend depois do último deploy do HTML entram na
@@ -185,7 +198,14 @@
       a.setAttribute('data-slug', p.slug);
       a.setAttribute('data-title', String(p.titulo || '').toLowerCase());
       a.innerHTML =
-        '<span class="bl-thumb"></span>' +
+        // A capa é do próprio site (caminho relativo), então não passa pela
+        // origem da API. Post sem capa cadastrada cai no gradiente com o
+        // símbolo, que é o que o CSS já desenha na miniatura vazia.
+        '<span class="bl-thumb">' +
+          (p.imagem
+            ? '<img src="' + safeUrl(p.imagem) + '" alt="" loading="lazy" decoding="async" width="1200" height="675">'
+            : '') +
+        '</span>' +
         '<span class="bl-row__copy">' +
           '<span class="bl-row__meta">' + esc(selo(p)) + '</span>' +
           '<span class="bl-row__title">' + esc(p.titulo) + '</span>' +
@@ -204,7 +224,9 @@
     var grade = document.querySelector('.bl-radar__grid');
     if (!secao || !grade) return;
 
-    grade.innerHTML = news.slice(0, 8).map(function (it) {
+    // Sem corte. A edição vem com 36 matérias e o pedido foi volume; cortar
+    // em 8 aqui era o que deixava a seção com cara de amostra.
+    grade.innerHTML = news.map(function (it) {
       var t = esc(it.title),
           s = esc(it.summary || ''),
           // Quem publicou foi o veiculo, nao a BMAi. A API ja resolve o
@@ -234,8 +256,13 @@
                    '<img src="assets/images/simbolo-laranja.svg" alt="" width="14" height="14">Radar BMAi' +
                  '</span>';
       var figura = capa
+        // O crossorigin NÃO é enfeite. O hero desenha a capa da materia de
+        // topo dentro de um canvas e por isso pede a MESMA URL com CORS. Se
+        // este <img> guardar a imagem no cache sem CORS primeiro, o pedido do
+        // hero e recusado em cima da entrada cacheada e a folha do jornal
+        // aparece com um retangulo escuro no lugar da foto. Medido.
         ? '<span class="bl-radar__fig">' +
-            '<img class="bl-radar__cover" src="' + capa + '" alt="" loading="lazy" decoding="async" width="1200" height="675">' +
+            '<img class="bl-radar__cover" src="' + capa + '" alt="" crossorigin="anonymous" loading="lazy" decoding="async" width="1200" height="675">' +
             selo +
           '</span>'
         : '<span class="bl-radar__fig bl-radar__fig--marca">' +
@@ -246,7 +273,11 @@
       // materia original fica dentro da pagina de auditoria, com credito.
       var destino = it.id ? '/radar?n=' + encodeURIComponent(it.id) : url;
 
-      return '<a class="bl-radar__item" href="' + destino + '" target="_blank" rel="noopener">' +
+      // data-cat e data-title são o que põe a notícia sob a mesma busca e o
+      // mesmo filtro dos artigos. O eixo vem da API, não é adivinhado aqui.
+      return '<a class="bl-radar__item" href="' + destino + '" target="_blank" rel="noopener"' +
+             ' data-cat="' + esc(it.eixo || '') + '"' +
+             ' data-title="' + esc((it.title || '').toLowerCase()) + '">' +
                figura +
                '<span class="bl-radar__body">' +
                  (quando ? '<span class="bl-radar__time">' + quando + '</span>' : '') +
@@ -276,8 +307,17 @@
     if (cat) {
       cat.hidden = false;
       var n = cat.querySelector('[data-count-for="radar"]');
-      if (n) n.textContent = Math.min(news.length, 8);
+      if (n) n.textContent = news.length;
     }
+
+    news.forEach(function (it) {
+      if (!it.eixo) return;
+      contagem.radar[it.eixo] = (contagem.radar[it.eixo] || 0) + 1;
+    });
+    atualizarContadores();
+    // O radar chega depois do primeiro aplicar(). Sem esta chamada, as
+    // notícias nasceriam fora do filtro que já estivesse escolhido.
+    aplicar();
   }).catch(function () { /* endpoint fora: a seção continua oculta */ });
 
   /* ==================== NEWSLETTER ==================== */

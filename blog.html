@@ -12,7 +12,7 @@
 
   <!-- Mesma folha do site + a camada do blog. Sem paleta local. -->
   <link rel="stylesheet" href="css/style.min.css?v=20260623-rev72">
-  <link rel="stylesheet" href="css/blog.css?v=20260814-rev11">
+  <link rel="stylesheet" href="css/blog.css?v=20260814-rev12">
 
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
@@ -173,17 +173,12 @@
         </div>
       </div>
 
-      <!-- Motion no lugar do radar que girava. aria-hidden porque é peça
-           decorativa: quem usa leitor de tela não perde nada, o texto ao
-           lado já diz do que o blog trata. O poster segura o primeiro
-           quadro enquanto o vídeo carrega, e o subpage.js pausa tudo se a
-           pessoa pediu menos movimento no sistema. -->
-      <div class="bl-hero__midia" aria-hidden="true">
-        <video class="bl-hero__video" autoplay muted loop playsinline
-               preload="metadata" poster="assets/video/radar-bmai.jpg"
-               width="640" height="640">
-          <source src="assets/video/radar-bmai.mp4" type="video/mp4">
-        </video>
+      <!-- A edição do dia em 3D, no lugar do motion. O canvas nasce vazio
+           de propósito: quem desenha é o hero-3d.js, e só depois que a
+           edição do radar chega. aria-hidden porque é peça decorativa, e
+           tudo que ela mostra a página repete em texto mais abaixo. -->
+      <div class="bl-hero__midia" id="blHero" aria-hidden="true">
+        <canvas class="bl-hero__cena" width="880" height="880"></canvas>
       </div>
     </div>
   </section>
@@ -193,15 +188,18 @@
        preenchido pela API, nunca chumbado. -->
   <div class="container">
     <div class="bl-filters" role="group" aria-label="Filtrar por categoria">
+      <!-- A taxonomia é de ASSUNTO, e vale pra artigo e pra notícia ao mesmo
+           tempo: o campo `eixo` que a API devolve em cada item do radar usa
+           exatamente estes quatro slugs. Antes aqui havia Guia, Comparativo,
+           Saúde, Comercial e "Brasília e DF", que descreviam o formato ou a
+           praça do artigo e não tinham como classificar notícia nenhuma. -->
       <button class="bl-pill" type="button" data-filter="all" aria-pressed="true">Todos</button>
+      <button class="bl-pill" type="button" data-filter="negocio" aria-pressed="false">Negócio</button>
+      <button class="bl-pill" type="button" data-filter="tecnologia" aria-pressed="false">Tecnologia</button>
       <button class="bl-pill" type="button" data-filter="processo" aria-pressed="false">Processo</button>
-      <button class="bl-pill" type="button" data-filter="guia" aria-pressed="false">Guia</button>
-      <button class="bl-pill" type="button" data-filter="comparativo" aria-pressed="false">Comparativo</button>
-      <button class="bl-pill" type="button" data-filter="saude" aria-pressed="false">Saúde</button>
-      <button class="bl-pill" type="button" data-filter="comercial" aria-pressed="false">Comercial</button>
-      <button class="bl-pill" type="button" data-filter="brasilia" aria-pressed="false">Brasília e DF</button>
+      <button class="bl-pill" type="button" data-filter="regulacao" aria-pressed="false">Regulação</button>
       <!-- O chip do radar só entra na página junto com o feed real (ver script). -->
-      <button class="bl-pill" type="button" data-filter="radar" aria-pressed="false" id="blPillRadar" hidden>Radar de tecnologia</button>
+      <button class="bl-pill" type="button" data-filter="radar" aria-pressed="false" id="blPillRadar" hidden>Radar do dia</button>
     </div>
   </div>
 
@@ -222,7 +220,7 @@
                data-cat="processo" data-slug="por-que-implementar-ia-sem-reestruturar-processos-falha"
                data-title="por que implementar ia sem reestruturar processos falha ordem certa processo primeiro"
                href="/por-que-implementar-ia-sem-reestruturar-processos-falha">
-              <span class="bl-card__media">
+              <span class="bl-card__media"><img src="assets/images/blog/por-que-implementar-ia-sem-reestruturar-processos-falha.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675">
                 <span class="bl-tag">Destaque</span>
               </span>
               <span class="bl-card__body">
@@ -237,11 +235,11 @@
 
             <div class="bl-stack">
               <a class="bl-card bl-card--sm rise" data-stagger="1"
-                 data-cat="guia" data-slug="como-escolher-empresa-de-ia-brasilia"
+                 data-cat="negocio" data-slug="como-escolher-empresa-de-ia-brasilia"
                  data-title="como escolher uma empresa de ia em brasilia seis criterios sinais de alerta"
                  href="/como-escolher-empresa-de-ia-brasilia">
-                <span class="bl-card__media">
-                  <span class="bl-tag bl-tag--ghost">Guia</span>
+                <span class="bl-card__media"><img src="assets/images/blog/como-escolher-empresa-de-ia-brasilia.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675">
+                  <span class="bl-tag bl-tag--ghost">Negócio</span>
                 </span>
                 <span class="bl-card__body">
                   <span class="bl-card__meta">11 AGO 2026 · 2 MIN DE LEITURA</span>
@@ -253,11 +251,11 @@
               </a>
 
               <a class="bl-card bl-card--sm rise" data-stagger="2"
-                 data-cat="comparativo" data-slug="g4-os-alternativa-pme"
+                 data-cat="negocio" data-slug="g4-os-alternativa-pme"
                  data-title="g4 os vale a pena para pme plataforma implementacao sob medida"
                  href="/g4-os-alternativa-pme">
-                <span class="bl-card__media">
-                  <span class="bl-tag bl-tag--ghost">Comparativo</span>
+                <span class="bl-card__media"><img src="assets/images/blog/g4-os-alternativa-pme.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675">
+                  <span class="bl-tag bl-tag--ghost">Negócio</span>
                 </span>
                 <span class="bl-card__body">
                   <span class="bl-card__meta">11 AGO 2026 · 3 MIN DE LEITURA</span>
@@ -282,7 +280,7 @@
                data-cat="processo" data-slug="por-que-implementar-ia-sem-reestruturar-processos-falha"
                data-title="por que implementar ia sem reestruturar processos falha"
                href="/por-que-implementar-ia-sem-reestruturar-processos-falha">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/por-que-implementar-ia-sem-reestruturar-processos-falha.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-row__copy">
                 <span class="bl-row__meta">12 AGO 2026 · 3 MIN DE LEITURA</span>
                 <span class="bl-row__title">Por que implementar IA sem reestruturar processos falha</span>
@@ -292,68 +290,68 @@
             </a>
 
             <a class="bl-row rise" data-stagger="1"
-               data-cat="guia" data-slug="como-escolher-empresa-de-ia-brasilia"
+               data-cat="negocio" data-slug="como-escolher-empresa-de-ia-brasilia"
                data-title="como escolher uma empresa de ia em brasilia criterios"
                href="/como-escolher-empresa-de-ia-brasilia">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/como-escolher-empresa-de-ia-brasilia.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-row__copy">
                 <span class="bl-row__meta">11 AGO 2026 · 2 MIN DE LEITURA</span>
                 <span class="bl-row__title">Como escolher uma empresa de IA em Brasília</span>
                 <span class="bl-row__dek">Seis critérios objetivos, os sinais de alerta e as perguntas certas antes de contratar.</span>
               </span>
-              <span class="bl-row__tag">Guia</span>
+              <span class="bl-row__tag">Negócio</span>
             </a>
 
             <a class="bl-row rise" data-stagger="2"
-               data-cat="comparativo" data-slug="g4-os-alternativa-pme"
+               data-cat="negocio" data-slug="g4-os-alternativa-pme"
                data-title="g4 os vale a pena para pme plataforma"
                href="/g4-os-alternativa-pme">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/g4-os-alternativa-pme.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-row__copy">
                 <span class="bl-row__meta">11 AGO 2026 · 3 MIN DE LEITURA</span>
                 <span class="bl-row__title">G4 OS vale a pena para PME?</span>
                 <span class="bl-row__dek">Plataforma que você opera contra implementação feita pra você. Qual das duas faz sentido pro seu negócio.</span>
               </span>
-              <span class="bl-row__tag">Comparativo</span>
+              <span class="bl-row__tag">Negócio</span>
             </a>
 
             <a class="bl-row rise" data-stagger="0" data-extra
-               data-cat="saude" data-slug="ia-para-clinicas"
+               data-cat="processo" data-slug="ia-para-clinicas"
                data-title="ia para clinicas agenda whatsapp faltas pacientes"
                href="/ia-para-clinicas">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/ia-para-clinicas.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-row__copy">
                 <span class="bl-row__meta">11 AGO 2026 · 2 MIN DE LEITURA</span>
                 <span class="bl-row__title">IA para clínicas que resolve o que trava a sua agenda</span>
                 <span class="bl-row__dek">Agendamento e confirmação no WhatsApp, menos faltas e os dados num lugar só, em vez de planilha espalhada.</span>
               </span>
-              <span class="bl-row__tag">Saúde</span>
+              <span class="bl-row__tag">Processo</span>
             </a>
 
             <a class="bl-row rise" data-stagger="1" data-extra
-               data-cat="comercial" data-slug="ia-para-agencias"
+               data-cat="negocio" data-slug="ia-para-agencias"
                data-title="ia para agencias prospeccao follow-up crm leads"
                href="/ia-para-agencias">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/ia-para-agencias.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-row__copy">
                 <span class="bl-row__meta">11 AGO 2026 · 2 MIN DE LEITURA</span>
                 <span class="bl-row__title">IA para agências que trabalha os leads que você está deixando na mesa</span>
                 <span class="bl-row__dek">Prospecção o dia inteiro em vários canais, follow-up que não falha e CRM que deixa de ser subutilizado.</span>
               </span>
-              <span class="bl-row__tag">Comercial</span>
+              <span class="bl-row__tag">Negócio</span>
             </a>
 
             <a class="bl-row rise" data-stagger="2" data-extra
-               data-cat="brasilia" data-slug="ia-brasilia"
+               data-cat="negocio" data-slug="ia-brasilia"
                data-title="empresa de inteligencia artificial em brasilia df"
                href="/ia-brasilia">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/ia-brasilia.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-row__copy">
                 <span class="bl-row__meta">11 AGO 2026 · 2 MIN DE LEITURA</span>
                 <span class="bl-row__title">Empresa de inteligência artificial em Brasília e no DF</span>
                 <span class="bl-row__dek">O que a BMAi faz, para quem é e como funciona, do diagnóstico à operação, para empresas do Distrito Federal.</span>
               </span>
-              <span class="bl-row__tag">Brasília e DF</span>
+              <span class="bl-row__tag">Negócio</span>
             </a>
           </div>
 
@@ -379,26 +377,22 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
             Categorias
           </h2>
+          <!-- Mesmos quatro assuntos da barra de chips. O contador soma
+               artigo e notícia, porque o filtro alcança os dois. -->
+          <button class="bl-cat" type="button" data-filter="negocio">
+            <span>Negócio</span><span class="bl-cat__count" data-count-for="negocio">0</span>
+          </button>
+          <button class="bl-cat" type="button" data-filter="tecnologia">
+            <span>Tecnologia</span><span class="bl-cat__count" data-count-for="tecnologia">0</span>
+          </button>
           <button class="bl-cat" type="button" data-filter="processo">
             <span>Processo</span><span class="bl-cat__count" data-count-for="processo">0</span>
           </button>
-          <button class="bl-cat" type="button" data-filter="guia">
-            <span>Guia</span><span class="bl-cat__count" data-count-for="guia">0</span>
-          </button>
-          <button class="bl-cat" type="button" data-filter="comparativo">
-            <span>Comparativo</span><span class="bl-cat__count" data-count-for="comparativo">0</span>
-          </button>
-          <button class="bl-cat" type="button" data-filter="saude">
-            <span>Saúde</span><span class="bl-cat__count" data-count-for="saude">0</span>
-          </button>
-          <button class="bl-cat" type="button" data-filter="comercial">
-            <span>Comercial</span><span class="bl-cat__count" data-count-for="comercial">0</span>
-          </button>
-          <button class="bl-cat" type="button" data-filter="brasilia">
-            <span>Brasília e DF</span><span class="bl-cat__count" data-count-for="brasilia">0</span>
+          <button class="bl-cat" type="button" data-filter="regulacao">
+            <span>Regulação</span><span class="bl-cat__count" data-count-for="regulacao">0</span>
           </button>
           <button class="bl-cat" type="button" data-filter="radar" id="blCatRadar" hidden>
-            <span>Radar de tecnologia</span><span class="bl-cat__count" data-count-for="radar">0</span>
+            <span>Radar do dia</span><span class="bl-cat__count" data-count-for="radar">0</span>
           </button>
         </div>
 
@@ -409,21 +403,21 @@
           </h2>
           <div class="bl-hl" id="blDestaques">
             <a class="bl-hl__item" href="/por-que-implementar-ia-sem-reestruturar-processos-falha">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/por-que-implementar-ia-sem-reestruturar-processos-falha.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-hl__copy">
                 <span class="bl-hl__title">Por que implementar IA sem reestruturar processos falha</span>
                 <span class="bl-hl__date">12 AGO 2026</span>
               </span>
             </a>
             <a class="bl-hl__item" href="/como-escolher-empresa-de-ia-brasilia">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/como-escolher-empresa-de-ia-brasilia.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-hl__copy">
                 <span class="bl-hl__title">Como escolher uma empresa de IA em Brasília</span>
                 <span class="bl-hl__date">11 AGO 2026</span>
               </span>
             </a>
             <a class="bl-hl__item" href="/g4-os-alternativa-pme">
-              <span class="bl-thumb"></span>
+              <span class="bl-thumb"><img src="assets/images/blog/g4-os-alternativa-pme.jpg" alt="" loading="lazy" decoding="async" width="1200" height="675"></span>
               <span class="bl-hl__copy">
                 <span class="bl-hl__title">G4 OS vale a pena para PME?</span>
                 <span class="bl-hl__date">11 AGO 2026</span>
@@ -471,7 +465,9 @@
        Nasce oculto e só aparece quando api.bmai.com.br/blog/radar devolve
        notícia real. Feed vazio significa seção fora da página, junto com o
        chip e o item de categoria que apontam pra ela. -->
-  <section class="bl-radar" id="radar" hidden>
+  <!-- data-block: com as notícias sob o mesmo filtro dos artigos, a seção
+       inteira precisa sumir quando nenhuma delas cai no assunto escolhido. -->
+  <section class="bl-radar" id="radar" data-block hidden>
     <div class="container">
       <div class="bl-radar__head">
         <span class="bl-eyebrow">Radar de tecnologia</span>
@@ -606,6 +602,9 @@
   </footer>
 
   <script defer src="js/subpage.js?v=20260814-rev4"></script>
-  <script defer src="js/blog-index.js?v=20260814-rev5"></script>
+  <script defer src="js/blog-index.js?v=20260814-rev6"></script>
+  <!-- O three.js NÃO entra aqui: são 600 KB que só quem vai ver a cena
+       precisa baixar. O hero-3d.js pede o arquivo sob demanda. -->
+  <script defer src="js/hero-3d.js?v=20260814-rev1"></script>
 </body>
 </html>
