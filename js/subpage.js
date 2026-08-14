@@ -95,6 +95,17 @@
     }, 4000);
   }
 
+  /* ---------- Vídeo decorativo e quem pediu menos movimento ----------
+     CSS não para vídeo. Quem marcou "reduzir movimento" no sistema fica
+     com o poster parado, que é o mesmo quadro: nada de conteúdo se perde. */
+  if (REDUCE) {
+    document.querySelectorAll('video[autoplay]').forEach(function (v) {
+      v.autoplay = false;
+      v.removeAttribute('autoplay');
+      v.pause();
+    });
+  }
+
   /* ---------- Ano do rodapé ---------- */
   var year = document.getElementById('footerYear');
   if (year) year.textContent = new Date().getFullYear();

@@ -12,7 +12,7 @@
 
   <!-- Mesma folha do site + a camada do blog. Sem paleta local. -->
   <link rel="stylesheet" href="css/style.min.css?v=20260623-rev72">
-  <link rel="stylesheet" href="css/blog.css?v=20260814-rev8">
+  <link rel="stylesheet" href="css/blog.css?v=20260814-rev9">
 
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
@@ -173,16 +173,17 @@
         </div>
       </div>
 
-      <div class="bl-visual" aria-hidden="true">
-        <div class="bl-visual__rings"></div>
-        <div class="bl-visual__sweep"></div>
-        <div class="bl-visual__dots"></div>
-        <span class="bl-visual__blip bl-visual__blip--1"></span>
-        <span class="bl-visual__blip bl-visual__blip--2"></span>
-        <span class="bl-visual__blip bl-visual__blip--3"></span>
-        <div class="bl-visual__mark">
-          <img src="assets/images/simbolo-laranja.svg" alt="" width="64" height="64">
-        </div>
+      <!-- Motion no lugar do radar que girava. aria-hidden porque é peça
+           decorativa: quem usa leitor de tela não perde nada, o texto ao
+           lado já diz do que o blog trata. O poster segura o primeiro
+           quadro enquanto o vídeo carrega, e o subpage.js pausa tudo se a
+           pessoa pediu menos movimento no sistema. -->
+      <div class="bl-hero__midia" aria-hidden="true">
+        <video class="bl-hero__video" autoplay muted loop playsinline
+               preload="metadata" poster="assets/video/radar-bmai.jpg"
+               width="640" height="640">
+          <source src="assets/video/radar-bmai.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </section>
@@ -607,7 +608,7 @@
     </div>
   </footer>
 
-  <script defer src="js/subpage.js?v=20260814-rev3"></script>
+  <script defer src="js/subpage.js?v=20260814-rev4"></script>
   <script defer src="js/blog-index.js?v=20260814-rev5"></script>
 </body>
 </html>
