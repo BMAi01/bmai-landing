@@ -776,16 +776,6 @@
   aspect-ratio: auto;
   min-height: 190px;
 }
-.bl-card__mesh {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--blog-rule) 1px, transparent 1px),
-    linear-gradient(90deg, var(--blog-rule) 1px, transparent 1px);
-  background-size: 28px 28px;
-  -webkit-mask-image: radial-gradient(circle at 25% 20%, #000, transparent 70%);
-          mask-image: radial-gradient(circle at 25% 20%, #000, transparent 70%);
-}
 /* O simbolo da marca no meio da area de imagem. Sem ele, o card sem foto
    lia como imagem que nao carregou; com ele, lê como capa da BMAi. */
 .bl-card__media::after {
@@ -875,17 +865,6 @@
   background:
     radial-gradient(120% 90% at 20% 0%, rgba(219, 85, 0, .26), transparent 55%),
     linear-gradient(160deg, var(--bg-3), var(--bg-2));
-}
-.bl-thumb::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--blog-rule) 1px, transparent 1px),
-    linear-gradient(90deg, var(--blog-rule) 1px, transparent 1px);
-  background-size: 16px 16px;
-  -webkit-mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
-          mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
 }
 
 /* ---------- MAIS RECENTES ---------- */
@@ -1269,17 +1248,6 @@
   background:
     radial-gradient(120% 90% at 22% 0%, rgba(219, 85, 0, .26), transparent 58%),
     linear-gradient(160deg, var(--bg-3), var(--bg-2));
-}
-.bl-radar__fig--marca::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--blog-rule) 1px, transparent 1px),
-    linear-gradient(90deg, var(--blog-rule) 1px, transparent 1px);
-  background-size: 26px 26px;
-  -webkit-mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
-          mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
 }
 .bl-radar__fig--marca img {
   position: relative;
