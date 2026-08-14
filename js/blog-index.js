@@ -216,9 +216,6 @@
           capa = it.image ? safeUrl(/^https?:/i.test(it.image) ? it.image : API + it.image) : '',
           quando = dataCurta(it.published_at || it.date);
 
-      var titulo = url
-        ? '<a class="bl-radar__title" href="' + url + '" target="_blank" rel="noopener noreferrer">' + t + '</a>'
-        : '<h3 class="bl-radar__title">' + t + '</h3>';
       var resumo = (fonte ? '<span class="bl-radar__src">' + fonte + '.</span> ' : '') + s;
 
       // Classificacao do agente: o que ele de fato apurou. Sem selo de
@@ -229,27 +226,38 @@
         .concat((it.empresas || []).map(function (x) { return '<span class="bl-radar__tag bl-radar__tag--empresa">' + esc(x) + '</span>'; }))
         .join('');
 
-      // alt vazio de proposito: a capa e ilustrativa, quem descreve a
-      // materia e o titulo logo abaixo. alt repetindo o titulo faria o
-      // leitor de tela ouvir a mesma frase duas vezes.
+      // Todo card tem capa. Sem og:image, entra a arte da marca: assim as
+      // alturas batem e a grade para de abrir vao entre um card curto e um
+      // alto. alt vazio de proposito, porque quem descreve a materia e o
+      // titulo logo abaixo.
+      var selo = '<span class="bl-radar__stamp">' +
+                   '<img src="assets/images/simbolo-laranja.svg" alt="" width="14" height="14">Radar BMAi' +
+                 '</span>';
       var figura = capa
         ? '<span class="bl-radar__fig">' +
             '<img class="bl-radar__cover" src="' + capa + '" alt="" loading="lazy" decoding="async" width="1200" height="675">' +
-            '<span class="bl-radar__stamp">' +
-              '<img src="assets/images/simbolo-laranja.svg" alt="" width="14" height="14">Radar BMAi' +
-            '</span>' +
+            selo +
           '</span>'
-        : '';
+        : '<span class="bl-radar__fig bl-radar__fig--marca">' +
+            '<img src="assets/images/simbolo-laranja.svg" alt="" width="62" height="62">' + selo +
+          '</span>';
 
-      return '<article class="bl-radar__item">' +
+      // O card leva pra NOSSA leitura, nao direto pro veiculo. O link pra
+      // materia original fica dentro da pagina de auditoria, com credito.
+      var destino = it.id ? '/radar?n=' + encodeURIComponent(it.id) : url;
+
+      return '<a class="bl-radar__item" href="' + destino + '" target="_blank" rel="noopener">' +
                figura +
-               '<div class="bl-radar__body">' +
+               '<span class="bl-radar__body">' +
                  (quando ? '<span class="bl-radar__time">' + quando + '</span>' : '') +
-                 titulo +
-                 (classes ? '<div class="bl-radar__class">' + classes + '</div>' : '') +
-                 (resumo.trim() ? '<p class="bl-radar__sum">' + resumo + '</p>' : '') +
-               '</div>' +
-             '</article>';
+                 '<span class="bl-radar__title">' + t + '</span>' +
+                 (classes ? '<span class="bl-radar__class">' + classes + '</span>' : '') +
+                 (resumo.trim() ? '<span class="bl-radar__sum">' + resumo + '</span>' : '') +
+                 '<span class="bl-radar__go">Ler a leitura da BMAi' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
+                 '</span>' +
+               '</span>' +
+             '</a>';
     }).join('');
 
     // Rede de segurança: a capa some inteira se falhar, com selo e tudo, em

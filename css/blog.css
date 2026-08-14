@@ -839,6 +839,28 @@
   -webkit-mask-image: radial-gradient(circle at 25% 20%, #000, transparent 70%);
           mask-image: radial-gradient(circle at 25% 20%, #000, transparent 70%);
 }
+/* O simbolo da marca no meio da area de imagem. Sem ele, o card sem foto
+   lia como imagem que nao carregou; com ele, lê como capa da BMAi. */
+.bl-card__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("../assets/images/simbolo-laranja.svg") center / 58px auto no-repeat;
+  opacity: .22;
+}
+.bl-card--featured .bl-card__media::after { background-size: 92px auto; }
+.bl-card--sm .bl-card__media::after { background-size: 44px auto; }
+
+/* Mesma ideia na miniatura das linhas de "mais recentes". Na lateral, que e
+   bem menor, o simbolo viraria sujeira: fica so o gradiente. */
+.bl-row .bl-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("../assets/images/simbolo-laranja.svg") center / 34px auto no-repeat;
+  opacity: .24;
+  z-index: 1;
+}
 .bl-tag {
   position: absolute;
   top: 14px; left: 14px;
@@ -1236,14 +1258,31 @@
                            esticar deixaria um vazio no rodape do mais curto */
   gap: 16px;
 }
+/* O card inteiro e um <a> pra nossa leitura, entao os filhos sao <span> e
+   precisam de display block: span nasce inline e padding vertical nao vale. */
 .bl-radar__item {
+  display: block;
   overflow: hidden;
   border: 1px solid var(--blog-rule);
   border-radius: var(--r-sm);
   background: var(--bg-2);
   transition: border-color .2s var(--ease), transform .2s var(--ease);
 }
-.bl-radar__body { padding: 20px; }
+.bl-radar__body { display: block; padding: 20px; }
+.bl-radar__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--orange-l);
+}
+.bl-radar__go svg { width: 14px; height: 14px; transition: transform .18s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .bl-radar__item:hover .bl-radar__go svg { transform: translateX(3px); }
+  .bl-radar__item:hover .bl-radar__title { color: var(--orange-l); }
+}
 
 /* Capa da propria materia (og:image), quando o veiculo declara uma.
    Sem imagem declarada, o item simplesmente nao tem capa: nunca entra
@@ -1270,6 +1309,37 @@
   aspect-ratio: 16 / 9;
   object-fit: cover;
   background: var(--bg-3);
+}
+
+/* Materia que nao declara og:image ganha capa da marca, e nao um buraco.
+   Todo card fica com a mesma altura de topo, entao a grade para de ficar
+   com um card curto ao lado de um alto e um vao no meio. */
+.bl-radar__fig--marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  background:
+    radial-gradient(120% 90% at 22% 0%, rgba(219, 85, 0, .26), transparent 58%),
+    linear-gradient(160deg, var(--bg-3), var(--bg-2));
+}
+.bl-radar__fig--marca::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--blog-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blog-rule) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
+          mask-image: radial-gradient(circle at 25% 20%, #000, transparent 72%);
+}
+.bl-radar__fig--marca img {
+  position: relative;
+  z-index: 1;
+  width: 62px; height: auto;
+  opacity: .85;
+  filter: drop-shadow(0 0 22px rgba(219, 85, 0, .35));
 }
 /* A marca vai POR CIMA da imagem, em CSS, e nao gravada no arquivo: a foto
    continua sendo do veiculo, e o credito dele fica no texto logo abaixo. */
@@ -1318,6 +1388,37 @@
   border-color: rgba(219, 85, 0, .32);
   color: var(--orange-l);
 }
+
+/* ---------- PÁGINA DE LEITURA DE UMA NOTÍCIA ---------- */
+.bl-estado {
+  padding: 60px 0;
+  font-size: 1rem;
+  color: var(--blog-ink-2);
+}
+.bl-estado a { color: var(--orange-l); font-weight: 600; }
+
+.bl-leitura__fig {
+  margin: 0 0 24px;
+  overflow: hidden;
+  border: 1px solid var(--blog-rule);
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+}
+.bl-leitura__fig img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+/* Crédito da imagem colado nela, e não no rodapé da página: quem olha a
+   foto precisa saber de quem ela é sem procurar. */
+.bl-leitura__fig figcaption {
+  padding: 10px 16px;
+  border-top: 1px solid var(--blog-rule);
+  font-size: .78rem;
+  color: var(--blog-ink-3);
+}
+.bl-leitura__class { margin: 0 0 26px; }
 
 /* ---------- COMUNIDADE NO WHATSAPP ----------
    Fica no radar porque e o mesmo conteudo: o agente manda pra comunidade
@@ -1400,8 +1501,7 @@
   color: var(--white);
   transition: color .2s var(--ease);
 }
-a.bl-radar__title:hover { color: var(--orange-l); }
-.bl-radar__sum { font-size: .85rem; line-height: 1.5; color: var(--blog-ink-2); }
+.bl-radar__sum { display: block; font-size: .85rem; line-height: 1.5; color: var(--blog-ink-2); }
 .bl-radar__src { font-weight: 700; color: var(--orange-l); }
 
 /* ---------- FECHAMENTO ---------- */
