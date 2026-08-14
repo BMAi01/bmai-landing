@@ -437,9 +437,10 @@
   <script>
   (function () {
     /* ===== Radar BMAi — feed do agente de monitoramento (BMAI News, na VPS) =====
-       Preencher com o endpoint público JSON exposto pela VPS (CORS liberado
-       p/ bmai.com.br). Vazio = mantém as manchetes de exemplo e o aviso. */
-    var NEWS_FEED_URL = ""; // ex.: "https://news.bmai.space/feed.json"
+       Serviço radar_api.py, CORS liberado só p/ https://bmai.com.br.
+       Enquanto o feed vier vazio ou fora do ar, a página mantém as manchetes
+       de exemplo E o aviso. Quando vier notícia real, o aviso é removido. */
+    var NEWS_FEED_URL = "https://evo-novo-bmai-radar.oz07ed.easypanel.host/radar";
     if (!NEWS_FEED_URL) return;
 
     function fmt(iso) {
