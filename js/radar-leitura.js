@@ -1,14 +1,17 @@
 /* ============================================================
    radar-leitura.js — a página de leitura de uma notícia do radar
    ------------------------------------------------------------
-   O card do blog aponta pra cá em vez de mandar o leitor direto
-   pro veículo. Aqui a BMAi diz o que entendeu da matéria, e o
-   link pro texto original fica em destaque, com o crédito de
-   quem apurou.
+   O card do blog aponta pra cá em vez de mandar o leitor pro
+   veículo. A página é 100% leitura da BMAi: não tem link pro
+   texto original, e a saída dela é falar com o time.
 
-   Conteúdo semanal, montado no cliente e trocado todo domingo:
-   por isso a página é noindex. Quem o Google precisa ler é o
-   blog, que aponta pra cá.
+   O CRÉDITO de quem apurou fica, e não é enfeite: resumir a
+   apuração de outro sem dizer de quem ela é deixa de ser
+   auditoria e vira apropriação.
+
+   Conteúdo diário, montado no cliente e trocado todo dia: por
+   isso a página é noindex. Quem o Google precisa ler é o blog,
+   que aponta pra cá.
 
    O que esta página NÃO faz: dizer que a BMAi verificou o fato.
    A checagem do pipeline hoje confia na fonte, então a promessa
@@ -51,15 +54,14 @@
 
   fetch(API + '/blog/radar/noticia/' + encodeURIComponent(id), { cache: 'no-store' })
     .then(function (r) {
-      // 404 aqui quase sempre significa "edição da semana passada": o link
-      // envelheceu junto com a edição, e dizer isso é melhor que "erro".
+      // 404 aqui quase sempre significa "edição de ontem": o link envelheceu
+      // junto com a edição, e dizer isso é melhor que um "erro" genérico.
       if (r.status === 404) throw new Error('velha');
       if (!r.ok) throw new Error('falhou');
       return r.json();
     })
     .then(function (n) {
       var capa = n.image ? safeUrl(/^https?:/i.test(n.image) ? n.image : API + n.image) : '';
-      var origem = safeUrl(n.url);
       var fonte = esc(n.source || '');
       var quando = dataLonga(n.published_at);
 
@@ -102,27 +104,32 @@
           '<h2>A leitura da BMAi</h2>' +
           '<p>' + esc(n.summary) + '</p>' +
 
+          // A página é 100% leitura da BMAi: não leva o visitante pro veículo.
+          // O crédito de quem apurou FICA, e não é enfeite: resumir a apuração
+          // de outro sem dizer de quem ela é deixa de ser auditoria e vira
+          // apropriação. O crédito é o que sustenta a peça.
           '<div class="article__note">' +
-            '<p>A apuração é do veículo. O que a BMAi acrescenta aqui é a leitura: ' +
-            'o que a notícia diz e o que muda na prática para quem opera um negócio. ' +
-            'A classificação acima é do nosso agente de monitoramento.</p>' +
+            '<p>' +
+              (fonte ? 'A apuração é d' + (/^[AEIOU]/i.test(fonte) ? 'a ' : 'o ') + fonte + '. ' : '') +
+              'O que você leu acima é a leitura da BMAi: o que a notícia diz e o ' +
+              'que muda na prática para quem opera um negócio. A classificação é ' +
+              'do nosso agente de monitoramento.' +
+            '</p>' +
           '</div>' +
 
-          (origem
-            ? '<div class="article__close">' +
-                '<h2>Leia a matéria original</h2>' +
-                '<p>O texto completo é ' + (fonte ? 'd' + (/^[AEIOU]/i.test(fonte) ? 'a ' : 'o ') + fonte : 'do veículo') + '.</p>' +
-                '<a class="btn btn--primary btn--lg" href="' + origem + '" target="_blank" rel="noopener noreferrer">' +
-                  'Abrir no veículo' +
-                  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>' +
-                '</a>' +
-              '</div>'
-            : '') +
+          '<div class="article__close">' +
+            '<h2>Quer isso aplicado ao seu negócio?</h2>' +
+            '<p>A gente olha a sua operação antes de falar de ferramenta.</p>' +
+            '<a class="btn btn--primary btn--lg" href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20vim%20pelo%20radar" target="_blank" rel="noopener">' +
+              'Falar com o time da BMAi' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>' +
+            '</a>' +
+          '</div>' +
         '</div>';
     })
     .catch(function (err) {
       falhou(err.message === 'velha'
-        ? 'Essa leitura saiu do ar: o radar publica uma edição nova todo domingo.'
+        ? 'Essa leitura saiu do ar: o radar publica uma edição nova todo dia.'
         : 'Não deu pra carregar a leitura agora.');
     });
 })();
