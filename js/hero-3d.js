@@ -67,12 +67,16 @@
   function papel(g, W, H) {
     g.fillStyle = PAPEL;
     g.fillRect(0, 0, W, H);
-    var pontos = Math.round(W * H * 0.0086);
+    // Grão maior e em menor quantidade: a folha aparece reduzida ~6x, e
+    // ponto de 1,6px sumia embaixo de um pixel. O que sobrava não era
+    // fibra, era chiado. Em 3px o grão continua sendo grão depois da
+    // redução, e são menos pontos pra desenhar.
+    var pontos = Math.round(W * H * 0.0032);
     for (var i = 0; i < pontos; i++) {
       g.fillStyle = Math.random() > 0.5
-        ? 'rgba(120,110,95,' + (Math.random() * 0.10) + ')'
-        : 'rgba(255,255,255,' + (Math.random() * 0.16) + ')';
-      g.fillRect(Math.random() * W, Math.random() * H, 1.6, 1.6);
+        ? 'rgba(120,110,95,' + (Math.random() * 0.09) + ')'
+        : 'rgba(255,255,255,' + (Math.random() * 0.14) + ')';
+      g.fillRect(Math.random() * W, Math.random() * H, 3, 3);
     }
     for (var j = 0; j < 26; j++) {
       var x = Math.random() * W, y = Math.random() * H, r = 120 + Math.random() * 320;
@@ -122,20 +126,24 @@
      escuro é lido como moldura, sempre, por mais limpo que esteja o CSS em
      volta.
 
-     Então a folha deixa de ter aresta. Duas camadas, as duas apagando alfa
-     (`destination-out`), aplicadas depois de todo o desenho:
+     Então a folha deixa de ter aresta: o miolo dela é desenhado com o
+     contorno já ondulado numa máscara à parte, essa máscara é BORRADA, e
+     ela vira o alfa da folha. Detalhe do porquê logo abaixo, junto com o
+     que foi tentado antes e não funcionou.
 
-       1. RASGO — uma faixa irregular colada em cada lado, com amplitude
-          vinda de senos somados. É o que tira a linha reta. Determinístico
-          de propósito: a folha é redesenhada em toda visita e uma borda
-          sorteada faria a peça "piscar" diferente a cada carregamento.
-       2. DESVANECER — rampa suave por cima do rasgo, e mais forte nos
-          quatro cantos, porque canto é o que o olho usa pra fechar o
-          retângulo mentalmente. Sem essa parte o rasgo vira serrilha.
+     A ondulação é determinística de propósito: a folha é redesenhada em
+     toda visita, e uma borda sorteada faria a peça nascer diferente a cada
+     carregamento.
 
-     Com alfa na textura, o material precisa de `transparent: true`, e a
-     folha para de projetar sombra (sombra segue a malha, não o alfa: ela
-     devolveria o retângulo que acabamos de tirar). */
+     Com alfa na textura o material precisa de `transparent: true`, e a
+     sombra projetada passa a sair de um `customDepthMaterial` com
+     `alphaTest` — sombra normal segue a malha, não o alfa, e devolveria o
+     retângulo que acabamos de tirar.
+
+     ⚠️ Tem teste: `teste-dissolver` mede a largura da transição de alfa
+     nos quatro lados e reprova se ela voltar a ficar curta ou se o alfa
+     deixar de ser monotônico. Foi assim que se descobriu que a versão
+     anterior nunca dissolveu nada. */
   function dissolver(g, W, H) {
     var onda = function (t, a, b, c) {
       // Três senos primos entre si: repete tarde o suficiente pra a borda
@@ -148,69 +156,81 @@
     var rasgado = function (t) {
       return onda(t / 78, 1, 0.37, 2.3) * 0.68 + onda(t / 13, 1.1, 0.53, 3.1) * 0.32;
     };
+    /* UMA máscara borrada, não rampa + rasgo + cantos.
+
+       A versão anterior somava três coisas: um rasgo irregular colado na
+       aresta, uma rampa linear medida a partir da borda do CANVAS e um
+       apagamento radial nos cantos. Não funcionava, e o motivo é
+       geométrico: a rampa media da borda do canvas, mas quem definia a
+       aresta real do papel era o rasgo, que entra fundo em alguns pontos e
+       quase nada em outros. Onde o rasgo entrava fundo, a rampa já tinha
+       se recuperado, e ali o papel voltava a terminar seco. Medido: a
+       transição variava de 3 a 9 px ao longo do mesmo lado.
+
+       Aqui é uma coisa só. Desenha-se o MIOLO da folha, com o contorno já
+       ondulado, numa máscara à parte; borra-se essa máscara; e ela vira o
+       alfa da folha por `destination-in`. O desvanecer passa a seguir o
+       contorno rasgado ponto a ponto, então ele é igual em toda a volta,
+       inclusive nos cantos, que deixam de precisar de tratamento próprio.
+
+       `ctx.filter` não existe em Safari antigo. Sem ele, a folha fica com
+       a aresta rasgada e seca: pior que o alvo, melhor que um retângulo. */
+    var mask = document.createElement('canvas');
+    mask.width = W; mask.height = H;
+    var mg = mask.getContext('2d');
+
+    var rec = Math.round(Math.min(W, H) * 0.060);   // recuo do miolo
+    var amp = Math.round(Math.min(W, H) * 0.038);   // profundidade do rasgo
+    var passo = 10;
+    var borrao = Math.round(Math.min(W, H) * 0.022);
+
+    mg.fillStyle = '#000';
+    mg.beginPath();
+    var p;
+    for (p = rec; p <= W - rec; p += passo) mg.lineTo(p, rec + rasgado(p) * amp);
+    for (p = rec; p <= H - rec; p += passo) mg.lineTo(W - rec - rasgado(p + 611) * amp, p);
+    for (p = W - rec; p >= rec; p -= passo) mg.lineTo(p, H - rec - rasgado(p + 1303) * amp);
+    for (p = H - rec; p >= rec; p -= passo) mg.lineTo(rec + rasgado(p + 2017) * amp, p);
+    mg.closePath();
+    mg.fill();
+
     g.save();
-    g.globalCompositeOperation = 'destination-out';
-    g.fillStyle = '#000';
-
-    // 1. Rasgo
-    var ampX = W * 0.022, ampY = H * 0.016, passo = 9;
-    function lado(eixoX, inicio) {
-      var lim = eixoX ? W : H;
-      g.beginPath();
-      if (eixoX) g.moveTo(-2, inicio ? -2 : H + 2); else g.moveTo(inicio ? -2 : W + 2, -2);
-      var p;
-      for (p = 0; p <= lim; p += passo) {
-        var d = (rasgado(p + (eixoX ? (inicio ? 0 : 611) : (inicio ? 1303 : 2017))) * 0.5 + 0.5)
-              * (eixoX ? ampY : ampX);
-        if (eixoX) g.lineTo(p, inicio ? d : H - d);
-        else g.lineTo(inicio ? d : W - d, p);
-      }
-      if (eixoX) { g.lineTo(W + 2, inicio ? -2 : H + 2); }
-      else { g.lineTo(inicio ? -2 : W + 2, H + 2); }
-      g.closePath();
-      g.fill();
-    }
-    lado(true, true); lado(true, false); lado(false, true); lado(false, false);
-
-    // 2. Desvanecer
-    function rampa(x, y, w, h, x2, y2) {
-      var gr = g.createLinearGradient(x, y, x2, y2);
-      gr.addColorStop(0, 'rgba(0,0,0,1)');
-      gr.addColorStop(.34, 'rgba(0,0,0,.62)');
-      gr.addColorStop(.68, 'rgba(0,0,0,.18)');
-      gr.addColorStop(1, 'rgba(0,0,0,0)');
-      g.fillStyle = gr;
-      g.fillRect(x, y, w, h);
-    }
-    var fx = W * 0.075, fy = H * 0.055;
-    rampa(0, 0, fx, H, 0, 0, fx, 0);
-    rampa(W - fx, 0, fx, H, W, 0, W - fx, 0);
-    rampa(0, 0, W, fy, 0, 0, 0, fy);
-    rampa(0, H - fy, W, fy, 0, H, 0, H - fy);
-
-    // Cantos: o que o olho usa pra fechar o retângulo
-    var raio = Math.max(W, H) * 0.19;
-    [[0, 0], [W, 0], [0, H], [W, H]].forEach(function (c) {
-      var gr = g.createRadialGradient(c[0], c[1], 0, c[0], c[1], raio);
-      gr.addColorStop(0, 'rgba(0,0,0,.92)');
-      gr.addColorStop(.55, 'rgba(0,0,0,.34)');
-      gr.addColorStop(1, 'rgba(0,0,0,0)');
-      g.fillStyle = gr;
-      g.beginPath(); g.arc(c[0], c[1], raio, 0, 7); g.fill();
-    });
+    g.globalCompositeOperation = 'destination-in';
+    if (typeof g.filter === 'string') g.filter = 'blur(' + borrao + 'px)';
+    g.drawImage(mask, 0, 0);
+    g.filter = 'none';
     g.restore();
   }
 
-  function quebrar(g, texto, x, y, maxW, lh) {
+  /* `maxL` limita o número de linhas e fecha com reticências.
+
+     Sem esse limite a folha não tem orçamento vertical: manchete de 3
+     linhas em vez de 2 empurra foto, segunda matéria e colunas pra baixo
+     da régua, e o pé da página sai em branco ou cortado. Isso já
+     acontecia; só não aparecia enquanto o corpo era pequeno demais pra
+     alguém reparar no que faltava embaixo. */
+  function quebrar(g, texto, x, y, maxW, lh, maxL) {
     var palavras = String(texto || '').split(' ');
-    var linha = '', ly = y;
+    var linhas = [], linha = '';
     for (var i = 0; i < palavras.length; i++) {
       var teste = linha ? linha + ' ' + palavras[i] : palavras[i];
       if (g.measureText(teste).width > maxW && linha) {
-        g.fillText(linha, x, ly); ly += lh; linha = palavras[i];
+        linhas.push(linha); linha = palavras[i];
       } else { linha = teste; }
     }
-    if (linha) { g.fillText(linha, x, ly); ly += lh; }
+    if (linha) linhas.push(linha);
+
+    if (maxL && linhas.length > maxL) {
+      linhas = linhas.slice(0, maxL);
+      var ult = linhas[maxL - 1];
+      while (ult && g.measureText(ult + '…').width > maxW) {
+        ult = ult.replace(/\s*\S+$/, '');
+      }
+      linhas[maxL - 1] = (ult || linhas[maxL - 1]) + '…';
+    }
+
+    var ly = y;
+    for (var k = 0; k < linhas.length; k++) { g.fillText(linhas[k], x, ly); ly += lh; }
     return ly;
   }
 
@@ -222,13 +242,27 @@
      nenhuma coluna termine no meio com papel em branco embaixo, que é
      exatamente o defeito que aparece num jornal de mentira. */
   function folha(materia, foto) {
-    var W = 1500, H = 2010;
+    /* 1526x2048 (era 1500x2010). Mesma proporção, um pouco mais de texel.
+
+       ⚠️ Não é por causa de potência de dois. Cheguei a escrever aqui que
+       o three estaria reamostrando a folha por ela não ser POT — e conferi
+       depois: este renderer pega contexto **WebGL 2.0** (`isWebGL2: true`,
+       anisotropia máxima 16), e em WebGL2 textura fora de potência de dois
+       tem mipmap e repetição normalmente. Não havia reamostragem nenhuma.
+       Fica registrado pra ninguém "otimizar" isso de novo pelo motivo
+       errado.
+
+       A qualidade ruim vinha de dois lugares, os dois tratados: a cena era
+       renderizada em 536x429 num monitor comum (ver o piso de pixelRatio
+       em `montar3d`), e o corpo de texto era pequeno demais pra sobreviver
+       à redução (ver a escala logo abaixo). */
+    var W = 1526, H = 2048;
     var c = document.createElement('canvas');
     c.width = W; c.height = H;
     var g = c.getContext('2d');
     papel(g, W, H);
 
-    var M = 88, CW = W - M * 2;
+    var M = 112, CW = W - M * 2;
 
     // Poço de texto: os resumos das outras matérias do dia, em fila. Quando
     // acaba, recomeça, pra a coluna nunca morrer antes da régua de baixo.
@@ -243,46 +277,65 @@
       return yy;
     }
 
+    /* ---------- Escala de corpo ----------
+       A peça inteira aparece com cerca de 250px de largura. Vindo de uma
+       folha de 1526, isso é uma redução de ~6x: o corpo de 21px que o comp
+       usava chegava na tela com 3,5px e não era texto, era ruído cinza — a
+       outra metade da "qualidade ruim".
+
+       Tudo aqui foi redimensionado pra sobreviver a essa redução: o corpo
+       saiu de 21 pra 40 (≈6,5px na tela, que lê como coluna de jornal), o
+       bloco de baixo passou de três colunas pra duas, e a manchete e o olho
+       cresceram junto pra a hierarquia continuar a mesma. Menos palavras,
+       maiores. Jornal de verdade em miniatura também não se lê: o que
+       precisa é PARECER jornal, e pra isso a mancha de texto tem que ter
+       linha, não granulado. */
+
     // Cabeçalho
-    g.fillStyle = INK; g.font = SER('700', 92); g.textAlign = 'center';
-    g.fillText('BMAi News', W / 2, 122);
-    g.font = SANS('400', 21); g.fillStyle = INK2;
-    g.fillText('R A D A R   D I Á R I O   D E   I N T E L I G Ê N C I A   A R T I F I C I A L', W / 2, 164);
+    g.fillStyle = INK; g.font = SER('700', 108); g.textAlign = 'center';
+    g.fillText('BMAi News', W / 2, 134);
+    g.font = SANS('400', 25); g.fillStyle = INK2;
+    g.fillText('R A D A R   D I Á R I O   D E   I A', W / 2, 182);
     g.textAlign = 'left';
-    g.fillStyle = INK; g.fillRect(M, 190, CW, 4);
-    g.font = SANS('400', 19); g.fillStyle = INK2;
-    g.fillText('EDIÇÃO DE HOJE', M, 224);
-    g.textAlign = 'center'; g.fillText(dataDaEdicao(), W / 2, 224);
-    g.textAlign = 'right'; g.fillText('bmai.com.br/blog', W - M, 224);
+    g.fillStyle = INK; g.fillRect(M, 212, CW, 5);
+    g.font = SANS('400', 24); g.fillStyle = INK2;
+    g.fillText('EDIÇÃO DE HOJE', M, 254);
+    g.textAlign = 'center'; g.fillText(dataDaEdicao(), W / 2, 254);
+    g.textAlign = 'right'; g.fillText('bmai.com.br/blog', W - M, 254);
     g.textAlign = 'left';
-    g.fillStyle = 'rgba(35,33,30,0.55)'; g.fillRect(M, 240, CW, 1.5);
+    g.fillStyle = 'rgba(35,33,30,0.55)'; g.fillRect(M, 272, CW, 2);
 
     // Chapéu: eixo do assunto e veículo que publicou
     var chapeu = [EIXO[materia.eixo] || 'RADAR', (materia.source || '').toUpperCase()]
       .filter(Boolean).join(' · ');
-    g.font = SANS('700', 20); g.fillStyle = '#b04600';
-    g.fillText(chapeu, M, 300);
+    g.font = SANS('700', 26); g.fillStyle = '#b04600';
+    g.fillText(chapeu, M, 336);
 
+    /* Daqui pra baixo o orçamento vertical é fixo, e por isso a folha
+       fecha igual com qualquer manchete: 3 linhas de manchete, 3 de olho,
+       2 de segunda manchete. O que passar disso é cortado com reticências,
+       porque a alternativa é empurrar as colunas de baixo pra fora da
+       régua e deixar o pé da página vazio. */
     // Manchete
-    g.fillStyle = INK; g.font = SER('700', 78);
-    var y = quebrar(g, materia.title, M, 384, CW, 84);
+    g.fillStyle = INK; g.font = SER('700', 84);
+    var y = quebrar(g, materia.title, M, 420, CW, 94, 3);
 
     // Olho
-    y += 14;
-    g.font = SER('400', 34); g.fillStyle = INK2;
-    y = quebrar(g, materia.deck, M, y, CW - 60, 46);
+    y += 18;
+    g.font = SER('400', 44); g.fillStyle = INK2;
+    y = quebrar(g, materia.deck, M, y, CW - 60, 58, 3);
 
     // Crédito. É "apurado por", nunca "redação BMAi": a reportagem é do
     // veículo, e assinar por cima disso seria se apropriar do trabalho dele.
-    y += 18;
-    g.font = SANS('700', 17); g.fillStyle = 'rgba(35,33,30,0.6)';
+    y += 22;
+    g.font = SANS('700', 23); g.fillStyle = 'rgba(35,33,30,0.6)';
     g.fillText('APURADO POR ' + (materia.source || 'VEÍCULO').toUpperCase() + '  ·  LEITURA DA BMAi', M, y);
-    y += 26;
-    g.fillStyle = 'rgba(35,33,30,0.5)'; g.fillRect(M, y, CW, 1.5);
-    y += 44;
+    y += 32;
+    g.fillStyle = 'rgba(35,33,30,0.5)'; g.fillRect(M, y, CW, 2);
+    y += 48;
 
     // Foto
-    var ph = 400, pw = CW * 0.5;
+    var ph = 360, pw = CW * 0.5;
     if (foto) {
       // "cover" na mão: o canvas não tem object-fit.
       var r = Math.max(pw / foto.width, ph / foto.height);
@@ -306,33 +359,38 @@
     }
     // Legenda: só o crédito da imagem. O comp trazia "A sede da Comissão
     // Europeia, em Bruxelas", que descrevia uma foto que não existe.
-    g.fillStyle = 'rgba(35,33,30,0.62)'; g.font = SANS('400', 17);
+    g.fillStyle = 'rgba(35,33,30,0.62)'; g.font = SANS('400', 23);
     g.fillText(foto ? 'Imagem: ' + (materia.source || 'veículo') : 'Radar BMAi',
-               M + 6, y + ph + 27);
+               M + 6, y + ph + 34);
 
     // Coluna ao lado da foto
-    var vao = 42;
-    g.font = SER('400', 21); g.fillStyle = INK;
-    encher(M + pw + vao, y + 20, CW - pw - vao, 30, y + ph + 40);
+    var vao = 46;
+    g.font = SER('400', 40); g.fillStyle = INK;
+    encher(M + pw + vao, y + 34, CW - pw - vao, 54, y + ph + 44);
 
-    /* Segunda matéria do dia, em três colunas até a régua de baixo. O comp
-       chumbava um título sobre a equipa Qwen; aqui vem a manchete real do
-       item seguinte da edição. Sem um segundo item, a área simplesmente não
-       é desenhada, em vez de receber título de mentira. */
-    var by = y + ph + 84;
+    /* Segunda matéria do dia até a régua de baixo. O comp chumbava um
+       título sobre a equipa Qwen; aqui vem a manchete real do item
+       seguinte da edição. Sem um segundo item, a área simplesmente não é
+       desenhada, em vez de receber título de mentira.
+
+       Eram TRÊS colunas. Com o corpo em 40px, três colunas dariam ~10
+       caracteres por linha, o que empilha hífen e vira serrilha na
+       redução. Duas colunas mantêm a linha com medida de jornal. */
+    var COLS = 2;
+    var by = y + ph + 92;
     if (materia.head2) {
-      g.fillStyle = 'rgba(35,33,30,0.5)'; g.fillRect(M, by - 34, CW, 1.5);
-      g.fillStyle = INK; g.font = SER('700', 46);
-      by = quebrar(g, materia.head2, M, by, CW * 0.72, 52) + 16;
+      g.fillStyle = 'rgba(35,33,30,0.5)'; g.fillRect(M, by - 42, CW, 2);
+      g.fillStyle = INK; g.font = SER('700', 56);
+      by = quebrar(g, materia.head2, M, by, CW * 0.78, 64, 2) + 18;
     }
-    var colW = (CW - vao * 2) / 3;
-    g.font = SER('400', 21); g.fillStyle = INK;
-    for (var col = 0; col < 3; col++) {
-      encher(M + col * (colW + vao), by, colW, 30, H - 108);
+    var colW = (CW - vao * (COLS - 1)) / COLS;
+    g.font = SER('400', 40); g.fillStyle = INK;
+    for (var col = 0; col < COLS; col++) {
+      encher(M + col * (colW + vao), by, colW, 54, H - 118);
     }
     g.fillStyle = 'rgba(35,33,30,0.28)';
-    for (var cl = 1; cl < 3; cl++) {
-      g.fillRect(M + cl * (colW + vao) - vao / 2, by - 24, 1.5, H - 108 - by + 24);
+    for (var cl = 1; cl < COLS; cl++) {
+      g.fillRect(M + cl * (colW + vao) - vao / 2, by - 30, 2, H - 118 - by + 30);
     }
 
     // Vinco da dobra
@@ -383,14 +441,17 @@
       g.fillText('EDIÇÃO DO DIA', cx, 200);
     }
     g.textAlign = 'left';
-    g.fillStyle = INK; g.fillRect(0, 226, W, 5);
+    g.fillStyle = INK; g.fillRect(0, 226, W, 6);
 
-    g.fillStyle = INK; g.font = SER('700', 76);
-    var y = quebrar(g, manchete, 60, 330, W - 120, 84) + 20;
-    g.font = SER('400', 38); g.fillStyle = 'rgba(35,33,30,0.8)';
+    // O rolo aparece com ~120px de largura, vindo de 2048: redução de 17x.
+    // Corpo de 38px chegava em 2px, ou seja, nada. Aqui a manchete carrega
+    // sozinha e o corpo existe só como mancha de linha.
+    g.fillStyle = INK; g.font = SER('700', 96);
+    var y = quebrar(g, manchete, 60, 350, W - 120, 108) + 26;
+    g.font = SER('400', 62); g.fillStyle = 'rgba(35,33,30,0.8)';
     var poco = corpo, guarda = 0;
     while (y < H - 70 && guarda++ < 20) {
-      var r = paragrafo(g, poco, 60, y, W - 120, 50, H - 70);
+      var r = paragrafo(g, poco, 60, y, W - 120, 80, H - 70);
       y = r.y;
       poco = r.resto || corpo;
     }
@@ -446,7 +507,10 @@
      marca, não uma aresta. A borda do papel já vem dissolvida da textura,
      então a sombra segue o alfa e nunca desenha um retângulo. */
   function desenhar2d(canvas, pagina) {
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Piso 2, teto 3. O teto era 2, e celular de dpr 3 (quase todos) ficava
+    // com a folha desenhada em 2x e esticada pra 3x pelo navegador: borrão.
+    // Aqui é um `drawImage` só, então subir pra 3 não custa quadro nenhum.
+    var dpr = Math.min(Math.max(window.devicePixelRatio || 1, 2), 3);
     var w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
     canvas.width = Math.round(w * dpr);
@@ -524,7 +588,15 @@
     } catch (e) {
       return false;                       // sem WebGL: quem chamou cai no 2D
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    /* Piso de 2, não teto de 2.
+       Era `min(devicePixelRatio, 2)`. Num monitor comum (dpr 1) isso
+       significava desenhar a cena inteira em 536x429 px — uma folha de
+       jornal com dois rolos, num quadro do tamanho de um cartão. Cada
+       aresta virava escada e a mancha de texto virava chiado.
+       Com piso 2 a cena é renderizada no dobro e o navegador reduz na
+       hora de exibir, que é antisserrilhamento de graça. O teto de 2.5
+       segura o custo em tela retina. */
+    renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 2), 2.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -737,7 +809,10 @@
   }
 
   function marcaSozinha(canvas) {
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Piso 2, teto 3. O teto era 2, e celular de dpr 3 (quase todos) ficava
+    // com a folha desenhada em 2x e esticada pra 3x pelo navegador: borrão.
+    // Aqui é um `drawImage` só, então subir pra 3 não custa quadro nenhum.
+    var dpr = Math.min(Math.max(window.devicePixelRatio || 1, 2), 3);
     var w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
