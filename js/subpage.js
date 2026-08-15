@@ -65,34 +65,131 @@
   /* ---------- Entrada dos cards ----------
      Classe `.rise`, NÃO `.reveal`: o style.css tem uma `.reveal` global que
      zera a opacidade e espera `.revealed` do main.js. */
-  var targets = document.querySelectorAll('.rise');
-  if (targets.length && !REDUCE && 'IntersectionObserver' in window) {
-    // Só esconde depois de confirmar que o observer existe: sem JS,
-    // sem suporte ou com reduced-motion, a página nasce visível.
-    document.documentElement.classList.add('js-rise');
+  var podeAnimar = !REDUCE && 'IntersectionObserver' in window;
+  var io = null;
 
-    var io = new IntersectionObserver(function (entries) {
+  if (podeAnimar) {
+    io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('is-in');
         io.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  }
 
-    targets.forEach(function (el, i) {
+  /* Varre um trecho da página e põe os `.rise` dele na fila de entrada.
+     Existe como função, e não como um laço solto no load, porque nem todo
+     conteúdo da subpágina está no HTML: a página de leitura do radar monta
+     o artigo inteiro DEPOIS do fetch, e nessa hora o observador já rodou.
+     Sem isto, o único conteúdo do site que não tinha entrada nenhuma era
+     justamente o que chega do agente. Mesmo caminho que o
+     `BMAiComentarios.varrer()` já usava. */
+  function varrer(raiz) {
+    var alvos = (raiz || document).querySelectorAll('.rise:not(.is-in)');
+    if (!alvos.length) return;
+    if (!podeAnimar) {
+      // Sem observador ou com menos movimento pedido: nada some, nada anima.
+      return;
+    }
+    // Só esconde depois de confirmar que dá pra revelar. Sem JS, sem suporte
+    // ou com reduced-motion, a página nasce visível.
+    document.documentElement.classList.add('js-rise');
+
+    alvos.forEach(function (el, i) {
       // Escada curta dentro de cada grupo, não na página inteira
       var step = parseInt(el.getAttribute('data-stagger') || i % 4, 10);
       el.style.setProperty('--d', (step * 0.07) + 's');
       io.observe(el);
     });
 
-    // Rede de segurança: se por qualquer motivo o observer não disparar
+    // Rede de segurança: se por qualquer motivo o observador não disparar
     // (aba em background, restauração de scroll, bug de engine), o conteúdo
     // aparece assim mesmo. Texto invisível é pior que texto sem animação.
     setTimeout(function () {
-      io.disconnect();
-      targets.forEach(function (el) { el.classList.add('is-in'); });
+      alvos.forEach(function (el) { el.classList.add('is-in'); });
     }, 4000);
+  }
+
+  varrer(document);
+  window.BMAiMotion = { varrer: varrer };
+
+  /* ---------- Pista de rolagem horizontal ----------
+     Duas coisas da subpágina rolam de lado no celular: a tabela
+     comparativa do artigo e a fila de chips do blog. As duas terminavam
+     numa aresta reta, igualzinha a "acabou aqui" — e ninguém arrasta o que
+     não parece ter continuação. Medido em 320, 360, 390 e 430.
+
+     O que apaga a palavra cortada na borda é máscara, e máscara não sabe
+     onde a rolagem está. Então quem sabe é isto aqui: dois números, um por
+     lado, escritos como variável de CSS. Zero de um lado = acabou aquele
+     lado, e a máscara não faz nada ali. Ver `.rola` no blog.css. */
+  var LADO = 38;                                  // px de desvanecer
+  [].forEach.call(document.querySelectorAll('.article__table-wrap, .bl-filters'), function (caixa) {
+    function medir() {
+      var sobra = caixa.scrollWidth - caixa.clientWidth;
+      if (sobra <= 2) {                           // cabe inteiro: sem pista
+        caixa.classList.remove('rola');
+        return;
+      }
+      caixa.classList.add('rola');
+      var x = caixa.scrollLeft;
+      caixa.style.setProperty('--rola-esq', (x > 4 ? LADO : 0) + 'px');
+      caixa.style.setProperty('--rola-dir', (x < sobra - 4 ? LADO : 0) + 'px');
+    }
+    caixa.addEventListener('scroll', medir, { passive: true });
+    window.addEventListener('resize', medir);
+    // A tabela e as chips mudam de largura quando a fonte carrega e quando
+    // o filtro esconde uma chip, não só quando a janela muda.
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(caixa);
+    medir();
+  });
+
+  /* ---------- Números que sobem ----------
+     Vale pra qualquer `[data-conta]` da subpágina. O valor final é o que já
+     está escrito no HTML: se o JS não rodar, o número correto continua na
+     tela — mesmo princípio do `.rise`, que nasce visível.
+
+     Conta uma vez só, quando entra na tela, e nunca em quem pediu menos
+     movimento. A curva é a de saída (`easeOutCubic`): o número chega perto
+     do valor rápido e assenta devagar, que é como se lê um contador. Uma
+     curva linear parece cronômetro. */
+  var contadores = document.querySelectorAll('[data-conta]');
+  if (contadores.length && !REDUCE && 'IntersectionObserver' in window) {
+    var ioNum = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        ioNum.unobserve(entry.target);
+        contar(entry.target);
+      });
+    }, { threshold: 0.6 });
+    contadores.forEach(function (el) { ioNum.observe(el); });
+  }
+
+  function contar(el) {
+    var bruto = el.textContent.trim();
+    // Preserva o que vem junto do número (o "+", o "%", o "mil").
+    var casa = bruto.match(/-?[\d.,]+/);
+    if (!casa) return;
+    var alvo = parseFloat(casa[0].replace(/\./g, '').replace(',', '.'));
+    if (!isFinite(alvo)) return;
+    var antes = bruto.slice(0, casa.index);
+    var depois = bruto.slice(casa.index + casa[0].length);
+    var decimais = (casa[0].split(',')[1] || '').length;
+    var dur = 900, t0 = 0;
+
+    function passo(t) {
+      if (!t0) t0 = t;
+      var p = Math.min(1, (t - t0) / dur);
+      var e = 1 - Math.pow(1 - p, 3);
+      var v = alvo * e;
+      el.textContent = antes + v.toLocaleString('pt-BR', {
+        minimumFractionDigits: decimais, maximumFractionDigits: decimais,
+      }) + depois;
+      if (p < 1) requestAnimationFrame(passo);
+      else el.textContent = bruto;      // fecha exatamente no valor escrito
+    }
+    requestAnimationFrame(passo);
   }
 
   /* ---------- Vídeo decorativo e quem pediu menos movimento ----------

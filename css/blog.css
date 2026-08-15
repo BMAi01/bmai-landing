@@ -85,6 +85,137 @@
 }
 
 /* ============================================================
+   VARIAÇÕES DA ENTRADA
+   ------------------------------------------------------------
+   Um primitivo só (`.rise`) com direção por atributo, em vez de
+   uma classe nova por efeito. O motivo é o mesmo da auditoria de
+   easing: quando cada bloco ganha o seu próprio jeito de entrar,
+   a página inteira se move com mãos diferentes.
+
+   A regra de uso é o SENTIDO do conteúdo, não a variedade:
+     (sem atributo) sobe   → o padrão, texto e blocos em coluna
+     data-rise="left|right" → o que entra de uma lateral da grade
+     data-rise="scale"      → o que tem moldura própria (card, tile)
+     data-rise="veil"       → imagem: revela sem mexer no enquadramento
+
+   Todas usam a MESMA duração e a MESMA curva do `.rise`. O que muda
+   é de onde vem, nunca o tempo — é isso que mantém a batida da
+   página quando dois blocos entram juntos.
+   ============================================================ */
+.js-rise .rise[data-rise="left"]  { transform: translateX(-24px); }
+.js-rise .rise[data-rise="right"] { transform: translateX(24px); }
+.js-rise .rise[data-rise="scale"] { transform: scale(.965); }
+
+/* ⚠️ Entrada lateral EMPURRA A PÁGINA se o elemento já ocupa a largura
+   toda: o bloco fica 24px fora da tela enquanto espera o observador, e
+   isso vira scroll horizontal — o defeito que a auditoria de 320 a 1920
+   não achou em lugar nenhum e que este efeito reintroduziria sozinho.
+
+   Abaixo de 1080 a barra lateral vira uma faixa de largura cheia, então
+   ali a entrada volta a ser a de cima pra baixo, que não desloca nada. */
+@media (max-width: 1080px) {
+  .js-rise .rise[data-rise="left"],
+  .js-rise .rise[data-rise="right"] { transform: translateY(18px); }
+}
+/* Cinto de segurança pro mesmo risco em qualquer variação futura. `clip`
+   e não `hidden`: `hidden` criaria um contexto de rolagem e mataria o
+   `position: sticky` da barra lateral no desktop. */
+.subpage { overflow-x: clip; }
+.js-rise .rise[data-rise="veil"] {
+  transform: none;
+  opacity: 1;
+  /* Imagem não sobe: o enquadramento dela é a informação. Ela se revela
+     de baixo pra cima com a própria caixa parada. */
+  clip-path: inset(100% 0 0 0);
+}
+.js-rise .rise[data-rise="veil"].is-in {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path .82s var(--blog-reveal) var(--d, 0s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-rise .rise[data-rise="veil"] { clip-path: none; }
+}
+
+/* ------------------------------------------------------------
+   O RISCO QUE ABRE A SEÇÃO
+   A régua sob o cabeçalho de bloco é DESENHADA da esquerda pra
+   direita quando a seção entra, em vez de já estar lá. É o detalhe
+   que faz a página parecer montada na hora e não impressa.
+
+   Feito com `::after` e não com um <span>: `.bl-block__head` é um
+   flex row (título de um lado, "ver tudo" do outro) e um elemento a
+   mais na marcação viraria uma terceira coluna. O pseudo é
+   absoluto, então não entra no fluxo do flex.
+   ------------------------------------------------------------ */
+.bl-block__head { position: relative; }
+.bl-block__head::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 1px;
+  /* Um gradiente laranja que só desvanecia ficou invisível a partir dos
+     primeiros 40px: virou um risquinho solto embaixo do título, não uma
+     régua. Agora é o traço editorial de sempre — um trecho de acento na
+     abertura e o fio neutro seguindo até o fim da coluna. */
+  background: linear-gradient(to right,
+    var(--orange) 0 72px,
+    rgba(255, 255, 255, .11) 72px);
+}
+.js-rise .rise .bl-block__head::after,
+.js-rise .rise.bl-block__head::after {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.js-rise .rise.is-in .bl-block__head::after,
+.js-rise .rise.bl-block__head.is-in::after {
+  transform: scaleX(1);
+  transition: transform .9s var(--blog-reveal) calc(var(--d, 0s) + .12s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-rise .rise .bl-block__head::after { transform: none; }
+}
+
+/* ------------------------------------------------------------
+   A LISTA RESPONDE AO FILTRO
+   `hidden` é troca de display, e display não transiciona: a lista
+   pulava de um estado pro outro sem nada ligar o clique na chip ao
+   resultado. Esta animação roda só em quem ACABOU de aparecer, com
+   a escada montada no blog-index.js.
+   ------------------------------------------------------------ */
+@keyframes blEntra {
+  from { opacity: 0; transform: translateY(10px) scale(.99); }
+  to   { opacity: 1; transform: none; }
+}
+.bl-entra { animation: blEntra .5s var(--blog-reveal) var(--fd, 0s) both; }
+@media (prefers-reduced-motion: reduce) {
+  .bl-entra { animation: none; }
+}
+
+/* ------------------------------------------------------------
+   CAPA QUE RESPONDE AO PONTEIRO
+   Só onde existe ponteiro fino: num toque o "hover" fica grudado
+   depois do tap e a capa continua ampliada sem ninguém ter pedido.
+   1.5% é de propósito pouco — é pra o card acordar, não pra a foto
+   virar o assunto.
+   ------------------------------------------------------------ */
+@media (hover: hover) and (pointer: fine) {
+  .bl-card__media img,
+  .bl-thumb img {
+    transition: transform .62s var(--blog-reveal);
+  }
+  .bl-card:hover .bl-card__media img,
+  .bl-row:hover .bl-thumb img,
+  a:hover > .bl-thumb img { transform: scale(1.055); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bl-card__media img, .bl-thumb img { transition: none; }
+  .bl-card:hover .bl-card__media img,
+  .bl-row:hover .bl-thumb img { transform: none; }
+}
+
+/* ============================================================
    CONTEXTO DE EMPILHAMENTO DAS SUBPÁGINAS
    ============================================================ */
 /* O campo de partículas é irmão do .container e vive em z-index 1,
@@ -104,6 +235,11 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  /* 22px de altura de alvo, medido em todas as larguras. O 2.5.8 do WCAG
+     2.2 (AA) pede 24. Não é link no meio de frase — é o controle de
+     voltar, isolado acima do título —, então a exceção de texto corrido
+     não se aplica. Só a caixa cresce; fonte e cor ficam. */
+  min-height: 28px;
   margin-bottom: 26px;
   font-size: .86rem;
   font-weight: 500;
@@ -352,13 +488,53 @@
 .article__body .article__steps p,
 .article__steps p { margin: 0; font-size: .95rem; line-height: 1.62; color: var(--blog-ink-2); }
 
-/* Tabela comparativa */
+/* Tabela comparativa.
+
+   Ela rola de lado no celular (`min-width: 520px` na tabela contra uma tela
+   de 320–430). Rolar está certo — encolher uma comparativa até caber
+   destrói a comparação. O que faltava era AVISAR: a tabela terminava numa
+   aresta reta contra a borda do card, idêntica a uma tabela que acabou, e
+   ninguém arrasta o que não parece ter continuação.
+
+   A pista é a classe `.rola`, logo abaixo. */
 .article__table-wrap {
   margin: 24px 0 28px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
   border: 1px solid var(--blog-border);
   border-radius: 14px;
   background: var(--blog-surface);
+}
+
+/* ============================================================
+   `.rola` — a pista de que ainda há conteúdo pro lado
+   ------------------------------------------------------------
+   Vale pra tabela comparativa e pra fila de chips do blog: as
+   duas rolam de lado no celular, e as duas terminavam numa aresta
+   reta idêntica a "acabou aqui".
+
+   A primeira tentativa foi o scroll-shadow clássico, feito só com
+   gradiente de fundo. Não serviu, e o motivo é o tema: a sombra
+   dele é preta, e preto sobre o navy #0d1b2a é invisível. Pior,
+   camada de fundo fica ATRÁS do conteúdo, então ela nunca ia
+   apagar a palavra cortada na borda — que é justamente o que
+   denuncia o corte.
+
+   O que apaga conteúdo é máscara. Ela não aceita
+   `background-attachment: local`, então quem diz de que lado
+   desvanecer é o JS (`subpage.js`), escrevendo dois números aqui.
+   Fim da rolagem = 0px daquele lado, e a máscara não faz nada.
+   ============================================================ */
+.rola {
+  --rola-esq: 0px;
+  --rola-dir: 0px;
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--rola-esq),
+    #000 calc(100% - var(--rola-dir)), transparent 100%);
+          mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--rola-esq),
+    #000 calc(100% - var(--rola-dir)), transparent 100%);
 }
 .article__table {
   width: 100%;
@@ -644,6 +820,21 @@
   width: 100%;                 /* ocupa a coluna inteira, que agora é metade */
   margin: 0 auto;
 }
+/* A peça respira quando é a folha 2D (celular, sem WebGL, ou quando o
+   three.js não carrega). O 3D já tem o seu próprio movimento na cena.
+   `--par` vem do scroll, no hero-3d.js; a respiração é do CSS.
+   Duas propriedades de compositor só — não custa quadro no celular. */
+.bl-hero__midia.is-2d .bl-hero__cena {
+  animation: blFolhaRespira 13s var(--ease-signature) infinite;
+  will-change: transform;
+}
+@keyframes blFolhaRespira {
+  0%, 100% { transform: translate3d(0, calc(var(--par, 0px) + 0px), 0) rotate(0deg); }
+  50%      { transform: translate3d(0, calc(var(--par, 0px) - 9px), 0) rotate(.5deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bl-hero__midia.is-2d .bl-hero__cena { animation: none; }
+}
 /* O canvas do hero-3d.js. Sem fundo próprio: o gradiente da caixa deixava
    uma mancha com recorte reto no meio da seção assim que a moldura saiu. O
    canvas é transparente (o renderer usa alpha) e a cena flutua sobre o
@@ -657,21 +848,25 @@
   aspect-ratio: 5 / 4;
 
   /* ---------- Por que existe máscara aqui ----------
-     A cena é maior que o quadro: os rolos entram pelos cantos e o canvas
-     os CORTA em linha reta. Mesmo sem borda, raio ou fundo, esse corte é
-     lido como moldura, porque o olho vê um retângulo desenhado pelo fim
-     abrupto do papel.
+     A cena é maior que o quadro: os ROLOS entram pelos cantos e o canvas
+     os corta em linha reta. Essa máscara existe só por causa deles.
 
-     A máscara dissolve os últimos ~14% de cada lado, então a peça
-     desaparece no navy em vez de esbarrar numa aresta. É o que resolve
-     "está com borda" sem ter que encolher a cena. */
+     Ela já foi 14%/12%, quando era a única defesa contra o "está com
+     borda". Não era suficiente, porque o retângulo que o olho via não era
+     o do canvas: era o da FOLHA, que terminava em quatro arestas retas no
+     meio do quadro. Quem resolve isso agora é o `dissolver()` do
+     hero-3d.js, que apaga a borda dentro da própria textura.
+
+     Com o papel já dissolvido, a máscara aqui pôde encolher pra 7%: o
+     bastante pra os rolos sumirem no navy, sem apagar de leve a folha
+     inteira como a versão larga fazia. */
   -webkit-mask-image:
-    linear-gradient(to right,  transparent 0, #000 14%, #000 86%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+    linear-gradient(to right,  transparent 0, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image:
-    linear-gradient(to right,  transparent 0, #000 14%, #000 86%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+    linear-gradient(to right,  transparent 0, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
   mask-composite: intersect;
 }
 /* Um respiro de laranja pra a peça pertencer à paleta em vez de ficar
@@ -682,6 +877,13 @@
    que o hero-3d.js posiciona. */
 
 /* ---------- FILTROS ---------- */
+/* A fila de chips rola de lado abaixo de ~620px: com seis assuntos, a
+   última passa de 680px de largura. Medido em 320/360/390/430, ela era
+   cortada na borda da tela sem nenhum sinal de que continuava — chip
+   invisível é filtro que não existe. A pista é a mesma `.rola` da tabela.
+
+   O `scroll-padding` faz o chip alcançado pelo teclado parar folgado da
+   borda em vez de encostado nela, embaixo do desvanecer. */
 .bl-filters {
   display: flex;
   align-items: center;
@@ -689,6 +891,9 @@
   padding: 26px 0;
   border-bottom: 1px solid var(--blog-rule);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: 40px;
   scrollbar-width: none;
 }
 .bl-filters::-webkit-scrollbar { display: none; }
@@ -741,6 +946,9 @@
 }
 .bl-seeall {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;                 /* ver a nota do .article__back */
   font-size: .85rem;
   font-weight: 600;
   color: var(--orange-l);
@@ -1411,7 +1619,13 @@
   font-size: 1rem;
   color: var(--blog-ink-2);
 }
-.bl-estado a { color: var(--orange-l); font-weight: 600; }
+.bl-estado a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;                 /* ver a nota do .article__back */
+  color: var(--orange-l);
+  font-weight: 600;
+}
 
 .bl-leitura__fig {
   margin: 0 0 24px;
@@ -1551,6 +1765,11 @@
   .bl-hero__grid { grid-template-columns: minmax(0, 1fr); }
   /* O motion sobe pra cima do texto no mobile, como o radar fazia. */
   .bl-hero__midia { order: -1; width: min(100%, 380px); margin-bottom: 10px; }
+  /* Quadro mais alto no celular. A folha é retrato (1500x2010) e num quadro
+     5/4 ela cabia pela altura e sobrava vão dos dois lados — a peça ficava
+     pequena no meio da caixa, que é o enquadramento que fazia ela parecer
+     uma miniatura colada. Em 1/1 o papel ocupa o quadro. */
+  .bl-hero__cena { aspect-ratio: 1 / 1; }
   .bl-grid { grid-template-columns: minmax(0, 1fr); }
   .bl-aside { flex-direction: column; }
 }

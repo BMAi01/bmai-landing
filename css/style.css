@@ -418,6 +418,8 @@ html { scrollbar-gutter: stable; }
   flex-shrink: 0;
   transition: transform .25s var(--ease);
 }
+/* 22px de logo davam 22px de alvo. Ver a nota do rodapé sobre o 2.5.8. */
+.nav-logo { min-height: 28px; }
 .nav-logo:hover { transform: scale(1.04); }
 .nav-logo img { display: block; height: 22px; width: auto; opacity: .95; }
 .nav-sep {
@@ -843,7 +845,22 @@ html { scrollbar-gutter: stable; }
   display: block;
   pointer-events: none;
 }
-@media (max-width: 1024px) { .hero__three { display: none; } }
+/* Some só no mobile de verdade (≤900px), onde o hero já é uma coluna
+   centrada e o texto ocupa a largura toda. Entre 901 e 1024 ela VOLTA:
+   escondê-la ali deixava a metade direita vazia e um vão morto no meio do
+   hero, que é o pior defeito de responsividade que o site tinha. Quem
+   cuida de ela não invadir o texto nessa faixa é o `enquadrar()` do
+   index.html, junto com a proteção mais larga do ::before logo abaixo. */
+@media (max-width: 900px) { .hero__three { display: none; } }
+/* Nessa faixa a coluna de texto pesa mais na largura, então a cortina que
+   protege a leitura precisa cobrir mais que os 55% do desktop. */
+@media (min-width: 901px) and (max-width: 1120px) {
+  .hero::before { width: 72%; }
+  /* Sem a arte, o `min-height: 100vh` virava vão morto. Com ela de volta a
+     altura cheia faz sentido de novo, mas ainda assim o hero não precisa
+     de tela inteira aqui: o conteúdo manda, com um piso generoso. */
+  .hero { min-height: min(760px, 100svh); }
+}
 
 .hero__wrap { position: relative; z-index: 2; }
 .hero__content {
@@ -855,8 +872,23 @@ html { scrollbar-gutter: stable; }
   padding-bottom: clamp(60px, 8vw, 100px);
   text-align: left;
 }
-.hero__content .hero__title { max-width: 600px; }
+/* O título é a única coisa do hero que NÃO pode quebrar: `.h-line` é
+   `white-space: nowrap` porque o efeito de máquina de escrever reflui a
+   linha inteira a cada letra se ela puder quebrar. Só que a linha mais
+   longa mede 854px em 48px, e a caixa era de 600 dentro de um
+   `.hero__content` de 640 — o título vazava pra fora da própria coluna em
+   toda tela acima de ~950px. Ninguém percebia porque à direita sobrava
+   fundo escuro; é vazamento por sorte, e some no dia em que algo entrar
+   naquele espaço.
+
+   Os dois limites precisam ceder juntos: só afrouxar o do título não
+   resolve nada, porque quem estava prendendo era o pai. O olho de texto
+   segue com a medida de leitura curta, que é dele. */
+.hero__content .hero__title { max-width: min(880px, 68vw); }
 .hero__content .hero__sub { max-width: 620px; }
+@media (min-width: 901px) {
+  .hero__content { max-width: min(880px, 70vw); }
+}
 #hero .hero__content,
 #hero .hero__title,
 #hero .hero__sub,
@@ -2713,6 +2745,19 @@ html { scrollbar-gutter: stable; }
   color: var(--orange-l);
   transform: translateX(4px);
 }
+/* ---------- Alvo de toque do rodapé ----------
+   Medido em 9 páginas, de 320 a 1920: cada link do rodapé fechava 23px de
+   altura no desktop e 29 no celular. O critério 2.5.8 do WCAG 2.2 (AA)
+   pede 24x24 CSS px, e a exceção de "link no meio da frase" não vale aqui
+   — é uma LISTA de navegação, não texto corrido.
+
+   O ganho é só de área clicável: `min-height` com o texto centrado não
+   mexe em fonte, cor nem no ritmo da coluna, porque o `gap: 12px` do `ul`
+   já dava mais espaço que a caixa do link ocupava. */
+.footer__col ul a,
+.footer__social a {
+  min-height: 28px;
+}
 
 /* Social: ícones + texto */
 .footer__social a svg {
@@ -3367,7 +3412,10 @@ li, label, input, textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  /* Era 10px. O respiro agora vem do padding do próprio `.sd`, que virou a
+     área de clique — ver a nota lá. A distância visível entre os pontos
+     segue a mesma. */
+  gap: 0;
   opacity: 0;
   pointer-events: none;
   transition: opacity .4s ease;
@@ -3388,6 +3436,18 @@ li, label, input, textarea {
   display: block;
   position: relative;
   cursor: pointer;
+  /* O ponto tem 4px porque é assim que ele deve APARECER — mas 4x4 era o
+     menor alvo do site inteiro, difícil de acertar até com mouse.
+     `content-box` + `background-clip` separam as duas coisas: o desenho
+     continua sendo o quadradinho de 4px, e o que responde ao clique passa
+     a ser 24x14. O `gap` do #sdots caiu de 10 pra 0 na mesma medida, então
+     a distância entre um ponto e o outro na tela não mudou nada.
+     (A régua lateral só existe no desktop e repete a navegação do header,
+     então ela cai na exceção de "controle equivalente" do 2.5.8 — isto
+     aqui é folga, não conformidade mínima.) */
+  box-sizing: content-box;
+  padding: 5px 10px;
+  background-clip: content-box;
   transition:
     height .4s var(--ease-signature),
     width .4s var(--ease-signature),
@@ -7663,7 +7723,11 @@ html { scroll-padding-top: 84px; }
   .qs-notif { animation: none !important; }
 }
 
-}
+/* Aqui existia um `}` sobrando, sem bloco pra fechar. O navegador engole
+   uma chave órfã e segue, então o site nunca acusou nada — mas o
+   clean-css não: ele lia `} html` como seletor e DESCARTAVA o bloco
+   seguinte inteiro na hora de gerar o style.min.css, que é o arquivo que
+   as páginas carregam. Regra escrita, revisada e no ar sem existir. */
 
 
 /* ============================================

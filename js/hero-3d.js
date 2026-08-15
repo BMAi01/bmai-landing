@@ -115,6 +115,92 @@
     return { y: y, resto: palavras.slice(i).join(' ') };
   }
 
+  /* ---------- A folha perde a própria aresta ----------
+     Tirar borda, raio, fundo e sombra do CSS não resolveu "o motion está
+     com borda", e a máscara no canvas também não: o retângulo que o olho
+     vê é o PAPEL. Papel claro com quatro arestas retas dentro de um quadro
+     escuro é lido como moldura, sempre, por mais limpo que esteja o CSS em
+     volta.
+
+     Então a folha deixa de ter aresta. Duas camadas, as duas apagando alfa
+     (`destination-out`), aplicadas depois de todo o desenho:
+
+       1. RASGO — uma faixa irregular colada em cada lado, com amplitude
+          vinda de senos somados. É o que tira a linha reta. Determinístico
+          de propósito: a folha é redesenhada em toda visita e uma borda
+          sorteada faria a peça "piscar" diferente a cada carregamento.
+       2. DESVANECER — rampa suave por cima do rasgo, e mais forte nos
+          quatro cantos, porque canto é o que o olho usa pra fechar o
+          retângulo mentalmente. Sem essa parte o rasgo vira serrilha.
+
+     Com alfa na textura, o material precisa de `transparent: true`, e a
+     folha para de projetar sombra (sombra segue a malha, não o alfa: ela
+     devolveria o retângulo que acabamos de tirar). */
+  function dissolver(g, W, H) {
+    var onda = function (t, a, b, c) {
+      // Três senos primos entre si: repete tarde o suficiente pra a borda
+      // não parecer padronizada em nenhum dos quatro lados.
+      return (Math.sin(t * a) * 0.5 + Math.sin(t * b + 1.7) * 0.33 + Math.sin(t * c + 4.1) * 0.17);
+    };
+    // Duas escalas: uma longa, que dá o desalinhamento geral da aresta, e
+    // uma curta, que dá a fibra. Só a longa deixava uma onda regular demais
+    // — lia como fita recortada, não como papel rasgado.
+    var rasgado = function (t) {
+      return onda(t / 78, 1, 0.37, 2.3) * 0.68 + onda(t / 13, 1.1, 0.53, 3.1) * 0.32;
+    };
+    g.save();
+    g.globalCompositeOperation = 'destination-out';
+    g.fillStyle = '#000';
+
+    // 1. Rasgo
+    var ampX = W * 0.022, ampY = H * 0.016, passo = 9;
+    function lado(eixoX, inicio) {
+      var lim = eixoX ? W : H;
+      g.beginPath();
+      if (eixoX) g.moveTo(-2, inicio ? -2 : H + 2); else g.moveTo(inicio ? -2 : W + 2, -2);
+      var p;
+      for (p = 0; p <= lim; p += passo) {
+        var d = (rasgado(p + (eixoX ? (inicio ? 0 : 611) : (inicio ? 1303 : 2017))) * 0.5 + 0.5)
+              * (eixoX ? ampY : ampX);
+        if (eixoX) g.lineTo(p, inicio ? d : H - d);
+        else g.lineTo(inicio ? d : W - d, p);
+      }
+      if (eixoX) { g.lineTo(W + 2, inicio ? -2 : H + 2); }
+      else { g.lineTo(inicio ? -2 : W + 2, H + 2); }
+      g.closePath();
+      g.fill();
+    }
+    lado(true, true); lado(true, false); lado(false, true); lado(false, false);
+
+    // 2. Desvanecer
+    function rampa(x, y, w, h, x2, y2) {
+      var gr = g.createLinearGradient(x, y, x2, y2);
+      gr.addColorStop(0, 'rgba(0,0,0,1)');
+      gr.addColorStop(.34, 'rgba(0,0,0,.62)');
+      gr.addColorStop(.68, 'rgba(0,0,0,.18)');
+      gr.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gr;
+      g.fillRect(x, y, w, h);
+    }
+    var fx = W * 0.075, fy = H * 0.055;
+    rampa(0, 0, fx, H, 0, 0, fx, 0);
+    rampa(W - fx, 0, fx, H, W, 0, W - fx, 0);
+    rampa(0, 0, W, fy, 0, 0, 0, fy);
+    rampa(0, H - fy, W, fy, 0, H, 0, H - fy);
+
+    // Cantos: o que o olho usa pra fechar o retângulo
+    var raio = Math.max(W, H) * 0.19;
+    [[0, 0], [W, 0], [0, H], [W, H]].forEach(function (c) {
+      var gr = g.createRadialGradient(c[0], c[1], 0, c[0], c[1], raio);
+      gr.addColorStop(0, 'rgba(0,0,0,.92)');
+      gr.addColorStop(.55, 'rgba(0,0,0,.34)');
+      gr.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gr;
+      g.beginPath(); g.arc(c[0], c[1], raio, 0, 7); g.fill();
+    });
+    g.restore();
+  }
+
   function quebrar(g, texto, x, y, maxW, lh) {
     var palavras = String(texto || '').split(' ');
     var linha = '', ly = y;
@@ -267,6 +353,9 @@
     ev.addColorStop(1, 'rgba(35,33,30,0.14)');
     g.fillStyle = ev; g.fillRect(0, 0, W, H);
 
+    // Por último, sempre: a aresta some. Ver `dissolver`.
+    dissolver(g, W, H);
+
     return c;
   }
 
@@ -344,7 +433,18 @@
 
   /* ==================== SAÍDA 2D ====================
      Mesma folha, sem mesa 3D. É o que aparece pra quem pediu menos
-     movimento, pra tela estreita e pra quem não tem WebGL. */
+     movimento, pra tela estreita e pra quem não tem WebGL — ou seja, é o
+     que a MAIORIA vê, já que a maioria abre no celular.
+
+     Ela ficou muito tempo sendo o pior enquadramento do site: a folha
+     desenhada pequena no meio da caixa, com `shadowBlur` e `shadowOffsetY`
+     duros. Sombra dura em cima de um retângulo é exatamente o desenho de
+     um card — era a "borda do motion" na tela onde ela mais aparece.
+
+     Agora: a folha ocupa a caixa e sangra por baixo, inclina de leve como
+     papel largado na mesa, e o que a separa do fundo é um halo quente da
+     marca, não uma aresta. A borda do papel já vem dissolvida da textura,
+     então a sombra segue o alfa e nunca desenha um retângulo. */
   function desenhar2d(canvas, pagina) {
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var w = canvas.clientWidth, h = canvas.clientHeight;
@@ -354,14 +454,65 @@
     var g = canvas.getContext('2d');
     g.scale(dpr, dpr);
     g.clearRect(0, 0, w, h);
-    var r = Math.min((w * 0.72) / pagina.width, (h * 0.86) / pagina.height);
+
+    // A folha cabe INTEIRA no quadro, de propósito. A primeira tentativa
+    // sangrava pra fora pra "não fechar o retângulo", e o preço foi o
+    // cabeçalho "BMAi News" cortado no topo e a régua da máscara aparecendo
+    // como linha reta no pé — dois defeitos piores que o que resolvia.
+    // Não precisa mais sangrar: quem tira o retângulo é a borda dissolvida
+    // da própria textura, então a folha pode aparecer por completo.
+    var r = Math.min((w * 0.98) / pagina.width, (h * 0.98) / pagina.height);
     var dw = pagina.width * r, dh = pagina.height * r;
     var x = (w - dw) / 2, y = (h - dh) / 2;
+
+    // Halo quente: o que destaca a folha do navy. Substitui a sombra dura.
+    var halo = g.createRadialGradient(w / 2, h * 0.46, 0, w / 2, h * 0.46, Math.max(w, h) * 0.62);
+    halo.addColorStop(0, 'rgba(219,85,0,.16)');
+    halo.addColorStop(.5, 'rgba(219,85,0,.05)');
+    halo.addColorStop(1, 'rgba(219,85,0,0)');
+    g.fillStyle = halo;
+    g.fillRect(0, 0, w, h);
+
     g.save();
-    g.shadowColor = 'rgba(0,0,0,0.55)';
-    g.shadowBlur = 40; g.shadowOffsetY = 18;
+    // Inclinação de papel largado, não de captura de tela.
+    g.translate(w / 2, h / 2);
+    g.rotate(-0.028);
+    g.translate(-w / 2, -h / 2);
+    // A sombra segue o alfa da textura, então sai difusa em vez de recortar
+    // um retângulo. Fica atrás do papel e quase não aparece: é profundidade,
+    // não contorno.
+    g.shadowColor = 'rgba(8,14,22,.5)';
+    g.shadowBlur = 56;
+    g.shadowOffsetY = 22;
     g.drawImage(pagina, x, y, dw, dh);
     g.restore();
+  }
+
+  /* A folha 2D é estática por natureza — canvas desenhado uma vez. O
+     movimento vem do CSS (`.is-2d` faz a peça respirar e o scroll a
+     desloca), que roda no compositor e não custa quadro de CPU no celular.
+     Quem pediu menos movimento não recebe a classe. */
+  function animar2d(palco, canvas) {
+    if (REDUZIR) return;
+    palco.classList.add('is-2d');
+    if (!window.IntersectionObserver) return;
+    var alvo = 0, atual = 0, rodando = false;
+    function passo() {
+      atual += (alvo - atual) * 0.08;
+      canvas.style.setProperty('--par', atual.toFixed(2) + 'px');
+      if (Math.abs(alvo - atual) > 0.4) requestAnimationFrame(passo);
+      else rodando = false;
+    }
+    var visivel = false;
+    new IntersectionObserver(function (es) { visivel = es[0].isIntersecting; }).observe(palco);
+    window.addEventListener('scroll', function () {
+      if (!visivel) return;
+      var c = palco.getBoundingClientRect();
+      // -1 a 1 conforme a peça cruza a tela; 26px de curso é o suficiente
+      // pra ler como profundidade sem virar efeito.
+      alvo = ((c.top + c.height / 2) / window.innerHeight - 0.5) * -26;
+      if (!rodando) { rodando = true; requestAnimationFrame(passo); }
+    }, { passive: true });
   }
 
   /* ==================== SAÍDA 3D ==================== */
@@ -380,12 +531,17 @@
     var cena = new THREE.Scene();
     // O comp foi feito pra ocupar a tela inteira (100vh). Aqui a cena mora
     // numa caixa ao lado do texto, então a câmera vem pra frente: a 9.4 a
-    // folha ficava do tamanho de um selo no meio de muito vazio, e a 7.6
-    // ainda sobrava fundo demais em volta. A 6.5 a folha encosta nas bordas
-    // do quadro e os rolos entram cortados pelos cantos, que é o que dá
-    // profundidade em vez de moldura.
+    // folha ficava do tamanho de um selo no meio de muito vazio.
+    //
+    // Ficou em 6.5 enquanto a ideia era "a folha encosta nas bordas do
+    // quadro", quando encostar era o melhor disponível. Com a borda do
+    // papel dissolvida na textura, encostar virou defeito: o pé da folha
+    // batia na régua da máscara e voltava a desenhar uma linha reta. Em
+    // 7.3 a folha inteira cabe no quadro com a borda desvanecendo no navy,
+    // e os rolos seguem entrando cortados pelos cantos — que é o que dá
+    // profundidade sem moldura.
     var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 0, 6.5);
+    camera.position.set(0, 0, 7.3);
 
     var grupo = new THREE.Group();
     cena.add(grupo);
@@ -416,7 +572,17 @@
       geo.computeVertexNormals();
       return new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
         map: mapa, roughness: 0.94, metalness: 0.0,
-        side: THREE.DoubleSide, bumpMap: mapa, bumpScale: 0.006,
+        // A textura agora tem alfa (ver `dissolver`), então o material
+        // precisa ser transparente pra a borda sumir de verdade em vez de
+        // virar recorte duro.
+        transparent: true,
+        // FrontSide, não DoubleSide: com transparência, as duas faces se
+        // somam e a borda desvanecida fica DUAS vezes mais densa — voltava
+        // a desenhar um contorno. A folha curva pouco (z vai de 0 a -0.17)
+        // e nunca vira de costas, então a face de trás não faz falta.
+        side: THREE.FrontSide,
+        bumpMap: mapa, bumpScale: 0.006,
+        depthWrite: false,
       }));
     }
 
@@ -424,6 +590,25 @@
     texPagina.anisotropy = 16;
     var folhaMalha = lamina(3.0, 4.02, texPagina);
     folhaMalha.castShadow = true; folhaMalha.receiveShadow = true;
+    /* A sombra padrão segue a MALHA, não o alfa: com a borda dissolvida na
+       textura, a folha projetava de volta exatamente o retângulo que o
+       `dissolver()` tinha acabado de tirar.
+
+       Desligar `castShadow` resolvia isso e criava outro problema: some
+       junto o auto-sombreamento da curvatura, que é o que modela a folha.
+       Sem ele o papel fica chapado e claro demais — testado, e a peça
+       perdeu o volume inteiro.
+
+       A saída é um material de profundidade próprio: o three usa ESTE pra
+       desenhar o mapa de sombra, e com `alphaTest` ele recorta pelo alfa da
+       textura. Resultado: a sombra sai no formato do papel dissolvido, e o
+       render continua com a borda suave (alphaTest no material principal
+       cortaria o desvanecer numa aresta dura). */
+    folhaMalha.customDepthMaterial = new THREE.MeshDepthMaterial({
+      depthPacking: THREE.RGBADepthPacking,
+      map: texPagina,
+      alphaTest: 0.5,
+    });
     por(folhaMalha, [-0.1, 0.05, 0.4], [-0.05, -0.18, -0.05], 1.0);
 
     // Uma textura de rolo só, reaproveitada como mapa e como relevo nos dois
@@ -454,17 +639,30 @@
     por(cilindro(3.3, 0.29), [-2.9, -1.9, 0.7], [0.08, 0.18, 0.36], 1.0);
     por(cilindro(2.9, 0.25), [3.0, 1.7, -0.5], [-0.08, -0.2, -0.52], 0.96);
 
-    var chave = new THREE.DirectionalLight(0xfff1e2, 2.0);
+    /* Luz calibrada em cima da peça renderizada, não herdada do comp.
+       O comp era uma cena de tela cheia sobre fundo escuro, onde estourar
+       o papel de branco funcionava como efeito. Aqui a folha é o conteúdo:
+       ela carrega manchete, olho e colunas de texto real, e com a chave em
+       2.0 o papel (#e9e4d9, já claro) saturava em branco e a tinta sumia
+       dentro dele — o jornal virava um retângulo de luz.
+
+       Chave em 1.15 e hemisférica em 0.42: o papel volta a ser papel, a
+       tinta volta a ser legível, e as dobras da folha continuam com o
+       volume que a curvatura desenha. */
+    var chave = new THREE.DirectionalLight(0xfff1e2, 1.15);
     chave.position.set(4, 7, 8); chave.castShadow = true;
     chave.shadow.mapSize.set(1024, 1024);
     chave.shadow.camera.left = -8; chave.shadow.camera.right = 8;
     chave.shadow.camera.top = 8; chave.shadow.camera.bottom = -8;
+    // Sem bias a sombra do próprio papel se auto-recorta em faixas (a folha
+    // é curva e quase paralela à luz nas pontas).
+    chave.shadow.bias = -0.0012;
     cena.add(chave);
-    var recorte = new THREE.PointLight(0xff6a12, 1.1, 30);   // o laranja da marca
+    var recorte = new THREE.PointLight(0xff6a12, 0.9, 30);   // o laranja da marca
     recorte.position.set(-6, -3, 3); cena.add(recorte);
-    var rebote = new THREE.PointLight(0x8fb6e6, 0.55, 30);
+    var rebote = new THREE.PointLight(0x8fb6e6, 0.34, 30);
     rebote.position.set(-3, 4, -5); cena.add(rebote);
-    cena.add(new THREE.HemisphereLight(0x9fb4c9, 0x1a2a3c, 0.75));
+    cena.add(new THREE.HemisphereLight(0x9fb4c9, 0x1a2a3c, 0.42));
 
     function medir() {
       var w = canvas.clientWidth, h = canvas.clientHeight;
@@ -590,12 +788,25 @@
                       .filter(Boolean).join('  '),
         };
 
-        if (REDUZIR || ESTREITO) { desenhar2d(canvas, pagina); return; }
+        // A saída 2D precisa redesenhar quando a caixa muda de tamanho: o
+        // canvas tem resolução própria e girar o celular deixava a folha
+        // esticada. O 3D já tem o seu `medir()`.
+        function saida2d() {
+          desenhar2d(canvas, pagina);
+          animar2d(palco, canvas);
+          var t;
+          window.addEventListener('resize', function () {
+            clearTimeout(t);
+            t = setTimeout(function () { desenhar2d(canvas, pagina); }, 160);
+          });
+        }
+
+        if (REDUZIR || ESTREITO) { saida2d(); return; }
         return carregarThree()
           .then(function () {
-            if (!montar3d(canvas, pagina, trecho)) desenhar2d(canvas, pagina);
+            if (!montar3d(canvas, pagina, trecho)) saida2d();
           })
-          .catch(function () { desenhar2d(canvas, pagina); });
+          .catch(function () { saida2d(); });
       });
     })
     .catch(function () {

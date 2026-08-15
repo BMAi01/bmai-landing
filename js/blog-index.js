@@ -69,10 +69,21 @@
   function itens()  { return [].slice.call(document.querySelectorAll('[data-cat]')); }
   function blocos() { return [].slice.call(document.querySelectorAll('[data-block]')); }
 
+  /* O filtro troca `hidden`, e `hidden` é troca de `display`: transição de
+     CSS não roda em cima disso, então a lista inteira PISCAVA de um estado
+     pro outro. Quem clica numa chip não vê o que mudou — só vê outra tela.
+
+     Uma animação curta em quem ACABOU de aparecer resolve, com escada de
+     45ms pra a fila se montar da esquerda pra direita em vez de tudo de
+     uma vez. Some pra quem pediu menos movimento. */
+  var MENOS_MOVIMENTO = window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function aplicar() {
     var q = (input.value || '').trim().toLowerCase();
     var filtrando = q !== '' || filtro !== 'all';
     var visiveis = 0;
+    var entrando = 0;
 
     itens().forEach(function (el) {
       var okCat = filtro === 'all' || el.getAttribute('data-cat') === filtro;
@@ -82,12 +93,38 @@
       // continuar escondendo resultado seria mentir sobre o acervo.
       var colapsado = !filtrando && !expandido && el.hasAttribute('data-extra');
       var mostrar = okCat && okQ && !colapsado;
+      var estavaOculto = el.hidden;
       el.hidden = !mostrar;
+      if (!MENOS_MOVIMENTO && estavaOculto && mostrar) {
+        el.classList.remove('bl-entra');
+        void el.offsetWidth;              // reinicia a animação de verdade
+        el.style.setProperty('--fd', (Math.min(entrando, 7) * 0.045) + 's');
+        el.classList.add('bl-entra');
+        entrando++;
+      }
       if (okCat && okQ) visiveis++;
     });
 
     blocos().forEach(function (b) {
+      var estavaOculto = b.hidden;
       b.hidden = !b.querySelector('[data-cat]:not([hidden])');
+      /* ⚠️ Bloco que volta do filtro traz `.rise` dentro dele — o
+         cabeçalho da seção, por exemplo. E `.rise` observado dentro de um
+         elemento `display:none` NUNCA dispara o IntersectionObserver: ele
+         voltaria com opacidade zero, ou seja, seção vazia.
+
+         (A rede de segurança do subpage.js revelaria tudo em 4s, mas
+         ninguém garante que a pessoa demore 4s pra clicar numa chip.)
+
+         Ao reaparecer, o conteúdo é declarado presente na hora. A entrada
+         dele fica por conta do `.bl-entra`, que é a animação certa pra
+         troca de filtro — quem já estava na página não precisa nascer de
+         novo. */
+      if (estavaOculto && !b.hidden) {
+        [].forEach.call(b.querySelectorAll('.rise:not(.is-in)'), function (el) {
+          el.classList.add('is-in');
+        });
+      }
     });
 
     vazio.setAttribute('data-show', visiveis === 0 ? 'true' : 'false');

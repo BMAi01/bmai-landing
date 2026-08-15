@@ -98,8 +98,13 @@
         '</div>' +
 
         '<div class="article__body">' +
-          figura +
-          (etiquetas ? '<div class="bl-radar__class bl-leitura__class">' + etiquetas + '</div>' : '') +
+          // `.rise` no que chega depois do fetch: sem isto, a única página
+          // do site sem entrada nenhuma era justamente esta, porque o
+          // observador do subpage.js roda antes do conteúdo existir. Quem
+          // religa é o `BMAiMotion.varrer()` lá embaixo.
+          (figura ? figura.replace('<figure class="bl-leitura__fig">',
+                                   '<figure class="bl-leitura__fig rise" data-rise="veil">') : '') +
+          (etiquetas ? '<div class="bl-radar__class bl-leitura__class rise">' + etiquetas + '</div>' : '') +
 
           /* A leitura em duas partes, que é como o agente escreve: o que
              aconteceu e o que isso muda pra quem opera. A segunda metade
@@ -130,7 +135,7 @@
              Resumir a apuração de outro sem dizer de quem ela é deixaria de
              ser auditoria e viraria apropriação, então essa linha fica. */
 
-          '<div class="article__close">' +
+          '<div class="article__close rise" data-rise="scale">' +
             '<h2>Quer isso aplicado ao seu negócio?</h2>' +
             '<p>A gente olha a sua operação antes de falar de ferramenta.</p>' +
             '<a class="btn btn--primary btn--lg" href="https://wa.me/5561982012580?text=Ol%C3%A1%2C%20time%20da%20BMAi%2C%20vim%20pelo%20radar" target="_blank" rel="noopener">' +
@@ -143,6 +148,8 @@
       // A seção de comentários nasce agora, depois do fetch, então o
       // comentarios.js já varreu a página e não a viu. Montagem à mão.
       if (window.BMAiComentarios) window.BMAiComentarios.varrer(alvo);
+      // Mesmo motivo, mesma solução, pro motion de entrada.
+      if (window.BMAiMotion) window.BMAiMotion.varrer(alvo);
     })
     .catch(function (err) {
       falhou(err.message === 'velha'
