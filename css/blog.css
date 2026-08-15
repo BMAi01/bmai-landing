@@ -21,7 +21,11 @@
   --blog-rule-2:   rgba(255, 255, 255, .16);  /* hairline de contorno de card */
   --blog-surface:  rgba(255, 255, 255, .02);
   --blog-border:   rgba(255, 255, 255, .06);
-  --blog-reveal:   cubic-bezier(.16, 1, .3, 1);
+  /* Uma curva só no site inteiro. Esta camada tinha a sua própria, muito
+     parecida com a do site mas não igual, que é o tipo de divergência que
+     ninguém nota isolada e que somada faz cada bloco se mover com uma mão
+     diferente. */
+  --blog-reveal:   var(--ease-signature);
 }
 
 /* ============================================================
@@ -651,6 +655,24 @@
      do texto e abria um vão entre a busca e os filtros: o "espaço vazio"
      não era da cena, era da caixa dela. */
   aspect-ratio: 5 / 4;
+
+  /* ---------- Por que existe máscara aqui ----------
+     A cena é maior que o quadro: os rolos entram pelos cantos e o canvas
+     os CORTA em linha reta. Mesmo sem borda, raio ou fundo, esse corte é
+     lido como moldura, porque o olho vê um retângulo desenhado pelo fim
+     abrupto do papel.
+
+     A máscara dissolve os últimos ~14% de cada lado, então a peça
+     desaparece no navy em vez de esbarrar numa aresta. É o que resolve
+     "está com borda" sem ter que encolher a cena. */
+  -webkit-mask-image:
+    linear-gradient(to right,  transparent 0, #000 14%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right,  transparent 0, #000 14%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-composite: intersect;
 }
 /* Um respiro de laranja pra a peça pertencer à paleta em vez de ficar
    como um retângulo de vídeo colado na página. */
