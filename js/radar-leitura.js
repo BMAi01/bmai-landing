@@ -104,18 +104,15 @@
           '<h2>A leitura da BMAi</h2>' +
           '<p>' + esc(n.summary) + '</p>' +
 
-          // A página é 100% leitura da BMAi: não leva o visitante pro veículo.
-          // O crédito de quem apurou FICA, e não é enfeite: resumir a apuração
-          // de outro sem dizer de quem ela é deixa de ser auditoria e vira
-          // apropriação. O crédito é o que sustenta a peça.
-          '<div class="article__note">' +
-            '<p>' +
-              (fonte ? 'A apuração é d' + (/^[AEIOU]/i.test(fonte) ? 'a ' : 'o ') + fonte + '. ' : '') +
-              'O que você leu acima é a leitura da BMAi: o que a notícia diz e o ' +
-              'que muda na prática para quem opera um negócio. A classificação é ' +
-              'do nosso agente de monitoramento.' +
-            '</p>' +
-          '</div>' +
+          /* O parágrafo de rodapé que explicava a divisão de trabalho
+             ("a apuração é do veículo, a leitura é da BMAi") saiu a pedido:
+             lia como ressalva no fim de uma página que deveria soar como
+             auditoria da casa.
+
+             O crédito NÃO some com ele. Continua em cima, no "Apurado por
+             <veículo>" da linha de meta, onde é informação e não desculpa.
+             Resumir a apuração de outro sem dizer de quem ela é deixaria de
+             ser auditoria e viraria apropriação, então essa linha fica. */
 
           '<div class="article__close">' +
             '<h2>Quer isso aplicado ao seu negócio?</h2>' +

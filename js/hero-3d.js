@@ -338,10 +338,13 @@
 
     var cena = new THREE.Scene();
     // O comp foi feito pra ocupar a tela inteira (100vh). Aqui a cena mora
-    // numa caixa de ~440px ao lado do texto, então a câmera vem pra frente:
-    // a 9.4 a folha ficava do tamanho de um selo no meio de muito vazio.
+    // numa caixa ao lado do texto, então a câmera vem pra frente: a 9.4 a
+    // folha ficava do tamanho de um selo no meio de muito vazio, e a 7.6
+    // ainda sobrava fundo demais em volta. A 6.5 a folha encosta nas bordas
+    // do quadro e os rolos entram cortados pelos cantos, que é o que dá
+    // profundidade em vez de moldura.
     var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 0, 7.6);
+    camera.position.set(0, 0, 6.5);
 
     var grupo = new THREE.Group();
     cena.add(grupo);
