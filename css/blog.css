@@ -847,27 +847,16 @@
      não era da cena, era da caixa dela. */
   aspect-ratio: 5 / 4;
 
-  /* ---------- Por que existe máscara aqui ----------
-     A cena é maior que o quadro: os ROLOS entram pelos cantos e o canvas
-     os corta em linha reta. Essa máscara existe só por causa deles.
+  /* ---------- A máscara saiu ----------
+     Ela existia porque a cena era maior que o quadro: os rolos entravam
+     pelos cantos e o canvas os cortava em linha reta. Foi 14%/12%, depois
+     7%/6%.
 
-     Ela já foi 14%/12%, quando era a única defesa contra o "está com
-     borda". Não era suficiente, porque o retângulo que o olho via não era
-     o do canvas: era o da FOLHA, que terminava em quatro arestas retas no
-     meio do quadro. Quem resolve isso agora é o `dissolver()` do
-     hero-3d.js, que apaga a borda dentro da própria textura.
-
-     Com o papel já dissolvido, a máscara aqui pôde encolher pra 7%: o
-     bastante pra os rolos sumirem no navy, sem apagar de leve a folha
-     inteira como a versão larga fazia. */
-  -webkit-mask-image:
-    linear-gradient(to right,  transparent 0, #000 7%, #000 93%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right,  transparent 0, #000 7%, #000 93%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
-  mask-composite: intersect;
+     Agora o `enquadrar()` do hero-3d.js recua a câmera até a cena INTEIRA
+     caber, com folga, então não há mais nada encostando na borda pra
+     esconder. Manter a máscara aqui viraria o defeito oposto: ela apagaria
+     justamente as pontas dos rolos que passaram a aparecer. Quem dissolve
+     a borda do papel é a textura, não esta folha de estilo. */
 }
 /* Um respiro de laranja pra a peça pertencer à paleta em vez de ficar
    como um retângulo de vídeo colado na página. */

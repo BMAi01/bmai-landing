@@ -182,7 +182,7 @@
     var rec = Math.round(Math.min(W, H) * 0.060);   // recuo do miolo
     var amp = Math.round(Math.min(W, H) * 0.038);   // profundidade do rasgo
     var passo = 10;
-    var borrao = Math.round(Math.min(W, H) * 0.022);
+    var borrao = Math.round(Math.min(W, H) * 0.016);
 
     mg.fillStyle = '#000';
     mg.beginPath();
@@ -601,19 +601,21 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     var cena = new THREE.Scene();
-    // O comp foi feito pra ocupar a tela inteira (100vh). Aqui a cena mora
-    // numa caixa ao lado do texto, então a câmera vem pra frente: a 9.4 a
-    // folha ficava do tamanho de um selo no meio de muito vazio.
-    //
-    // Ficou em 6.5 enquanto a ideia era "a folha encosta nas bordas do
-    // quadro", quando encostar era o melhor disponível. Com a borda do
-    // papel dissolvida na textura, encostar virou defeito: o pé da folha
-    // batia na régua da máscara e voltava a desenhar uma linha reta. Em
-    // 7.3 a folha inteira cabe no quadro com a borda desvanecendo no navy,
-    // e os rolos seguem entrando cortados pelos cantos — que é o que dá
-    // profundidade sem moldura.
+    /* A distância da câmera não é mais um número escolhido a olho.
+
+       Ela já foi 9.4, 8.6, 7.6, 6.5 e 7.3, cada uma resolvendo o defeito
+       da anterior e criando o seguinte, porque um número fixo só funciona
+       pra UM formato de quadro. A caixa desta peça muda de proporção com a
+       largura da janela, então qualquer número fixo corta alguma coisa em
+       alguma tela.
+
+       Agora quem decide é a geometria: `enquadrar()` mede a caixa que
+       contém a cena inteira (folha e os dois rolos) e recua a câmera até
+       ela caber, com folga. Roda no início e a cada `resize`. O pedido que
+       levou a isso foi direto: os rolos precisam aparecer inteiros e a
+       folha do meio não pode ficar cortada. */
     var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 0, 7.3);
+    camera.position.set(0, 0, 9);
 
     var grupo = new THREE.Group();
     cena.add(grupo);
@@ -708,8 +710,20 @@
       grupo.rotation.z = Math.PI / 2;
       return grupo;
     }
-    por(cilindro(3.3, 0.29), [-2.9, -1.9, 0.7], [0.08, 0.18, 0.36], 1.0);
-    por(cilindro(2.9, 0.25), [3.0, 1.7, -0.5], [-0.08, -0.2, -0.52], 0.96);
+    /* Os rolos vieram do comp em [-2.9, -1.9] e [3.0, 1.7], com 3.3 e 2.9
+       de comprimento. Lá isso funciona: a cena ocupa a tela inteira e há
+       espaço de sobra em volta da folha. Aqui, com o enquadramento
+       obrigado a mostrar tudo, essas posições viram o fator que define o
+       tamanho de TUDO: a cena precisava de 8,65 unidades de largura pra
+       uma folha de 3, então a folha ficava com um terço do quadro e o
+       resto era navy vazio.
+
+       Encostados na folha e mais curtos, a cena cai pra ~5 unidades. O
+       desenho é o mesmo (um rolo em cada canto oposto, cruzando a folha),
+       mas agora o jornal é o assunto do quadro em vez de um selo no meio
+       dele. */
+    por(cilindro(2.45, 0.28), [-1.92, -1.92, 0.7], [0.08, 0.18, 0.36], 1.0);
+    por(cilindro(2.15, 0.25), [1.98, 1.78, -0.5], [-0.08, -0.2, -0.52], 0.96);
 
     /* Luz calibrada em cima da peça renderizada, não herdada do comp.
        O comp era uma cena de tela cheia sobre fundo escuro, onde estourar
@@ -736,11 +750,53 @@
     rebote.position.set(-3, 4, -5); cena.add(rebote);
     cena.add(new THREE.HemisphereLight(0x9fb4c9, 0x1a2a3c, 0.42));
 
+    /* ---------- Enquadramento pela geometria ----------
+       Mede a caixa que contém a cena inteira (a folha e os dois rolos),
+       centraliza o grupo nela e recua a câmera até a caixa caber nos DOIS
+       eixos, com folga. Assim nada fica cortado em nenhuma proporção de
+       quadro, que era o que nenhum número fixo de câmera conseguia.
+
+       A folga (`FOLGA`) não é enfeite: a cena balança sozinha (o grupo gira
+       ±0.1rad no eixo Y e ±0.035 no X) e a câmera acompanha o ponteiro.
+       Sem margem, a peça caberia parada e encostaria na borda em
+       movimento, que é o mesmo defeito com passo extra. */
+    var FOLGA = 1.20;
+    var caixaCena = null;
+
+    function medirCena() {
+      // Com o grupo na posição neutra: a caixa tem que descrever a cena,
+      // não o instante da animação em que ela foi medida.
+      var rx = grupo.rotation.x, ry = grupo.rotation.y, px = grupo.position.x, py = grupo.position.y;
+      grupo.rotation.set(0, 0, 0);
+      grupo.position.set(0, 0, 0);
+      grupo.updateMatrixWorld(true);
+      var b = new THREE.Box3().setFromObject(grupo);
+      grupo.rotation.x = rx; grupo.rotation.y = ry;
+      grupo.position.x = px; grupo.position.y = py;
+      caixaCena = {
+        centro: b.getCenter(new THREE.Vector3()),
+        tam: b.getSize(new THREE.Vector3()),
+      };
+    }
+
     function medir() {
       var w = canvas.clientWidth, h = canvas.clientHeight;
       if (!w || !h) return;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
+
+      if (!caixaCena) medirCena();
+      // Centraliza a cena no quadro: sem isto a caixa cabe mas fica torta,
+      // porque os dois rolos não são simétricos em volta da origem.
+      grupo.position.x = -caixaCena.centro.x;
+      grupo.position.y = -caixaCena.centro.y;
+
+      var meioFov = (camera.fov * Math.PI / 180) / 2;
+      var porAltura  = (caixaCena.tam.y * FOLGA / 2) / Math.tan(meioFov);
+      var porLargura = (caixaCena.tam.x * FOLGA / 2) / (Math.tan(meioFov) * camera.aspect);
+      // A profundidade importa: o que está mais à frente precisa caber do
+      // lugar onde ele está, não do centro da caixa.
+      camera.position.z = Math.max(porAltura, porLargura) + caixaCena.tam.z / 2;
       camera.updateProjectionMatrix();
     }
     medir();
@@ -774,8 +830,11 @@
       }
       rato.x += (rato.ax - rato.x) * 0.05;
       rato.y += (rato.ay - rato.y) * 0.05;
-      camera.position.x = rato.x * 1.6;
-      camera.position.y = -rato.y * 1.1;
+      // Curso curto (era 1.6 / 1.1). Com a cena enquadrada pra caber
+      // inteira, um parallax largo tira os rolos do quadro no meio do
+      // movimento — resolveria parado e quebraria andando.
+      camera.position.x = rato.x * 0.55;
+      camera.position.y = -rato.y * 0.4;
       camera.lookAt(0, 0, 0);
       renderer.render(cena, camera);
     })();
