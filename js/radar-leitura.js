@@ -101,8 +101,24 @@
           figura +
           (etiquetas ? '<div class="bl-radar__class bl-leitura__class">' + etiquetas + '</div>' : '') +
 
-          '<h2>A leitura da BMAi</h2>' +
-          '<p>' + esc(n.summary) + '</p>' +
+          /* A leitura em duas partes, que é como o agente escreve: o que
+             aconteceu e o que isso muda pra quem opera. A segunda metade
+             existia no banco desde sempre, no rascunho da comunidade, e a
+             página só mostrava a primeira. */
+          '<h2>O que aconteceu</h2>' +
+          '<p>' + esc((n.leitura && n.leitura.oQueE) || n.summary) + '</p>' +
+          (n.leitura && n.leitura.porQueImporta
+            ? '<h2>Por que isso importa para quem opera</h2>' +
+              '<p>' + esc(n.leitura.porQueImporta) + '</p>'
+            : '') +
+          (n.empresas && n.empresas.length
+            ? '<h2>Quem está envolvido</h2>' +
+              '<p>' + esc(n.empresas.join(', ')) + '.</p>'
+            : '') +
+
+          // A conversa fica dentro da própria postagem, endereçada pelo id
+          // dela: cada matéria tem a sua, nunca um mural único do blog.
+          '<section class="bl-com" data-comentarios="' + esc(id) + '" hidden></section>' +
 
           /* O parágrafo de rodapé que explicava a divisão de trabalho
              ("a apuração é do veículo, a leitura é da BMAi") saiu a pedido:
@@ -123,6 +139,10 @@
             '</a>' +
           '</div>' +
         '</div>';
+
+      // A seção de comentários nasce agora, depois do fetch, então o
+      // comentarios.js já varreu a página e não a viu. Montagem à mão.
+      if (window.BMAiComentarios) window.BMAiComentarios.varrer(alvo);
     })
     .catch(function (err) {
       falhou(err.message === 'velha'

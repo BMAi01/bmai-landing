@@ -554,11 +554,14 @@
 }
 .bl-hero__grid {
   display: grid;
-  /* A coluna de texto precisa segurar "colocando IA pra rodar." em UMA linha,
-     senão o <br> do título vira três linhas e a escada se perde. */
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, .8fr);
+  /* Colunas emparelhadas: o texto e o motion com o mesmo peso, como no hero
+     da home. Era 1.25 contra .8, e a diferença é o que fazia o motion
+     parecer um acessório ao lado do texto em vez da outra metade da
+     abertura. A coluna de texto ainda segura "colocando IA pra rodar." em
+     uma linha só, que é o que mantém a escada do título. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(32px, 5vw, 56px);
+  gap: clamp(28px, 4vw, 48px);
 }
 .bl-hero__title {
   margin: 18px 0 20px;
@@ -634,7 +637,7 @@
    seção, que é a mesma cor do fundo da cena. */
 .bl-hero__midia {
   position: relative;
-  width: min(100%, 520px);
+  width: 100%;                 /* ocupa a coluna inteira, que agora é metade */
   margin: 0 auto;
 }
 /* O canvas do hero-3d.js. Sem fundo próprio: o gradiente da caixa deixava
@@ -1534,4 +1537,96 @@
   .bl-case__mono { width: 44px; height: 44px; font-size: 1rem; }
   .bl-case__arrow { display: none; }
   .bl-radar__grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ============================================================
+   COMENTÁRIOS — uma linha por postagem
+   ------------------------------------------------------------
+   Vale pra matéria do radar e pro artigo. A caixa nasce FECHADA,
+   como aba: comentário raramente é o que a pessoa veio ler, e
+   abrir a lista inteira empurraria o texto pra baixo em toda
+   visita. O contador no botão diz se vale abrir.
+   ============================================================ */
+.bl-com {
+  margin-top: 44px;
+  padding-top: 28px;
+  border-top: 1px solid var(--blog-rule);
+}
+.bl-com__aba {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 18px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 999px;
+  background: var(--bg-2);
+  color: var(--blog-ink);
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease;
+}
+.bl-com__aba:hover { border-color: var(--orange-l); background: var(--bg-3); }
+.bl-com__conta {
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--orange);
+  color: #fff;
+  font-size: .74rem;
+  font-weight: 700;
+  text-align: center;
+}
+.bl-com__painel { padding-top: 24px; }
+.bl-com__vazio { margin: 0 0 20px; color: var(--blog-ink-2); font-size: .95rem; }
+.bl-com__lista { margin: 0 0 24px; padding: 0; list-style: none; }
+.bl-com__item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--blog-rule);
+}
+.bl-com__item:last-child { border-bottom: 0; }
+.bl-com__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 6px;
+}
+.bl-com__nome { color: var(--white); font-size: .93rem; font-weight: 700; }
+.bl-com__data { color: var(--blog-ink-2); font-size: .78rem; }
+/* Comentário é texto de estranho: quebra onde tiver que quebrar, sem
+   deixar uma palavra gigante estourar a coluna. */
+.bl-com__texto {
+  margin: 0;
+  color: var(--blog-ink);
+  font-size: .97rem;
+  line-height: 1.62;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bl-com__form { display: grid; gap: 12px; max-width: 620px; }
+.bl-com__campo {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--blog-rule-2);
+  border-radius: 12px;
+  background: var(--bg-2);
+  color: var(--white);
+  font: inherit;
+  font-size: .95rem;
+}
+.bl-com__campo::placeholder { color: var(--blog-ink-2); }
+.bl-com__campo:focus-visible { outline: 2px solid var(--orange-l); outline-offset: 1px; }
+.bl-com__campo--texto { resize: vertical; min-height: 96px; line-height: 1.55; }
+.bl-com__enviar { justify-self: start; }
+.bl-com__aviso { margin: 0; min-height: 1.2em; color: var(--blog-ink-2); font-size: .88rem; }
+.bl-com__aviso[data-erro] { color: var(--orange-l); }
+/* A armadilha de robô. Fora da tela, nunca `display:none`: campo escondido
+   com display none alguns robôs sabem ignorar. */
+.bl-com__isca {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }

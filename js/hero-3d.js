@@ -128,7 +128,13 @@
     return ly;
   }
 
-  /* A folha. `foto` é a capa já carregada da matéria principal, ou null. */
+  /* A folha. `foto` é a capa já carregada da matéria principal, ou null.
+
+     A segunda versão do comp trouxe duas mudanças que valem: uma SEGUNDA
+     matéria em três colunas embaixo, e um preenchedor que RECICLA o texto
+     quando a coluna chega ao fim. O segundo ponto é o que garante que
+     nenhuma coluna termine no meio com papel em branco embaixo, que é
+     exatamente o defeito que aparece num jornal de mentira. */
   function folha(materia, foto) {
     var W = 1500, H = 2010;
     var c = document.createElement('canvas');
@@ -137,6 +143,19 @@
     papel(g, W, H);
 
     var M = 88, CW = W - M * 2;
+
+    // Poço de texto: os resumos das outras matérias do dia, em fila. Quando
+    // acaba, recomeça, pra a coluna nunca morrer antes da régua de baixo.
+    var poco = materia.corpo;
+    function encher(x, y, colW, lh, maxY) {
+      var yy = y, guarda = 0;
+      while (yy < maxY && guarda++ < 40) {
+        var r = paragrafo(g, poco, x, yy, colW, lh, maxY);
+        yy = r.y;
+        poco = r.resto || materia.corpo;
+      }
+      return yy;
+    }
 
     // Cabeçalho
     g.fillStyle = INK; g.font = SER('700', 92); g.textAlign = 'center';
@@ -177,7 +196,7 @@
     y += 44;
 
     // Foto
-    var ph = 420, pw = CW * 0.52;
+    var ph = 400, pw = CW * 0.5;
     if (foto) {
       // "cover" na mão: o canvas não tem object-fit.
       var r = Math.max(pw / foto.width, ph / foto.height);
@@ -201,28 +220,34 @@
     }
     // Legenda: só o crédito da imagem. O comp trazia "A sede da Comissão
     // Europeia, em Bruxelas", que descrevia uma foto que não existe.
-    g.fillStyle = 'rgba(20,18,15,0.55)'; g.fillRect(M, y + ph - 34, pw, 34);
-    g.fillStyle = 'rgba(233,228,217,0.92)'; g.font = SANS('400', 17);
-    g.fillText(foto ? 'Imagem: ' + (materia.source || 'veículo') : 'Radar BMAi', M + 14, y + ph - 12);
+    g.fillStyle = 'rgba(35,33,30,0.62)'; g.font = SANS('400', 17);
+    g.fillText(foto ? 'Imagem: ' + (materia.source || 'veículo') : 'Radar BMAi',
+               M + 6, y + ph + 27);
 
-    // Corpo: as outras matérias da edição, justificadas em colunas
-    var vao = 44;
-    var colW = (CW - vao) / 2;
+    // Coluna ao lado da foto
+    var vao = 42;
     g.font = SER('400', 21); g.fillStyle = INK;
-    var resto = materia.corpo;
-    var r1 = paragrafo(g, resto, M + pw + vao, y + 20, CW - pw - vao, 30, y + ph + 240);
-    resto = r1.resto;
-    var topo = y + ph + 34;
-    for (var col = 0; col < 2; col++) {
-      var cx = M + col * (colW + vao);
-      var rr = paragrafo(g, resto, cx, topo, colW, 30, H - 120);
-      resto = rr.resto;
+    encher(M + pw + vao, y + 20, CW - pw - vao, 30, y + ph + 40);
+
+    /* Segunda matéria do dia, em três colunas até a régua de baixo. O comp
+       chumbava um título sobre a equipa Qwen; aqui vem a manchete real do
+       item seguinte da edição. Sem um segundo item, a área simplesmente não
+       é desenhada, em vez de receber título de mentira. */
+    var by = y + ph + 84;
+    if (materia.head2) {
+      g.fillStyle = 'rgba(35,33,30,0.5)'; g.fillRect(M, by - 34, CW, 1.5);
+      g.fillStyle = INK; g.font = SER('700', 46);
+      by = quebrar(g, materia.head2, M, by, CW * 0.72, 52) + 16;
     }
-    g.strokeStyle = 'rgba(35,33,30,0.35)'; g.lineWidth = 1.2;
-    g.beginPath();
-    g.moveTo(M + colW + vao / 2, topo - 20);
-    g.lineTo(M + colW + vao / 2, H - 130);
-    g.stroke();
+    var colW = (CW - vao * 2) / 3;
+    g.font = SER('400', 21); g.fillStyle = INK;
+    for (var col = 0; col < 3; col++) {
+      encher(M + col * (colW + vao), by, colW, 30, H - 108);
+    }
+    g.fillStyle = 'rgba(35,33,30,0.28)';
+    for (var cl = 1; cl < 3; cl++) {
+      g.fillRect(M + cl * (colW + vao) - vao / 2, by - 24, 1.5, H - 108 - by + 24);
+    }
 
     // Vinco da dobra
     var fy = H * 0.5;
@@ -245,38 +270,54 @@
     return c;
   }
 
-  function rolo(trecho) {
-    var W = 2048, H = 512;
+  /* O rolo. A textura envolve o cilindro: X dá a volta na circunferência
+     (o sentido da leitura) e Y corre ao longo do rolo.
+
+     A primeira versão desenhava colunas minúsculas de 15px que viravam
+     borrão cinza no tamanho em que a peça aparece. Esta redesenha em
+     2048x1024 e em corpo grande, e repete o cabeçalho TRÊS vezes ao redor
+     da circunferência, pra sempre ter um "BMAi News" virado pra câmera,
+     independente de como o rolo parou. */
+  function rolo(manchete, corpo) {
+    var W = 2048, H = 1024;
     var c = document.createElement('canvas');
     c.width = W; c.height = H;
     var g = c.getContext('2d');
     papel(g, W, H);
-    g.font = SER('400', 15); g.fillStyle = 'rgba(35,33,30,0.75)';
-    for (var x = 40; x < W - 40; x += 168) {
-      var resto = trecho + ' ' + trecho;
-      for (var i = 0; i < 22; i++) {
-        var r = paragrafo(g, resto, x, 40 + i * 20, 132, 20, 10000);
-        resto = r.resto || trecho;
-      }
-    }
-    g.fillStyle = PAPEL; g.fillRect(520, 168, 620, 168);
-    g.fillStyle = INK; g.font = SER('700', 62); g.textAlign = 'center';
-    g.fillText('BMAi News', 830, 250);
-    g.font = SANS('400', 20); g.fillStyle = 'rgba(35,33,30,0.7)';
-    g.fillText('EDIÇÃO DO DIA', 830, 292);
-    g.textAlign = 'left';
-    g.fillStyle = INK; g.fillRect(600, 310, 460, 3);
 
-    var sh = g.createLinearGradient(0, 0, 0, H);
-    sh.addColorStop(0, 'rgba(20,18,15,0.62)');
-    sh.addColorStop(0.16, 'rgba(20,18,15,0.16)');
-    sh.addColorStop(0.4, 'rgba(255,255,255,0.3)');
-    sh.addColorStop(0.62, 'rgba(20,18,15,0.14)');
-    sh.addColorStop(0.88, 'rgba(20,18,15,0.5)');
-    sh.addColorStop(1, 'rgba(20,18,15,0.7)');
+    g.textAlign = 'center';
+    for (var k = 0; k < 3; k++) {
+      var cx = W / 6 + k * (W / 3);
+      g.fillStyle = INK; g.font = SER('700', 104);
+      g.fillText('BMAi News', cx, 150);
+      g.font = SANS('400', 30); g.fillStyle = 'rgba(35,33,30,0.7)';
+      g.fillText('EDIÇÃO DO DIA', cx, 200);
+    }
+    g.textAlign = 'left';
+    g.fillStyle = INK; g.fillRect(0, 226, W, 5);
+
+    g.fillStyle = INK; g.font = SER('700', 76);
+    var y = quebrar(g, manchete, 60, 330, W - 120, 84) + 20;
+    g.font = SER('400', 38); g.fillStyle = 'rgba(35,33,30,0.8)';
+    var poco = corpo, guarda = 0;
+    while (y < H - 70 && guarda++ < 20) {
+      var r = paragrafo(g, poco, 60, y, W - 120, 50, H - 70);
+      y = r.y;
+      poco = r.resto || corpo;
+    }
+
+    // A sombra da curvatura corre na circunferência (X), não na altura.
+    var sh = g.createLinearGradient(0, 0, W, 0);
+    sh.addColorStop(0, 'rgba(20,18,15,0.55)');
+    sh.addColorStop(0.2, 'rgba(20,18,15,0.1)');
+    sh.addColorStop(0.42, 'rgba(255,255,255,0.26)');
+    sh.addColorStop(0.66, 'rgba(20,18,15,0.14)');
+    sh.addColorStop(0.9, 'rgba(20,18,15,0.5)');
+    sh.addColorStop(1, 'rgba(20,18,15,0.62)');
     g.fillStyle = sh; g.fillRect(0, 0, W, H);
-    g.fillStyle = 'rgba(20,18,15,0.4)'; g.fillRect(0, H * 0.9, W, 4);
-    g.fillStyle = 'rgba(255,255,255,0.16)'; g.fillRect(0, H * 0.9 + 4, W, 2);
+    // A ponta solta da folha enrolada
+    g.fillStyle = 'rgba(20,18,15,0.45)'; g.fillRect(W * 0.78, 0, 7, H);
+    g.fillStyle = 'rgba(255,255,255,0.22)'; g.fillRect(W * 0.78 + 7, 0, 4, H);
     return c;
   }
 
@@ -386,17 +427,29 @@
     por(folhaMalha, [-0.1, 0.05, 0.4], [-0.05, -0.18, -0.05], 1.0);
 
     // Uma textura de rolo só, reaproveitada como mapa e como relevo nos dois
-    // rolos. O comp gerava quatro canvas de 2048x512 pra isso.
-    var texRolo = new THREE.CanvasTexture(rolo(trecho));
+    // rolos. O comp gera um canvas novo a cada chamada, quatro no total.
+    var texRolo = new THREE.CanvasTexture(rolo(trecho.manchete, trecho.corpo));
     texRolo.anisotropy = 16;
     var texTopo = new THREE.CanvasTexture(espiral());
     var lado = new THREE.MeshStandardMaterial({ map: texRolo, roughness: 0.92, bumpMap: texRolo, bumpScale: 0.004 });
     var tampa = new THREE.MeshStandardMaterial({ map: texTopo, roughness: 0.95 });
+    var elastico = new THREE.MeshStandardMaterial({ color: '#7d5a3c', roughness: 0.6 });
+
     function cilindro(len, rad) {
-      var m = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad * 0.97, len, 64, 1, false), [lado, tampa, tampa]);
-      m.rotation.z = Math.PI / 2;
-      m.castShadow = true;
-      return m;
+      var grupo = new THREE.Group();
+      var corpo = new THREE.Mesh(
+        new THREE.CylinderGeometry(rad, rad * 0.93, len, 64, 1, false), [lado, tampa, tampa]);
+      corpo.castShadow = true;
+      grupo.add(corpo);
+      // O elástico segurando o rolo: detalhe pequeno que é o que faz a peça
+      // ler como jornal enrolado e não como um tubo de papel.
+      var faixa = new THREE.Mesh(new THREE.TorusGeometry(rad * 1.01, rad * 0.06, 10, 48), elastico);
+      faixa.rotation.x = Math.PI / 2;
+      faixa.position.y = -len * 0.22;
+      faixa.castShadow = true;
+      grupo.add(faixa);
+      grupo.rotation.z = Math.PI / 2;
+      return grupo;
     }
     por(cilindro(3.3, 0.29), [-2.9, -1.9, 0.7], [0.08, 0.18, 0.36], 1.0);
     por(cilindro(2.9, 0.25), [3.0, 1.7, -0.5], [-0.08, -0.2, -0.52], 0.96);
@@ -510,13 +563,18 @@
       if (!Array.isArray(lista) || !lista.length) throw new Error('edição vazia');
 
       var topo = lista[0];
+      var segunda = lista[1] || null;
       var materia = {
         title: topo.title || '',
         deck: topo.summary || '',
         source: topo.source || '',
         eixo: topo.eixo || '',
+        // Manchete da segunda matéria da edição, pro bloco de três colunas.
+        // Sem segundo item, fica vazio em vez de receber título inventado.
+        head2: segunda ? (segunda.title || '') : '',
         // O corpo são os resumos das OUTRAS matérias do dia. Texto real,
-        // da mesma edição que a página mostra abaixo.
+        // da mesma edição que a página mostra abaixo. Com 60 na edição, o
+        // poço é fundo o suficiente pra encher a folha sem se repetir.
         corpo: lista.slice(1).map(function (i) { return i.summary || ''; })
                     .filter(Boolean).join('  '),
       };
@@ -524,7 +582,13 @@
 
       return carregarFoto(topo.image ? API + topo.image : null).then(function (foto) {
         var pagina = folha(materia, foto);
-        var trecho = (materia.deck || materia.title).toLowerCase() + ' ';
+        // O rolo tem o seu próprio poço, montado da lista inteira: a folha
+        // gasta o dela ao desenhar as colunas.
+        var trecho = {
+          manchete: materia.title,
+          corpo: lista.map(function (i) { return i.summary || ''; })
+                      .filter(Boolean).join('  '),
+        };
 
         if (REDUZIR || ESTREITO) { desenhar2d(canvas, pagina); return; }
         return carregarThree()
