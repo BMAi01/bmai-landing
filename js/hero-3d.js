@@ -733,20 +733,37 @@
        Mede a caixa que contém a cena inteira (a folha e os dois rolos),
        centraliza o grupo nela e recua a câmera até a caixa caber nos DOIS
        eixos, com folga. Assim nada fica cortado em nenhuma proporção de
-       quadro, que era o que nenhum número fixo de câmera conseguia.
+       quadro, que era o que nenhum número fixo de câmera conseguia. */
 
-       A folga (`FOLGA`) não é enfeite: a cena balança sozinha (o grupo gira
-       ±0.1rad no eixo Y e ±0.035 no X) e a câmera acompanha o ponteiro.
-       Sem margem, a peça caberia parada e encostaria na borda em
-       movimento, que é o mesmo defeito com passo extra. */
-    /* Folga menor na tela estreita. Ela existe pra a cena não encostar na
-       borda enquanto balança, e no desktop 1.20 é o certo — lá o quadro é
-       5/4 e há movimento de ponteiro. No celular o quadro é 1/1 e a cena é
-       quase quadrada, então a mesma folga vira margem morta dos dois lados
-       e o jornal aparece como um selo no meio do navy. Com 1.10 a peça
-       volta a ocupar o quadro, e o parallax de rolagem (curso menor que o
-       de ponteiro) continua cabendo. */
-    var FOLGA = ESTREITO ? 1.10 : 1.20;
+    /* A folga existe pra a cena não encostar na borda ENQUANTO SE MEXE: o
+       grupo gira ±0.1rad em Y e ±0.035 em X, e a câmera ainda segue o
+       ponteiro. Sem margem, a peça cabe parada e vaza andando.
+
+       Era 1.20. Medido no quadro quadrado: a peça ocupava 75,7% da caixa e
+       sobravam de 52 a 105px de navy morto em volta — a caixa cresceu e a
+       cena não acompanhou. Como o custo da folga é justamente o curso do
+       parallax, os dois andam juntos: a folga desce pra 1.11 e o curso da
+       câmera desce na mesma proporção (ver `camera.position` no laço). O
+       movimento ambiente — rotação do grupo, respiração, balanço das peças
+       — fica intacto, que é o que se lê como motion. Medido depois: 37px de
+       margem no desktop e 42px no celular, no pior instante.
+
+       ⚠️ Mexeu num dos dois, remedir o outro. A régua é a margem em pixels
+       no pior instante do parallax: ela tem que continuar maior que o curso
+       da câmera convertido em pixels, senão o rolo sai do quadro no meio do
+       movimento e só aparece pra quem mexe o mouse.
+
+       ⚠️ E medir a peça com a PÁGINA ROLADA mente: a captura do elemento
+       vem cortada pelo viewport e a borda do corte passa por borda da peça.
+       Achei um "corta no celular" que não existia por causa disso.
+
+       Cheguei a deixar 1.02 no celular e estava ERRADO: lá o parallax vem
+       da rolagem e move a câmera ~0.12 unidade, enquanto 1.02 numa cena de
+       ~5 unidades dá 0.05 de margem. Cabia parado e cortaria o rolo no meio
+       da rolagem — o defeito exato que a folga existe pra evitar, e logo na
+       tela onde mais gente veria. Uma folga só pros dois, e o curso da
+       rolagem encurtado junto. */
+    var FOLGA = 1.11;
     var caixaCena = null;
 
     function medirCena() {
@@ -801,7 +818,9 @@
       window.addEventListener('scroll', function () {
         var c = canvas.getBoundingClientRect();
         if (c.bottom < 0 || c.top > window.innerHeight) return;
-        rato.ay = ((c.top + c.height / 2) / window.innerHeight - 0.5) * 0.9;
+        // 0.6 e não 0.9: o curso da câmera tem que caber na margem da
+        // FOLGA. Ver a conta lá.
+        rato.ay = ((c.top + c.height / 2) / window.innerHeight - 0.5) * 0.6;
       }, { passive: true });
     }
 
@@ -828,11 +847,14 @@
       }
       rato.x += (rato.ax - rato.x) * 0.05;
       rato.y += (rato.ay - rato.y) * 0.05;
-      // Curso curto (era 1.6 / 1.1). Com a cena enquadrada pra caber
-      // inteira, um parallax largo tira os rolos do quadro no meio do
-      // movimento — resolveria parado e quebraria andando.
-      camera.position.x = rato.x * 0.55;
-      camera.position.y = -rato.y * 0.4;
+      // Curso curto (era 1.6 / 1.1, depois 0.55 / 0.4). Com a cena
+      // enquadrada pra caber inteira, um parallax largo tira os rolos do
+      // quadro no meio do movimento — resolveria parado e quebraria andando.
+      // Encurtou de novo junto com a FOLGA: é o curso da câmera que define
+      // de quanta margem a peça precisa, então peça maior custa parallax
+      // mais curto. Ver a nota da FOLGA.
+      camera.position.x = rato.x * 0.34;
+      camera.position.y = -rato.y * 0.26;
       camera.lookAt(0, 0, 0);
       renderer.render(cena, camera);
       // A troca do 2D pelo 3D acontece AQUI, e não quando o three carrega:

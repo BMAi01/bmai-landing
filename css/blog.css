@@ -739,6 +739,11 @@
      parecer um acessório ao lado do texto em vez da outra metade da
      abertura. A coluna de texto ainda segura "colocando IA pra rodar." em
      uma linha só, que é o que mantém a escada do título. */
+  /* Metade e metade, e fica assim. Tentei dar 1.14fr pro motion pra ele
+     crescer, e o título virou QUATRO linhas ("O que a / gente aprende /
+     colocando IA pra / rodar.") — a escada quebra e o comentário acima
+     avisava disso. Roubar largura do texto não é o caminho: quem dá
+     tamanho pro motion é a sangria pra direita, logo abaixo. */
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(28px, 4vw, 48px);
@@ -820,6 +825,30 @@
   width: 100%;                 /* ocupa a coluna inteira, que agora é metade */
   margin: 0 auto;
 }
+/* A peça sangra pra direita, além da margem do container.
+
+   É daqui que vem o tamanho pedido. A alternativa — dar mais fração de
+   grid pro motion — foi testada e quebrou o título em quatro linhas, e o
+   texto é o que não pode ceder. A sangria não disputa nada com o texto:
+   ocupa a margem que já era navy vazio até a borda da tela.
+
+   Cabe porque `.bl-hero` é `overflow: hidden` e porque a borda do papel já
+   vem dissolvida na textura: mesmo que a peça chegue perto do fim da tela,
+   ela não termina numa aresta reta. Só a partir de 1081px, que é onde a
+   abertura tem duas colunas e existe margem sobrando pra ceder.
+
+   ⚠️ Tem que ser LARGURA, não só margem negativa. Margem negativa sozinha
+   num item de grid com `width: 100%` não alarga nada: a largura continua
+   sendo a da trilha e o elemento só passa a vazar a caixa de margem. Foi o
+   que aconteceu na primeira tentativa — a regra estava lá e a cena não
+   mudou um pixel. A margem negativa entra junto só pra o vão vir todo do
+   lado direito, em vez de o `margin: 0 auto` repartir a sobra nos dois. */
+@media (min-width: 1081px) {
+  .bl-hero__midia {
+    width: calc(100% + clamp(0px, 5vw, 96px));
+    margin: 0 calc(-1 * clamp(0px, 5vw, 96px)) 0 0;
+  }
+}
 /* A peça respira quando é a folha 2D (celular, sem WebGL, ou quando o
    three.js não carrega). O 3D já tem o seu próprio movimento na cena.
    `--par` vem do scroll, no hero-3d.js; a respiração é do CSS.
@@ -842,10 +871,27 @@
 .bl-hero__cena {
   display: block;
   width: 100%;
-  /* Menos alto que quadrado. Em 1/1 a coluna da direita passava da altura
-     do texto e abria um vão entre a busca e os filtros: o "espaço vazio"
-     não era da cena, era da caixa dela. */
-  aspect-ratio: 5 / 4;
+  /* Quadrado, e o motivo mudou.
+
+     Era 5/4 por causa de um vão que aparecia entre a busca e os filtros
+     quando a coluna da direita passava da altura do texto. Só que a CENA é
+     quase quadrada (a folha em pé mais os dois rolos nos cantos opostos), e
+     num quadro 5/4 quem limita o enquadramento é a ALTURA: sobrava um quinto
+     da largura em navy vazio dos dois lados e a peça saía menor do que a
+     caixa permitia. Em 1/1 a mesma cena passa a ocupar a largura inteira,
+     que é o "deixa maior" pedido — sem mexer no movimento, que está certo.
+
+     Quadrado porque é onde a peça fica MAIOR, e isso não é palpite: o
+     enquadramento é limitado pela altura (a caixa que contém a cena é quase
+     quadrada), então o tamanho da peça em pixels acompanha a ALTURA do
+     quadro. Encurtar o quadro pra 4/3 pareceu bom no papel — tirava o navy
+     morto de cima e de baixo — e na medição encolheu a peça junto: 466px de
+     jornal num quadro de 608x456, contra 522px no mesmo 608 em quadrado.
+     Quadro mais baixo, jornal menor. Foi medido nos dois.
+
+     Ir além do quadrado (mais alto que largo) também não ajuda: aí quem
+     passa a limitar é a largura e a peça encolhe de novo. 1/1 é o ponto. */
+  aspect-ratio: 1 / 1;
 
   /* ---------- A máscara saiu ----------
      Ela existia porque a cena era maior que o quadro: os rolos entravam
@@ -1752,8 +1798,13 @@
 }
 @media (max-width: 860px) {
   .bl-hero__grid { grid-template-columns: minmax(0, 1fr); }
-  /* O motion sobe pra cima do texto no mobile, como o radar fazia. */
-  .bl-hero__midia { order: -1; width: min(100%, 380px); margin-bottom: 10px; }
+  /* O motion sobe pra cima do texto no mobile, como o radar fazia.
+     O teto era 380px, herdado de quando a peça era um selo no meio da
+     caixa. Com a cena ocupando o quadro, esse teto virou o que segurava o
+     tamanho dela no celular: em 430px de tela sobravam 50px de cada lado
+     sem motivo. Agora acompanha a coluna, com teto só pra não virar um
+     bloco quadrado gigante no tablet. */
+  .bl-hero__midia { order: -1; width: min(100%, 520px); margin-bottom: 10px; }
   /* Quadro mais alto no celular. A folha é retrato (1500x2010) e num quadro
      5/4 ela cabia pela altura e sobrava vão dos dois lados — a peça ficava
      pequena no meio da caixa, que é o enquadramento que fazia ela parecer
