@@ -119,79 +119,56 @@
     return { y: y, resto: palavras.slice(i).join(' ') };
   }
 
-  /* ---------- A folha perde a própria aresta ----------
-     Tirar borda, raio, fundo e sombra do CSS não resolveu "o motion está
-     com borda", e a máscara no canvas também não: o retângulo que o olho
-     vê é o PAPEL. Papel claro com quatro arestas retas dentro de um quadro
-     escuro é lido como moldura, sempre, por mais limpo que esteja o CSS em
-     volta.
+  /* ---------- A folha termina como folha ----------
+     Histórico curto, porque este pedaço já foi refeito quatro vezes e a
+     próxima pessoa merece não repetir nenhuma delas:
 
-     Então a folha deixa de ter aresta: o miolo dela é desenhado com o
-     contorno já ondulado numa máscara à parte, essa máscara é BORRADA, e
-     ela vira o alfa da folha. Detalhe do porquê logo abaixo, junto com o
-     que foi tentado antes e não funcionou.
+     1. Borda, raio, fundo e sombra no CSS: tirados, e "o motion está com
+        borda" continuou. O retângulo que o olho via não era do CSS.
+     2. `mask-image` no canvas: também não, pelo mesmo motivo.
+     3. Aresta RASGADA — três senos em duas escalas, ~58px de amplitude
+        numa folha de 1526. Tirava o retângulo e criava um defeito maior: a
+        peça aparece com 250 a 380px de largura, e nessa redução a onda de
+        escala curta não lê como papel rasgado, lê como PICOTADO, de
+        recorte de tesoura sem jeito. Pior: com 58px de amplitude a onda
+        entrava no miolo, comendo a primeira letra da manchete e as últimas
+        linhas das colunas. Foi o que o usuário viu e pediu pra tirar.
+     4. Esta. Aresta RETA, cantos levemente arredondados, e o desvanecer
+        fazendo sozinho o trabalho de não desenhar moldura.
 
-     A ondulação é determinística de propósito: a folha é redesenhada em
-     toda visita, e uma borda sorteada faria a peça nascer diferente a cada
-     carregamento.
+     A máscara é o miolo da folha desenhado num canvas à parte, borrado, e
+     aplicado como alfa por `destination-in`. Reta ou ondulada, é o borrão
+     que impede a aresta seca; a ondulação nunca foi o que resolvia.
+
+     O recuo é pequeno (1,8% do lado menor) e o miolo de texto começa em
+     112px: a transição inteira cabe na margem branca do jornal e não toca
+     em conteúdo nenhum. Essa é a diferença que importa em relação à v3.
 
      Com alfa na textura o material precisa de `transparent: true`, e a
-     sombra projetada passa a sair de um `customDepthMaterial` com
-     `alphaTest` — sombra normal segue a malha, não o alfa, e devolveria o
-     retângulo que acabamos de tirar.
+     sombra projetada sai de um `customDepthMaterial` com `alphaTest` —
+     sombra normal segue a malha, não o alfa, e devolveria o retângulo.
 
-     ⚠️ Tem teste: `teste-dissolver` mede a largura da transição de alfa
-     nos quatro lados e reprova se ela voltar a ficar curta ou se o alfa
-     deixar de ser monotônico. Foi assim que se descobriu que a versão
-     anterior nunca dissolveu nada. */
+     ⚠️ Conferir MEDINDO. A régua é a largura da transição de alfa nos
+     quatro lados: curta demais volta a borda, longa demais desfoca a
+     folha. Hoje: ~9px de transição na tela, nos quatro lados.
+
+     `ctx.filter` não existe em Safari antigo. Sem ele a folha fica com a
+     aresta seca — pior que o alvo, e ainda assim uma folha retangular
+     normal, que é o que foi pedido. */
   function dissolver(g, W, H) {
-    var onda = function (t, a, b, c) {
-      // Três senos primos entre si: repete tarde o suficiente pra a borda
-      // não parecer padronizada em nenhum dos quatro lados.
-      return (Math.sin(t * a) * 0.5 + Math.sin(t * b + 1.7) * 0.33 + Math.sin(t * c + 4.1) * 0.17);
-    };
-    // Duas escalas: uma longa, que dá o desalinhamento geral da aresta, e
-    // uma curta, que dá a fibra. Só a longa deixava uma onda regular demais
-    // — lia como fita recortada, não como papel rasgado.
-    var rasgado = function (t) {
-      return onda(t / 78, 1, 0.37, 2.3) * 0.68 + onda(t / 13, 1.1, 0.53, 3.1) * 0.32;
-    };
-    /* UMA máscara borrada, não rampa + rasgo + cantos.
-
-       A versão anterior somava três coisas: um rasgo irregular colado na
-       aresta, uma rampa linear medida a partir da borda do CANVAS e um
-       apagamento radial nos cantos. Não funcionava, e o motivo é
-       geométrico: a rampa media da borda do canvas, mas quem definia a
-       aresta real do papel era o rasgo, que entra fundo em alguns pontos e
-       quase nada em outros. Onde o rasgo entrava fundo, a rampa já tinha
-       se recuperado, e ali o papel voltava a terminar seco. Medido: a
-       transição variava de 3 a 9 px ao longo do mesmo lado.
-
-       Aqui é uma coisa só. Desenha-se o MIOLO da folha, com o contorno já
-       ondulado, numa máscara à parte; borra-se essa máscara; e ela vira o
-       alfa da folha por `destination-in`. O desvanecer passa a seguir o
-       contorno rasgado ponto a ponto, então ele é igual em toda a volta,
-       inclusive nos cantos, que deixam de precisar de tratamento próprio.
-
-       `ctx.filter` não existe em Safari antigo. Sem ele, a folha fica com
-       a aresta rasgada e seca: pior que o alvo, melhor que um retângulo. */
     var mask = document.createElement('canvas');
     mask.width = W; mask.height = H;
     var mg = mask.getContext('2d');
 
-    var rec = Math.round(Math.min(W, H) * 0.060);   // recuo do miolo
-    var amp = Math.round(Math.min(W, H) * 0.038);   // profundidade do rasgo
-    var passo = 10;
-    var borrao = Math.round(Math.min(W, H) * 0.016);
+    var men = Math.min(W, H);
+    var rec = Math.round(men * 0.018);      // recuo da aresta
+    var raio = Math.round(men * 0.012);     // canto de papel, não de card
+    var borrao = Math.round(men * 0.006);   // o desvanecer
 
     mg.fillStyle = '#000';
     mg.beginPath();
-    var p;
-    for (p = rec; p <= W - rec; p += passo) mg.lineTo(p, rec + rasgado(p) * amp);
-    for (p = rec; p <= H - rec; p += passo) mg.lineTo(W - rec - rasgado(p + 611) * amp, p);
-    for (p = W - rec; p >= rec; p -= passo) mg.lineTo(p, H - rec - rasgado(p + 1303) * amp);
-    for (p = H - rec; p >= rec; p -= passo) mg.lineTo(rec + rasgado(p + 2017) * amp, p);
-    mg.closePath();
+    if (mg.roundRect) mg.roundRect(rec, rec, W - rec * 2, H - rec * 2, raio);
+    else mg.rect(rec, rec, W - rec * 2, H - rec * 2);
     mg.fill();
 
     g.save();
@@ -580,7 +557,7 @@
   }
 
   /* ==================== SAÍDA 3D ==================== */
-  function montar3d(canvas, pagina, trecho) {
+  function montar3d(canvas, pagina, trecho, aoPrimeiroQuadro) {
     var THREE = window.THREE;
     var renderer;
     try {
@@ -596,7 +573,9 @@
        Com piso 2 a cena é renderizada no dobro e o navegador reduz na
        hora de exibir, que é antisserrilhamento de graça. O teto de 2.5
        segura o custo em tela retina. */
-    renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 2), 2.5));
+    // Teto menor na tela estreita: o celular tem dpr 3 e a caixa é pequena,
+    // então 2x já dá mais texel do que a tela mostra, por menos GPU.
+    renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 2), ESTREITO ? 2 : 2.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -760,7 +739,14 @@
        ±0.1rad no eixo Y e ±0.035 no X) e a câmera acompanha o ponteiro.
        Sem margem, a peça caberia parada e encostaria na borda em
        movimento, que é o mesmo defeito com passo extra. */
-    var FOLGA = 1.20;
+    /* Folga menor na tela estreita. Ela existe pra a cena não encostar na
+       borda enquanto balança, e no desktop 1.20 é o certo — lá o quadro é
+       5/4 e há movimento de ponteiro. No celular o quadro é 1/1 e a cena é
+       quase quadrada, então a mesma folga vira margem morta dos dois lados
+       e o jornal aparece como um selo no meio do navy. Com 1.10 a peça
+       volta a ocupar o quadro, e o parallax de rolagem (curso menor que o
+       de ponteiro) continua cabendo. */
+    var FOLGA = ESTREITO ? 1.10 : 1.20;
     var caixaCena = null;
 
     function medirCena() {
@@ -807,6 +793,17 @@
       rato.ax = (e.clientX / window.innerWidth - 0.5);
       rato.ay = (e.clientY / window.innerHeight - 0.5);
     });
+    /* No celular não existe ponteiro, então o parallax vem da ROLAGEM: a
+       cena inclina conforme a peça atravessa a tela. Sem isto o motion no
+       celular só respira parado, que é metade do movimento que o desktop
+       tem — e a cena no celular foi justamente o que se pediu. */
+    if (window.matchMedia && window.matchMedia('(hover: none)').matches) {
+      window.addEventListener('scroll', function () {
+        var c = canvas.getBoundingClientRect();
+        if (c.bottom < 0 || c.top > window.innerHeight) return;
+        rato.ay = ((c.top + c.height / 2) / window.innerHeight - 0.5) * 0.9;
+      }, { passive: true });
+    }
 
     // Só anima com a peça na tela. Fora dela, a aba para de gastar GPU.
     var visivel = true;
@@ -816,9 +813,10 @@
     }
 
     var relogio = new THREE.Clock();
+    var primeiro = true;
     (function quadro() {
       requestAnimationFrame(quadro);
-      if (!visivel) return;
+      if (!visivel && !primeiro) return;
       var t = relogio.getElapsedTime();
       grupo.rotation.y = Math.sin(t * 0.24) * 0.1;
       grupo.rotation.x = Math.cos(t * 0.2) * 0.035;
@@ -837,11 +835,47 @@
       camera.position.y = -rato.y * 0.4;
       camera.lookAt(0, 0, 0);
       renderer.render(cena, camera);
+      // A troca do 2D pelo 3D acontece AQUI, e não quando o three carrega:
+      // só neste ponto existe cena desenhada pra pôr no lugar da folha.
+      if (primeiro) {
+        primeiro = false;
+        if (aoPrimeiroQuadro) aoPrimeiroQuadro();
+      }
     })();
     return true;
   }
 
   /* ==================== MONTAGEM ==================== */
+
+  /* A MESMA edição que o blog-index.js pede pra montar a seção de notícias.
+     São 129 KB de JSON e até agora cada script baixava a sua cópia. Aqui
+     fica guardada a PROMESSA, não o resultado, então a ordem em que os dois
+     scripts rodam não importa. Mexeu aqui, mexa no blog-index.js. */
+  function edicaoDoRadar() {
+    if (!window.__bmaiEdicao) {
+      window.__bmaiEdicao = fetch(API + '/blog/radar', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('radar ' + r.status); return r.json(); });
+    }
+    return window.__bmaiEdicao;
+  }
+
+  /* Aparelho que não deve receber WebGL. Repare que NÃO é "celular":
+     celular de hoje roda esta cena bem, e cortar por largura era o que
+     tirava o motion justamente de quem mais abre o site. O corte é por
+     capacidade declarada — pouca memória ou pouco núcleo. */
+  function fraco() {
+    var mem = navigator.deviceMemory || 8;
+    var nucleos = navigator.hardwareConcurrency || 8;
+    return mem <= 2 || nucleos <= 2;
+  }
+
+  // O three só entra depois que o navegador respira: a folha 2D já está na
+  // tela, então 589 KB não têm pressa nenhuma de competir com o primeiro
+  // desenho da página.
+  function ocioso(fn) {
+    if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 2500 });
+    else setTimeout(fn, 500);
+  }
 
   function carregarThree() {
     return new Promise(function (ok, erro) {
@@ -889,8 +923,7 @@
   var canvas = palco.querySelector('canvas');
   if (!canvas) return;
 
-  fetch(API + '/blog/radar', { cache: 'no-store' })
-    .then(function (r) { if (!r.ok) throw new Error('radar ' + r.status); return r.json(); })
+  edicaoDoRadar()
     .then(function (lista) {
       if (!Array.isArray(lista) || !lista.length) throw new Error('edição vazia');
 
@@ -935,12 +968,47 @@
           });
         }
 
-        if (REDUZIR || ESTREITO) { saida2d(); return; }
-        return carregarThree()
-          .then(function () {
-            if (!montar3d(canvas, pagina, trecho)) saida2d();
-          })
-          .catch(function () { saida2d(); });
+        /* Monta a cena num canvas NOVO e só troca quando o primeiro quadro
+           estiver desenhado.
+
+           Não dá pra reaproveitar o canvas do 2D: um canvas que já entregou
+           contexto 2D não devolve contexto WebGL depois. E não dá pra criar
+           o canvas 3D já visível: ele nasce transparente e piscaria um
+           buraco no lugar da folha até o three terminar de montar. Por isso
+           ele entra por cima, invisível, e a troca é no quadro em que a
+           cena existe. */
+        function trocarPor3d() {
+          var novo = document.createElement('canvas');
+          novo.className = canvas.className;
+          novo.style.cssText = 'position:absolute;inset:0;opacity:0';
+          palco.appendChild(novo);
+
+          var ok = montar3d(novo, pagina, trecho, function aoPrimeiroQuadro() {
+            palco.classList.remove('is-2d');     // a respiração era do 2D
+            novo.style.cssText = '';
+            canvas.remove();
+            // A caixa mudou de dono; `medir()` do 3D escuta resize.
+            try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+          });
+          if (!ok) novo.remove();                // sem WebGL: fica a folha 2D
+        }
+
+        /* A folha 2D entra PRIMEIRO, em toda tela. Ela é o próprio canvas da
+           textura, já pronto na memória, então aparece no mesmo quadro em
+           que a edição chega — sem esperar os 589 KB do three.js. O 3D vem
+           por cima quando estiver pronto.
+
+           Antes: `if (REDUZIR || ESTREITO) 2D e acabou`. O corte por largura
+           (≤860px) tirava a cena de quem abre no celular, que é a maioria do
+           público, e era o que o usuário via como "o motion não funciona no
+           mobile". Quem decide agora é o aparelho, não o tamanho da tela. */
+        saida2d();
+        if (REDUZIR || fraco()) return;
+        ocioso(function () {
+          carregarThree().then(trocarPor3d).catch(function () {
+            /* three fora do ar: a folha 2D já está na tela e continua lá */
+          });
+        });
       });
     })
     .catch(function () {

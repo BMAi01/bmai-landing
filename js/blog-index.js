@@ -50,6 +50,24 @@
     var m = post.leituraMin ? post.leituraMin + ' MIN DE LEITURA' : '';
     return [d, m].filter(Boolean).join(' · ');
   }
+  /* A edição do radar é pedida por DOIS scripts na mesma página: este, que
+     monta a seção de notícias, e o hero-3d.js, que desenha a folha de
+     jornal com a matéria de topo. São 129 KB de JSON, e até agora cada um
+     baixava a sua cópia — 129 KB jogados fora em toda visita, os mesmos
+     129 KB, no celular também.
+
+     Aqui a PROMESSA é que fica guardada, não o resultado: quem chegar
+     primeiro dispara o pedido, quem chegar depois pega a mesma promessa,
+     independente da ordem em que os dois scripts rodam. `no-store`
+     continua, então a edição segue vindo fresca a cada carregamento.
+
+     A chave vive no window porque os dois arquivos são IIFE e não
+     compartilham escopo. Mexeu aqui, mexa no hero-3d.js. */
+  function edicaoDoRadar() {
+    if (!window.__bmaiEdicao) window.__bmaiEdicao = json('/blog/radar');
+    return window.__bmaiEdicao;
+  }
+
   function json(rota) {
     return fetch(API + rota, { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error(rota + ' ' + r.status); return r.json(); });
@@ -255,7 +273,7 @@
   }).catch(function () { /* API fora: o HTML já se sustenta */ });
 
   // Radar: a seção nasce oculta e só entra com notícia real.
-  json('/blog/radar').then(function (news) {
+  edicaoDoRadar().then(function (news) {
     if (!Array.isArray(news) || !news.length) return;
     var secao = document.getElementById('radar');
     var grade = document.querySelector('.bl-radar__grid');
