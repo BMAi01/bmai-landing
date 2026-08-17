@@ -81,9 +81,15 @@
       document.title = 'A leitura da BMAi na edição de ' + (p.diaPorExtenso || '') + ' | BMAi';
 
       var capa = safeUrl(p.abertura && p.abertura.image);
+      /* 🔴 `crossorigin` mesmo esta página não desenhando nada em canvas.
+         O cache HTTP é compartilhado ENTRE páginas: se o leitor passar por
+         aqui primeiro e a foto entrar no cache sem CORS, o card do radar e
+         o hero 3D do /blog pedem a MESMA URL com CORS e são recusados em
+         cima dessa entrada — e lá a capa some. Todas as páginas que exibem
+         imagem da API pedem com CORS, senão uma envenena a outra. */
       var figura = capa
         ? '<figure class="bl-leitura__fig rise" data-rise="veil">' +
-            '<img src="' + capa + '" alt="" width="1200" height="675" decoding="async">' +
+            '<img src="' + capa + '" alt="" crossorigin="anonymous" width="1200" height="675" decoding="async">' +
             '<figcaption>Imagem divulgada por ' +
               esc((p.abertura && p.abertura.source) || 'o veículo') + '.</figcaption>' +
           '</figure>'

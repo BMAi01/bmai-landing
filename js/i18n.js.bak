@@ -1,5 +1,5 @@
 /* ============================================
-   I18N: traduções curadas PT/EN/ES
+   I18N — traduções curadas PT/EN/ES
    Switch instantâneo via dictionary (zero network).
    ============================================ */
 (function () {
@@ -8,7 +8,6 @@
       'html.lang': 'pt-BR',
 
       /* NAV */
-      'nav.home':      'Início',
       'nav.metodo':    'Método',
       'nav.team':      'Team',
       'nav.cases':     'Cases',
@@ -18,7 +17,7 @@
       /* HERO */
       'hero.badge':   '+10.000 horas economizadas com IA',
       'hero.title':   '<span class="h-line">IA não precisa ser complicada,</span><span class="h-line">mas precisa dar <span class="hero-resultado">resultado</span></span>',
-      'hero.sub':     'Devolvemos o controle do negócio ao empreendedor que deixa de operar no improviso<br>e passa a tomar decisões baseado em dados.',
+      'hero.sub':     'DEVOLVEMOS O CONTROLE DO NEGÓCIO AO EMPREENDEDOR QUE DEIXA DE OPERAR NO IMPROVISO<br>E PASSA A TOMAR DECISÕES BASEADO EM DADOS.',
       'hero.cta':     'Falar com o time da BMAi',
       'hero.stat1':   'Projetos realizados',
       'hero.stat2':   'Satisfação dos clientes',
@@ -36,24 +35,24 @@
       'seal.form':   'Contato',
       'seal.faq':    'FAQ',
       'seal.cta':    'Próximo passo',
-      'manifesto.frase': 'Construímos um sistema de Inteligência Artificial para <span class="manifesto__hl">solucionar um problema</span> que está te incomodando dentro da operação da sua empresa.',
+      'qs.sub':       'Inteligência sobre caos só multiplica o caos. Por isso estruturamos o fluxo do seu negócio primeiro — e só depois construímos a IA, moldada à operação.',
       'qs.card1_eyebrow': 'Fase 01 · Processo Estruturado',
       'qs.card1_h3':      'Mapeamos<br><span style="color:var(--orange)">o processo.</span>',
-      'qs.card1_p':       'Identificamos e estruturamos o processo que a IA vai trabalhar: preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.',
+      'qs.card1_p':       'Identificamos e estruturamos o processo que a IA vai trabalhar — preparamos um terreno eficiente para o Agente de Inteligência Artificial potencializar com resultados mensuráveis.',
       'qs.card2_eyebrow': 'Fase 02 · Inteligência Personalizada',
       'qs.card2_h3':      'Construímos<br><span style="color:var(--orange)">IA sob medida.</span>',
-      'qs.card2_p':       'Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo, não a um template genérico, para potencializar a função definida na etapa anterior.',
+      'qs.card2_p':       'Com o processo da Fase 01 já estruturado, desenvolvemos o Agente de IA moldado àquele fluxo — não a um template genérico — para potencializar a função definida na etapa anterior.',
       'qs.card3_eyebrow': 'Fase 03 · Operação Contínua',
       'qs.card3_h3':      'Operamos<br><span style="color:var(--orange)">e refinamos.</span>',
-      'qs.card3_p':       'O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda, IA viva, não projeto entregue e esquecido.',
+      'qs.card3_p':       'O Agente entra em produção e segue evoluindo: acompanhamos métricas, ajustamos contexto e prompt conforme o negócio muda — IA viva, não projeto entregue e esquecido.',
       'qs.card4_eyebrow': 'Fase 04 · Escala Estratégica',
       'qs.card4_h3':      'Escalamos<br><span style="color:var(--orange)">o resultado.</span>',
-      'qs.card4_p':       'Quando um agente prova valor, replicamos o modelo para outras funções e times, multiplicando o ganho de produtividade sem reinventar a roda a cada projeto.',
+      'qs.card4_p':       'Quando um agente prova valor, replicamos o modelo para outras funções e times — multiplicando o ganho de produtividade sem reinventar a roda a cada projeto.',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
       'metodo.title': 'Do diagnóstico<br><span style="color:var(--orange)">à escala real.</span>',
-      'metodo.sub':   'Quatro fases, uma lógica: entender, organizar, construir, sustentar. Nenhuma é pulada, cada uma constrói em cima da anterior.',
+      'metodo.sub':   'Quatro fases, uma lógica: entender, organizar, construir, sustentar. Nenhuma é pulada — cada uma constrói em cima da anterior.',
 
       /* ARIA method labels + cards */
       'aria.label.d': 'Diagnóstico',
@@ -62,7 +61,7 @@
       'aria.label.a': 'Acompanhamento',
       'aria.d.title':    'Diagnóstico',
       'aria.d.subtitle': 'Entender antes de agir.',
-      'aria.d.desc':     'Mapeamos fluxos reais, medimos onde a operação sangra e identificamos onde a IA vai gerar tração. Sem contexto, toda tecnologia vira custo, por isso nada é configurado antes desse passo.',
+      'aria.d.desc':     'Mapeamos fluxos reais, medimos onde a operação sangra e identificamos onde a IA vai gerar tração. Sem contexto, toda tecnologia vira custo — por isso nada é configurado antes desse passo.',
       'aria.d.b1': 'Mapeamento do processo comercial',
       'aria.d.b2': 'Identificação de perdas invisíveis',
       'aria.d.b3': 'Entrevistas com time e gestão',
@@ -74,7 +73,7 @@
 
       'aria.e.title':    'Estruturação',
       'aria.e.subtitle': 'Preparamos o terreno antes de plantar inteligência.',
-      'aria.e.desc':     'Reorganizamos processos, definimos KPIs mensuráveis e desenhamos a arquitetura dos agentes. IA em cima de caos é caos acelerado, por isso estruturamos primeiro.',
+      'aria.e.desc':     'Reorganizamos processos, definimos KPIs mensuráveis e desenhamos a arquitetura dos agentes. IA em cima de caos é caos acelerado — por isso estruturamos primeiro.',
       'aria.e.b1': 'Arquitetura dos agentes e fluxos',
       'aria.e.b2': 'KPIs mensuráveis e metas concretas',
       'aria.e.b3': 'Projeção de ROI por frente',
@@ -86,7 +85,7 @@
 
       'aria.i.title':    'Implementação',
       'aria.i.subtitle': 'Inteligência integrada onde gera impacto.',
-      'aria.i.desc':     'Construímos agentes de IA sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado, nada lançado no escuro.',
+      'aria.i.desc':     'Construímos agentes de IA sob medida e integramos à operação que você já usa. Testamos em produção, ajustamos com o time e só escalamos quando o resultado é comprovado — nada lançado no escuro.',
       'aria.i.b1': 'Construção sob medida dos agentes',
       'aria.i.b2': 'Integração com as ferramentas já em uso',
       'aria.i.b3': 'Validação em produção antes da escala',
@@ -97,7 +96,7 @@
       'aria.i.result': 'Entregável: sistema funcionando em produção',
 
       'aria.a.title':    'Acompanhamento',
-      'aria.a.subtitle': 'Cliente BMAi vira parceiro, não só mais um.',
+      'aria.a.subtitle': 'Cliente BMAi vira parceiro — não só mais um.',
       'aria.a.desc':     'Monitoramos indicadores, ajustamos prompts e lógica conforme o negócio evolui e você tem acesso ao nosso SaaS interno de métricas. Se a gente construiu, a gente mantém.',
       'aria.a.b1': 'Monitoramento contínuo de indicadores',
       'aria.a.b2': 'Ajuste de prompts conforme o negócio evolui',
@@ -113,62 +112,62 @@
       'cases.lead':    '"Eles viram nosso negócio como único, me trataram como parceiro e me senti visto e ouvido de verdade para desenvolver uma solução de IA para a minha empresa."',
       'cases.btn':     'Quero ser o próximo case',
 
-      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads viram pacientes, <span class="cs-card__metric">+20</span> pacientes e <span class="cs-card__metric">+40%</span> em conversões',
+      'cs0.result':    '<span class="cs-card__metric">+40%</span> em conversões — <span class="cs-card__metric">+20%</span> pacientes/mês com 0 contratações extras',
 
       'cs_hero.sector': 'Saúde',
-      'cs_hero.quote':  '"A BMAi criou um sistema com IA, estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. Antes nós perdíamos pacientes antes do primeiro contato; hoje, com a IA criada pela BMAi, a cada 10 leads transformamos 8 em pacientes, sem precisar contratar mais ninguém."',
+      'cs_hero.quote':  '"A BMAi reorganizou nossa operação por completo: estruturou um CRM que finalmente faz sentido, organizou o preenchimento das planilhas comerciais com IA e implementou IA no atendimento. O resultado foi um aumento de 40% nas conversões e 20% no número de pacientes — sem precisar contratar mais ninguém."',
       'cs_hero.role':   'CEO na GastroObesi',
-      'cs_hero.s1':     'leads viram pacientes',
-      'cs_hero.s2':     'pacientes sem custo extra',
-      'cs_hero.s3':     'em conversões',
+      'cs_hero.s1':     'em conversões',
+      'cs_hero.s2':     'pacientes/mês',
+      'cs_hero.s3':     'contratações extras',
 
       'cs1.sector': 'Marketing Digital',
-      'cs1.result': 'Agente de prospecção rodando <span class="cs-card__metric">24h em 3 canais</span>, zero leads esquecidos, <span class="cs-card__metric">+4h/dia</span> devolvidas ao time, <span class="cs-card__metric">+60%</span> faturamento',
-      'cs1.quote':  '"Antes a gente perdia lead todo dia. Agora o agente nunca dorme: Instagram, WhatsApp, e-mail, tudo coberto."',
+      'cs1.result': 'Agente de prospecção rodando <span class="cs-card__metric">24h em 3 canais</span> — zero leads esquecidos, <span class="cs-card__metric">+4h/dia</span> devolvidas ao time, <span class="cs-card__metric">+60%</span> faturamento',
+      'cs1.quote':  '"Antes a gente perdia lead todo dia. Agora o agente nunca dorme — Instagram, WhatsApp, e-mail, tudo coberto."',
       'cs1.role':   'CEO · Mataco',
 
       'cs2.sector': 'Material de Construção',
-      'cs2.result': '<span class="cs-card__metric">+40%</span> no faturamento com prospecção e atendimento <span class="cs-card__metric">24h</span> via IA, estoque <span class="cs-card__metric">100%</span> sob controle',
+      'cs2.result': '<span class="cs-card__metric">+40%</span> no faturamento com prospecção e atendimento <span class="cs-card__metric">24h</span> via IA — estoque <span class="cs-card__metric">100%</span> sob controle',
       'cs2.quote':  '"A IA virou o motor da operação: estoque organizado e monitorado em tempo real, prospecção ativa rodando sozinha e agente de atendimento disponível 24 horas por dia. Em pouco tempo, o faturamento subiu 40% sem que a gente precisasse aumentar a equipe."',
       'cs2.role':   'CEO · Só Hydráulica',
 
       'cs3.sector': 'Engenharia',
-      'cs3.result': '<span class="cs-card__metric">Operação</span> mais previsível, <span class="cs-card__metric">processos</span> com IA aplicada, <span class="cs-card__metric">visibilidade</span> total',
+      'cs3.result': '<span class="cs-card__metric">Operação</span> mais previsível — <span class="cs-card__metric">processos</span> com IA aplicada — <span class="cs-card__metric">visibilidade</span> total',
       'cs3.quote':  '"A parceria com a BMAi trouxe organização e visibilidade pra processos que antes eram manuais. Hoje conseguimos focar no que realmente importa: entregar projetos de engenharia com mais previsibilidade."',
-      'cs3.name':   'Marcos Leite',
+      'cs3.name':   '[CEO MGP Engenharia]',
       'cs3.role':   'CEO · MGP Engenharia',
 
       /* TEAM */
       'team.title':        'Nosso time entende<br><span style="color:var(--orange)">o seu negócio.</span>',
       'team.scroll_hint':  'Conheça os fundadores da BMAi',
       'team.matheus.role': 'Sócio Fundador',
-      'team.matheus.bio':  'Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura, o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.',
+      'team.matheus.bio':  'Construí a BMAI porque vi de perto o que acontece quando um negócio cresce sem estrutura — o dono vira escravo da operação. Minha missão é mudar isso: transformar empresas que dependem de uma pessoa em negócios que funcionam por sistema.',
       'team.matheus.sig':  'Sócio Fundador · BMAI',
       'team.pedro.role':   'Sócio Fundador',
-      'team.pedro.bio':    'Acredito que gerar valor verdadeiro às pessoas e às empresas é a única forma de resultado real e sustentável. Cada solução que a BMAi entrega precisa gerar impacto real, tempo de volta pro dono, previsibilidade de receita e um negócio que cresce sem depender de improviso.',
+      'team.pedro.bio':    'Acredito que gerar valor verdadeiro às pessoas e às empresas é a única forma de resultado real e sustentável. Cada solução que a BMAi entrega precisa gerar impacto real — tempo de volta pro dono, previsibilidade de receita e um negócio que cresce sem depender de improviso.',
       'team.pedro.sig':    'Sócio Fundador · BMAI',
       'team.anna.role':    'Atendente',
-      'team.anna.bio':     'Cada cliente que chega na BMAI tem uma história. Meu trabalho é ouvir essa história, entender o momento do negócio e garantir que a conversa certa aconteça com a pessoa certa. Relacionamento não é protocolo, é presença.',
+      'team.anna.bio':     'Cada cliente que chega na BMAI tem uma história. Meu trabalho é ouvir essa história, entender o momento do negócio e garantir que a conversa certa aconteça com a pessoa certa. Relacionamento não é protocolo — é presença.',
       'team.anna.sig':     'Atendente · BMAI',
 
       /* FAQ */
       'faq.title': 'Perguntas frequentes.',
       'faq.1.q':   'Como funciona?',
-      'faq.1.a':   'Primeiro é realizada uma avaliação do seu negócio, processos, momento e maturidade, pra validar se existe algo em que a BMAi consegue te ajudar. Precisamos conhecer a fundo o negócio, suas nuances e fluxos, pra desenhar algo que encaixe perfeitamente pra você. Depois, com a solução adequada definida, começam as implementações e evoluções dos agentes, e os primeiros resultados já aparecem. Ao final, tudo ajustado e funcionando, você acompanha os resultados e trabalha a melhoria contínua junto com a gente.',
+      'faq.1.a':   'Primeiro é realizada uma avaliação do seu negócio — processos, momento e maturidade — pra validar se existe algo em que a BMAi consegue te ajudar. Precisamos conhecer a fundo o negócio, suas nuances e fluxos, pra desenhar algo que encaixe perfeitamente pra você. Depois, com a solução adequada definida, começam as implementações e evoluções dos agentes — e os primeiros resultados já aparecem. Ao final, tudo ajustado e funcionando, você acompanha os resultados e trabalha a melhoria contínua junto com a gente.',
       'faq.2.q':   'Preciso demitir meus colaboradores?',
-      'faq.2.a':   'Não. A IA não substitui seu time, potencializa. Trabalhos repetitivos, burocráticos, processos complexos e cheios de detalhes, é aí que a IA entra pra aliviar você e sua equipe. Isso permite realocar gente boa pra funções estratégicas e táticas, de maior valor e impacto no crescimento do negócio. A IA existe pra nos servir, o erro começa quando isso se inverte.',
+      'faq.2.a':   'Não. A IA não substitui seu time, potencializa. Trabalhos repetitivos, burocráticos, processos complexos e cheios de detalhes — é aí que a IA entra pra aliviar você e sua equipe. Isso permite realocar gente boa pra funções estratégicas e táticas, de maior valor e impacto no crescimento do negócio. A IA existe pra nos servir — o erro começa quando isso se inverte.',
       'faq.3.q':   'Preciso ter conhecimento técnico?',
-      'faq.3.a':   'Nenhum. Você nos conta como funciona a sua operação, e a BMAi transforma em IA. Toda a parte técnica (prompts, integrações, infra, deploy, ajustes) fica com o time da BMAi. Seu trabalho é validar o que faz sentido pro seu negócio. É como contratar um diretor operacional que também é engenheiro, sem precisar ser um.',
+      'faq.3.a':   'Nenhum. Você nos conta como funciona a sua operação — e a BMAi transforma em IA. Toda a parte técnica (prompts, integrações, infra, deploy, ajustes) fica com o time da BMAi. Seu trabalho é validar o que faz sentido pro seu negócio. É como contratar um diretor operacional que também é engenheiro — sem precisar ser um.',
       'faq.4.q':   'Não sei se funciona no meu segmento',
-      'faq.4.a':   'Já validamos soluções em segmentos muito diferentes. O que de fato importa é o processo: se ele está bem definido e você sabe o que precisa ser feito, fica mais fácil aplicar IA. Nosso trabalho começa justamente aí, mapeando e estruturando antes de construir qualquer inteligência.',
+      'faq.4.a':   'Já validamos soluções em segmentos muito diferentes. O que de fato importa é o processo: se ele está bem definido e você sabe o que precisa ser feito, fica mais fácil aplicar IA. Nosso trabalho começa justamente aí — mapeando e estruturando antes de construir qualquer inteligência.',
       'faq.5.q':   'IA no meu nicho não converte, precisa ser humanizado',
-      'faq.5.a':   'A IA realmente não faz tudo sozinha, mas nossos agentes são treinados com o tom da sua empresa, a linguagem do seu cliente e as nuances específicas do público. A gente consegue esse encaixe porque estuda bem o processo e o perfil do consumidor, então o que o agente fala é exatamente o que o cliente quer ouvir.',
+      'faq.5.a':   'A IA realmente não faz tudo sozinha — mas nossos agentes são treinados com o tom da sua empresa, a linguagem do seu cliente e as nuances específicas do público. A gente consegue esse encaixe porque estuda bem o processo e o perfil do consumidor — então o que o agente fala é exatamente o que o cliente quer ouvir.',
       'faq.6.q':   'Quanto custa?',
-      'faq.6.a':   'Não trabalhamos com tabela. Cada projeto é precificado com base no diagnóstico real: escopo da operação, número de frentes que a IA vai atender, nível de integração com os sistemas que você já usa e complexidade dos fluxos. Durante todo o processo, nosso time te receita uma solução que encaixe no seu negócio em todos os âmbitos, do operacional ao financeiro.',
+      'faq.6.a':   'Não trabalhamos com tabela. Cada projeto é precificado com base no diagnóstico real: escopo da operação, número de frentes que a IA vai atender, nível de integração com os sistemas que você já usa e complexidade dos fluxos. Durante todo o processo, nosso time te receita uma solução que encaixe no seu negócio em todos os âmbitos — do operacional ao financeiro.',
       'faq.7.q':   'Quanto tempo leva tudo isso?',
-      'faq.7.a':   'Cada solução é única e tem suas próprias nuances, isso é alinhado antes, durante e depois da implementação. Em média, pra projetos de complexidade média, entre 5 e 35 dias a solução já está 100% ativa.',
+      'faq.7.a':   'Cada solução é única e tem suas próprias nuances — isso é alinhado antes, durante e depois da implementação. Em média, pra projetos de complexidade média, entre 5 e 35 dias a solução já está 100% ativa.',
       'faq.8.q':   'O que acontece depois da implementação?',
-      'faq.8.a':   'Nosso time faz melhorias e manutenção constantes pra solução continuar funcionando bem e evoluindo. Você tem acesso direto ao suporte pra ajustar métricas e resolver o que for precisando, a parceria não termina no deploy, começa nele.',
+      'faq.8.a':   'Nosso time faz melhorias e manutenção constantes pra solução continuar funcionando bem e evoluindo. Você tem acesso direto ao suporte pra ajustar métricas e resolver o que for precisando — a parceria não termina no deploy, começa nele.',
 
       /* FORM */
       'form.tag':     'Fale com o time da BMAi',
@@ -219,7 +218,6 @@
     en: {
       'html.lang': 'en',
 
-      'nav.home':   'Home',
       'nav.metodo': 'Method',
       'nav.team':   'Team',
       'nav.cases':  'Cases',
@@ -228,7 +226,7 @@
 
       'hero.badge': '+10,000 hours saved with AI',
       'hero.title': '<span class="h-line">AI doesn\'t have to be complicated,</span><span class="h-line">it just has to deliver <span class="hero-resultado">results</span></span>',
-      'hero.sub':   'We give control of the business back to the owner who stops operating on guesswork<br>and starts making decisions based on data.',
+      'hero.sub':   'WE GIVE CONTROL OF THE BUSINESS BACK TO THE OWNER WHO STOPS OPERATING ON GUESSWORK<br>AND STARTS MAKING DECISIONS BASED ON DATA.',
       'hero.cta':   'Chat with the BMAi team',
       'hero.stat1': 'Projects delivered',
       'hero.stat2': 'Customer satisfaction',
@@ -245,7 +243,7 @@
       'seal.form':   'Contact',
       'seal.faq':    'FAQ',
       'seal.cta':    'Next step',
-      'manifesto.frase': 'We build an Artificial Intelligence system to <span class="manifesto__hl">solve a problem</span> that\'s bothering you inside your company\'s operation.',
+      'qs.sub':       'Intelligence on top of chaos only multiplies chaos. That\'s why we structure your business flow first — and only then build the AI, shaped to the operation.',
       'qs.card1_eyebrow': 'Phase 01 · Structured Process',
       'qs.card1_h3':      'We map<br><span style="color:var(--orange)">the process.</span>',
       'qs.card1_p':       'We identify and structure the process the AI will work with — we prepare fertile ground for the AI Agent to amplify with measurable results.',
@@ -319,14 +317,14 @@
       'cases.lead':    '"They saw our business as unique, treated me as a partner, and I felt truly seen and heard in building an AI solution for my company."',
       'cases.btn':     'I want to be the next case',
 
-      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads become patients — <span class="cs-card__metric">+20</span> patients and <span class="cs-card__metric">+40%</span> in conversions',
+      'cs0.result':    '<span class="cs-card__metric">+40%</span> in conversions — <span class="cs-card__metric">+20%</span> patients/month with 0 extra hires',
 
       'cs_hero.sector': 'Healthcare',
-      'cs_hero.quote':  '"BMAi built an AI system, structured a CRM that finally makes sense, organized the filling of the commercial spreadsheets with AI and put AI into customer support. We used to lose patients before the first contact; today, with the AI built by BMAi, for every 10 leads we turn 8 into patients — without having to hire anyone else."',
+      'cs_hero.quote':  '"BMAi completely reorganized our operation: it structured a CRM that finally makes sense, brought AI to the commercial spreadsheets and put AI into customer support. The result was a 40% increase in conversions and 20% more patients — without having to hire anyone else."',
       'cs_hero.role':   'CEO at GastroObesi',
-      'cs_hero.s1':     'leads become patients',
-      'cs_hero.s2':     'patients at no extra cost',
-      'cs_hero.s3':     'in conversions',
+      'cs_hero.s1':     'in conversions',
+      'cs_hero.s2':     'patients/month',
+      'cs_hero.s3':     'extra hires',
 
       'cs1.sector': 'Digital Marketing',
       'cs1.result': 'Prospecting agent running <span class="cs-card__metric">24/7 on 3 channels</span> — zero leads forgotten, <span class="cs-card__metric">+4h/day</span> given back to the team, <span class="cs-card__metric">+60%</span> revenue',
@@ -341,7 +339,7 @@
       'cs3.sector': 'Engineering',
       'cs3.result': '<span class="cs-card__metric">Operations</span> more predictable — <span class="cs-card__metric">AI-applied</span> processes — <span class="cs-card__metric">visibility</span> end-to-end',
       'cs3.quote':  '"The partnership with BMAi brought organization and visibility to processes that used to be manual. Today we can focus on what really matters: delivering engineering projects with more predictability."',
-      'cs3.name':   'Marcos Leite',
+      'cs3.name':   '[CEO MGP Engenharia]',
       'cs3.role':   'CEO · MGP Engenharia',
 
       'team.title':        'Our team understands<br><span style="color:var(--orange)">your business.</span>',
@@ -420,7 +418,6 @@
     es: {
       'html.lang': 'es',
 
-      'nav.home':   'Inicio',
       'nav.metodo': 'Método',
       'nav.team':   'Equipo',
       'nav.cases':  'Casos',
@@ -429,7 +426,7 @@
 
       'hero.badge': '+10.000 horas ahorradas con IA',
       'hero.title': '<span class="h-line">La IA no necesita ser complicada,</span><span class="h-line">pero necesita entregar <span class="hero-resultado">resultados</span></span>',
-      'hero.sub':   'Devolvemos el control del negocio al emprendedor que deja de operar por intuición<br>y pasa a tomar decisiones basadas en datos.',
+      'hero.sub':   'DEVOLVEMOS EL CONTROL DEL NEGOCIO AL EMPRENDEDOR QUE DEJA DE OPERAR POR INTUICIÓN<br>Y PASA A TOMAR DECISIONES BASADAS EN DATOS.',
       'hero.cta':   'Hablar con el equipo BMAi',
       'hero.stat1': 'Proyectos entregados',
       'hero.stat2': 'Satisfacción de los clientes',
@@ -446,7 +443,7 @@
       'seal.form':   'Contacto',
       'seal.faq':    'FAQ',
       'seal.cta':    'Próximo paso',
-      'manifesto.frase': 'Construimos un sistema de Inteligencia Artificial para <span class="manifesto__hl">solucionar un problema</span> que te está incomodando dentro de la operación de tu empresa.',
+      'qs.sub':       'Inteligencia sobre caos solo multiplica el caos. Por eso estructuramos el flujo de tu negocio primero — y solo después construimos la IA, moldeada a la operación.',
       'qs.card1_eyebrow': 'Fase 01 · Proceso Estructurado',
       'qs.card1_h3':      'Mapeamos<br><span style="color:var(--orange)">el proceso.</span>',
       'qs.card1_p':       'Identificamos y estructuramos el proceso con el que la IA va a trabajar — preparamos un terreno eficiente para que el Agente de Inteligencia Artificial potencie con resultados medibles.',
@@ -520,14 +517,14 @@
       'cases.lead':    '"Vieron nuestro negocio como único, me trataron como socio y me sentí realmente visto y escuchado para desarrollar una solución de IA para mi empresa."',
       'cases.btn':     'Quiero ser el próximo caso',
 
-      'cs0.result':    '<span class="cs-card__metric">8/10</span> leads se vuelven pacientes — <span class="cs-card__metric">+20</span> pacientes y <span class="cs-card__metric">+40%</span> en conversiones',
+      'cs0.result':    '<span class="cs-card__metric">+40%</span> en conversiones — <span class="cs-card__metric">+20%</span> pacientes/mes con 0 contrataciones extras',
 
       'cs_hero.sector': 'Salud',
-      'cs_hero.quote':  '"BMAi creó un sistema con IA, estructuró un CRM que finalmente tiene sentido, organizó el llenado de las planillas comerciales con IA e implementó IA en la atención. Antes perdíamos pacientes antes del primer contacto; hoy, con la IA creada por BMAi, de cada 10 leads convertimos 8 en pacientes — sin necesidad de contratar a nadie más."',
+      'cs_hero.quote':  '"BMAi reorganizó por completo nuestra operación: estructuró un CRM que finalmente tiene sentido, organizó el llenado de las planillas comerciales con IA e implementó IA en la atención. El resultado fue un aumento del 40% en las conversiones y 20% en el número de pacientes — sin necesidad de contratar a nadie más."',
       'cs_hero.role':   'CEO en GastroObesi',
-      'cs_hero.s1':     'leads se vuelven pacientes',
-      'cs_hero.s2':     'pacientes sin costo extra',
-      'cs_hero.s3':     'en conversiones',
+      'cs_hero.s1':     'en conversiones',
+      'cs_hero.s2':     'pacientes/mes',
+      'cs_hero.s3':     'contrataciones extra',
 
       'cs1.sector': 'Marketing Digital',
       'cs1.result': 'Agente de prospección funcionando <span class="cs-card__metric">24h en 3 canales</span> — cero leads olvidados, <span class="cs-card__metric">+4h/día</span> devueltas al equipo, <span class="cs-card__metric">+60%</span> facturación',
@@ -542,7 +539,7 @@
       'cs3.sector': 'Ingeniería',
       'cs3.result': '<span class="cs-card__metric">Operación</span> más previsible — <span class="cs-card__metric">procesos</span> con IA aplicada — <span class="cs-card__metric">visibilidad</span> total',
       'cs3.quote':  '"La asociación con BMAi trajo organización y visibilidad a procesos que antes eran manuales. Hoy podemos enfocarnos en lo que realmente importa: entregar proyectos de ingeniería con más previsibilidad."',
-      'cs3.name':   'Marcos Leite',
+      'cs3.name':   '[CEO MGP Engenharia]',
       'cs3.role':   'CEO · MGP Engenharia',
 
       'team.title':        'Nuestro equipo entiende<br><span style="color:var(--orange)">tu negocio.</span>',
@@ -626,55 +623,38 @@
       return (DICT[this.lang] || DICT.pt)[key] ?? DICT.pt[key] ?? key;
     },
 
-    apply(isLangChange) {
+    apply() {
       document.documentElement.lang = this.t('html.lang');
 
-      // Elementos com data-i18n: textContent é mais barato que innerHTML quando
-      // o valor não tem tag HTML — evita parser, reduz layout/paint em massa.
-      const HTML_RE = /[<&]/;
-      const nodes = document.querySelectorAll('[data-i18n]');
-      for (let i = 0; i < nodes.length; i++) {
-        const el = nodes[i];
+      // Elementos com data-i18n → innerHTML
+      document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         const val = this.t(key);
-        if (val === undefined) continue;
-        if (HTML_RE.test(val)) {
-          if (el.innerHTML !== val) el.innerHTML = val;
-        } else {
-          if (el.textContent !== val) el.textContent = val;
-        }
-      }
+        if (val !== undefined) el.innerHTML = val;
+      });
 
       // Atributos via data-i18n-attr="attr:key[,attr:key]"
-      const attrNodes = document.querySelectorAll('[data-i18n-attr]');
-      for (let i = 0; i < attrNodes.length; i++) {
-        const el = attrNodes[i];
-        const pairs = el.getAttribute('data-i18n-attr').split(',');
-        for (let j = 0; j < pairs.length; j++) {
-          const [attr, key] = pairs[j].trim().split(':');
+      document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+        el.getAttribute('data-i18n-attr').split(',').forEach(pair => {
+          const [attr, key] = pair.trim().split(':');
           const val = this.t(key);
-          if (val !== undefined && el.getAttribute(attr) !== val) {
-            el.setAttribute(attr, val);
-          }
-        }
-      }
+          if (val !== undefined) el.setAttribute(attr, val);
+        });
+      });
 
       // Restaura ano dinâmico no footer (innerHTML pode ter resetado o span)
       const y = document.getElementById('footerYear');
       if (y) y.textContent = new Date().getFullYear();
 
-      // Só dispara evento quando idioma muda de fato (init não precisa recalcular
-      // ARIA stack / ScrollTrigger porque DOM já estava no idioma original).
-      if (isLangChange) {
-        window.dispatchEvent(new CustomEvent('i18n:change', { detail: { lang: this.lang } }));
-      }
+      // Notifica outros módulos (ARIA_DATA, FAQ etc se precisar)
+      window.dispatchEvent(new CustomEvent('i18n:change', { detail: { lang: this.lang } }));
     },
 
     set(lang) {
-      if (!DICT[lang] || lang === this.lang) return;
+      if (!DICT[lang]) return;
       this.lang = lang;
       try { localStorage.setItem('bmai-lang', lang); } catch (e) {}
-      this.apply(true);
+      this.apply();
     },
 
     init() {

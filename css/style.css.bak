@@ -67,17 +67,8 @@
   --hdr: 56px;
   --r: 20px;
   --r-sm: 14px;
-  /* UMA curva pra tudo. A auditoria de 2026-08-14 achou 20 cubic-bezier
-     cruas espalhadas pela folha, varias com overshoot: cada componente
-     se movia com uma mao diferente. Esta e a que ja aparecia em 37 dos
-     usos, entao consolidar nela mantem o movimento do site e so cala as
-     divergentes. `--ease` e `--spring` viram apelidos pra nao quebrar as
-     centenas de var() existentes. */
-  --ease-signature: cubic-bezier(.22, 1, .36, 1);
-  --dur-ui: .4s;         /* resposta de interface */
-  --dur-entrance: 1.2s;  /* entrada de secao */
-  --ease: var(--ease-signature);
-  --spring: var(--ease-signature);
+  --ease: cubic-bezier(.25, .46, .45, .94);
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
 
   /* === Spacing system (vertical entre seções) — 2026-04-26: reduzido (era 64/96/128/160) === */
   --section-spacing-sm: 40px;   /* mobile padrão */
@@ -109,7 +100,7 @@
   background: rgba(219, 85, 0, .28);
   border: 3px solid transparent;
   background-clip: padding-box;
-  border-radius: 999px;
+  border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(219, 85, 0, .55);
@@ -226,7 +217,7 @@ ul { list-style: none; }
   margin-bottom: 16px;
   padding: 7px 16px;
   border: 1px solid rgba(219,85,0,.25);
-  border-radius: 999px;
+  border-radius: 100px;
   background: rgba(219,85,0,.06);
 }
 
@@ -418,8 +409,6 @@ html { scrollbar-gutter: stable; }
   flex-shrink: 0;
   transition: transform .25s var(--ease);
 }
-/* 22px de logo davam 22px de alvo. Ver a nota do rodapé sobre o 2.5.8. */
-.nav-logo { min-height: 28px; }
 .nav-logo:hover { transform: scale(1.04); }
 .nav-logo img { display: block; height: 22px; width: auto; opacity: .95; }
 .nav-sep {
@@ -623,10 +612,13 @@ html { scrollbar-gutter: stable; }
 .hero-visual,
 .hero-visual-fade { display: none !important; }
 
-/* Cases: o card hero do Dr. Túlio agora aparece em TODAS as larguras — no
-   mobile ele empilha (foto em cima, conteúdo embaixo), mesmo padrão do desktop.
-   O card duplicado do carrossel fica sempre oculto. */
-.cs-card--mobileonly { display: none !important; }
+/* Cases: Dr. Tulio no carrossel é só mobile (desktop já tem no .cs-hero) */
+@media (min-width: 769px) {
+  .cs-card--mobileonly { display: none !important; }
+}
+@media (max-width: 768px) {
+  .cs-hero-container { display: none !important; }
+}
 @media (max-width: 900px) {
   .hero {
     /* Mobile: sem imagem de fundo (o pedestal é o .hero__pedestal inline) */
@@ -835,33 +827,6 @@ html { scrollbar-gutter: stable; }
   .hero-fx__symbol-glow { animation: none !important; }
 }
 
-/* 2026-06-22: canvas Three.js da arte 3D (Claude Design) — atrás do conteúdo.
-   O ::before do hero (z-index 1) cobre os 55% esquerdos, protegendo o texto.
-   Desktop only (perf + mantém mobile text-only). */
-.hero__three {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  z-index: 0;
-  display: block;
-  pointer-events: none;
-}
-/* Some só no mobile de verdade (≤900px), onde o hero já é uma coluna
-   centrada e o texto ocupa a largura toda. Entre 901 e 1024 ela VOLTA:
-   escondê-la ali deixava a metade direita vazia e um vão morto no meio do
-   hero, que é o pior defeito de responsividade que o site tinha. Quem
-   cuida de ela não invadir o texto nessa faixa é o `enquadrar()` do
-   index.html, junto com a proteção mais larga do ::before logo abaixo. */
-@media (max-width: 900px) { .hero__three { display: none; } }
-/* Nessa faixa a coluna de texto pesa mais na largura, então a cortina que
-   protege a leitura precisa cobrir mais que os 55% do desktop. */
-@media (min-width: 901px) and (max-width: 1120px) {
-  .hero::before { width: 72%; }
-  /* Sem a arte, o `min-height: 100vh` virava vão morto. Com ela de volta a
-     altura cheia faz sentido de novo, mas ainda assim o hero não precisa
-     de tela inteira aqui: o conteúdo manda, com um piso generoso. */
-  .hero { min-height: min(760px, 100svh); }
-}
-
 .hero__wrap { position: relative; z-index: 2; }
 .hero__content {
   max-width: 640px;
@@ -872,23 +837,8 @@ html { scrollbar-gutter: stable; }
   padding-bottom: clamp(60px, 8vw, 100px);
   text-align: left;
 }
-/* O título é a única coisa do hero que NÃO pode quebrar: `.h-line` é
-   `white-space: nowrap` porque o efeito de máquina de escrever reflui a
-   linha inteira a cada letra se ela puder quebrar. Só que a linha mais
-   longa mede 854px em 48px, e a caixa era de 600 dentro de um
-   `.hero__content` de 640 — o título vazava pra fora da própria coluna em
-   toda tela acima de ~950px. Ninguém percebia porque à direita sobrava
-   fundo escuro; é vazamento por sorte, e some no dia em que algo entrar
-   naquele espaço.
-
-   Os dois limites precisam ceder juntos: só afrouxar o do título não
-   resolve nada, porque quem estava prendendo era o pai. O olho de texto
-   segue com a medida de leitura curta, que é dele. */
-.hero__content .hero__title { max-width: min(880px, 68vw); }
+.hero__content .hero__title { max-width: 600px; }
 .hero__content .hero__sub { max-width: 620px; }
-@media (min-width: 901px) {
-  .hero__content { max-width: min(880px, 70vw); }
-}
 #hero .hero__content,
 #hero .hero__title,
 #hero .hero__sub,
@@ -984,7 +934,7 @@ html { scrollbar-gutter: stable; }
   background:
     linear-gradient(180deg, rgba(20,34,54,.92) 0%, rgba(10,20,34,.96) 100%);
   border: 1px solid rgba(255,255,255,.06);
-  border-radius: 24px;
+  border-radius: 22px;
   box-shadow:
     0 24px 60px -24px rgba(0,0,0,.65),
     inset 0 1px 0 rgba(255,255,255,.04);
@@ -1080,25 +1030,13 @@ html { scrollbar-gutter: stable; }
 .ticker__logo img {
   max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;
 }
-/* 2026-06-22: TODAS as logos em COR ORIGINAL, sem fundo/tile (pedido do user). */
-.ticker__logo--mantris { width: 200px; }
-/* Mantris: logo é navy escuro em fundo transparente — sumia no ticker escuro.
-   Mostra a cor original num chip branco (mesma ideia da logo da SH nos cases). */
-.ticker__logo--mantris img {
-  filter: none;
-  background: #fff;
-  border-radius: 8px;
-  padding: 10px 16px;
-  box-sizing: border-box;
-}
-.ticker__logo--claves img { transform: scale(1.05); }
-.ticker__logo--mataco { width: 200px; }
-.ticker__logo--mataco img { transform: scale(0.82); opacity: .95; }  /* marca cinza (fundo removido) */
-/* Sebrae: aumentada (pedido do user). */
-.ticker__logo--sebrae img { transform: scale(1.28); }
+.ticker__logo--luciana { width: 360px; }
+.ticker__logo--luciana img { transform: scale(1.7); filter: brightness(0) invert(1); }
+.ticker__logo--ocanto img { filter: brightness(0) invert(1); }
+.ticker__logo--white img { filter: brightness(0) invert(1); }
 /* MGP Engenharia: logo ja eh branca no PNG (regenerada via PIL em 2026-04-28
-   a partir da versao preta MGP_vertical_preto_nbg). Sem filter — direto. Aumentada. */
-.ticker__logo--mgp img { transform: scale(1.25); }
+   a partir da versao preta MGP_vertical_preto_nbg). Sem filter — direto. */
+.ticker__logo--mgp img { transform: scale(0.95); }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ============================================
@@ -1310,7 +1248,7 @@ html { scrollbar-gutter: stable; }
   background: linear-gradient(90deg, var(--orange) 0%, #db5500 100%);
   box-shadow: 0 0 10px rgba(219,85,0,.45);
   transform: translateY(-1px);
-  transition: width .55s var(--ease-signature);
+  transition: width .55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .aria-node {
@@ -1340,10 +1278,10 @@ html { scrollbar-gutter: stable; }
   justify-content: center;
   gap: 1px;
   transition:
-    background .35s var(--ease-signature),
-    border-color .35s var(--ease-signature),
-    box-shadow .35s var(--ease-signature),
-    transform .35s var(--ease-signature);
+    background .35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color .35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow .35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform .35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @media (hover: hover) {
   .aria-node:hover .aria-node-inner {
@@ -1368,7 +1306,7 @@ html { scrollbar-gutter: stable; }
   color: rgba(255,255,255,.6);
   line-height: 1;
   letter-spacing: -.01em;
-  transition: color .35s var(--ease-signature);
+  transition: color .35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .aria-node.active .aria-node-letter { color: #fff; }
 .aria-node-num {
@@ -1414,7 +1352,7 @@ html { scrollbar-gutter: stable; }
 .aria-detail {
   max-height: 0;
   overflow: hidden;
-  transition: max-height .6s var(--ease-signature);
+  transition: max-height .6s cubic-bezier(.16,1,.3,1);
 }
 .aria-detail.open { max-height: 700px; }
 .aria-detail-inner {
@@ -1427,7 +1365,7 @@ html { scrollbar-gutter: stable; }
   overflow: hidden;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity .5s ease .1s, transform .5s var(--ease-signature) .1s;
+  transition: opacity .5s ease .1s, transform .5s cubic-bezier(.16,1,.3,1) .1s;
 }
 .aria-detail.open .aria-detail-inner { opacity: 1; transform: translateY(0); }
 .aria-detail-inner::before {
@@ -2018,7 +1956,7 @@ html { scrollbar-gutter: stable; }
       border-color .35s ease,
       background .35s ease,
       box-shadow .4s ease,
-      transform .4s var(--ease-signature);
+      transform .4s cubic-bezier(.22, 1, .36, 1);
     scroll-snap-align: center !important;
     scroll-snap-stop: always !important;
     opacity: 1;
@@ -2121,14 +2059,14 @@ html { scrollbar-gutter: stable; }
   opacity: .58;
   filter: blur(1px);
   transition:
-    transform 500ms var(--ease-signature),
-    opacity 500ms var(--ease-signature),
-    filter 500ms var(--ease-signature),
-    box-shadow 500ms var(--ease-signature),
-    border-color 500ms var(--ease-signature);
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 500ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity, filter;
 }
-.metodo-card.is-entered { animation: metodoCardIn .7s var(--ease-signature) both; }
+.metodo-card.is-entered { animation: metodoCardIn .7s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @keyframes metodoCardIn {
   from { opacity: 0; transform: translateY(20px) scale(.92); }
   to   { opacity: .58; transform: translateY(0) scale(.92); }
@@ -2146,7 +2084,7 @@ html { scrollbar-gutter: stable; }
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   opacity: 0;
-  transition: opacity .5s var(--ease-signature);
+  transition: opacity .5s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
   animation: metodoBorderFlow 4s linear infinite paused;
 }
@@ -2430,13 +2368,13 @@ html { scrollbar-gutter: stable; }
   position: relative;
   width: 100%; height: 100%;
   transform-style: preserve-3d;
-  transition: transform .9s var(--ease-signature);
+  transition: transform .9s cubic-bezier(.2, .8, .2, 1);
   will-change: transform;
   cursor: pointer;
 }
 .team-card-wrap.flipped .team-card,
 .team-card-wrap:focus-within .team-card { transform: rotateY(180deg); }
-.team-card-wrap:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; border-radius: 16px; }
+.team-card-wrap:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; border-radius: 18px; }
 /* Mata sticky-hover em telas touch */
 @media (hover: none) and (pointer: coarse) {
   .team-card-wrap:focus-within .team-card { transform: none; }
@@ -2745,19 +2683,6 @@ html { scrollbar-gutter: stable; }
   color: var(--orange-l);
   transform: translateX(4px);
 }
-/* ---------- Alvo de toque do rodapé ----------
-   Medido em 9 páginas, de 320 a 1920: cada link do rodapé fechava 23px de
-   altura no desktop e 29 no celular. O critério 2.5.8 do WCAG 2.2 (AA)
-   pede 24x24 CSS px, e a exceção de "link no meio da frase" não vale aqui
-   — é uma LISTA de navegação, não texto corrido.
-
-   O ganho é só de área clicável: `min-height` com o texto centrado não
-   mexe em fonte, cor nem no ritmo da coluna, porque o `gap: 12px` do `ul`
-   já dava mais espaço que a caixa do link ocupava. */
-.footer__col ul a,
-.footer__social a {
-  min-height: 28px;
-}
 
 /* Social: ícones + texto */
 .footer__social a svg {
@@ -2868,7 +2793,7 @@ html { scrollbar-gutter: stable; }
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  border-radius: 999px;
+  border-radius: 100px;
   border: 1px solid rgba(255, 255, 255, .08);
   transition: color .25s ease, border-color .25s ease, background .25s ease;
 }
@@ -3412,10 +3337,7 @@ li, label, input, textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Era 10px. O respiro agora vem do padding do próprio `.sd`, que virou a
-     área de clique — ver a nota lá. A distância visível entre os pontos
-     segue a mesma. */
-  gap: 0;
+  gap: 10px;
   opacity: 0;
   pointer-events: none;
   transition: opacity .4s ease;
@@ -3423,7 +3345,7 @@ li, label, input, textarea {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,.06);
-  border-radius: 999px;
+  border-radius: 100px;
   padding: 14px 8px;
 }
 #sdots.vis { opacity: 1; pointer-events: auto; }
@@ -3431,26 +3353,14 @@ li, label, input, textarea {
 .sd {
   width: 4px;
   height: 4px;
-  border-radius: 999px;
+  border-radius: 100px;
   background: rgba(255,255,255,.18);
   display: block;
   position: relative;
   cursor: pointer;
-  /* O ponto tem 4px porque é assim que ele deve APARECER — mas 4x4 era o
-     menor alvo do site inteiro, difícil de acertar até com mouse.
-     `content-box` + `background-clip` separam as duas coisas: o desenho
-     continua sendo o quadradinho de 4px, e o que responde ao clique passa
-     a ser 24x14. O `gap` do #sdots caiu de 10 pra 0 na mesma medida, então
-     a distância entre um ponto e o outro na tela não mudou nada.
-     (A régua lateral só existe no desktop e repete a navegação do header,
-     então ela cai na exceção de "controle equivalente" do 2.5.8 — isto
-     aqui é folga, não conformidade mínima.) */
-  box-sizing: content-box;
-  padding: 5px 10px;
-  background-clip: content-box;
   transition:
-    height .4s var(--ease-signature),
-    width .4s var(--ease-signature),
+    height .4s cubic-bezier(.16,1,.3,1),
+    width .4s cubic-bezier(.16,1,.3,1),
     background .3s ease,
     box-shadow .3s ease;
 }
@@ -3531,7 +3441,7 @@ li, label, input, textarea {
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,.1);
-  border-radius: 999px;
+  border-radius: 100px;
   padding: 8px 14px;
   color: var(--white);
   font-family: var(--fm);
@@ -3625,7 +3535,7 @@ body { top: 0 !important; }
     border: none !important;
     position: relative !important;
     opacity: 0;
-    animation: navItemIn .5s var(--ease-signature) .3s forwards;
+    animation: navItemIn .5s cubic-bezier(.22, 1, .36, 1) .3s forwards;
   }
   /* Trigger idêntico a .floatnav__item: icone laranja + texto grande + chevron */
   .floatnav.active .lang-trigger {
@@ -3903,8 +3813,7 @@ h1, h2, h3, p, span, li, a {
 /* ── Hero card ── */
 .cs-hero {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  align-items: stretch;
+  grid-template-columns: 1fr 1fr;
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 20px;
   background: rgba(255,255,255,0.02);
@@ -3912,7 +3821,7 @@ h1, h2, h3, p, span, li, a {
   margin-bottom: 24px;
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.7s var(--ease-signature), transform 0.7s var(--ease-signature),
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1),
               border-color 0.4s, box-shadow 0.5s;
 }
 .cs-hero.is-visible { opacity: 1; transform: translateY(0); }
@@ -3924,10 +3833,10 @@ h1, h2, h3, p, span, li, a {
 }
 
 .cs-hero__content {
-  padding: 36px 40px;
+  padding: 48px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 24px;
 }
 .cs-hero__badge {
   display: flex;
@@ -3949,12 +3858,12 @@ h1, h2, h3, p, span, li, a {
   letter-spacing: 0.1em; text-transform: uppercase;
   color: rgba(255,255,255,0.35);
   background: rgba(255,255,255,0.04);
-  padding: 4px 12px; border-radius: 999px;
+  padding: 4px 12px; border-radius: 100px;
   border: 1px solid rgba(255,255,255,0.06);
 }
 .cs-hero__quote {
   font-family: var(--ff);
-  font-size: clamp(15px, 1.5vw, 18px);
+  font-size: clamp(18px, 2vw, 22px);
   font-weight: 600;
   color: var(--white);
   line-height: 1.55;
@@ -4006,7 +3915,7 @@ h1, h2, h3, p, span, li, a {
   justify-content: center;
   background: linear-gradient(135deg, rgba(219,85,0,0.04), rgba(219,85,0,0.01));
   border-left: 1px solid rgba(255,255,255,0.04);
-  min-height: 260px;
+  min-height: 320px;
 }
 .cs-hero__glow {
   position: absolute;
@@ -4039,7 +3948,7 @@ h1, h2, h3, p, span, li, a {
   color: var(--orange);
   background: rgba(219,85,0,0.08);
   border: 1px solid rgba(219,85,0,0.2);
-  padding: 8px 24px; border-radius: 999px;
+  padding: 8px 24px; border-radius: 100px;
 }
 
 /* ── Grid de cards ── */
@@ -4063,8 +3972,8 @@ h1, h2, h3, p, span, li, a {
   /* reveal */
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s var(--ease-signature),
-              transform 0.6s var(--ease-signature),
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1),
+              transform 0.6s cubic-bezier(0.16,1,0.3,1),
               border-color 0.4s, box-shadow 0.5s;
 }
 .cs-card.is-visible {
@@ -4128,28 +4037,14 @@ h1, h2, h3, p, span, li, a {
 .cs-card__logo {
   height: 24px; width: auto;
   object-fit: contain;
-  /* 2026-06-22: logos dos cards em branco uniforme — visíveis no card escuro
-     (Só Hydráulica/azul+vinho sumia). Mono branco é o padrão p/ logo em card dark. */
-  filter: brightness(0) invert(1);
-  opacity: .82;
-  transition: opacity 0.3s;
+  filter: brightness(1.1) grayscale(0.2);
+  transition: filter 0.3s;
 }
 @media (hover: hover) and (pointer: fine) {
-  .cs-card:hover .cs-card__logo { opacity: 1; }
+  .cs-card:hover .cs-card__logo { filter: brightness(1.3) grayscale(0); }
 }
 /* MGP: logo ja branca no PNG (regenerada). Sem filter no card. */
 .cs-card__logo--mgp { height: 28px; }
-/* SH: logo colorida (azul+vinho) com FUNDO BRANCO opaco — o filtro de branco
-   transformava tudo num retângulo branco. Mostra a logo original num chip branco. */
-.cs-card__logo--sh {
-  filter: none;
-  opacity: 1;
-  height: 48px;
-  background: #fff;
-  border-radius: 7px;
-  padding: 3px 8px;
-  box-sizing: border-box;
-}
 .cs-card__logo-fb {
   font-family: var(--fd);
   font-size: 18px; font-weight: 700; color: var(--white);
@@ -4456,7 +4351,7 @@ section h2.shimmer-active::after,
   border: 1px solid transparent;
   backdrop-filter: blur(6px);
   box-shadow: 0 4px 18px rgba(0,0,0,.04);
-  animation: fbIn .35s var(--ease-signature);
+  animation: fbIn .35s cubic-bezier(.2,.9,.3,1.1);
 }
 .form-feedback[hidden] { display: none !important; }
 .form-feedback .fb-ico { flex-shrink: 0; }
@@ -4624,8 +4519,7 @@ section h2.shimmer-active::after,
     font-weight: 700 !important;
     line-height: 1 !important;
     letter-spacing: -.02em !important;
-    color: var(--orange) !important;                 /* igual ao desktop */
-    text-shadow: 0 0 20px rgba(219,85,0,.4), 0 0 40px rgba(219,85,0,.2) !important;  /* glow igual ao desktop */
+    text-shadow: none !important;
     margin-bottom: 0 !important;
   }
   .hero__stat-label {
@@ -5093,11 +4987,11 @@ html { scroll-padding-top: 84px; }
   position: relative;
   margin: 0 auto;
   width: auto;
-  max-width: min(640px, 100%);
-  max-height: 600px;
+  max-width: min(720px, 100%);
+  max-height: 720px;
   aspect-ratio: var(--video-aspect, 16 / 9);
   isolation: isolate;
-  transition: transform .5s var(--ease-signature);
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1);
 }
 @media (hover: hover) and (pointer: fine) {
   .team-video-stage:hover { transform: translateY(-4px) scale(1.005); }
@@ -5181,7 +5075,7 @@ html { scroll-padding-top: 84px; }
   height: 100%;
   object-fit: cover;
   object-position: center;
-  border-radius: 24px;
+  border-radius: 22px;
   background: #0d1b2a;
   position: relative;
   z-index: 1;
@@ -5210,7 +5104,7 @@ html { scroll-padding-top: 84px; }
 @media (max-width: 768px) {
   .team-video-wrap { padding: 12px; }
   .team-video-stage { max-width: 92%; max-height: 70vh; }
-  .team-video__frame { border-radius: 16px; }
+  .team-video__frame { border-radius: 18px; }
   .team-video { border-radius: 16px; }
   .team-video__corner { width: 16px; height: 16px; }
   .team-video__corner--tl { top: 6px; left: 6px; border-radius: 6px 0 0 0; }
@@ -5471,8 +5365,8 @@ html { scroll-padding-top: 84px; }
   opacity: 0;
   transform: translate3d(40px, 0, 0);
   transition:
-    opacity .6s var(--ease-signature),
-    transform .6s var(--ease-signature);
+    opacity .6s cubic-bezier(.25, .1, .25, 1),
+    transform .6s cubic-bezier(.25, .1, .25, 1);
   will-change: transform, opacity;
 }
 .card-stack--reveal.card-stack--revealed {
@@ -5694,8 +5588,8 @@ html { scroll-padding-top: 84px; }
      "acende" + box-shadow halo laranja anima de 0 ao final. */
   .card-stack__item {
     transition:
-      border-color .9s var(--ease-signature),
-      box-shadow .9s var(--ease-signature);
+      border-color .9s cubic-bezier(.22, 1, .36, 1),
+      box-shadow .9s cubic-bezier(.22, 1, .36, 1);
   }
   .card-stack.qs-glow .card-stack__item {
     border-color: rgba(219, 85, 0, .55) !important;
@@ -5706,7 +5600,7 @@ html { scroll-padding-top: 84px; }
   }
 }
 @media (max-width: 560px) {
-  .card-stack__item { padding: 26px 20px; border-radius: 16px; flex-basis: calc(100% - 28px); }
+  .card-stack__item { padding: 26px 20px; border-radius: 18px; flex-basis: calc(100% - 28px); }
 }
 
 /* Dots de paginacao do carousel mobile (QS + Metodo) */
@@ -5800,7 +5694,7 @@ html { scroll-padding-top: 84px; }
     #000 86%,
     transparent 100%);
 }
-.qs-stage.qs-stage--chaos { animation: qsCamJitter 2.5s var(--ease-signature) infinite; }
+.qs-stage.qs-stage--chaos { animation: qsCamJitter 2.5s cubic-bezier(.36,.07,.19,.97) infinite; }
 @keyframes qsCamJitter {
   0%, 100% { transform: translate3d(0, 0, 0) rotateY(0); }
   25%      { transform: translate3d(.18%, -.12%, 0) rotateY(-.25deg); }
@@ -5836,7 +5730,7 @@ html { scroll-padding-top: 84px; }
 .qs-notif--mini { width: 154px; border-radius: 14px; padding: 8px 10px; }
 
 .qs-notif.qs--in {
-  animation: qsNotifPop .55s var(--ease-signature) forwards;
+  animation: qsNotifPop .55s cubic-bezier(.34, 1.56, .64, 1) forwards;
 }
 @keyframes qsNotifPop {
   0%   { opacity: 0; transform: scale(0) rotateY(0) rotateX(0); }
@@ -5854,7 +5748,7 @@ html { scroll-padding-top: 84px; }
 .qs-notif[data-tilt="center-bottom"]{ --tilt: rotateX(-5deg); }
 
 .qs-notif.qs--in {
-  animation: qsNotifPopTilted .6s var(--ease-signature) forwards;
+  animation: qsNotifPopTilted .6s cubic-bezier(.34, 1.56, .64, 1) forwards;
 }
 @keyframes qsNotifPopTilted {
   0%   { opacity: 0; transform: scale(0) var(--tilt, ); }
@@ -5862,7 +5756,7 @@ html { scroll-padding-top: 84px; }
   100% { opacity: 1; transform: scale(1) var(--tilt, ); }
 }
 
-.qs-notif.qs--flash { animation: qsFlash .24s ease-out, qsNotifPopTilted .6s var(--ease-signature) forwards; }
+.qs-notif.qs--flash { animation: qsFlash .24s ease-out, qsNotifPopTilted .6s cubic-bezier(.34, 1.56, .64, 1) forwards; }
 @keyframes qsFlash {
   0%   { box-shadow:
            0 14px 34px -10px rgba(0, 0, 0, .75),
@@ -5970,7 +5864,7 @@ html { scroll-padding-top: 84px; }
   border: 1.5px solid rgba(10, 14, 23, .9);
 }
 .qs-notif.qs--done .qs-notif__check {
-  animation: qsStamp .55s var(--ease-signature) forwards;
+  animation: qsStamp .55s cubic-bezier(.22, 1.5, .36, 1) forwards;
 }
 @keyframes qsStamp {
   0%   { opacity: 0; transform: scale(0); }
@@ -6010,7 +5904,7 @@ html { scroll-padding-top: 84px; }
   font-family: var(--ff);
 }
 .qs-agent.qs--in {
-  animation: qsAgentRise 1.1s var(--ease-signature) forwards;
+  animation: qsAgentRise 1.1s cubic-bezier(.22, 1.2, .36, 1) forwards;
 }
 @keyframes qsAgentRise {
   0%   { opacity: 0; transform: translate(-50%, 60%) scale(.6); }
@@ -6092,7 +5986,7 @@ html { scroll-padding-top: 84px; }
   background: rgba(219, 85, 0, .12);
   border: 1px solid rgba(219, 85, 0, .35);
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: 100px;
   text-transform: uppercase;
 }
 
@@ -6143,7 +6037,7 @@ html { scroll-padding-top: 84px; }
   font-size: 10px;
 }
 .qs-agent.qs--chips-in .qs-chip {
-  animation: qsChipIn .35s var(--ease-signature) forwards;
+  animation: qsChipIn .35s cubic-bezier(.22, 1.4, .36, 1) forwards;
 }
 .qs-agent.qs--chips-in .qs-chip:nth-child(1) { animation-delay: .0s; }
 .qs-agent.qs--chips-in .qs-chip:nth-child(2) { animation-delay: .08s; }
@@ -6220,7 +6114,7 @@ html { scroll-padding-top: 84px; }
 }
 .qs-brand.qs--in .qs-brand__halo { opacity: 1; }
 .qs-brand.qs--in {
-  animation: qsBrandIn 1s var(--ease-signature) forwards;
+  animation: qsBrandIn 1s cubic-bezier(.22, 1.25, .36, 1) forwards;
 }
 @keyframes qsBrandIn {
   0%   { opacity: 0; transform: translate(-50%, -50%) scale(.5); }
@@ -6283,9 +6177,9 @@ html { scroll-padding-top: 84px; }
   opacity: 0;
   transform-origin: 50% 50%;
 }
-.qs-ring--1.qs--go { animation: qsRing 1.6s var(--ease-signature) forwards; }
-.qs-ring--2.qs--go { animation: qsRing 1.8s .12s var(--ease-signature) forwards; }
-.qs-ring--3.qs--go { animation: qsRing 2.0s .24s var(--ease-signature) forwards; }
+.qs-ring--1.qs--go { animation: qsRing 1.6s cubic-bezier(.2, .6, .3, 1) forwards; }
+.qs-ring--2.qs--go { animation: qsRing 1.8s .12s cubic-bezier(.2, .6, .3, 1) forwards; }
+.qs-ring--3.qs--go { animation: qsRing 2.0s .24s cubic-bezier(.2, .6, .3, 1) forwards; }
 @keyframes qsRing {
   0%   { r: 2; opacity: 0; stroke-width: .45; }
   20%  { opacity: .75; }
@@ -6312,7 +6206,7 @@ html { scroll-padding-top: 84px; }
 }
 @media (max-width: 560px) {
   .qs-scene-wrap { max-height: 440px; aspect-ratio: 1 / 1; height: auto; min-height: 0; }
-  .qs-brand { width: 70%; padding: 18px 14px 14px; border-radius: 16px; }
+  .qs-brand { width: 70%; padding: 18px 14px 14px; border-radius: 18px; }
   .qs-brand__logo { width: 38px; height: 38px; margin-bottom: 8px; }
   .qs-brand__wordmark { height: 26px; margin-bottom: 6px; }
   .qs-brand__tag { font-size: 8.5px; letter-spacing: .14em; }
@@ -6437,7 +6331,7 @@ html { scroll-padding-top: 84px; }
     align-items: stretch !important;
     gap: 2px !important;
     overflow-y: auto !important;
-    animation: navFullOpen .32s var(--ease-signature);
+    animation: navFullOpen .32s cubic-bezier(.22, 1, .36, 1);
   }
   @keyframes navFullOpen {
     from { opacity: 0; transform: translateY(-8px); }
@@ -6457,7 +6351,7 @@ html { scroll-padding-top: 84px; }
     border-radius: 0 !important;
     opacity: 0;
     transform: translateY(16px);
-    animation: navItemIn .5s var(--ease-signature) forwards;
+    animation: navItemIn .5s cubic-bezier(.22, 1, .36, 1) forwards;
   }
   .floatnav.active .floatnav__item:nth-child(2) { animation-delay: .06s; }
   .floatnav.active .floatnav__item:nth-child(3) { animation-delay: .11s; }
@@ -6485,7 +6379,7 @@ html { scroll-padding-top: 84px; }
     font-size: 16px !important;
     border-radius: 16px !important;
     opacity: 0;
-    animation: navItemIn .5s var(--ease-signature) .32s forwards;
+    animation: navItemIn .5s cubic-bezier(.22, 1, .36, 1) .32s forwards;
   }
   body.nav-open { overflow: hidden !important; }
   body.nav-open .header__burger { background: transparent !important; border-color: transparent !important; }
@@ -6611,8 +6505,8 @@ html { scroll-padding-top: 84px; }
   .card-stack { min-height: 260px !important; cursor: pointer; }
   .card-stack__item--2 {
     transition:
-      transform .75s var(--ease-signature) !important,
-      clip-path .7s var(--ease-signature) !important,
+      transform .75s cubic-bezier(.4, 0, .2, 1) !important,
+      clip-path .7s cubic-bezier(.25, .8, .35, 1) !important,
       filter .6s ease !important;
   }
   /* Micro-indicator 01 / 02 no topo do stack (pisca conforme o cycle) */
@@ -6628,7 +6522,7 @@ html { scroll-padding-top: 84px; }
     color: rgba(219, 85, 0, .7);
     padding: 4px 12px;
     border: 1px solid rgba(219, 85, 0, .25);
-    border-radius: 999px;
+    border-radius: 100px;
     background: rgba(13, 27, 42, .8);
     z-index: 10;
     pointer-events: none;
@@ -6726,7 +6620,7 @@ html { scroll-padding-top: 84px; }
     font-weight: 800;
     color: rgba(255, 255, 255, .6);
     flex-shrink: 0;
-    transition: all .4s var(--ease-signature);
+    transition: all .4s cubic-bezier(.22, 1, .36, 1);
   }
   .aria-acc-item--open .aria-acc-letter {
     background: linear-gradient(180deg, rgba(219, 85, 0, .28), rgba(219, 85, 0, .1));
@@ -6760,7 +6654,7 @@ html { scroll-padding-top: 84px; }
   .aria-acc-chev {
     color: rgba(255, 255, 255, .5);
     flex-shrink: 0;
-    transition: transform .35s var(--ease-signature), color .3s ease;
+    transition: transform .35s cubic-bezier(.22, 1, .36, 1), color .3s ease;
   }
   .aria-acc-item--open .aria-acc-chev {
     transform: rotate(180deg);
@@ -6770,7 +6664,7 @@ html { scroll-padding-top: 84px; }
   .aria-acc-body {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows .5s var(--ease-signature);
+    transition: grid-template-rows .5s cubic-bezier(.22, 1, .36, 1);
   }
   .aria-acc-item--open .aria-acc-body {
     grid-template-rows: 1fr;
@@ -6868,7 +6762,7 @@ html { scroll-padding-top: 84px; }
   /* Hero card de caso destaque (GastroObesi) */
   .cs-hero {
     grid-template-columns: 1fr !important;
-    border-radius: 16px !important;
+    border-radius: 18px !important;
     overflow: hidden !important;
   }
   .cs-hero__visual {
@@ -6934,8 +6828,8 @@ html { scroll-padding-top: 84px; }
     pointer-events: none;
     transform: translate3d(20px, 0, 0) scale(1.05);
     transition:
-      opacity .4s var(--ease-signature),
-      transform .42s var(--ease-signature),
+      opacity .4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform .42s cubic-bezier(0.22, 1, 0.36, 1),
       visibility 0s linear .42s;
     will-change: transform, opacity;
   }
@@ -6945,8 +6839,8 @@ html { scroll-padding-top: 84px; }
     pointer-events: auto;
     transform: translate3d(0, 0, 0) scale(1);
     transition:
-      opacity .4s var(--ease-signature),
-      transform .42s var(--ease-signature),
+      opacity .4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform .42s cubic-bezier(0.22, 1, 0.36, 1),
       visibility 0s linear 0s;
   }
   .team-mslide.is-out {
@@ -7032,8 +6926,8 @@ html { scroll-padding-top: 84px; }
     opacity: 0;
     transform: translate3d(0, 10px, 0);
     transition:
-      opacity .4s var(--ease-signature),
-      transform .4s var(--ease-signature);
+      opacity .4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform .4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .team-mslide__name {
     font-family: var(--fd);
@@ -7047,8 +6941,8 @@ html { scroll-padding-top: 84px; }
     opacity: 0;
     transform: translate3d(0, 20px, 0);
     transition:
-      opacity .5s var(--ease-signature) .15s,
-      transform .5s var(--ease-signature) .15s;
+      opacity .5s cubic-bezier(0.22, 1, 0.36, 1) .15s,
+      transform .5s cubic-bezier(0.22, 1, 0.36, 1) .15s;
   }
   .team-mslide.is-active .team-mslide__role,
   .team-mslide.is-active .team-mslide__name {
@@ -7087,7 +6981,7 @@ html { scroll-padding-top: 84px; }
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    border-radius: 999px;
+    border-radius: 100px;
     background: rgba(13, 27, 42, .72);
     -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
@@ -7096,8 +6990,8 @@ html { scroll-padding-top: 84px; }
     z-index: 5;
     pointer-events: none;
     animation:
-      teamHintIn .4s var(--ease-signature) .6s both,
-      teamHintPulse 1.4s var(--ease-signature) 1s infinite;
+      teamHintIn .4s cubic-bezier(0.22, 1, 0.36, 1) .6s both,
+      teamHintPulse 1.4s cubic-bezier(0.22, 1, 0.36, 1) 1s infinite;
   }
   .team-mobile__hint span {
     font-family: var(--fm);
@@ -7421,8 +7315,8 @@ html { scroll-padding-top: 84px; }
   top: 43% !important;
   right: clamp(20px, 3vw, 56px);                /* aproxima da borda direita */
   transform: translateY(-50%);
-  width: clamp(420px, 42vw, 700px);             /* painel 3D landscape no lado direito */
-  aspect-ratio: 16 / 9;                          /* 2026-06-22: casa com o render 3D (16:9) */
+  width: clamp(380px, 36vw, 600px);             /* maior — destaque visual no lado direito */
+  aspect-ratio: 1;
   pointer-events: none;
   z-index: 1;
 }
@@ -7500,32 +7394,6 @@ html { scroll-padding-top: 84px; }
 @keyframes heroSymbolFloat {
   0%, 100% { transform: translate(-50%, -50%); }
   50%      { transform: translate(-50%, calc(-50% - 6px)); }
-}
-/* 2026-06-22: arte 3D "cara de IA" como PAINEL limpo — sem círculo, sem máscara,
-   sem anel orbital. Render natural, cantos arredondados, leve sombra/halo. */
-.hero__symbol-mark--3d {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-  border-radius: 24px;
-  overflow: hidden;
-  -webkit-mask-image: none;
-          mask-image: none;
-  filter: none;
-  animation: none;
-  box-shadow:
-    0 24px 60px -18px rgba(0, 0, 0, .55),
-    0 0 56px -14px rgba(219, 85, 0, .3);
-}
-.hero__symbol-mark--3d img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  user-select: none;
-  -webkit-user-drag: none;
 }
 /* 2026-04-28 (rev3): scanline horizontal removida — pedido cliente.
    Mantidos: glow, grid, vlines, aneis, simbolo. */
@@ -7650,7 +7518,7 @@ html { scroll-padding-top: 84px; }
   background: rgba(219, 85, 0, .92);
   color: #fff;
   padding: 9px 20px;
-  border-radius: 999px;
+  border-radius: 100px;
   font-family: var(--mono);
   font-size: 11.5px;
   font-weight: 600;
@@ -7723,11 +7591,7 @@ html { scroll-padding-top: 84px; }
   .qs-notif { animation: none !important; }
 }
 
-/* Aqui existia um `}` sobrando, sem bloco pra fechar. O navegador engole
-   uma chave órfã e segue, então o site nunca acusou nada — mas o
-   clean-css não: ele lia `} html` como seletor e DESCARTAVA o bloco
-   seguinte inteiro na hora de gerar o style.min.css, que é o arquivo que
-   as páginas carregam. Regra escrita, revisada e no ar sem existir. */
+}
 
 
 /* ============================================
@@ -7885,7 +7749,7 @@ html {
   background: rgba(13, 27, 42, .9);
   color: #fff;
   border: 1px solid rgba(219, 85, 0, .55);
-  border-radius: 999px;
+  border-radius: 100px;
   font-family: var(--mono, inherit);
   font-size: 12px;
   font-weight: 600;
@@ -7932,8 +7796,8 @@ html {
     radial-gradient(ellipse 65% 50% at 50% 50%, rgba(219, 85, 0, .12), transparent 70%),
     linear-gradient(180deg, #0d1b2a 0%, #061121 100%);
   pointer-events: none;
-  transition: opacity .6s var(--ease-signature);
-  border-radius: 24px;
+  transition: opacity .6s cubic-bezier(.22, 1, .36, 1);
+  border-radius: 22px;
 }
 .team-video__poster-mark {
   width: 38%;
@@ -8068,8 +7932,8 @@ html {
   transform: scale(.92) translate3d(0,0,0) !important;
   transform-origin: center;
   transition:
-    opacity .55s var(--ease-signature),
-    transform .55s var(--ease-signature),
+    opacity .55s cubic-bezier(.22,1,.36,1),
+    transform .55s cubic-bezier(.22,1,.36,1),
     box-shadow .45s ease,
     border-color .45s ease !important;
   will-change: transform, opacity;
@@ -8145,7 +8009,7 @@ html {
   font-family: var(--mono, ui-monospace, monospace);
   background: rgba(219, 85, 0, .08);
   border: 1px solid rgba(219, 85, 0, .4);
-  border-radius: 999px;
+  border-radius: 100px;
   box-shadow:
     0 0 0 0 rgba(219, 85, 0, .35),
     0 6px 20px -8px rgba(219, 85, 0, .35);
@@ -8158,7 +8022,7 @@ html {
   font-family: var(--fm, system-ui, sans-serif);
   font-size: 14px;
   letter-spacing: 0;
-  animation: qsFlipHintArrow 1.6s var(--ease-signature) infinite;
+  animation: qsFlipHintArrow 1.6s cubic-bezier(.55, .085, .68, .53) infinite;
 }
 @keyframes qsFlipHintPulse {
   0%, 100% {
@@ -8218,7 +8082,7 @@ html {
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 24px;
+  border-radius: 22px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -8371,7 +8235,7 @@ html {
   align-self: flex-start;
   padding: 4px 10px;
   border: 1px solid rgba(219, 85, 0, .4);
-  border-radius: 999px;
+  border-radius: 100px;
   background: rgba(219, 85, 0, .08);
 }
 .qs-flip-card__list {
@@ -8457,7 +8321,7 @@ html {
   /* hint mobile: indica swipe horizontal — sobrescreve seta vertical */
   .qs-flip__hint::before {
     content: '↔';
-    animation: qsFlipHintArrowH 1.6s var(--ease-signature) infinite;
+    animation: qsFlipHintArrowH 1.6s cubic-bezier(.55, .085, .68, .53) infinite;
   }
   @keyframes qsFlipHintArrowH {
     0%, 100% { transform: translateX(0); opacity: 1; }
@@ -8478,174 +8342,4 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .qs-flip-card__inner { transform: none !important; }
   .qs-flip__hint { animation: none; }
-}
-
-/* PERF rev49: pausa animação das partículas quando fora do viewport (IO em main.js).
-   Reduz uso de GPU em ~50% no scroll fora da section #quem-somos. */
-.motion__particles[data-paused] .particle { animation-play-state: paused !important; }
-
-/* ============================================================
-   2026-06-22 (rev51) — UPDATES
-   ============================================================ */
-
-/* ── TAREFA 7: faixa-manifesto full-width ── */
-.manifesto {
-  position: relative;
-  padding: clamp(56px, 9vw, 104px) 0;
-  text-align: center;
-}
-.manifesto__frase {
-  font-family: var(--fd);
-  font-weight: 700;
-  font-size: clamp(23px, 3.4vw, 44px);
-  line-height: 1.24;
-  letter-spacing: -0.02em;
-  color: var(--white);
-  max-width: 1060px;
-  margin: 0 auto;
-  text-wrap: balance;
-}
-.manifesto__hl { color: var(--orange); }
-
-/* TAREFA 4.2: hero passou de 3 p/ 4 stats — permite quebra elegante sem overflow */
-.cs-hero__stats { flex-wrap: wrap; gap: 22px 26px; }
-
-/* ── TAREFA 4.3: fotos reais nos avatares (fallback = inicial) ── */
-.cs-hero__avatar,
-.cs-card__avatar { overflow: hidden; }
-.cs-hero__avatar img,
-.cs-card__avatar img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  display: block;
-}
-/* Avatar com logo (ex.: MGP) — logo branca contida no círculo laranja da marca */
-.cs-card__avatar--logo img {
-  object-fit: contain;
-  padding: 5px;
-}
-/* Avatar com logo dourada (Dr. Túlio Cunha) — fundo branco p/ contraste */
-.cs-hero__avatar--logo { background: #fff; }
-.cs-hero__avatar--logo img {
-  object-fit: contain;
-  padding: 4px;
-  border-radius: 50%;
-}
-/* Foto no painel visual do card hero (ocupa toda a área, no lugar da logo) */
-.cs-hero__visual-photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 18%;
-}
-/* No mobile o painel da foto empilha no topo — dá altura p/ retrato */
-@media (max-width: 768px) {
-  .cs-hero__visual { min-height: 300px !important; padding: 0 !important; }
-}
-.cs-hero__avatar-fb,
-.cs-card__avatar-fb {
-  width: 100%; height: 100%;
-  align-items: center; justify-content: center;
-}
-/* Card hero dos cases: copy CENTRALIZADA no texto (pedido do user — sem texto
-   torto). Centraliza o conteúdo vertical e horizontalmente; a citação perde a
-   barra lateral (que com texto centralizado ficava torta). */
-.cs-hero__content {
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-}
-.cs-hero__quote {
-  border-left: none;
-  padding-left: 0;
-}
-.cs-hero__badge,
-.cs-hero__attr,
-.cs-hero__stats {
-  justify-content: center;
-}
-/* Os 3 cards do grid (Mataco/SH/MGP) também com a copy centralizada (pedido do
-   user). Mantém o topo (logo + setor) com seu layout; centraliza result/quote/autor. */
-.cs-card { text-align: center; }
-.cs-card .cs-card__quote {
-  border-left: none;
-  padding-left: 0;
-}
-.cs-card__author { justify-content: center; }
-
-/* ============================================================
-   Marca — cabeçalho + rodapé para páginas de conteúdo (blog e SEO)
-   Reforça logo, símbolo e voz da BMAI (Brand Book).
-   ============================================================ */
-.pgnav{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:20px;
-  padding:13px 24px;background:rgba(13,27,42,.9);backdrop-filter:blur(12px);
-  border-bottom:1px solid #202f3f;font-family:var(--ff,'General Sans',sans-serif)}
-.pgnav__logo{display:flex;align-items:center}
-.pgnav__logo img{height:24px;display:block}
-.pgnav__spacer{margin-left:auto}
-.pgnav a{color:#ede7e1;text-decoration:none;font-size:14px}
-.pgnav a:hover{color:#db5500}
-.pgnav__cta{padding:8px 16px;border-radius:100px;background:#db5500;color:#fff!important;
-  font-weight:600;font-size:13px}
-.pgnav__cta:hover{background:#c84d01;color:#fff!important}
-.pgfoot{border-top:1px solid #202f3f;background:#0d1b2a;padding:44px 24px;text-align:center;
-  font-family:var(--ff,'General Sans',sans-serif);color:#798086}
-.pgfoot__sym{width:38px;height:38px;opacity:.92;margin:0 auto 12px;display:block;
-  filter:drop-shadow(0 0 20px rgba(219,85,0,.4))}
-.pgfoot__kind{color:#ede7e1;font-weight:600;font-size:15px;margin:0 0 6px;letter-spacing:-.01em}
-.pgfoot__meta{font-size:13px;margin:0}
-.pgfoot__meta a{color:#db5500;text-decoration:none}
-
-/* ============================================================
-   MOBILE: a arte 3D do hero, em faixa própria (2026-08-16)
-   ------------------------------------------------------------
-   O celular ficava com um símbolo CHAPADO a 8% atrás do texto, enquanto o
-   desktop tinha a peça extrudada com partículas. Agora é a mesma cena nos
-   dois. O que muda é ONDE ela fica, e isso foi decidido medindo:
-
-   Atrás do texto NÃO funciona no celular. No desktop o texto fica à
-   esquerda e a arte à direita, então uma não pisa na outra. No celular o
-   texto é centralizado e ocupa a largura toda, e a estrela cai bem em cima
-   do subtítulo. Medido: subtítulo cinza (#798086) dá 3,89:1 sobre o navy
-   liso — já abaixo dos 4,5:1 da AA — e com a cena atrás caía pra 2,34:1.
-   Cortina forte o bastante pra devolver o contraste apagava a estrela
-   inteira e sobravam só as partículas: pior que a marca d'água que havia.
-
-   Então a arte ganha FAIXA PRÓPRIA, entre o texto e a pílula de números.
-   Nada atrás de nada: a peça aparece inteira, em intensidade cheia, e o
-   texto continua com o contraste que tinha.
-
-   A marca d'água do CSS continua como rede e só é apagada quando a cena
-   existe mesmo (`#hero.tem-3d`, escrita pelo script depois do primeiro
-   render): CDN do three fora, WebGL ausente ou aparelho fraco seguem com
-   símbolo em vez de buraco.
-   ============================================================ */
-@media (max-width: 900px) {
-  /* Vence o `display:none` de quando a arte era "desktop only". */
-  .hero__three { display: block !important; }
-
-  #hero.tem-3d .hero__three {
-    /* Sai do `position:absolute; inset:0` (que a punha atrás de tudo) e
-       entra no fluxo, como uma faixa. */
-    position: relative;
-    inset: auto;
-    width: 100%;
-    height: auto;
-    /* 4/3 e não quadrado: a estrela é mais larga que alta depois da
-       rotação, e o quadrado sobrava altura morta que só empurrava a pílula
-       de números pra fora da primeira tela. */
-    aspect-ratio: 4 / 3;
-    max-height: 34vh;
-    margin: -6px 0 -14px;
-    order: 1;             /* texto (0) → arte (1) → números (2) */
-    opacity: 1;
-  }
-  #hero.tem-3d .hero__wrap  { order: 0; }
-  #hero.tem-3d .hero__stats { order: 2; }
-  /* A cena assumiu; a marca d'água chapada sai de cena. O glow do ::after
-     fica: ele é o que cola a peça no fundo. */
-  #hero.tem-3d::before { background-image: none !important; }
 }

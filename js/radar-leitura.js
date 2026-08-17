@@ -74,9 +74,14 @@
         }))
         .join('');
 
+      /* 🔴 `crossorigin` mesmo esta página não desenhando em canvas: o cache
+         HTTP é compartilhado entre páginas. Se a foto entrar no cache aqui
+         SEM CORS, o card do radar e o hero 3D do /blog pedem a mesma URL COM
+         CORS e são recusados em cima dessa entrada — e lá a capa some. Toda
+         página que exibe imagem da API pede com CORS. */
       var figura = capa
         ? '<figure class="bl-leitura__fig">' +
-            '<img src="' + capa + '" alt="" width="1200" height="675" decoding="async">' +
+            '<img src="' + capa + '" alt="" crossorigin="anonymous" width="1200" height="675" decoding="async">' +
             '<figcaption>Imagem divulgada por ' + (fonte || 'o veículo') + '.</figcaption>' +
           '</figure>'
         : '';

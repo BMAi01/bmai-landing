@@ -252,13 +252,28 @@
       a.setAttribute('data-cat', p.categoria || '');
       a.setAttribute('data-slug', p.slug);
       a.setAttribute('data-title', String(p.titulo || '').toLowerCase());
+      /* A capa do artigo escrito à mão é do próprio site (caminho relativo).
+         A da EDIÇÃO DO DIA não: ela é a foto da matéria de topo, servida
+         pela API, e é a MESMA URL que o card do radar e o hero 3D pedem.
+
+         🔴 Por isso o `crossorigin` quando a URL é de outra origem. Sem ele
+         a mesma imagem é pedida duas vezes na mesma página, uma sem CORS
+         (aqui) e uma com CORS (o card do radar e o hero), e o navegador
+         recusa o segundo pedido em cima da entrada cacheada pelo primeiro.
+         O efeito visível é a capa do card de topo SUMIR — a rede de
+         segurança logo abaixo remove a figura inteira quando a imagem
+         falha. Foi o que aconteceu quando a peça diária entrou na lista.
+
+         Só na URL absoluta: `crossorigin` num caminho do próprio site é
+         inútil, e num host que não mande cabeçalho de CORS quebraria a
+         imagem em vez de consertar. */
+      var externa = typeof p.imagem === 'string' && /^https?:\/\//i.test(p.imagem);
       a.innerHTML =
-        // A capa é do próprio site (caminho relativo), então não passa pela
-        // origem da API. Post sem capa cadastrada cai no gradiente com o
-        // símbolo, que é o que o CSS já desenha na miniatura vazia.
         '<span class="bl-thumb">' +
           (p.imagem
-            ? '<img src="' + safeUrl(p.imagem) + '" alt="" loading="lazy" decoding="async" width="1200" height="675">'
+            ? '<img src="' + safeUrl(p.imagem) + '" alt=""' +
+              (externa ? ' crossorigin="anonymous"' : '') +
+              ' loading="lazy" decoding="async" width="1200" height="675">'
             : '') +
         '</span>' +
         '<span class="bl-row__copy">' +

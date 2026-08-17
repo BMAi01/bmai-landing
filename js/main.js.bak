@@ -1,0 +1,2540 @@
+/* ============================================
+   META PIXEL TRACKER — helpers + eventos
+   Pixel ID: 1211008134323057
+   Eventos browser: PageView (auto), Lead, CompleteRegistration,
+   Contact, ViewContent, Search.
+   Pareamento com CAPI server-side via event_id (deduplicação Meta).
+   ============================================ */
+window.bmTracker = (function () {
+  const fired = new Set();
+
+  function uuid() {
+    if (crypto?.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function getCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
+  // _fbc é montado a partir de ?fbclid=... se o cookie ainda não existe
+  function getFbc() {
+    const cookie = getCookie('_fbc');
+    if (cookie) return cookie;
+    const params = new URLSearchParams(location.search);
+    const fbclid = params.get('fbclid');
+    if (!fbclid) return '';
+    return 'fb.1.' + Date.now() + '.' + fbclid;
+  }
+
+  function getFbp() {
+    return getCookie('_fbp');
+  }
+
+  function track(eventName, custom, opts) {
+    if (typeof fbq !== 'function') return null;
+    const eventID = (opts && opts.eventID) || uuid();
+    fbq('track', eventName, custom || {}, { eventID });
+    return eventID;
+  }
+
+  function trackOnce(key, eventName, custom) {
+    if (fired.has(key)) return null;
+    fired.add(key);
+    return track(eventName, custom);
+  }
+
+  return { uuid, getFbp, getFbc, getCookie, track, trackOnce };
+})();
+
+/* META PIXEL — Contact (WhatsApp / mailto) */
+document.addEventListener('click', function (e) {
+  const a = e.target.closest && e.target.closest('a[href]');
+  if (!a) return;
+  const href = a.getAttribute('href') || '';
+  if (/wa\.me|api\.whatsapp\.com/i.test(href)) {
+    window.bmTracker.track('Contact', { content_name: 'whatsapp' });
+  } else if (href.toLowerCase().startsWith('mailto:')) {
+    window.bmTracker.track('Contact', { content_name: 'email' });
+  }
+}, { passive: true });
+
+/* META PIXEL — ViewContent em seções-chave (1x por sessão por seção) */
+(function () {
+  const targets = ['quem-somos', 'cases', 'para-quem', 'form'];
+  const els = targets.map(id => document.getElementById(id)).filter(Boolean);
+  if (!els.length || !('IntersectionObserver' in window)) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting && en.intersectionRatio >= 0.5) {
+        const id = en.target.id;
+        window.bmTracker.trackOnce('vc:' + id, 'ViewContent', { content_name: id });
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  els.forEach(el => obs.observe(el));
+})();
+
+/* META PIXEL — Search no scroll dos cases (1x por sessão, depois de ≥2 cards visíveis) */
+(function () {
+  const grid = document.getElementById('csGrid');
+  if (!grid || !('IntersectionObserver' in window)) return;
+  const cards = grid.querySelectorAll('.cs-card');
+  if (cards.length < 2) return;
+  const seen = new Set();
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) seen.add(en.target);
+      if (seen.size >= 2) {
+        window.bmTracker.trackOnce('search:cases', 'Search', { search_string: 'cases', content_category: 'cases' });
+        obs.disconnect();
+      }
+    });
+  }, { threshold: 0.6 });
+  cards.forEach(c => obs.observe(c));
+})();
+
+/* ============================================
+   PERFORMANCE GATE — desliga animações pesadas
+   em mobile, touch devices e prefers-reduced-motion
+   ============================================ */
+const IS_MOBILE = matchMedia('(max-width: 768px), (max-height: 500px) and (orientation: landscape)').matches;
+const IS_TOUCH  = matchMedia('(hover: none), (pointer: coarse)').matches;
+const PREFERS_REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* LOW_MOTION só em a11y. Mobile roda versão leve das animações (ver main
+   QUEM SOMOS — ciclo mobile simplificado). Particles canvas/counters/cursor
+   trail continuam gated por IS_MOBILE separadamente. */
+const LOW_MOTION = PREFERS_REDUCE;
+
+/* ============================================
+   PRELOADER
+   ============================================ */
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('preloader').classList.add('done'), 200);
+});
+
+/* ============================================
+   MOBILE NAV
+   ============================================ */
+const burger = document.getElementById('burger');
+const nav = document.getElementById('nav');
+const langBtn = document.getElementById('lang-btn');
+const langHome = langBtn?.parentElement; // lembra onde o lang-btn vivia (body/header)
+
+function syncLangPosition(active) {
+  if (!langBtn) return;
+  // Mobile: ao abrir o drawer, move o lang-btn pra dentro como última opção.
+  // Ao fechar, devolve pro home original (body).
+  if (active && nav && !nav.contains(langBtn)) nav.appendChild(langBtn);
+  else if (!active && langHome && !langHome.contains(langBtn)) langHome.appendChild(langBtn);
+}
+
+burger.addEventListener('click', () => {
+  burger.classList.toggle('active');
+  const active = nav.classList.toggle('active');
+  document.body.classList.toggle('nav-open', active);
+  syncLangPosition(active);
+  if (window.__lenis) {
+    if (active) window.__lenis.stop();
+    else        window.__lenis.start();
+  }
+});
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  burger.classList.remove('active');
+  nav.classList.remove('active');
+  document.body.classList.remove('nav-open');
+  syncLangPosition(false);
+  if (window.__lenis) window.__lenis.start();
+}));
+
+/* ============================================
+   HEADER
+   ============================================ */
+const header = document.getElementById('header');
+(function () {
+  let lastState = false;
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const s = scrollY > 30;
+      if (s !== lastState) {
+        header.classList.toggle('scrolled', s);
+        lastState = s;
+      }
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+
+/* ============================================
+   SCROLL PROGRESS
+   ============================================ */
+const progress = document.getElementById('scrollProgress');
+(function () {
+  // rAF throttle — evita mutation de style em todo scroll event (que roda até
+  // 120x/s em trackpads MacOS). Com rAF, limita ao refresh rate do display.
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      if (h > 0) progress.style.width = (scrollY / h * 100) + '%';
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+
+/* ============================================
+   SMOOTH SCROLL — Lenis "versão céu"
+   duration 1.4 / lerp .08 / wheelMult .8 / smoothTouch false.
+   Skip total em prefers-reduced-motion ou device low-end.
+   ============================================ */
+const HERO_EASING = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
+let lenisInstance = null;
+(function initLenis() {
+  // Mobile: scroll 100% nativo do iOS/Android. NUNCA instanciar Lenis no mobile.
+  if (matchMedia('(max-width: 768px)').matches) return;
+  // Gate low-end device — pouca CPU/RAM cai pro scroll nativo
+  const cores = navigator.hardwareConcurrency || 8;
+  const mem   = navigator.deviceMemory || 8;
+  const isLowEnd = cores <= 4 && mem <= 4;
+  if (PREFERS_REDUCE || isLowEnd) return;
+
+  const ready = () => {
+    if (typeof window.Lenis === 'undefined') return false;
+    try {
+      lenisInstance = new window.Lenis({
+        duration: 1.4,
+        easing: HERO_EASING,
+        lerp: 0.08,
+        wheelMultiplier: 0.8,
+        touchMultiplier: 1.5,
+        touchInertiaMultiplier: 35,
+        smoothWheel: true,
+        smoothTouch: false,
+        syncTouch: false,
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        infinite: false
+      });
+
+      // Integração Lenis ↔ GSAP ticker (1 RAF compartilhado, sem competir com scroll-stack do Método)
+      const startGsapTicker = () => {
+        if (typeof gsap === 'undefined' || !lenisInstance) return false;
+        gsap.ticker.add((time) => { lenisInstance.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+        if (typeof ScrollTrigger !== 'undefined') {
+          lenisInstance.on('scroll', ScrollTrigger.update);
+        }
+        return true;
+      };
+      let usingFallbackRaf = !startGsapTicker();
+      if (usingFallbackRaf) {
+        // Fallback rAF próprio até GSAP carregar; depois migra
+        function raf(time) {
+          if (!usingFallbackRaf) return;
+          lenisInstance.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+        const tryMigrate = () => {
+          if (startGsapTicker()) { usingFallbackRaf = false; return; }
+          setTimeout(tryMigrate, 80);
+        };
+        window.addEventListener('load', tryMigrate, { once: true });
+      }
+
+      window.__lenis = lenisInstance;
+      return true;
+    } catch (e) {
+      console.warn('[lenis] init falhou, usando scroll nativo:', e);
+      lenisInstance = null;
+      return false;
+    }
+  };
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    if (!ready()) window.addEventListener('load', ready, { once: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', ready, { once: true });
+  }
+})();
+
+/* Anchor links — viagem mais longa pra navegação por menu */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    if (lenisInstance) {
+      // "Voltar ao topo" (#hero) ganha viagem mais longa de elevador
+      const isBackToTop = href === '#hero';
+      lenisInstance.scrollTo(target, {
+        offset: -80,
+        duration: isBackToTop ? 2.5 : 2,
+        easing: HERO_EASING
+      });
+    } else {
+      window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+    }
+  });
+});
+
+/* ============================================
+   REVEAL — Apple fade up
+   ============================================ */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); revealObs.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+function reveal(sel, stagger) {
+  if (LOW_MOTION) {
+    document.querySelectorAll(sel).forEach(el => el.classList.add('reveal', 'revealed'));
+    return;
+  }
+  document.querySelectorAll(sel).forEach((el, i) => {
+    el.classList.add('reveal');
+    if (stagger) el.style.transitionDelay = (i % 4) * 0.07 + 's';
+    revealObs.observe(el);
+  });
+}
+
+reveal('.problema__card', true);
+reveal('.versus__col', true);
+reveal('.aria__card', true);
+reveal('.resultados__item', true);
+reveal('.personas__card', true);
+reveal('.faq__item', true);
+reveal('.team-card-wrap:not(:has(#tc-1))', true);  /* Pedro (#tc-1) sem fade-in de entrada */
+reveal('.cs-card', true);
+
+/* ============================================
+   QS CARD STACK — reveal suave on scroll (equivalente whileInView, once)
+   IntersectionObserver com rootMargin -50px pra disparar um pouco antes.
+   Fade + slide horizontal leve (x: 40 → 0) — GPU-only (transform + opacity).
+   ============================================ */
+(function() {
+  const stack = document.querySelector('.card-stack');
+  if (!stack) return;
+  /* 2026-04-29 (rev6): carrossel faz seu proprio init; reveal generico pula. */
+  if (stack.classList.contains('card-stack--carousel') ||
+      stack.classList.contains('card-stack--side-by-side')) return;
+  if (LOW_MOTION) {
+    stack.classList.add('card-stack--reveal', 'card-stack--revealed');
+    return;
+  }
+  stack.classList.add('card-stack--reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('card-stack--revealed');
+        io.unobserve(entry.target);  /* once: true */
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+  io.observe(stack);
+})();
+/* NUNCA aplicar reveal em .card-stack ou .qs-scene-wrap — elas ficam dentro
+   de section com scroll-lock; opacity:0 sem trigger deixa o card invisível
+   enquanto o user está preso pela trava. */
+
+/* ============================================
+   HERO FX — composição tech em canvas (grid pontos + linhas circuito + pulsos)
+   Pausa fora do viewport. DPR cap 2. Respeita reduced-motion.
+   ============================================ */
+(function initHeroFx() {
+  const canvas = document.getElementById('heroFxCanvas');
+  const host   = document.getElementById('heroFx');
+  if (!canvas || !host) return;
+  const ctx = canvas.getContext('2d', { alpha: true });
+  if (!ctx) return;
+
+  const reduce = PREFERS_REDUCE;
+  const isMobile = matchMedia('(max-width: 768px)').matches;
+
+  let W = 0, H = 0, dpr = 1;
+  let dots = [];
+  let segments = [];
+  let nodes = [];
+  let pulses = [];
+  let raf = null;
+  let running = false;
+  let t0 = performance.now();
+
+  const GAP = isMobile ? 52 : 40;
+  const DOT_COUNT_PULSE_RATIO = 0.15;   // fração de pontos que pulsam
+  const LINE_COUNT = isMobile ? 6 : 11;
+
+  function resize() {
+    const rect = host.getBoundingClientRect();
+    if (rect.width < 2 || rect.height < 2) return;
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.floor(rect.width);
+    H = Math.floor(rect.height);
+    canvas.width  = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    buildScene();
+  }
+
+  function rng(seed) {
+    let s = seed | 0;
+    return function() {
+      s = (s * 1664525 + 1013904223) | 0;
+      return ((s >>> 0) % 10000) / 10000;
+    };
+  }
+
+  function buildScene() {
+    // Grid pontos
+    dots = [];
+    const cols = Math.ceil(W / GAP) + 1;
+    const rows = Math.ceil(H / GAP) + 1;
+    const rand = rng(42);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const pulse = rand() < DOT_COUNT_PULSE_RATIO;
+        dots.push({
+          x: c * GAP,
+          y: r * GAP,
+          pulse,
+          phase: rand() * Math.PI * 2
+        });
+      }
+    }
+
+    // Linhas de circuito ortogonais — 2 a 4 segmentos cada, grudadas no grid
+    segments = [];
+    nodes = [];
+    const r2 = rng(7);
+    for (let i = 0; i < LINE_COUNT; i++) {
+      const startC = Math.floor(r2() * cols);
+      const startR = Math.floor(r2() * rows);
+      let cx = startC, cy = startR;
+      const segCount = 2 + Math.floor(r2() * 3);
+      const linePts = [{ x: cx * GAP, y: cy * GAP }];
+      let lastDir = null;
+      for (let s = 0; s < segCount; s++) {
+        // Alterna eixo pra manter ortogonal sem recuo
+        const horizontal = lastDir === 'v' || (lastDir === null && r2() < .5);
+        lastDir = horizontal ? 'h' : 'v';
+        const len = 3 + Math.floor(r2() * 6);
+        const dir = r2() < .5 ? -1 : 1;
+        if (horizontal) cx = Math.max(0, Math.min(cols, cx + len * dir));
+        else            cy = Math.max(0, Math.min(rows, cy + len * dir));
+        linePts.push({ x: cx * GAP, y: cy * GAP });
+      }
+      // Cria segmentos em sequência + nós nas pontas
+      const lineSegs = [];
+      for (let s = 0; s < linePts.length - 1; s++) {
+        const a = linePts[s], b = linePts[s + 1];
+        lineSegs.push({ ax: a.x, ay: a.y, bx: b.x, by: b.y });
+      }
+      segments.push({ segs: lineSegs, opacity: 0.3 + r2() * 0.4 });
+      // Nós: primeiro e último da linha
+      nodes.push({ x: linePts[0].x, y: linePts[0].y, phase: r2() * Math.PI * 2 });
+      nodes.push({ x: linePts[linePts.length - 1].x, y: linePts[linePts.length - 1].y, phase: r2() * Math.PI * 2 });
+
+      // Pulso por linha
+      const totalLen = lineSegs.reduce((sum, s) => sum + Math.hypot(s.bx - s.ax, s.by - s.ay), 0);
+      pulses.push({
+        lineIdx: i,
+        t: r2() * 1,            // 0..1 posição atual
+        speed: (0.12 + r2() * 0.12) / 1000, // por ms
+        totalLen
+      });
+    }
+  }
+
+  function pulsePosition(line, t) {
+    let dist = t * line.segs.reduce((s, seg) => s + Math.hypot(seg.bx - seg.ax, seg.by - seg.ay), 0);
+    for (const s of line.segs) {
+      const len = Math.hypot(s.bx - s.ax, s.by - s.ay);
+      if (dist <= len) {
+        const k = dist / len;
+        return { x: s.ax + (s.bx - s.ax) * k, y: s.ay + (s.by - s.ay) * k };
+      }
+      dist -= len;
+    }
+    const last = line.segs[line.segs.length - 1];
+    return { x: last.bx, y: last.by };
+  }
+
+  function render(nowMs) {
+    ctx.clearRect(0, 0, W, H);
+    const tt = (nowMs - t0) / 1000;
+
+    // Camada 1: pontos do grid
+    for (const d of dots) {
+      let a = 0.08;
+      if (d.pulse && !reduce) {
+        a = 0.08 + (Math.sin(tt * 1.8 + d.phase) * 0.5 + 0.5) * 0.17;
+      }
+      ctx.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, 1.1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Camada 2: linhas de circuito
+    ctx.lineWidth = 1;
+    ctx.lineCap = 'round';
+    for (const line of segments) {
+      ctx.strokeStyle = `rgba(255,107,0,${line.opacity.toFixed(3)})`;
+      ctx.beginPath();
+      for (const s of line.segs) {
+        ctx.moveTo(s.ax, s.ay);
+        ctx.lineTo(s.bx, s.by);
+      }
+      ctx.stroke();
+    }
+
+    // Nós nas pontas
+    for (const n of nodes) {
+      const pulse = reduce ? .5 : (0.5 + 0.5 * Math.sin(tt * 2 + n.phase));
+      const r = 2 + pulse * 1.2;
+      ctx.fillStyle = 'var(--bmai-orange)';
+      ctx.shadowColor = 'rgba(255,107,0,.85)';
+      ctx.shadowBlur = 8 + pulse * 6;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+
+    // Camada pulsos viajando nas linhas
+    if (!reduce) {
+      for (const p of pulses) {
+        p.t += p.speed * 16;
+        if (p.t > 1) p.t = 0;
+        const line = segments[p.lineIdx];
+        if (!line) continue;
+        const pos = pulsePosition(line, p.t);
+        const g = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 14);
+        g.addColorStop(0, 'rgba(255,165,92,.95)');
+        g.addColorStop(.4, 'rgba(255,107,0,.5)');
+        g.addColorStop(1, 'rgba(255,107,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 14, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function loop(now) {
+    if (!running) return;
+    render(now);
+    raf = requestAnimationFrame(loop);
+  }
+  function start() {
+    if (running) return;
+    running = true;
+    t0 = performance.now();
+    raf = requestAnimationFrame(loop);
+  }
+  function stop() {
+    running = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = null;
+  }
+
+  // Init + resize (debounced)
+  let resizeT = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { resize(); if (reduce) render(performance.now()); }, 140);
+  }, { passive: true });
+
+  resize();
+  if (reduce) {
+    render(performance.now());
+    return;
+  }
+
+  // Pausa fora do viewport
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0) start();
+      else stop();
+    });
+  }, { threshold: 0 });
+  io.observe(document.getElementById('hero') || host);
+
+  // Pausa em tab oculta
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else if (document.getElementById('hero')?.getBoundingClientRect().bottom > 0) start();
+  });
+})();
+
+/* ============================================
+   HERO TITLE — simple fade in
+   ============================================ */
+(function () {
+  const title = document.getElementById('heroTitle');
+  if (!title) return;
+  title.style.animation = 'fadeUp .6s var(--ease) .2s both';
+})();
+
+/* ============================================
+   COUNTERS — em mobile vai direto pro número final
+   2026-04-26 (re-apply): threshold 0.5 -> 0.1 (spans pequenos no mobile
+   raramente atingiam 50%) + rootMargin antecipa + safety net 4s pos-load
+   pra snapar caso IO falhe (Lenis, tab oculta, scroll rapido).
+   ============================================ */
+if (LOW_MOTION) {
+  document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count; });
+} else {
+  const counters = document.querySelectorAll('[data-count]');
+  const animatedCounters = new WeakSet();
+  const animateCounter = (el) => {
+    if (animatedCounters.has(el)) return;
+    animatedCounters.add(el);
+    const target = +el.dataset.count, dur = 1600, t0 = performance.now();
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = Math.floor((1 - Math.pow(2, -10 * p)) * target);
+      p < 1 ? requestAnimationFrame(tick) : (el.textContent = target);
+    })(t0);
+  };
+  const cObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      animateCounter(e.target);
+      cObs.unobserve(e.target);
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+  counters.forEach(el => cObs.observe(el));
+  // Safety net: 4s pos-load, snapa counters que ainda mostram "0"
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      counters.forEach(el => {
+        if (animatedCounters.has(el)) return;
+        if (el.textContent.trim() === '0') {
+          el.textContent = el.dataset.count;
+          animatedCounters.add(el);
+          try { cObs.unobserve(el); } catch (_) {}
+        }
+      });
+    }, 4000);
+  }, { once: true });
+}
+
+/* ============================================
+   MANIFESTO — staggered reveal (instant em mobile)
+   ============================================ */
+if (LOW_MOTION) {
+  document.querySelectorAll('.manifesto__line').forEach(l => l.classList.add('revealed'));
+} else {
+  const mObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); mObs.unobserve(e.target); } });
+  }, { threshold: .2 });
+  document.querySelectorAll('.manifesto__line').forEach((l, i) => {
+    l.style.transitionDelay = i * .14 + 's';
+    mObs.observe(l);
+  });
+}
+
+/* ============================================
+   FAQ
+   ============================================ */
+document.querySelectorAll('.faq__q').forEach(b => {
+  b.addEventListener('click', () => {
+    const it = b.parentElement, open = it.classList.contains('active');
+    document.querySelectorAll('.faq__item').forEach(i => i.classList.remove('active'));
+    if (!open) it.classList.add('active');
+  });
+});
+
+/* ============================================
+   PERSONA TILT (desktop)
+   ============================================ */
+if (matchMedia('(min-width:769px) and (hover:hover)').matches) {
+  document.querySelectorAll('[data-tilt]').forEach(c => {
+    c.addEventListener('mousemove', e => {
+      const r = c.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      c.style.transform = `translateY(-4px) perspective(600px) rotateX(${y * -3}deg) rotateY(${x * 3}deg)`;
+    });
+    c.addEventListener('mouseleave', () => c.style.transform = '');
+  });
+}
+
+/* ============================================
+   NAV ACTIVE
+   ============================================ */
+const navLinks = document.querySelectorAll('.floatnav__item');
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+  });
+}, { rootMargin: '-40% 0px -55% 0px' }).observe;
+document.querySelectorAll('section[id]').forEach(s => {
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' }).observe(s);
+});
+
+/* ============================================
+   TEAM MOBILE — cinematic full-screen controller
+   Pointer events nativos (sem libs). Desktop continua no IIFE abaixo.
+   ============================================ */
+(function () {
+  const root = document.getElementById('team-mobile');
+  if (!root) return;
+  // Só ativa em mobile (CSS já esconde em desktop, mas evita trabalho do JS)
+  if (!matchMedia('(max-width: 768px)').matches) return;
+
+  const slides = Array.from(root.querySelectorAll('.team-mslide'));
+  const bars   = Array.from(root.querySelectorAll('#teamMobileProgress .carousel-progress__segment'));
+  const prevZ  = document.getElementById('teamMPrev');
+  const nextZ  = document.getElementById('teamMNext');
+  const hint   = document.getElementById('teamMobileHint');
+  const track  = document.getElementById('teamMobileTrack');
+  if (!slides.length || !track) return;
+  const PARALLAX = 0.8;
+  const canVibrate = typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function';
+
+  let current = 0;
+  let dragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragDx = 0;
+  let dragLocked = null; // 'x' | 'y' | null
+  let pointerId = null;
+  let hintHidden = false;
+  const PREFERS_REDUCE_LOCAL = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SWIPE_THRESHOLD = 60;
+
+  function hideHint(force) {
+    if (hintHidden && !force) return;
+    hintHidden = true;
+    root.classList.add('is-hidden-hint');
+  }
+  // Hint some após 3s mesmo sem interação
+  setTimeout(() => hideHint(false), 3000);
+
+  function goTo(idx) {
+    const n = slides.length;
+    const next = ((idx % n) + n) % n;
+    if (next === current) return;
+    slides.forEach((s, i) => {
+      const active = i === next;
+      s.classList.toggle('is-active', active);
+      s.classList.toggle('is-out', !active && i === current);
+      s.setAttribute('aria-hidden', active ? 'false' : 'true');
+      s.style.transform = '';
+      const pic = s.querySelector('.team-mslide__picture img');
+      if (pic) pic.style.transform = '';
+    });
+    bars.forEach((b, i) => {
+      b.classList.toggle('is-active', i === next);
+      b.setAttribute('aria-selected', i === next ? 'true' : 'false');
+    });
+    current = next;
+    hideHint(true);
+    if (canVibrate && !PREFERS_REDUCE_LOCAL) {
+      try { navigator.vibrate(10); } catch (_) {}
+    }
+    setTimeout(() => {
+      slides.forEach(s => { s.style.willChange = ''; });
+    }, 500);
+  }
+
+  // Bars (Stories) — clique pula slide
+  bars.forEach((bar) => {
+    bar.addEventListener('click', () => {
+      const idx = parseInt(bar.dataset.slide, 10);
+      goTo(idx);
+    });
+  });
+
+  // Zonas laterais
+  if (prevZ) prevZ.addEventListener('click', () => goTo(current - 1));
+  if (nextZ) nextZ.addEventListener('click', () => goTo(current + 1));
+
+  // Pointer events pro swipe
+  function onDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    pointerId = e.pointerId;
+    dragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    dragDx = 0;
+    dragLocked = null;
+    root.classList.add('is-dragging');
+    try { root.setPointerCapture(pointerId); } catch (_) {}
+  }
+  function onMove(e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    if (!dragLocked) {
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        dragLocked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      } else return;
+    }
+    if (dragLocked !== 'x') return;
+    e.preventDefault();
+    dragDx = dx;
+    const w = root.clientWidth || 360;
+    const pct = Math.max(-1, Math.min(1, dx / w));
+    // Move ativo com o dedo (slide 1x); foto interna move 0.8x = parallax
+    const activeEl = slides[current];
+    const nextEl   = slides[(current + 1) % slides.length];
+    const prevEl   = slides[(current - 1 + slides.length) % slides.length];
+    activeEl.style.transform = `translate3d(${dx}px, 0, 0) scale(1)`;
+    activeEl.style.opacity   = String(1 - Math.abs(pct) * 0.4);
+    const activeImg = activeEl.querySelector('.team-mslide__picture img');
+    if (activeImg) activeImg.style.transform = `translate3d(${dx * (PARALLAX - 1)}px, 0, 0) scale(1.04)`;
+    if (dx < 0) {
+      nextEl.style.visibility = 'visible';
+      nextEl.style.opacity    = String(Math.abs(pct));
+      nextEl.style.transform  = `translate3d(${w + dx}px, 0, 0) scale(${1.05 - 0.05 * Math.abs(pct)})`;
+      const nImg = nextEl.querySelector('.team-mslide__picture img');
+      if (nImg) nImg.style.transform = `translate3d(${(w + dx) * (PARALLAX - 1)}px, 0, 0) scale(1.04)`;
+      prevEl.style.transform  = '';
+      prevEl.style.opacity    = '';
+      const pImg = prevEl.querySelector('.team-mslide__picture img');
+      if (pImg) pImg.style.transform = '';
+    } else if (dx > 0) {
+      prevEl.style.visibility = 'visible';
+      prevEl.style.opacity    = String(Math.abs(pct));
+      prevEl.style.transform  = `translate3d(${-w + dx}px, 0, 0) scale(${1.05 - 0.05 * Math.abs(pct)})`;
+      const pImg = prevEl.querySelector('.team-mslide__picture img');
+      if (pImg) pImg.style.transform = `translate3d(${(-w + dx) * (PARALLAX - 1)}px, 0, 0) scale(1.04)`;
+      nextEl.style.transform  = '';
+      nextEl.style.opacity    = '';
+      const nImg = nextEl.querySelector('.team-mslide__picture img');
+      if (nImg) nImg.style.transform = '';
+    }
+  }
+  function onUp(e) {
+    if (!dragging || (pointerId !== null && e.pointerId !== pointerId)) return;
+    dragging = false;
+    root.classList.remove('is-dragging');
+    try { root.releasePointerCapture(pointerId); } catch (_) {}
+    pointerId = null;
+
+    // Limpa inline styles temporários de drag (slide + foto)
+    slides.forEach(s => {
+      s.style.transform  = '';
+      s.style.opacity    = '';
+      s.style.visibility = '';
+      const img = s.querySelector('.team-mslide__picture img');
+      if (img) img.style.transform = '';
+    });
+
+    if (dragLocked === 'x' && Math.abs(dragDx) > SWIPE_THRESHOLD) {
+      if (dragDx < 0) goTo(current + 1);
+      else goTo(current - 1);
+    }
+    dragLocked = null;
+    dragDx = 0;
+  }
+  root.addEventListener('pointerdown', onDown);
+  root.addEventListener('pointermove', onMove, { passive: false });
+  root.addEventListener('pointerup', onUp);
+  root.addEventListener('pointercancel', onUp);
+
+  // Teclado nas zonas
+  [prevZ, nextZ].forEach((z, idx) => {
+    if (!z) return;
+    z.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        goTo(idx === 0 ? current - 1 : current + 1);
+      }
+    });
+  });
+})();
+
+/* ============================================
+   TEAM — hover-driven desktop (click/tap no touch)
+   ============================================ */
+(function () {
+  const wraps = Array.from(document.querySelectorAll('.team-card-wrap'));
+  if (!wraps.length) return;
+  const section = document.getElementById('para-quem');
+  const pin = document.getElementById('team-pin');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
+
+  // ARIA + semântica
+  wraps.forEach((wrap, i) => {
+    wrap.setAttribute('role', 'button');
+    wrap.setAttribute('tabindex', '0');
+    wrap.setAttribute('aria-expanded', 'false');
+    const name = wrap.querySelector('.tc-front-info h3')?.textContent?.trim() || `Membro ${i + 1}`;
+    wrap.setAttribute('aria-label', `Ver bio de ${name}`);
+  });
+
+  function flipOne(wrap) {
+    wraps.forEach(w => {
+      const on = w === wrap;
+      w.classList.toggle('flipped', on);
+      w.setAttribute('aria-expanded', on ? 'true' : 'false');
+    });
+  }
+  function flipNone() {
+    wraps.forEach(w => {
+      w.classList.remove('flipped');
+      w.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  // Keyboard: Enter/Space toggle, Esc fecha
+  wraps.forEach(wrap => {
+    wrap.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (wrap.classList.contains('flipped')) flipNone();
+        else flipOne(wrap);
+      } else if (e.key === 'Escape') {
+        flipNone();
+        wrap.blur();
+      }
+    });
+  });
+
+  if (isTouch) {
+    // ── Touch: click toggle + tap fora fecha + auto-flip stagger ──
+    wraps.forEach(wrap => {
+      wrap.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (wrap.classList.contains('flipped')) flipNone();
+        else flipOne(wrap);
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (section && !section.contains(e.target)) flipNone();
+    });
+
+    // Swipe horizontal — navega entre cards do time
+    if (section) {
+      let sx = 0, sy = 0;
+      section.addEventListener('touchstart', e => {
+        const t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY;
+      }, { passive: true });
+      section.addEventListener('touchend', e => {
+        const t = e.changedTouches[0];
+        const dx = t.clientX - sx;
+        const dy = t.clientY - sy;
+        if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+        // acha atual (primeiro flipped) e navega
+        let cur = wraps.findIndex(w => w.classList.contains('flipped'));
+        if (cur < 0) cur = 0;
+        const dir = dx < 0 ? 1 : -1;
+        const n = (cur + dir + wraps.length) % wraps.length;
+        flipOne(wraps[n]);
+      }, { passive: true });
+    }
+
+    // Auto-flip stagger ao entrar viewport (demo visual em mobile)
+    if (pin && !reduceMotion) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          wraps.forEach((w, i) => setTimeout(() => w.classList.add('flipped'), 600 + i * 220));
+          io.disconnect();
+        });
+      }, { threshold: 0.35 });
+      io.observe(pin);
+    }
+    return;
+  }
+
+  // ── Desktop: hover-driven com delay 120/250 ──
+  let enterTimer = null;
+  let leaveTimer = null;
+
+  wraps.forEach(wrap => {
+    wrap.addEventListener('mouseenter', () => {
+      clearTimeout(leaveTimer);
+      clearTimeout(enterTimer);
+      enterTimer = setTimeout(() => flipOne(wrap), 120);
+    });
+    wrap.addEventListener('focus', () => {
+      clearTimeout(leaveTimer);
+      clearTimeout(enterTimer);
+      flipOne(wrap);
+    });
+    wrap.addEventListener('click', () => {
+      // Click em desktop: bypass delay, abre/fecha direto
+      clearTimeout(enterTimer);
+      clearTimeout(leaveTimer);
+      if (wrap.classList.contains('flipped')) flipNone();
+      else flipOne(wrap);
+    });
+  });
+
+  // Sair da seção → colapsa após 250ms (tolerância)
+  if (section) {
+    section.addEventListener('mouseleave', () => {
+      clearTimeout(enterTimer);
+      clearTimeout(leaveTimer);
+      leaveTimer = setTimeout(flipNone, 250);
+    });
+    section.addEventListener('mouseenter', () => {
+      clearTimeout(leaveTimer);
+    });
+    section.addEventListener('focusout', (e) => {
+      if (!section.contains(e.relatedTarget)) {
+        clearTimeout(leaveTimer);
+        leaveTimer = setTimeout(flipNone, 250);
+      }
+    });
+  }
+})();
+
+/* ============================================
+   MÉTODO DEIA — scroll-stack (efeito Algarys)
+   GSAP + ScrollTrigger pina cada card e empilha o próximo.
+   Integração com Lenis via gsap.ticker (ver bloco LENIS abaixo).
+   ============================================ */
+(function() {
+  const ARIA_KEYS = ['d', 'e', 'i', 'a'];
+  const ARIA_LETTERS = { d: 'D', e: 'E', i: 'I', a: 'A' };
+  function getAriaData() {
+    const t = (window.I18N && window.I18N.t.bind(window.I18N)) || ((k) => k);
+    return ARIA_KEYS.map((k, idx) => ({
+      num: `0${idx + 1} / 04`,
+      letter: ARIA_LETTERS[k],
+      title:    t(`aria.${k}.title`),
+      subtitle: t(`aria.${k}.subtitle`),
+      desc:     t(`aria.${k}.desc`),
+      bullets:  [1, 2, 3, 4, 5].map(n => t(`aria.${k}.b${n}`)),
+      tag:      t(`aria.${k}.tag`),
+      result:   t(`aria.${k}.result`)
+    }));
+  }
+
+  const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+
+  const stack       = document.getElementById('metodoStack');
+  const section     = document.getElementById('metodo');
+  const progressEl  = document.getElementById('metodoProgress');
+  const fillEl      = document.getElementById('metodoProgressFill');
+  const phaseLabel  = document.getElementById('metodoProgressPhase');
+  const countLabel  = document.getElementById('metodoProgressCount');
+  const markers     = progressEl ? Array.from(progressEl.querySelectorAll('.metodo__progress-marker')) : [];
+  if (!stack || !section) return;
+
+  let ARIA_DATA = getAriaData();
+  let stackTriggers = [];
+
+  function cardHTML(d, i) {
+    return `
+      <article class="metodo__card" data-card="${i}" data-phase="${escapeHtml(d.letter)}">
+        <div class="metodo__star-watermark" aria-hidden="true">
+          <img src="assets/images/simbolo-laranja.svg" alt="" draggable="false"/>
+        </div>
+        <header class="metodo__card-header">
+          <span class="metodo__phase-number">${escapeHtml(d.num)}</span>
+          <span class="metodo__phase-label">FASE · ${escapeHtml(d.title)}</span>
+        </header>
+        <div class="metodo__card-grid">
+          <div class="metodo__col metodo__col--left">
+            <div class="metodo__letter" aria-hidden="true">${escapeHtml(d.letter)}</div>
+            <h3 class="metodo__title">${escapeHtml(d.title)}</h3>
+            <p class="metodo__subtitle">${escapeHtml(d.subtitle)}</p>
+            <p class="metodo__description">${escapeHtml(d.desc)}</p>
+          </div>
+          <div class="metodo__col metodo__col--right">
+            <ul class="metodo__list">${d.bullets.map(b => `<li><span class="metodo__arrow" aria-hidden="true">→</span>${escapeHtml(b)}</li>`).join('')}</ul>
+            <hr class="metodo__divider"/>
+            <span class="metodo__tag">${escapeHtml(d.tag)}</span>
+            <div class="metodo__deliverable">
+              <span class="metodo__check" aria-hidden="true">✓</span>
+              <span class="metodo__deliverable-text"><em>${escapeHtml(d.result)}</em></span>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderStack() {
+    stack.innerHTML = ARIA_DATA.map((d, i) => cardHTML(d, i)).join('');
+  }
+
+  function setActiveIndicator(i) {
+    markers.forEach((m, j) => {
+      m.classList.remove('is-active', 'is-past');
+      if (j === i)      m.classList.add('is-active');
+      else if (j < i)   m.classList.add('is-past');
+    });
+    if (phaseLabel && ARIA_DATA[i]) phaseLabel.textContent = ARIA_DATA[i].title;
+    if (countLabel) countLabel.textContent = `${String(i + 1).padStart(2, '0')} / 04`;
+  }
+
+  function teardown() {
+    stackTriggers.forEach(t => t.kill());
+    stackTriggers = [];
+  }
+
+  function buildStack() {
+    teardown();
+    // Mobile: NAO ativar scroll-stack do GSAP. CSS cuida do efeito com position: sticky
+    // (sticky stack lite). Pin do GSAP no mobile causa travamento de scroll.
+    if (matchMedia('(max-width: 768px)').matches) return;
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const container = document.getElementById('metodoScrollContainer');
+    const cards = gsap.utils.toArray('.metodo__card');
+    if (!container || !cards.length) return;
+
+    // Estado inicial: card 0 visível em y:0; demais empurrados pra baixo da tela
+    cards.forEach((card, i) => {
+      gsap.set(card, {
+        y: i === 0 ? 0 : '100vh',
+        zIndex: i + 1            // crescente: próximo sempre cobre anterior
+      });
+    });
+
+    // Timeline ÚNICA controla todo o empilhamento via scrub
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        invalidateOnRefresh: true,
+        fastScrollEnd: true,
+        preventOverlaps: true
+      }
+    });
+    stackTriggers.push(tl.scrollTrigger);
+
+    // Defesa extra mobile: força update do ScrollTrigger durante touch scroll
+    // (caso o Lenis em algum browser mobile não emita scroll com regularidade)
+    const onTouchScroll = () => ScrollTrigger.update();
+    window.addEventListener('touchmove', onTouchScroll, { passive: true });
+    window.addEventListener('touchend',  onTouchScroll, { passive: true });
+    stackTriggers.push({ kill: () => {
+      window.removeEventListener('touchmove', onTouchScroll);
+      window.removeEventListener('touchend',  onTouchScroll);
+    }});
+
+    // Cards 1..N sobem de 100vh → 0 em segmentos sequenciais da timeline
+    cards.forEach((card, i) => {
+      if (i === 0) return;
+      const segmentStart = (i - 0.5) / cards.length;
+      const segmentEnd   = i / cards.length;
+      tl.to(card, {
+        y: 0,
+        ease: 'power2.out',
+        duration: segmentEnd - segmentStart
+      }, segmentStart);
+    });
+
+    // Barra de progresso flutuante: 1 trigger único atualiza fill + ativa marker
+    // + auto-hide após 1.5s sem scroll
+    let hideTimeout = null;
+    const totalCards = cards.length;
+    const progressTrigger = ScrollTrigger.create({
+      trigger: container,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        const pct = self.progress;
+        if (fillEl) fillEl.style.width = `${pct * 100}%`;
+        const activeIdx = Math.min(Math.floor(pct * totalCards), totalCards - 1);
+        setActiveIndicator(activeIdx);
+        if (progressEl) progressEl.classList.add('is-visible');
+        if (hideTimeout) clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+          if (progressEl) progressEl.classList.remove('is-visible');
+        }, 1500);
+      },
+      onEnter: () => {
+        if (!progressEl) return;
+        progressEl.classList.add('is-visible');
+        if (hideTimeout) clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => progressEl.classList.remove('is-visible'), 1500);
+      },
+      onLeave:     () => { if (progressEl) progressEl.classList.remove('is-visible'); if (hideTimeout) clearTimeout(hideTimeout); },
+      onLeaveBack: () => { if (progressEl) progressEl.classList.remove('is-visible'); if (hideTimeout) clearTimeout(hideTimeout); }
+    });
+    stackTriggers.push(progressTrigger);
+    stackTriggers.push({ kill: () => { if (hideTimeout) clearTimeout(hideTimeout); } });
+
+    setActiveIndicator(0);
+  }
+
+  // 2026-04-27: mobile carousel + EFEITO destaque progressivo.
+  // Dots: atualiza ao arrastar. --accent: 0 a 1 por card baseado em
+  // proximidade ao centro do carousel viewport (scroll-based CSS var).
+  function initMobileCardReveal() {
+    if (!matchMedia('(max-width: 768px)').matches) return;
+    const stack = document.getElementById('metodoStack');
+    if (!stack) return;
+    const cards = Array.from(stack.querySelectorAll('.metodo__card'));
+    const dotsWrap = document.getElementById('metodoDots');
+    const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.metodo__dot')) : [];
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const center = stack.scrollLeft + stack.clientWidth / 2;
+      let bestIdx = 0, bestDist = Infinity;
+      cards.forEach((card, i) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const dist = Math.abs(center - cardCenter);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+        // accent: 1 quando card centralizado, 0 quando 1+ cardWidth fora
+        const accent = Math.max(0, Math.min(1, 1 - dist / (card.offsetWidth * 0.85)));
+        card.style.setProperty('--accent', accent.toFixed(3));
+      });
+      if (dots.length) dots.forEach((d, i) => d.classList.toggle('is-active', i === bestIdx));
+    };
+    stack.addEventListener('scroll',
+      () => { if (!raf) raf = requestAnimationFrame(update); },
+      { passive: true });
+    // Inicializa apos render (next frame)
+    requestAnimationFrame(update);
+  }
+
+  function init() {
+    if (PREFERS_REDUCE) {
+      // Fallback: cards aparecem empilhados estáticos sem pin
+      renderStack();
+      setActiveIndicator(0);
+      return;
+    }
+    renderStack();
+    // Mobile: scroll nativo. Sem progress flutuante (escondido via CSS).
+    // Cards revelam com fade-in via IntersectionObserver (.is-visible).
+    if (matchMedia('(max-width: 768px)').matches) {
+      initMobileCardReveal();
+      return;
+    }
+    // Desktop: aguarda GSAP/ScrollTrigger carregarem (script defer)
+    const tryBuild = () => {
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+        buildStack();
+        ScrollTrigger.refresh();
+      } else {
+        setTimeout(tryBuild, 50);
+      }
+    };
+    tryBuild();
+  }
+
+  // i18n re-render
+  window.addEventListener('i18n:change', () => {
+    ARIA_DATA = getAriaData();
+    renderStack();
+    if (matchMedia('(max-width: 768px)').matches) {
+      // Mobile: cards foram recriados, religar IntersectionObserver de fade-in
+      initMobileCardReveal();
+      return;
+    }
+    if (typeof ScrollTrigger !== 'undefined' && !PREFERS_REDUCE) {
+      buildStack();
+      ScrollTrigger.refresh();
+    }
+  });
+
+  // Resize: pequeno (URL bar) → debounce 250ms; grande (rotate) → imediato
+  let resizeT = null;
+  let lastViewportHeight = window.innerHeight;
+  window.addEventListener('resize', () => {
+    if (PREFERS_REDUCE) return;
+    // Mobile: nada a recalcular (sem pin/scrub). IntersectionObserver continua valido.
+    if (matchMedia('(max-width: 768px)').matches) return;
+    if (typeof ScrollTrigger === 'undefined') return;
+    const currentHeight = window.innerHeight;
+    const diff = Math.abs(currentHeight - lastViewportHeight);
+    if (diff >= 200) {
+      // Rotação ou resize grande — recompute imediato
+      buildStack();
+      ScrollTrigger.refresh();
+      lastViewportHeight = currentHeight;
+    } else if (diff > 10) {
+      // URL bar mobile aparecendo/sumindo — debounce
+      clearTimeout(resizeT);
+      resizeT = setTimeout(() => {
+        ScrollTrigger.refresh();
+        lastViewportHeight = currentHeight;
+      }, 250);
+    }
+  });
+
+  if (document.readyState === 'complete') init();
+  else window.addEventListener('load', init);
+})();
+
+/* ============================================
+   QS CARD STACK — HOVER slide (esq→dir) + EXPLODE ao sair o cursor
+   ============================================ */
+function _initCardStackFx() {
+  const stack = document.querySelector('.card-stack');
+  if (!stack || stack.dataset.fxInit === '1') return;
+  stack.dataset.fxInit = '1';
+
+  // 2026-04-29 (rev6): carrossel estilo Apple — scroll-snap + active detection
+  // por scroll position, setas (desktop) + dots clicaveis. Mobile/desktop iguais.
+  if (stack.classList.contains('card-stack--carousel')) {
+    const items = Array.from(stack.querySelectorAll('.card-stack__item'));
+    if (!items.length) return;
+    const len = items.length;
+
+    let activeIdx = 0;
+    const setActive = (idx) => {
+      activeIdx = idx;
+      items.forEach((it, i) => it.classList.toggle('is-active', i === idx));
+    };
+
+    /* Wrap modular — idx pode ser negativo ou > len, sempre cai em [0, len-1] */
+    const wrap = (idx) => ((idx % len) + len) % len;
+
+    const scrollToIdx = (idx) => {
+      const wrapped = wrap(idx);
+      const target = items[wrapped];
+      if (!target) return;
+      const left = target.offsetLeft - (stack.clientWidth - target.clientWidth) / 2;
+      stack.scrollTo({ left: Math.max(0, left), behavior: LOW_MOTION ? 'auto' : 'smooth' });
+      setActive(wrapped);
+    };
+
+    const computeActive = () => {
+      const center = stack.scrollLeft + stack.clientWidth / 2;
+      let bestIdx = 0, bestDist = Infinity;
+      items.forEach((it, i) => {
+        const itCenter = it.offsetLeft + it.clientWidth / 2;
+        const dist = Math.abs(itCenter - center);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+      });
+      if (bestIdx !== activeIdx) setActive(bestIdx);
+    };
+
+    let raf = 0;
+    stack.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; computeActive(); });
+    }, { passive: true });
+
+    /* Auto-rotate (carrossel de verdade): avanca a cada 5s, pausa no hover/drag */
+    const AUTO_INTERVAL = 5000;
+    let autoTimer = null;
+    const startAuto = () => {
+      if (LOW_MOTION) return;
+      stopAuto();
+      autoTimer = setInterval(() => scrollToIdx(activeIdx + 1), AUTO_INTERVAL);
+    };
+    const stopAuto = () => {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    };
+    stack.addEventListener('mouseenter', stopAuto);
+    stack.addEventListener('mouseleave', startAuto);
+    stack.addEventListener('touchstart', stopAuto, { passive: true });
+    stack.addEventListener('touchend',  () => setTimeout(startAuto, 1500), { passive: true });
+
+    /* Drag-to-swipe com cursor (desktop): swipe > 50px avanca ±1 card (com wrap) */
+    const SWIPE_THRESHOLD = 50;
+    let isDown = false;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragDelta = 0;
+    let dragMoved = false;
+
+    stack.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      isDown = true;
+      dragMoved = false;
+      dragDelta = 0;
+      dragStartX = e.pageX;
+      dragStartScroll = stack.scrollLeft;
+      stack.classList.add('is-dragging');
+      stopAuto();
+    });
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      dragDelta = e.pageX - dragStartX;
+      if (Math.abs(dragDelta) > 4) dragMoved = true;
+      stack.scrollLeft = dragStartScroll - dragDelta;
+    };
+    const onMouseUp = () => {
+      if (!isDown) return;
+      isDown = false;
+      stack.classList.remove('is-dragging');
+      if (dragMoved) {
+        if (Math.abs(dragDelta) > SWIPE_THRESHOLD) {
+          scrollToIdx(activeIdx + (dragDelta > 0 ? -1 : 1));
+        } else {
+          scrollToIdx(activeIdx);
+        }
+      }
+      // Reinicia auto-rotate apos 2s sem interacao
+      setTimeout(startAuto, 2000);
+    };
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+
+    stack.addEventListener('click', (e) => {
+      if (dragMoved) { e.preventDefault(); e.stopPropagation(); dragMoved = false; }
+    }, true);
+    stack.addEventListener('dragstart', (e) => e.preventDefault());
+
+    /* Pausa auto-rotate quando aba fica oculta (economiza CPU, evita pulo ao voltar) */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+      else startAuto();
+    });
+
+    /* Estado inicial */
+    setActive(0);
+    stack.scrollLeft = 0;
+    requestAnimationFrame(computeActive);
+    window.addEventListener('resize', () => requestAnimationFrame(computeActive), { passive: true });
+
+    /* So inicia auto-rotate quando o carrossel entra no viewport */
+    if ('IntersectionObserver' in window) {
+      const visIO = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) startAuto();
+          else stopAuto();
+        });
+      }, { threshold: 0.3 });
+      visIO.observe(stack);
+    } else {
+      startAuto();
+    }
+    return;
+  }
+
+  // Mobile: carousel horizontal com swipe — dots + EFEITO #4 border glow
+  if (IS_TOUCH || matchMedia('(max-width: 768px)').matches) {
+    const dotsWrap = document.getElementById('cardStackDots');
+    if (dotsWrap) {
+      const dots = Array.from(dotsWrap.querySelectorAll('.card-stack-dot'));
+      let raf = 0;
+      const update = () => {
+        raf = 0;
+        const idx = Math.round(stack.scrollLeft / stack.clientWidth);
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      };
+      stack.addEventListener('scroll',
+        () => { if (!raf) raf = requestAnimationFrame(update); },
+        { passive: true });
+      update();
+    }
+    // Border glow on view: dispara .qs-glow quando .card-stack entra viewport
+    if ('IntersectionObserver' in window) {
+      const glowIO = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            stack.classList.add('qs-glow');
+            glowIO.unobserve(stack);
+          }
+        });
+      }, { threshold: 0.2 });
+      glowIO.observe(stack);
+    } else {
+      stack.classList.add('qs-glow');
+    }
+    setTimeout(() => stack.classList.add('qs-glow'), 4000); // safety
+    return;
+  }
+
+  // Desktop 2026-04-26 (replicar Metodo): pin com 200% de scroll + easing power2.out
+  // (Metodo usa container 400vh com 4 cards = 100vh por card; aqui 2 cards = 200%
+  // de pin + Card 2 anima durante a primeira metade no segmento 0->0.5, igual
+  // primeiro card da timeline do buildStack do Metodo.)
+  const tryBuild = () => {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      setTimeout(tryBuild, 80);
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+    const card1 = stack.querySelector('.card-stack__item--1');
+    const card2 = stack.querySelector('.card-stack__item--2');
+    if (!card1 || !card2) return;
+
+    // 2026-04-26: replicar EXATAMENTE buildStack do Metodo.
+    // CSS cuida da "parada" via container 200vh + sticky inner 100vh.
+    // GSAP so anima Card 2 via scrub conforme o scroll cruza o container.
+    const container = stack.closest('.qs__scroll-container');
+    if (!container) return;
+
+    gsap.set(card1, { y: 0, zIndex: 1 });
+    gsap.set(card2, { y: '100vh', zIndex: 2 });
+
+    // Timeline com SEGMENTOS igual buildStack do Metodo — Card 2 anima
+    // do 25% ao 50% do scroll, depois fica PARADO ate o fim (parada visivel
+    // identica aos cards do Metodo que travam apos subir).
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        invalidateOnRefresh: true,
+        fastScrollEnd: true,
+        preventOverlaps: true,
+      }
+    });
+    // Para 2 cards: segmentStart = (1-0.5)/2 = 0.25, segmentEnd = 1/2 = 0.5
+    tl.to(card2, { y: 0, ease: 'power2.out', duration: 0.25 }, 0.25);
+  };
+  tryBuild();
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _initCardStackFx);
+} else {
+  _initCardStackFx();
+}
+
+/* ============================================
+   2026-04-29 (rev12) — QUEM SOMOS flip cards 3D
+   Pin a section + scrub: cada card vira (rotateY 180) em stagger
+   conforme o user rola pela area pinada. Fallback CSS: cards
+   ja respondem a hover se GSAP nao carregar.
+   ============================================ */
+(function initQsFlipCards() {
+  const init = () => {
+    const stage = document.getElementById('qsFlipStage');
+    if (!stage || stage.dataset.fxInit === '1') return;
+    const inners = Array.from(stage.querySelectorAll('[data-flip-card]'));
+    if (!inners.length) return;
+    stage.dataset.fxInit = '1';
+
+    /* Mobile: stage entra no viewport, todos os cards flippam em stagger. */
+    const isMobile = matchMedia('(max-width: 900px)').matches;
+    if (isMobile || LOW_MOTION || !('IntersectionObserver' in window)) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          inners.forEach((el, i) => {
+            setTimeout(() => {
+              el.style.transition = 'transform 1s cubic-bezier(.22, 1, .36, 1)';
+              el.style.transform = 'rotateY(180deg)';
+            }, i * 350);
+          });
+          io.disconnect();
+        }
+      }, { threshold: 0.2 });
+      io.observe(stage);
+      return;
+    }
+
+    /* Desktop: GSAP ScrollTrigger pin + scrub */
+    const tryBuild = () => {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        return setTimeout(tryBuild, 80);
+      }
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* Estado inicial — todos cards mostrando o front */
+      gsap.set(inners, { rotationY: 0, transformPerspective: 1800, transformOrigin: 'center center' });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: stage,
+          start: 'top top',
+          end: '+=350%',
+          pin: true,
+          scrub: 2,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // 2026-04-29 (rev33): efeito dominó — cada card 0.5 depois do anterior.
+      tl.to(inners, {
+        rotationY: 180,
+        ease: 'power2.inOut',
+        duration: 0.8,
+        stagger: 0.5,
+      }, 0);
+    };
+    tryBuild();
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+/* 2026-04-26: video do time — som ATIVA quando o video entra no viewport
+   (e o user ja interagiu com a pagina). Som desativa quando sai do viewport. */
+(function initTeamVideo() {
+  const init = () => {
+    const video = document.querySelector('.team-video');
+    const stage = document.getElementById('teamVideoStage');
+    if (!video) return;
+
+    // Aspect-ratio do stage assim que metadata carrega
+    if (stage) {
+      const applyAspect = () => {
+        const w = video.videoWidth, h = video.videoHeight;
+        if (w && h) stage.style.setProperty('--video-aspect', `${w} / ${h}`);
+      };
+      if (video.readyState >= 1) applyAspect();
+      else video.addEventListener('loadedmetadata', applyAspect, { once: true });
+    }
+
+    // Marca falha → CSS mostra fallback estatico
+    const markFailed = (reason) => {
+      console.warn('[team-video] fallback ativo:', reason);
+      video.classList.add('team-video--failed');
+    };
+    video.addEventListener('error', () => {
+      const err = video.error;
+      markFailed(`error code=${err && err.code} msg=${err && err.message}`);
+    });
+    video.addEventListener('contextmenu', e => e.preventDefault());
+
+    // 2026-04-27: PLAY/PAUSE controlado por IntersectionObserver.
+    // Video roda QUANDO usuario entra na secao e pausa AO SAIR.
+    // Vale pra mobile + desktop. Stall watchdog so dispara DEPOIS que o
+    // video entrou em viewport (evita falso positivo se ele esta out-of-view
+    // e ainda nao tentou carregar).
+    let inSection = false;
+    let userActivated = false;
+    let stallTimer = null;
+    let playAttempted = false;
+
+    const tryPlay = () => {
+      const p = video.play();
+      playAttempted = true;
+      if (p && p.catch) p.catch(err => {
+        console.warn('[team-video] play() rejected:', err.name, err.message);
+        if (err.name === 'NotAllowedError' || err.name === 'AbortError') {
+          markFailed(`play() ${err.name}`);
+        }
+      });
+    };
+
+    const handleEnter = () => {
+      // Cancela stall timer anterior se houver
+      if (stallTimer) clearTimeout(stallTimer);
+      // Stall watchdog 10s: se nao carregar nada apos entrar na secao, mostra fallback
+      stallTimer = setTimeout(() => {
+        if (video.readyState < 2) markFailed('stalled — readyState < HAVE_CURRENT_DATA apos 10s na viewport');
+      }, 10000);
+      // Carrega + toca
+      if (video.readyState >= 2) {
+        tryPlay();
+      } else {
+        // Forca preload se ainda nao baixou
+        if (video.preload !== 'auto') video.preload = 'auto';
+        video.load();
+        video.addEventListener('loadeddata', tryPlay, { once: true });
+      }
+    };
+
+    const handleLeave = () => {
+      if (stallTimer) { clearTimeout(stallTimer); stallTimer = null; }
+      if (!video.paused) video.pause();
+      // 2026-04-29: NAO re-muta ao sair. Estado de mute eh decisao do user
+      // (via botao de overlay) e persiste ao voltar pra secao.
+    };
+
+    // 2026-04-29: video comeca mutado VIA PROPRIEDADE (nao atributo HTML)
+    // pra permitir autoplay silencioso. User destrava som via overlay.
+    video.muted = true;
+    video.defaultMuted = true;
+
+    // Capa BMAi: esconde DEFINITIVAMENTE quando o video efetivamente comeca
+    // a tocar (so a primeira vez — depois loop continua sem flash de capa).
+    const poster = document.getElementById('teamVideoPoster');
+    if (poster) {
+      const hidePoster = () => {
+        poster.classList.add('is-hidden');
+        video.removeEventListener('playing', hidePoster);
+      };
+      video.addEventListener('playing', hidePoster, { once: true });
+    }
+
+    // Botao overlay "Ativar audio": click destrava som imediato.
+    const unmuteBtn = document.getElementById('teamVideoUnmute');
+    const updateUnmuteBtn = () => {
+      if (!unmuteBtn) return;
+      unmuteBtn.classList.toggle('is-hidden', !video.muted);
+    };
+    if (unmuteBtn) {
+      unmuteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        video.muted = false;
+        video.volume = 1;
+        if (video.paused) tryPlay();
+        updateUnmuteBtn();
+      });
+    }
+    // Click no proprio video tambem destrava (atalho)
+    video.addEventListener('click', () => {
+      if (video.muted) {
+        video.muted = false;
+        video.volume = 1;
+      } else {
+        video.muted = true;
+      }
+      updateUnmuteBtn();
+    });
+    // Sincroniza botao com mudancas de estado
+    video.addEventListener('volumechange', updateUnmuteBtn);
+    updateUnmuteBtn();
+
+    // IntersectionObserver: play/pause + audio mute control
+    const target = stage || video;
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          // 2026-04-29: relaxa threshold — qualquer parte da secao visivel
+          // dispara play. Antes exigia 40% visivel, que nunca era atingido
+          // em viewports onde o stage do video > viewport altura.
+          const visible = entry.isIntersecting;
+          if (visible && !inSection) {
+            inSection = true;
+            handleEnter();
+            /* 2026-04-29: applyAudio() removida — ficou orfa apos refactor.
+               Audio agora eh controlado pelo botao overlay (click do user). */
+          } else if (!visible && inSection) {
+            inSection = false;
+            handleLeave();
+          }
+        });
+      }, { threshold: 0, rootMargin: '0px' });
+      io.observe(target);
+    } else {
+      // Fallback sem IntersectionObserver (browsers muito antigos): toca direto
+      handleEnter();
+    }
+
+    // Tab oculta → pausa pra economizar bateria; volta visivel + estava na secao → retoma
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (!video.paused) video.pause();
+      } else if (inSection && video.paused) {
+        tryPlay();
+      }
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+/* ============================================
+   GSAP SCROLL FX
+   ============================================ */
+addEventListener('load', function () {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  const isMobile = matchMedia('(max-width: 768px)').matches;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  // Lenis cuida da normalização do scroll (wheel/trackpad). NÃO usar
+  // ScrollTrigger.normalizeScroll(true) junto — os dois competem e quebram
+  // o pin do scroll-stack do Método.
+  try {
+    ScrollTrigger.config({ ignoreMobileResize: true });
+  } catch (e) {}
+
+  // Word-reveal helper (desktop only)
+  const wordStyle = document.createElement('style');
+  wordStyle.textContent = `.word-wrap{display:inline-block;overflow:hidden;vertical-align:bottom}.word{display:inline-block;will-change:transform}`;
+  document.head.appendChild(wordStyle);
+
+  function splitAndReveal(selector) {
+    document.querySelectorAll(selector).forEach(el => {
+      if (el.querySelector('em, strong, span, a, br')) return;
+      const words = el.textContent.trim().split(/\s+/);
+      el.innerHTML = words.map(w => `<span class="word-wrap"><span class="word">${w}</span></span>`).join(' ');
+      const wordEls = el.querySelectorAll('.word');
+      gsap.fromTo(wordEls,
+        { y: '100%', opacity: 0 },
+        {
+          y: '0%', opacity: 1, duration: .6, ease: 'power2.out', stagger: .04,
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+  }
+
+  // 1) Hero — entrada da imagem (slide da esquerda) + parallax (desktop + mobile)
+  const heroVisual = document.querySelector('.hero-visual');
+  if (heroVisual) {
+    gsap.fromTo(heroVisual,
+      { xPercent: -130, opacity: 0 },
+      {
+        xPercent: 0, opacity: 1, duration: 1.6, ease: 'power4.out', delay: .3,
+        onComplete: () => heroVisual.classList.add('entered')
+      }
+    );
+  }
+
+  // 2) ARIA slides — sem GSAP de entrada (CSS classes controlam tudo, evita jitter no hover)
+
+  // 3) Team flip cards — entrada fade-up, flip ao entrar na viewport (stagger)
+  // 2026-04-26: guard — secao Team agora usa video, .team-card-wrap nao existe
+  if (document.querySelector('.team-card-wrap') && document.querySelector('#team-pin')) {
+    gsap.fromTo('.team-card-wrap',
+      { y: 60, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .1,
+        scrollTrigger: { trigger: '#team-pin', start: 'top 85%', toggleActions: 'play none none none' }
+      }
+    );
+  }
+
+  // 4) Cases cards
+  document.querySelectorAll('.mv-card').forEach((card, i) => {
+    gsap.fromTo(card,
+      { y: 60, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: .8, ease: 'power3.out',
+        scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' },
+        delay: i * .15
+      }
+    );
+  });
+
+  // 5) Chips e títulos de seção
+  document.querySelectorAll('.tag, .section__title').forEach(el => {
+    gsap.fromTo(el,
+      { y: 40, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: .7, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' }
+      }
+    );
+  });
+
+  // 6) Word reveal — desktop only, parágrafos chave
+  if (!isMobile) {
+    splitAndReveal('.hero__sub, .pb__desc, .section__sub, .aria-header__lead');
+  }
+
+  // 7) Números grandes — pop in (containers, não os <span data-count>)
+  document.querySelectorAll('.resultados__num, .hero__stat-value').forEach(el => {
+    gsap.fromTo(el,
+      { scale: .8, y: 20 },
+      {
+        scale: 1, y: 0, duration: .9, ease: 'back.out(1.4)',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      }
+    );
+  });
+
+  /* ── #por-que (versus) ────────────────────── */
+  // 2026-04-26: guard — secao #por-que/versus nao existe mais nesse build
+  if (document.querySelector('#por-que')) {
+    gsap.fromTo('#por-que .section__title',
+      { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
+      {
+        clipPath: 'inset(0 0% 0 0)', opacity: 1, duration: 1.1, ease: 'power4.out',
+        scrollTrigger: { trigger: '#por-que', start: 'top 80%', toggleActions: 'play none none none' }
+      }
+    );
+
+    const dx = isMobile ? 40 : 100;
+    if (document.querySelector('.versus__grid')) {
+      gsap.fromTo('.versus__col--old',
+        { x: -dx, opacity: 0, rotateY: isMobile ? 0 : 12 },
+        {
+          x: 0, opacity: 1, rotateY: 0, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: '.versus__grid', start: 'top 82%', toggleActions: 'play none none none' }
+        }
+      );
+      gsap.fromTo('.versus__col--new',
+        { x: dx, opacity: 0, rotateY: isMobile ? 0 : -12 },
+        {
+          x: 0, opacity: 1, rotateY: 0, duration: 1, ease: 'power3.out', delay: .15,
+          scrollTrigger: { trigger: '.versus__grid', start: 'top 82%', toggleActions: 'play none none none' }
+        }
+      );
+
+      document.querySelectorAll('.versus__col').forEach((col, ci) => {
+        const items = col.querySelectorAll('li');
+        if (!items.length) return;
+        gsap.fromTo(items,
+          { x: ci === 0 ? -30 : 30, opacity: 0 },
+          {
+            x: 0, opacity: 1, duration: .5, ease: 'power2.out', stagger: .07, delay: .5,
+            scrollTrigger: { trigger: '.versus__grid', start: 'top 78%', toggleActions: 'play none none none' }
+          }
+        );
+      });
+    }
+  }
+
+  /* ── Footer ───────────────────────────────── */
+  gsap.fromTo('.footer',
+    { opacity: 0, y: 40 },
+    {
+      opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.footer', start: 'top 92%', toggleActions: 'play none none none',
+        onEnter: () => document.querySelector('.footer')?.classList.add('line-in')
+      }
+    }
+  );
+
+  gsap.fromTo('.footer__col li',
+    { y: 20, opacity: 0 },
+    {
+      y: 0, opacity: 1, duration: .5, stagger: .05, ease: 'power2.out', delay: .2,
+      scrollTrigger: { trigger: '.footer', start: 'top 92%', toggleActions: 'play none none none' }
+    }
+  );
+
+  // 2026-04-26: guards — selectors podem nao existir nesse build
+  if (document.querySelector('.footer__col h4')) {
+    gsap.fromTo('.footer__col h4',
+      { y: 16, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: .6, stagger: .08, ease: 'power2.out',
+        scrollTrigger: { trigger: '.footer', start: 'top 92%', toggleActions: 'play none none none' }
+      }
+    );
+  }
+
+  if (document.querySelector('.footer__watermark h2')) {
+    gsap.fromTo('.footer__watermark h2',
+      { opacity: 0, scale: .9 },
+      {
+        opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out', delay: .3,
+        scrollTrigger: { trigger: '.footer', start: 'top 80%', toggleActions: 'play none none none' }
+      }
+    );
+  }
+
+  // Copyright typewriter
+  const fcEl = document.querySelector('.footer__bottom p');
+  if (fcEl) {
+    const text = fcEl.textContent;
+    fcEl.textContent = '';
+    gsap.to({}, {
+      duration: text.length * .025, ease: 'none',
+      onUpdate: function () {
+        const chars = Math.floor(this.progress() * text.length);
+        fcEl.textContent = text.slice(0, chars);
+      },
+      scrollTrigger: { trigger: '.footer', start: 'top 90%', toggleActions: 'play none none none' }
+    });
+  }
+
+  if (isMobile) ScrollTrigger.config({ limitCallbacks: true });
+});
+
+/* ============================================
+   SECTION DOTS — scroll spy + click smooth
+   ============================================ */
+(function () {
+  const sdots = document.getElementById('sdots');
+  if (!sdots) return;
+  const dots = sdots.querySelectorAll('.sd');
+  const targets = Array.from(dots).map(d => document.getElementById(d.dataset.target));
+
+  function update() {
+    const mid = innerHeight * 0.45;
+    let cur = 0;
+    targets.forEach((el, i) => {
+      if (el && el.getBoundingClientRect().top <= mid) cur = i;
+    });
+    dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+    sdots.classList.toggle('vis', scrollY > 80);
+  }
+  addEventListener('scroll', update, { passive: true });
+  update();
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      targets[i]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+
+/* ============================================
+   CASES — carrossel
+   ============================================ */
+const CASES_DATA = [
+  {
+    id: 'mataco',
+    logo: 'assets/images/logo-mataco.png',
+    logoBg: 'transparent',
+    empresa: 'Mataco',
+    area: 'Agência de Marketing',
+    tag: 'Comercial',
+    tagColor: 'orange',
+    ceo: 'Arthur',
+    cargo: 'CEO · Mataco',
+    solucao: 'Agente de Prospecção',
+    depoimento: '"Antes a gente perdia lead todo dia por falta de follow-up. Hoje o agente prospecta no Instagram, WhatsApp e e-mail enquanto a gente foca no que importa."',
+    resultados: [
+      { val: '+4h', lbl: 'por dia devolvidas ao time' },
+      { val: '3',   lbl: 'canais integrados' },
+      { val: '0',   lbl: 'leads perdidos por falta de contato' }
+    ]
+  },
+  {
+    id: 'gastroobesi',
+    logo: 'assets/images/logo-gastroobesi.png',
+    logoBg: 'dark',
+    empresa: 'GastroObesi',
+    area: 'Saúde',
+    tag: 'Atendimento',
+    tagColor: 'green',
+    ceo: 'Dr. Tulio',
+    cargo: 'CEO · GastroObesi',
+    solucao: 'Agente de Atendimento',
+    depoimento: '"300 mensagens por dia e o time não conseguia dar conta. Hoje o agente resolve tudo fora do horário, filtra o que é urgente e só manda pro humano o que realmente precisa."',
+    resultados: [
+      { val: '300',  lbl: 'mensagens/dia atendidas' },
+      { val: '24/7', lbl: 'atendimento ininterrupto' },
+      { val: '↓',    lbl: 'necessidade de atendente humano' }
+    ]
+  },
+  {
+    id: 'ocanto',
+    logo: 'assets/images/logo-ocanto.png',
+    logoBg: 'transparent',
+    empresa: 'O Canto',
+    area: 'Restaurante',
+    tag: 'Operações',
+    tagColor: 'blue',
+    ceo: 'Felipe',
+    cargo: 'CEO · O Canto',
+    solucao: 'Gestão de Estoque com IA',
+    depoimento: '"A gente descobria que o produto tinha acabado só na hora do serviço. Hoje o sistema avisa antes, as compras são certas e o desperdício caiu de forma visível."',
+    resultados: [
+      { val: '↓',   lbl: 'desperdício e custo de compra' },
+      { val: '0',   lbl: 'surpresas de falta de produto' },
+      { val: '3-5', lbl: 'pessoas liberadas do controle manual' }
+    ]
+  },
+  {
+    id: 'sohydraulica',
+    logo: 'assets/images/logo-sohydraulica.png',
+    logoBg: 'white',
+    empresa: 'Só Hydráulica',
+    area: 'Material de Construção',
+    tag: 'Atendimento + Operações',
+    tagColor: 'purple',
+    ceo: 'Mariangela',
+    cargo: 'CEO · Só Hydráulica',
+    solucao: 'Atendimento + Gestão de Estoque',
+    depoimento: '"A gente perdia venda porque não sabia o que tinha em estoque e ainda tinha 400 mensagens por dia sem resposta. A BMAI resolveu os dois de uma vez."',
+    resultados: [
+      { val: '400', lbl: 'atendimentos/dia com IA' },
+      { val: '↑',   lbl: 'vendas recuperadas' },
+      { val: '2×',  lbl: 'frentes resolvidas' }
+    ]
+  }
+];
+
+
+/* ============================================
+   GLOBAL GLOW EFFECTS — shimmer, border-lit, particles
+   ============================================ */
+(function() {
+  // Shimmer nos títulos ao entrar na viewport
+  const shimmerIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('shimmer-active'), 200);
+        shimmerIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('section h2, .sec-h').forEach(el => shimmerIO.observe(el));
+
+  // Border-lit nos cards
+  const borderIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('border-lit');
+        borderIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.aria-card, .dep-card, .qc, .nin, .mv-card').forEach(el => borderIO.observe(el));
+})();
+
+/* Partículas flutuantes globais — OFF em mobile/reduced-motion */
+(function() {
+  if (LOW_MOTION || IS_MOBILE) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = `
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  `;
+  document.body.insertBefore(canvas, document.body.firstChild);
+
+  const ctx = canvas.getContext('2d');
+  let W = canvas.width  = innerWidth;
+  let H = canvas.height = innerHeight;
+
+  window.addEventListener('resize', () => {
+    W = canvas.width  = innerWidth;
+    H = canvas.height = innerHeight;
+  }, { passive: true });
+
+  const N = IS_MOBILE ? 10 : 24;
+  const pts = Array.from({ length: N }, () => ({
+    x:  Math.random() * W,
+    y:  Math.random() * H,
+    r:  Math.random() * 1.5 + 0.5,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+    o:  Math.random() * 0.5 + 0.2,
+    t:  Math.random() * Math.PI * 2
+  }));
+
+  (function draw() {
+    requestAnimationFrame(draw);
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      p.t += 0.008;
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+      const opacity = p.o * (0.6 + Math.sin(p.t) * 0.4);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(219,85,0,${opacity})`;
+      ctx.fill();
+    }
+  })();
+})();
+// ============================================================
+// FORMULÁRIO → ANNA
+// ============================================================
+(function () {
+  const form = document.getElementById('bmai-form');
+  if (!form) return;
+
+  const btnDefaultHTML = 'Enviar para o time da BMAi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+  const feedback = document.getElementById('form-feedback');
+
+  const icons = {
+    success: '<svg class="fb-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>',
+    error:   '<svg class="fb-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    warn:    '<svg class="fb-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+  };
+
+  function showFeedback(type, msg) {
+    if (!feedback) return;
+    feedback.hidden = false;
+    feedback.className = 'form-feedback form-feedback--' + type;
+    feedback.innerHTML = (icons[type] || '') + '<span class="fb-msg">' + msg + '</span>';
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const btn = form.querySelector('.form-submit');
+    const val = id => (document.getElementById(id)?.value || '').trim();
+    const nome     = val('f-nome');
+    const empresa  = val('f-empresa');
+    const email    = val('f-email');
+    const telefone = val('f-tel');
+    const cargo    = val('f-cargo');
+    const segmento = val('f-segmento');
+    const colab    = val('f-colab');
+    const dor      = val('f-dor');
+
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const telOk = telefone.replace(/\D/g, '').length >= 10;
+    const camposRaw = [
+      ['f-nome', !!nome], ['f-empresa', !!empresa],
+      ['f-email', !!email && emailOk], ['f-tel', !!telefone && telOk],
+      ['f-cargo', !!cargo], ['f-segmento', !!segmento],
+      ['f-colab', !!colab], ['f-dor', !!dor]
+    ];
+    // ignora campos que não existem no DOM (compat com HTML antigo)
+    const campos = camposRaw.filter(([id]) => document.getElementById(id));
+    let faltantes = 0;
+    campos.forEach(([id, ok]) => {
+      const el = document.getElementById(id);
+      if (!ok) { el?.classList.add('field-invalid'); faltantes++; }
+      else el?.classList.remove('field-invalid');
+    });
+    if (faltantes > 0) {
+      const msg = !email || emailOk ? (
+        faltantes === 1 ? 'Preencha o campo destacado para enviar.'
+                        : 'Preencha os ' + faltantes + ' campos destacados para enviar.'
+      ) : 'Verifique o e-mail e os campos destacados.';
+      showFeedback('warn', msg);
+      const first = form.querySelector('.field-invalid');
+      first?.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    if (feedback) feedback.hidden = true;
+
+    const whatsapp = telefone.replace(/\D/g, '');
+
+    // event_ids gerados aqui pra parear browser Pixel <-> servidor CAPI (deduplicação Meta)
+    const eventIdLead = window.bmTracker.uuid();
+    const eventIdRegister = window.bmTracker.uuid();
+    const fbp = window.bmTracker.getFbp();
+    const fbc = window.bmTracker.getFbc();
+
+    try {
+      const res = await fetch('https://anna.bmai.space/lead-site', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome, empresa, email, whatsapp, cargo, segmento, colaboradores: colab, dor,
+          // tracking Meta — Anna repassa pro bmai-capi
+          _meta: {
+            event_id_lead: eventIdLead,
+            event_id_register: eventIdRegister,
+            fbp, fbc,
+            event_source_url: location.href
+          }
+        })
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        throw new Error('HTTP ' + res.status + ' ' + txt);
+      }
+
+      // Pixel browser-side com os mesmos event_ids → Meta deduplica com o que veio via CAPI
+      window.bmTracker.track('Lead', {}, { eventID: eventIdLead });
+      window.bmTracker.track('CompleteRegistration', {}, { eventID: eventIdRegister });
+
+      showFeedback('success', 'Recebido! Anna já tá olhando o seu caso e em até 24h entra em contato pelo WhatsApp pra alinhar o próximo passo 🚀');
+      form.reset();
+    } catch (err) {
+      console.error('[bmai-form] Falha no envio:', err);
+      showFeedback('error', '⚠️ Algo travou no envio. Tenta de novo em instantes ou chama a Anna direto no WhatsApp 🟠📲');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = btnDefaultHTML;
+    }
+  });
+})();
+
+
+/* ============================================
+   CASES DE SUCESSO
+   ============================================ */
+(function() {
+  // ── Hero reveal ──
+  const hero = document.getElementById('csHero');
+  if (hero) {
+    const heroObs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        hero.classList.add('is-visible');
+        heroObs.disconnect();
+      }
+    }, { threshold: 0.2 });
+    heroObs.observe(hero);
+  }
+
+  // ── Grid cards reveal + glow ──
+  const grid = document.getElementById('csGrid');
+  if (!grid) return;
+  const cards = grid.querySelectorAll('.cs-card');
+
+  const gridObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      cards.forEach((card, i) => {
+        setTimeout(() => card.classList.add('is-visible'), i * 150);
+      });
+      gridObs.disconnect();
+    }
+  }, { threshold: 0.15 });
+  gridObs.observe(grid);
+
+  // Cursor-follow glow — so em desktop (mouse fine)
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    cards.forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--gx', ((e.clientX - rect.left) / rect.width  * 100) + '%');
+        card.style.setProperty('--gy', ((e.clientY - rect.top)  / rect.height * 100) + '%');
+      });
+    });
+  }
+})();
+
+/* CURSOR TRAIL removido a pedido — sem bola de cursor */
+
+/* ============================================
+   TEXT HOVER EFFECT — mouse spotlight
+   ============================================ */
+(() => {
+  const svg = document.querySelector('.text-hover__svg');
+  if (!svg) return;
+
+  const reveal = document.getElementById('thReveal');
+  let hovering = false;
+
+  svg.addEventListener('mouseenter', () => { hovering = true; });
+  svg.addEventListener('mouseleave', () => {
+    hovering = false;
+    reveal.setAttribute('cx', '-9999');
+    reveal.setAttribute('cy', '-9999');
+  });
+
+  svg.addEventListener('mousemove', (e) => {
+    if (!hovering) return;
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    const svgPt = pt.matrixTransform(svg.getScreenCTM().inverse());
+    reveal.setAttribute('cx', svgPt.x);
+    reveal.setAttribute('cy', svgPt.y);
+  });
+
+  // start offscreen
+  reveal.setAttribute('cx', '-9999');
+  reveal.setAttribute('cy', '-9999');
+})();
+
+/* ============================================
+   FOOTER GLOW LOGO — mouse spotlight
+   ============================================ */
+(() => {
+  const wrap = document.getElementById('footerGlow');
+  if (!wrap) return;
+
+  wrap.addEventListener('mousemove', (e) => {
+    const rect = wrap.getBoundingClientRect();
+    wrap.style.setProperty('--sx', (e.clientX - rect.left) + 'px');
+    wrap.style.setProperty('--sy', (e.clientY - rect.top) + 'px');
+  });
+
+  wrap.addEventListener('mouseleave', () => {
+    wrap.style.setProperty('--sx', '-999px');
+    wrap.style.setProperty('--sy', '-999px');
+  });
+})();
+
+/* ============================================
+   QUEM SOMOS — IDV enxurrada (12s loop)
+   ============================================ */
+(function () {
+  const scene = document.getElementById('qsScene');
+  if (!scene) return;
+  const stage   = scene.querySelector('.qs-stage');
+  const notifs  = Array.from(scene.querySelectorAll('.qs-notif'));
+  const rings   = Array.from(scene.querySelectorAll('.qs-ring'));
+  const brand   = document.getElementById('qsBrand');
+  if (!notifs.length) return;
+
+  // Mobile / reduced-motion: estado estático — notifs visíveis + brand.
+  // Sem 'qs--done' (evita mostrar todos com check verde, confunde a
+  // narrativa) e sem 'qs--brand-on' (evita overlay dark que apagava as
+  // notifs e deixava só o brand no meio do nada).
+  if (LOW_MOTION) {
+    notifs.forEach(n => n.classList.add('qs--in'));
+    brand?.classList.add('qs--in');
+    return;
+  }
+
+  // Agrupa notifs por wave (data-wave 1/2/3) → ordem de pop-in
+  const wave1 = notifs.filter(n => n.dataset.wave === '1');
+  const wave2 = notifs.filter(n => n.dataset.wave === '2');
+  const wave3 = notifs.filter(n => n.dataset.wave === '3');
+
+  // Shuffle pra feel de "popcorn" (mesmo resultado em cada ciclo ok, mas não linear pela ordem HTML)
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let timers = [];
+  function after(ms, fn) {
+    const t = setTimeout(fn, ms);
+    timers.push(t);
+    return t;
+  }
+  function clearAll() {
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function resetScene() {
+    notifs.forEach(n => n.classList.remove('qs--in', 'qs--flash', 'qs--done', 'qs--unstamp'));
+    rings.forEach(r => r.classList.remove('qs--go'));
+    brand?.classList.remove('qs--in', 'qs--out');
+    stage?.classList.remove('qs-stage--chaos');
+    scene.classList.remove('qs--brand-on', 'qs--brand-off');
+  }
+
+  function popIn(el, delayMs) {
+    after(delayMs, () => {
+      el.classList.add('qs--in', 'qs--flash');
+      after(200, () => el.classList.remove('qs--flash'));
+    });
+  }
+
+  function playCycle() {
+    resetScene();
+    stage?.classList.add('qs-stage--chaos');
+
+    // ── Phase 1 — CHAOS (0 → 2.5s) ──
+    // Wave A: 5 cards 150ms → 850ms
+    const wA = shuffle(wave1);
+    wA.forEach((n, i) => popIn(n, 150 + i * 140 + Math.random() * 80));
+    // Wave B: 5 cards 900ms → 1650ms
+    const wB = shuffle(wave2);
+    wB.forEach((n, i) => popIn(n, 900 + i * 150 + Math.random() * 90));
+    // Wave C: 4 cards 1700ms → 2400ms
+    const wC = shuffle(wave3);
+    wC.forEach((n, i) => popIn(n, 1700 + i * 175 + Math.random() * 100));
+
+    // ── Phase 2 — CHAOS ACALMA (2.5s) ──
+    after(2500, () => stage?.classList.remove('qs-stage--chaos'));
+
+    // ── BRAND CARD entra (~3.0s, depois de todas as notifs popparem) ──
+    after(3000, () => {
+      brand?.classList.add('qs--in');
+      scene.classList.remove('qs--brand-off');
+      scene.classList.add('qs--brand-on');
+    });
+
+    // ── Phase 3 — READING RINGS (4.0 → 5.5s) — BMAi processando em massa ──
+    after(4000, () => rings[0]?.classList.add('qs--go'));
+    after(4150, () => rings[1]?.classList.add('qs--go'));
+    after(4300, () => rings[2]?.classList.add('qs--go'));
+    // cleanup rings quando animação termina (2s depois)
+    after(6500, () => rings.forEach(r => r.classList.remove('qs--go')));
+
+    // ── Phase 4 — STAMPS (5.5 → 9.0s) — 4 waves, stagger irregular ──
+    const allNotifs = shuffle(notifs);
+    // Wave A (~5.5-5.85s): 3 cards
+    allNotifs.slice(0, 3).forEach((n, i) => after(5500 + i * 120 + Math.random() * 80, () => n.classList.add('qs--done')));
+    // Wave B (~6.1-6.55): 4 cards
+    allNotifs.slice(3, 7).forEach((n, i) => after(6100 + i * 130 + Math.random() * 80, () => n.classList.add('qs--done')));
+    // Wave C (~6.85-7.35): 3 cards
+    allNotifs.slice(7, 10).forEach((n, i) => after(6850 + i * 140 + Math.random() * 90, () => n.classList.add('qs--done')));
+    // Wave D (~7.6-8.0): resto
+    allNotifs.slice(10).forEach((n, i) => after(7600 + i * 150 + Math.random() * 90, () => n.classList.add('qs--done')));
+
+    // ── Phase 5 — RESOLVED (9.0 → 10.5s) ──
+    // calm — já está no estado desejado
+
+    // ── Phase 6 — REVERSE LOOP (10.3 → 12.0s) ──
+    // Brand sai primeiro
+    after(10300, () => {
+      brand?.classList.add('qs--out');
+      scene.classList.remove('qs--brand-on');
+      scene.classList.add('qs--brand-off');
+    });
+    // un-stamp staggered
+    const unshuffled = shuffle(notifs);
+    unshuffled.forEach((n, i) => {
+      after(10500 + i * 50, () => {
+        n.classList.add('qs--unstamp');
+        after(420, () => n.classList.remove('qs--done', 'qs--unstamp'));
+      });
+    });
+
+    // Restart em 12s
+    after(12000, playCycle);
+  }
+
+  /* Mobile: ciclo leve — evita travamento. Sem rings, sem backdrop dark,
+     sem camera jitter, menos stamps, ciclo mais curto. */
+  function playCycleMobile() {
+    resetScene();
+    // Pop-in rápido de todas (stagger 60ms — parece "enxurrada" mas sem waves)
+    const order = shuffle(notifs);
+    order.forEach((n, i) => {
+      after(80 + i * 60, () => {
+        n.classList.add('qs--in', 'qs--flash');
+        after(200, () => n.classList.remove('qs--flash'));
+      });
+    });
+    // Brand entra após todas as notifs aparecerem
+    after(1800, () => brand?.classList.add('qs--in'));
+    // ~8 notifs recebem check (pra sentir resolução, sem todas)
+    const toStamp = shuffle(notifs).slice(0, 8);
+    toStamp.forEach((n, i) => after(3000 + i * 160, () => n.classList.add('qs--done')));
+    // Reverse: brand sai + un-stamp
+    after(6500, () => brand?.classList.add('qs--out'));
+    toStamp.forEach((n, i) => {
+      after(6800 + i * 40, () => {
+        n.classList.add('qs--unstamp');
+        after(400, () => n.classList.remove('qs--done', 'qs--unstamp'));
+      });
+    });
+    // Restart em 8s
+    after(8000, playCycleMobile);
+  }
+
+  let running = false;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !running) {
+        running = true;
+        (IS_MOBILE ? playCycleMobile : playCycle)();
+      } else if (!e.isIntersecting && running) {
+        running = false;
+        clearAll();
+        resetScene();
+      }
+    });
+  }, { threshold: 0.05 });   // 2026-04-26 (fix): 0.2 -> 0.05 — scene grande raramente atingia 20% no mobile
+  io.observe(scene);
+
+  // Safety net 2026-04-26: 4s pos-load, se IO nao disparou e cards estao invisiveis,
+  // forca .qs--in em todos pra pelo menos APARECEREM (sem animacao playCycle).
+  // Sem isso, area do Motion fica vazia no mobile = "nao aparece no celular".
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (running) return;
+      const anyVisible = Array.from(notifs).some(n => n.classList.contains('qs--in'));
+      if (!anyVisible) {
+        notifs.forEach(n => n.classList.add('qs--in'));
+        brand?.classList.add('qs--in');
+      }
+    }, 4000);
+  }, { once: true });
+})();
+
+/* 2026-04-27 (rev3): direction-lock JS REMOVIDO.
+   Estava dobrando o scroll (browser nativo + window.scrollBy manual).
+   O fix correto eh CSS-only: touch-action: pan-x pan-y nos carousels
+   (pan-x sozinho BLOQUEIA pan vertical, contradiz a intencao). Browser
+   decide qual scroller pega o gesto baseado na direcao inicial. */
+
+/* Footer: ano dinâmico */
+(function () {
+  const y = document.getElementById('footerYear');
+  if (y) y.textContent = new Date().getFullYear();
+})();
