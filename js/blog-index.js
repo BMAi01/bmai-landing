@@ -313,7 +313,13 @@
       // Classificacao do agente: o que ele de fato apurou. Sem selo de
       // confianca, porque a verificacao do pipeline confia na fonte sem
       // checar, e um numero ali daria ao leitor a impressao contraria.
+      /* `temAnalise` é a única coisa que a API conta sobre a análise no feed
+         das 90: o texto inteiro só vai na rota da matéria e na peça do dia,
+         senão a lista carregaria doze análises que 78 cards não usam. Aqui
+         ele vira a etiqueta que diz ao leitor onde há texto da casa. */
+      var temAnalise = !!it.temAnalise;
       var classes = []
+        .concat(temAnalise ? ['<span class="bl-radar__tag bl-radar__tag--analise">Análise da BMAi</span>'] : [])
         .concat((it.tags || []).map(function (x) { return '<span class="bl-radar__tag">' + esc(x) + '</span>'; }))
         .concat((it.empresas || []).map(function (x) { return '<span class="bl-radar__tag bl-radar__tag--empresa">' + esc(x) + '</span>'; }))
         .join('');
@@ -354,7 +360,8 @@
                  '<span class="bl-radar__title">' + t + '</span>' +
                  (classes ? '<span class="bl-radar__class">' + classes + '</span>' : '') +
                  (resumo.trim() ? '<span class="bl-radar__sum">' + resumo + '</span>' : '') +
-                 '<span class="bl-radar__go">Ler a leitura da BMAi' +
+                 '<span class="bl-radar__go">' +
+                   (temAnalise ? 'Ler a análise da BMAi' : 'Ler a leitura da BMAi') +
                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
                  '</span>' +
                '</span>' +

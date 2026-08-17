@@ -86,6 +86,8 @@
           '</figure>'
         : '';
 
+      var analise = (window.BMAiAnalise && n.analise) ? window.BMAiAnalise.html(n.analise) : '';
+
       document.title = (n.title ? n.title + ' | ' : '') + 'Radar da BMAi';
 
       alvo.innerHTML =
@@ -117,10 +119,17 @@
              página só mostrava a primeira. */
           '<h2>O que aconteceu</h2>' +
           '<p>' + esc((n.leitura && n.leitura.oQueE) || n.summary) + '</p>' +
-          (n.leitura && n.leitura.porQueImporta
-            ? '<h2>Por que isso importa para quem opera</h2>' +
-              '<p>' + esc(n.leitura.porQueImporta) + '</p>'
-            : '') +
+
+          /* A análise da casa, quando esta matéria entrou na edição do dia.
+             Ela substitui o "por que importa" de uma linha: as duas dizem a
+             mesma coisa, e a curta em cima da longa lê como repetição.
+             Matéria fora da peça continua com a linha curta, que é o que
+             sempre houve. */
+          (analise ||
+            (n.leitura && n.leitura.porQueImporta
+              ? '<h2>Por que isso importa para quem opera</h2>' +
+                '<p>' + esc(n.leitura.porQueImporta) + '</p>'
+              : '')) +
           (n.empresas && n.empresas.length
             ? '<h2>Quem está envolvido</h2>' +
               '<p>' + esc(n.empresas.join(', ')) + '.</p>'
@@ -149,6 +158,19 @@
             '</a>' +
           '</div>' +
         '</div>';
+
+      /* Rede de segurança da capa, a mesma do índice do blog: a figura
+         reserva 1200x675 e uma foto que não carrega deixaria meia tela de
+         navy vazio no topo da leitura. */
+      var foto = alvo.querySelector('.bl-leitura__fig img');
+      if (foto) {
+        var sumir = function () {
+          var fig = foto.closest('.bl-leitura__fig');
+          (fig || foto).remove();
+        };
+        foto.addEventListener('error', sumir);
+        if (foto.complete && !foto.naturalWidth) sumir();
+      }
 
       // A seção de comentários nasce agora, depois do fetch, então o
       // comentarios.js já varreu a página e não a viu. Montagem à mão.

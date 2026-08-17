@@ -1647,6 +1647,15 @@
   border-color: rgba(219, 85, 0, .32);
   color: var(--orange-l);
 }
+/* A etiqueta de que existe texto da casa naquela matéria. Preenchida, e não
+   só contornada como as outras, porque ela não classifica o fato: ela diz
+   que ali dentro tem trabalho nosso. Vem sempre em primeiro na fila. */
+.bl-radar__tag--analise {
+  border-color: transparent;
+  background: rgba(219, 85, 0, .16);
+  color: var(--orange-l);
+  font-weight: 700;
+}
 
 /* ---------- PÁGINA DE LEITURA DE UMA NOTÍCIA ---------- */
 .bl-estado {
@@ -2004,3 +2013,93 @@
   font-weight: 700;
   color: var(--orange-l);
 }
+
+/* ---------- Abertura do dia ----------
+   O único texto da peça que fala da edição inteira. Corpo maior que o
+   normal e uma régua laranja em cima: é editorial, e o leitor tem que
+   perceber isso antes de ler a primeira palavra. */
+.ed-abertura {
+  margin: clamp(26px, 3.4vw, 36px) 0 clamp(30px, 4vw, 44px);
+  padding-top: clamp(20px, 2.6vw, 26px);
+  border-top: 2px solid rgba(219, 85, 0, .55);
+}
+.article__body .ed-abertura p {
+  font-size: clamp(1.02rem, 1.5vw, 1.14rem);
+  line-height: 1.62;
+  color: rgba(237, 231, 225, .94);
+}
+.article__body .ed-abertura__assina {
+  margin-top: 14px;
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--orange-l);
+}
+
+/* ============================================================
+   ANÁLISE DA CASA (js/analise.js, em /edicao e /radar)
+   ------------------------------------------------------------
+   O que a BMAi escreve por cima do fato apurado por terceiro.
+   Aparece nas duas páginas, então o desenho tem que funcionar
+   dentro da peça (onde há muitas matérias empilhadas) e sozinho
+   na leitura de uma matéria só.
+
+   ⚠️ Tudo casado com `.article__body` pelo mesmo motivo do bloco
+   acima: `.article__body p` e `.article__body h2` vencem classe
+   solta por especificidade e comem o estilo daqui.
+   ============================================================ */
+.an { margin-top: 14px; }
+
+/* Rótulo de seção, não título de conteúdo: pequeno, em caixa alta, com
+   um ponto laranja. Um h2 de verdade a cada quatro parágrafos, doze vezes
+   na mesma página, transformaria a peça numa lista de títulos. */
+.article__body .an__t {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 18px 0 6px;
+  font-size: .73rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: rgba(237, 231, 225, .62);
+}
+.article__body .an__t::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+.article__body .an p { margin-top: 0; margin-bottom: 12px; }
+
+/* A leitura pra quem opera é a parte mais valiosa e a mais autoral: ganha
+   a barra que o "Por que importa" já usava, pra o leitor separar num
+   relance o que é fato apurado do que é leitura da casa. */
+.an__opera {
+  margin: 18px 0;
+  padding: 2px 0 2px 16px;
+  border-left: 2px solid rgba(219, 85, 0, .5);
+}
+.article__body .an__opera .an__t { margin-top: 0; color: var(--orange-l); }
+
+.article__body .an__olho {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  list-style: disc;
+}
+.article__body .an__olho li {
+  margin-bottom: 6px;
+  line-height: 1.55;
+}
+
+/* O que a matéria não responde é honestidade editorial, não rodapé: fica
+   discreto, mas fica. */
+.article__body .an__aberto {
+  margin-top: 14px;
+  font-size: .92rem;
+  color: rgba(237, 231, 225, .68);
+}
+.article__body .an__aberto strong { color: rgba(237, 231, 225, .85); }

@@ -52,21 +52,30 @@
     estado.innerHTML = esc(msg) + ' <a href="/blog">Voltar para o blog</a>.';
   }
 
-  // Um item da edição: manchete, crédito de quem apurou, e a leitura em
-  // duas partes. O link é interno, pra leitura da própria matéria no site.
+  /* Um item da edição: manchete, crédito de quem apurou, o fato em um
+     parágrafo e a análise da casa embaixo.
+
+     Quando a análise existe, o "Por que importa" de uma linha SAI: ele e o
+     "Para quem opera" dizem a mesma coisa, e a versão curta em cima da
+     longa faz a página parecer repetida. Item sem análise (modelo fora do
+     ar, ou matéria que não passou na régua) continua com as duas linhas
+     como sempre foi. */
   function item(it, nivel) {
     var h = nivel === 'abertura' ? 'h2' : 'h3';
     var interno = it.id ? '/radar?n=' + encodeURIComponent(it.id) : '';
     var manchete = esc(it.title || '');
+    var analise = (window.BMAiAnalise && it.analise) ? window.BMAiAnalise.html(it.analise) : '';
+
     return '<article class="ed-item rise">' +
       '<' + h + ' class="ed-item__titulo">' +
         (interno ? '<a href="' + safeUrl(interno) + '">' + manchete + '</a>' : manchete) +
       '</' + h + '>' +
       (it.source ? '<p class="ed-item__credito">Apurado por ' + esc(it.source) + '</p>' : '') +
       (it.oQueE ? '<p>' + esc(it.oQueE) + '</p>' : '') +
-      (it.porQueImporta
-        ? '<p class="ed-item__leitura"><strong>Por que importa:</strong> ' + esc(it.porQueImporta) + '</p>'
-        : '') +
+      (analise ||
+        (it.porQueImporta
+          ? '<p class="ed-item__leitura"><strong>Por que importa:</strong> ' + esc(it.porQueImporta) + '</p>'
+          : '')) +
     '</article>';
   }
 
@@ -119,6 +128,19 @@
 
         '<div class="article__body">' +
           figura +
+
+          /* A abertura do dia: o único texto da página que olha a edição
+             inteira e diz o que ela significa junta. Vem antes da primeira
+             matéria de propósito, porque é ela que dá sentido à ordem das
+             outras. Sem ela (modelo fora do ar) a peça começa direto na
+             matéria de topo, como começava antes. */
+          ((p.editorial && p.editorial.texto && p.editorial.texto.length)
+            ? '<section class="ed-abertura rise">' +
+                p.editorial.texto.map(function (par) { return '<p>' + esc(par) + '</p>'; }).join('') +
+                '<p class="ed-abertura__assina">Análise da BMAi</p>' +
+              '</section>'
+            : '') +
+
           (p.abertura ? '<section class="ed-bloco">' + item(p.abertura, 'abertura') + '</section>' : '') +
           blocos +
 
@@ -148,6 +170,21 @@
             '</a>' +
           '</div>' +
         '</div>';
+
+      /* Rede de segurança da capa, a mesma do índice do blog: a figura
+         reserva 1200x675, então uma foto que não carrega deixa um vão de
+         meia tela de navy no meio da abertura. Some a figura inteira em vez
+         de manter o buraco. O teste de `complete` cobre a falha que
+         aconteceu antes deste código rodar, que o evento não repete. */
+      var foto = alvo.querySelector('.bl-leitura__fig img');
+      if (foto) {
+        var sumir = function () {
+          var fig = foto.closest('.bl-leitura__fig');
+          (fig || foto).remove();
+        };
+        foto.addEventListener('error', sumir);
+        if (foto.complete && !foto.naturalWidth) sumir();
+      }
 
       // O conteúdo nasceu depois do fetch, então nem o comentarios.js nem o
       // observador do motion o viram. Mesma religada da leitura do radar.
