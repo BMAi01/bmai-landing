@@ -17,7 +17,7 @@
 
       /* HERO */
       'hero.badge':   '+10.000 horas economizadas com IA',
-      'hero.title':   '<span class="h-line">IA não precisa ser complicada,</span><span class="h-line">mas precisa dar <span class="hero-resultado">resultado</span></span>',
+      'hero.title':   '<span class="h-line">IA para empresas não precisa ser complicada,</span><span class="h-line">mas precisa dar <span class="hero-resultado">resultado</span></span>',
       'hero.sub':     'Devolvemos o controle do negócio ao empreendedor que deixa de operar no improviso<br>e passa a tomar decisões baseado em dados.',
       'hero.cta':     'Falar com o time da BMAi',
       'hero.stat1':   'Projetos realizados',
@@ -227,7 +227,7 @@
       'nav.cta':    'Chat with the BMAi team',
 
       'hero.badge': '+10,000 hours saved with AI',
-      'hero.title': '<span class="h-line">AI doesn\'t have to be complicated,</span><span class="h-line">it just has to deliver <span class="hero-resultado">results</span></span>',
+      'hero.title': '<span class="h-line">AI for businesses doesn\'t have to be complicated,</span><span class="h-line">it just has to deliver <span class="hero-resultado">results</span></span>',
       'hero.sub':   'We give control of the business back to the owner who stops operating on guesswork<br>and starts making decisions based on data.',
       'hero.cta':   'Chat with the BMAi team',
       'hero.stat1': 'Projects delivered',
@@ -428,7 +428,7 @@
       'nav.cta':    'Hablar con el equipo BMAi',
 
       'hero.badge': '+10.000 horas ahorradas con IA',
-      'hero.title': '<span class="h-line">La IA no necesita ser complicada,</span><span class="h-line">pero necesita entregar <span class="hero-resultado">resultados</span></span>',
+      'hero.title': '<span class="h-line">La IA para empresas no necesita ser complicada,</span><span class="h-line">pero necesita entregar <span class="hero-resultado">resultados</span></span>',
       'hero.sub':   'Devolvemos el control del negocio al emprendedor que deja de operar por intuición<br>y pasa a tomar decisiones basadas en datos.',
       'hero.cta':   'Hablar con el equipo BMAi',
       'hero.stat1': 'Proyectos entregados',
