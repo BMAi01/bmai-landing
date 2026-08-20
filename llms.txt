@@ -1,10 +1,10 @@
 # BMAI: Soluções Empresariais de IA
 
-> A BMAI é uma empresa de Brasília/DF que implementa agentes de IA, automação de processos e software sob medida para pequenas e médias empresas (PMEs). Método próprio: estrutura o processo antes de aplicar a tecnologia. IA é ferramenta, o foco é resultado mensurável, controle e previsibilidade para o dono do negócio. Atende clínicas, agências, consultorias, educação, saúde e outros segmentos, em Brasília, no DF e em todo o Brasil.
+> A BMAI é uma empresa de Brasília/DF que implementa agentes de IA, processos rodando sozinhos e software sob medida para pequenas e médias empresas (PMEs). Método próprio: estrutura o processo antes de aplicar a tecnologia. IA é ferramenta, o foco é resultado mensurável, controle e previsibilidade para o dono do negócio. Atende clínicas, agências, consultorias, educação, saúde e outros segmentos, em Brasília, no DF e em todo o Brasil.
 
 ## Serviços
 - Agentes de IA para empresas: agentes sob medida integrados aos sistemas (ERP, CRM)
-- Automação de processos com IA: tarefas repetitivas e fluxos operacionais
+- Processos rodando sozinhos com IA: tarefas repetitivas e fluxos operacionais
 - Reestruturação de processos: organiza o processo antes de aplicar a tecnologia
 - Software sob medida com IA: sistemas personalizados
 - Integração de IA com ERP e CRM

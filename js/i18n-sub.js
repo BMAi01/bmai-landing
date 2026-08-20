@@ -27,7 +27,7 @@
 
   /* Versao dos dicionarios. O .htaccess serve .json com um mes de cache, entao
      mexeu no conteudo de i18n/*.json, sobe isto E o ?v= deste arquivo no HTML. */
-  var VERSAO = '20260820-rev1';
+  var VERSAO = '20260820-rev2';
 
   var CHAVE_LS = 'bmai-lang';
   var IDIOMAS = ['pt', 'en', 'es', 'it', 'fr', 'zh', 'ru'];
