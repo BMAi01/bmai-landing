@@ -1927,14 +1927,24 @@ addEventListener('load', function () {
   // Copyright typewriter
   const fcEl = document.querySelector('.footer__bottom p');
   if (fcEl) {
-    const text = fcEl.textContent;
+    let text = fcEl.textContent;
+    let escrito = false;
     fcEl.textContent = '';
+    /* O i18n reescreve esse <p> inteiro a cada troca de idioma. Sem recapturar,
+       a maquina de escrever guardava o texto do idioma ANTERIOR e o digitava por
+       cima quando o rodape entrasse na tela (rodape em portugues num site em
+       russo). Se ja tinha digitado, o texto novo do i18n fica como esta. */
+    addEventListener('i18n:change', () => {
+      text = fcEl.textContent;
+      if (!escrito) fcEl.textContent = '';
+    });
     gsap.to({}, {
       duration: text.length * .025, ease: 'none',
       onUpdate: function () {
         const chars = Math.floor(this.progress() * text.length);
         fcEl.textContent = text.slice(0, chars);
       },
+      onComplete: () => { escrito = true; fcEl.textContent = text; },
       scrollTrigger: { trigger: '.footer', start: 'top 90%', toggleActions: 'play none none none' }
     });
   }

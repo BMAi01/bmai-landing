@@ -38,6 +38,22 @@
   font-weight: 200 700; font-style: normal; font-display: swap;
 }
 
+/* General Sans so tem latino (384 glifos): nao cobre cirilico nem CJK. Estendemos
+   a MESMA familia com fontes do sistema nesses intervalos, entao toda regra que ja
+   pede 'General Sans' continua valendo em russo e em chines. Zero rede, zero peso. */
+@font-face {
+  font-family: 'General Sans';
+  src: local('Inter'), local('Segoe UI'), local('Helvetica Neue'), local('Roboto'), local('Arial');
+  unicode-range: U+0400-045F, U+0460-052F, U+1C80-1C88, U+2DE0-2DFF, U+A640-A69F;
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'General Sans';
+  src: local('PingFang SC'), local('Hiragino Sans GB'), local('Microsoft YaHei'), local('Noto Sans SC'), local('Source Han Sans SC'), local('Heiti SC');
+  unicode-range: U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
 /* ============================================
    APPLE-INSPIRED DARK THEME
    ============================================ */
@@ -5686,8 +5702,11 @@ html { scroll-padding-top: 84px; }
   .card-stack { cursor: grab; }
   .card-stack:active { cursor: grabbing; }
 
-  /* 2026-04-27: lang switcher escondido no mobile */
-  #lang-btn { display: none !important; }
+  /* 2026-04-27: lang switcher escondido no mobile.
+     2026-08-20: DESTRAVADO. Com 7 idiomas no ar, o celular (de onde vem a maior
+     parte das visitas) ficaria sem nenhuma forma de trocar de idioma. O seletor
+     segue escondido fora do drawer: quem mostra ele e' `.floatnav.active
+     .lang-btn`, e a regra de ID acima vencia esse seletor por especificidade. */
 
   /* === EFEITO #4: BORDER GLOW ON VIEW (Quem Somos) ===
      Card sem border-color marcado -> ao entrar viewport, borda laranja
@@ -8648,4 +8667,47 @@ html {
   /* A cena assumiu; a marca d'água chapada sai de cena. O glow do ::after
      fica: ele é o que cola a peça no fundo. */
   #hero.tem-3d::before { background-image: none !important; }
+}
+
+/* ============================================
+   SELETOR DE IDIOMA COM 7 OPCOES (2026-08-20)
+   A lista saiu de 3 para 7 itens. Em tela baixa ela tem que rolar dentro
+   de si mesma, senao passa do viewport e as ultimas opcoes ficam fora.
+   ============================================ */
+.lang-dropdown {
+  max-height: calc(100vh - 120px);
+  max-height: calc(100dvh - 120px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (max-width: 768px) {
+  /* O drawer do hamburguer ja ocupa a tela inteira. Com a lista de 7 idiomas
+     aberta o conteudo passa da altura disponivel, entao quem rola e' o DRAWER,
+     nao a lista: lista com rolagem propria corta o ultimo idioma no meio e nao
+     avisa que existe mais. Medido a 390x667 e a 360x640. */
+  .floatnav.active {
+    /* flex-wrap: wrap + coluna de altura fixa = item que nao cabe WRAPA numa
+       segunda coluna, fora da tela. Era o que acontecia com o seletor de idioma
+       aberto (medido: x=367 numa tela de 390). Aqui a coluna nao quebra, ela rola. */
+    flex-wrap: nowrap !important;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* Dentro do drawer o dropdown e' estatico, ou seja, ocupa espaco mesmo fechado:
+     com 7 idiomas isso enfiava 358px de vazio no meio do menu. Fechado tem altura
+     zero, aberto abre com transicao. */
+  .floatnav.active .lang-dropdown {
+    max-height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    transition: max-height .35s var(--ease-signature), opacity .25s var(--ease-signature) !important;
+  }
+  .floatnav.active .lang-dropdown.open {
+    max-height: 420px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
 }

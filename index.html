@@ -9,8 +9,8 @@
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0d1b2a">
   <!-- CSS não-bloqueante via preload+onload (mantém fallback no noscript) -->
-  <link rel="preload" as="style" href="css/style.min.css?v=20260816-rev75" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260816-rev75"></noscript>
+  <link rel="preload" as="style" href="css/style.min.css?v=20260820-rev76" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/style.min.css?v=20260820-rev76"></noscript>
   <link rel="icon" href="assets/images/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="assets/images/simbolo-laranja.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/images/favicon-192.png">
@@ -200,6 +200,10 @@
         <button class="lang-opt active" data-lang="pt" role="option">🇧🇷 Português</button>
         <button class="lang-opt" data-lang="en" role="option">🇺🇸 English</button>
         <button class="lang-opt" data-lang="es" role="option">🇪🇸 Español</button>
+        <button class="lang-opt" data-lang="it" role="option">🇮🇹 Italiano</button>
+        <button class="lang-opt" data-lang="fr" role="option">🇫🇷 Français</button>
+        <button class="lang-opt" data-lang="zh" role="option">🇨🇳 中文</button>
+        <button class="lang-opt" data-lang="ru" role="option">🇷🇺 Русский</button>
       </div>
     </div>
     <button class="header__burger" id="burger" aria-label="Menu">
@@ -970,12 +974,13 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js" crossorigin="anonymous"></script>
 
-  <script defer src="js/i18n.min.js?v=20260816-rev74"></script>
-  <script defer src="js/main.min.js?v=20260623-rev72"></script>
+  <script defer src="js/i18n.min.js?v=20260820-rev76"></script>
+  <script defer src="js/main.min.js?v=20260820-rev76"></script>
 
   <script>
   /* Lang switcher, driver do I18N (vanilla, instantâneo, zero rede) */
   (function () {
+    function iniciar() {
     const btn = document.getElementById('lang-btn');
     const trigger = document.getElementById('lang-trigger');
     const dropdown = document.getElementById('lang-dropdown');
@@ -983,12 +988,19 @@
     const opts = document.querySelectorAll('.lang-opt');
     if (!btn || !trigger || !window.I18N) return;
 
-    const LABELS = { pt: 'PT', en: 'EN', es: 'ES' };
+    const LABELS = { pt: 'PT', en: 'EN', es: 'ES', it: 'IT', fr: 'FR', zh: 'ZH', ru: 'RU' };
 
     trigger.addEventListener('click', e => {
       e.stopPropagation();
       const isOpen = dropdown.classList.toggle('open');
       trigger.setAttribute('aria-expanded', String(isOpen));
+      /* No celular a lista abre no PE de um menu que rola. Sem isto ela nasce
+         abaixo da dobra e o visitante nao ve que abriu. Espera a transicao de
+         altura (350ms) e leva o drawer ate o fim, onde o seletor mora. */
+      const drawer = isOpen && btn.closest('.floatnav.active');
+      if (drawer) {
+        setTimeout(() => drawer.scrollTo({ top: drawer.scrollHeight, behavior: 'smooth' }), 380);
+      }
     });
     document.addEventListener('click', e => {
       if (!btn.contains(e.target)) {
@@ -1023,6 +1035,13 @@
     };
     applyUI();
     window.addEventListener('i18n:change', applyUI);
+    }
+    /* 2026-08-20: este bloco e' INLINE, entao roda ANTES dos scripts `defer`.
+       Nesse instante window.I18N ainda nao existe e o `if (!window.I18N) return`
+       la em cima matava o seletor inteiro: clicar na pilula nao abria nada e o
+       rotulo ficava preso em PT. DOMContentLoaded dispara depois dos `defer`. */
+    if (window.I18N) iniciar();
+    else addEventListener('DOMContentLoaded', iniciar);
   })();
   </script>
 
