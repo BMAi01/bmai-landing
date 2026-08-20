@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "minify:css": "npx --yes clean-css-cli@5.6.3 -o css/style.min.css css/style.css && npx --yes clean-css-cli@5.6.3 -o css/blog.min.css css/blog.css",
-    "minify:js":  "npx --yes terser@5.34.1 js/main.js -c -m --comments false -o js/main.min.js && npx --yes terser@5.34.1 js/i18n.js -c -m --comments false -o js/i18n.min.js",
+    "minify:js":  "npx --yes terser@5.34.1 js/main.js -c -m --comments false -o js/main.min.js && npx --yes terser@5.34.1 js/i18n.js -c -m --comments false -o js/i18n.min.js && npx --yes terser@5.34.1 js/i18n-sub.js -c -m --comments false -o js/i18n-sub.min.js",
     "build":      "npm run minify:css && npm run minify:js",
+    "i18n:conferir": "node tools/i18n-conferir.js",
     "start":      "npx serve . -p 3000"
   },
   "engines": {

@@ -152,7 +152,29 @@
         </span>
         <span class="floatnav__cta-text">Falar com o time da BMAi</span>
       </a>
+
     </nav>
+    <!-- Seletor de idioma, irmão do .floatnav e não filho: o backdrop-filter do
+         nav cria bloco de contenção e contexto de empilhamento próprios, e lá
+         dentro o position:fixed do .lang-btn deixava de valer em relação à
+         janela (o dropdown ia parar atrás do conteúdo). No celular quem leva ele
+         pra dentro do drawer é o i18n-sub.js, igual ao main.js faz na home. -->
+    <div class="lang-btn" id="lang-btn" data-i18n-off>
+      <button class="lang-trigger" id="lang-trigger" aria-label="Change language" aria-haspopup="listbox" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        <span id="lang-current">PT</span>
+        <svg class="lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="lang-dropdown" id="lang-dropdown" role="listbox">
+        <button class="lang-opt active" data-lang="pt" role="option">🇧🇷 Português</button>
+        <button class="lang-opt" data-lang="en" role="option">🇺🇸 English</button>
+        <button class="lang-opt" data-lang="es" role="option">🇪🇸 Español</button>
+        <button class="lang-opt" data-lang="it" role="option">🇮🇹 Italiano</button>
+        <button class="lang-opt" data-lang="fr" role="option">🇫🇷 Français</button>
+        <button class="lang-opt" data-lang="zh" role="option">🇨🇳 中文</button>
+        <button class="lang-opt" data-lang="ru" role="option">🇷🇺 Русский</button>
+      </div>
+    </div>
     <button class="header__burger" id="burger" aria-label="Menu" aria-controls="nav" aria-expanded="false">
       <span></span><span></span>
     </button>
@@ -608,6 +630,7 @@
   </footer>
 
   <script defer src="js/subpage.js?v=20260815-rev5"></script>
+  <script defer src="js/i18n-sub.min.js?v=20260820-rev1"></script>
   <script defer src="js/blog-index.js?v=20260817-rev10"></script>
   <!-- O three.js NÃO entra aqui: são 600 KB que só quem vai ver a cena
        precisa baixar. O hero-3d.js pede o arquivo sob demanda. -->

@@ -1,6 +1,10 @@
 # BMAI — Landing Page
 
-Site estático da BMAI. HTML/CSS/JS puro, **sem build**.
+Site estático da BMAI. HTML/CSS/JS puro, sem framework.
+
+> **Tem um passo de build:** `npm run build` gera `css/*.min.css` e `js/*.min.js`, que são
+> os arquivos que as páginas realmente carregam. Editar o `.css`/`.js` cru sem rodar isso
+> não muda nada em produção.
 
 ## Estrutura
 
@@ -58,3 +62,39 @@ O botão "Enviar para Anna" envia `POST` para `https://anna.bmai.space/lead-site
 ```
 
 Não há redirecionamento para WhatsApp. A Anna (agente de IA) recebe o lead e inicia o contato.
+
+## Idiomas
+
+O site fala **7 idiomas**: português, inglês, espanhol, italiano, francês, chinês e russo.
+São dois mecanismos, porque as páginas são de dois tipos:
+
+| Onde | Arquivo | Como a chave funciona |
+|---|---|---|
+| Home (`index.html`) | `js/i18n.js` | chave curta escrita à mão (`hero.title`), marcada no HTML com `data-i18n` |
+| Subpáginas (blog, artigo, SEO, jurídicas, radar, edição) | `js/i18n-sub.js` + `i18n/<pagina>.json` | **a chave é o próprio texto em português** |
+
+O português é o que está servido no HTML: quem não troca de idioma não baixa dicionário
+nenhum, e o Google continua lendo a página em português (sem URL duplicada por idioma).
+O dicionário da subpágina só é baixado quando o visitante escolhe outro idioma.
+
+🔴 **A armadilha:** nas subpáginas, mexer no texto em português muda a chave, e a tradução
+para de casar **em silêncio** — aquele trecho volta a aparecer em português, sem erro no
+console. Depois de editar texto de subpágina, rode:
+
+```bash
+python -m http.server 8000
+npm i --no-save playwright        # se ainda não tiver
+npm run i18n:conferir
+```
+
+Ele abre cada página num navegador de verdade e aponta três coisas: texto novo sem
+tradução, tradução órfã (texto que não existe mais) e bloco de texto que nenhum seletor
+do `i18n-sub.js` alcança. Corrigido o texto, ajuste a chave correspondente em
+`i18n/<pagina>.json` nos 6 idiomas.
+
+`i18n/_dinamicas.json` é uma lista de apoio: são as frases que só entram na tela quando o
+visitante age (aviso de formulário, "ver menos", erro do radar). O site não lê esse
+arquivo, ele só evita alarme falso no `i18n:conferir`.
+
+**Cache:** os `.json` são servidos com um mês de cache. Mexeu no conteúdo deles, suba a
+constante `VERSAO` no topo do `js/i18n-sub.js` **e** o `?v=` do `i18n-sub.min.js` no HTML.
