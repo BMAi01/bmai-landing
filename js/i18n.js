@@ -13,6 +13,7 @@
       'nav.team':      'Team',
       'nav.cases':     'Cases',
       'nav.faq':       'FAQ',
+      'nav.blog': 'Blog',
       'nav.cta':       'Falar com o time da BMAi',
 
       /* HERO */
@@ -49,6 +50,11 @@
       'qs.card4_eyebrow': 'Fase 04 · Escala Estratégica',
       'qs.card4_h3':      'Escalamos<br><span style="color:var(--orange)">o resultado.</span>',
       'qs.card4_p':       'Quando um agente prova valor, replicamos o modelo para outras funções e times, multiplicando o ganho de produtividade sem reinventar a roda a cada projeto.',
+      'qs.flip_hint': 'role para virar',
+      'qs.card1_brand': 'FASE 01 · BMAi',
+      'qs.card2_brand': 'FASE 02 · BMAi',
+      'qs.card3_brand': 'FASE 03 · BMAi',
+      'qs.card4_brand': 'FASE 04 · BMAi',
       'qs.brand_tag': 'integrando IA…',
 
       /* MÉTODO */
@@ -149,6 +155,8 @@
       'team.pedro.sig':    'Sócio Fundador · BMAI',
       'team.anna.role':    'Atendente',
       'team.anna.bio':     'Cada cliente que chega na BMAI tem uma história. Meu trabalho é ouvir essa história, entender o momento do negócio e garantir que a conversa certa aconteça com a pessoa certa. Relacionamento não é protocolo, é presença.',
+      'team.ativar_audio': 'Ativar áudio',
+      'team.video_badge': '▶ Vídeo',
       'team.anna.sig':     'Atendente · BMAI',
 
       /* FAQ */
@@ -224,6 +232,7 @@
       'nav.team':   'Team',
       'nav.cases':  'Cases',
       'nav.faq':    'FAQ',
+      'nav.blog': 'Blog',
       'nav.cta':    'Chat with the BMAi team',
 
       'hero.badge': '+10,000 hours saved with AI',
@@ -258,6 +267,11 @@
       'qs.card4_eyebrow': 'Phase 04 · Strategic Scale',
       'qs.card4_h3':      'We scale<br><span style="color:var(--orange)">the result.</span>',
       'qs.card4_p':       'Once an agent proves value, we replicate the model to other functions and teams, multiplying productivity gains without reinventing the wheel each project.',
+      'qs.flip_hint': 'scroll to flip',
+      'qs.card1_brand': 'PHASE 01 · BMAi',
+      'qs.card2_brand': 'PHASE 02 · BMAi',
+      'qs.card3_brand': 'PHASE 03 · BMAi',
+      'qs.card4_brand': 'PHASE 04 · BMAi',
       'qs.brand_tag': 'integrating AI…',
 
       'metodo.title': 'From diagnosis<br><span style="color:var(--orange)">to real scale.</span>',
@@ -354,6 +368,8 @@
       'team.pedro.sig':    'Founding Partner · BMAI',
       'team.anna.role':    'Client Lead',
       'team.anna.bio':     'Every client who arrives at BMAI has a story. My job is to hear that story, understand where the business stands, and make sure the right conversation happens with the right person. Relationship isn\'t protocol. It\'s presence.',
+      'team.ativar_audio': 'Turn on sound',
+      'team.video_badge': '▶ Video',
       'team.anna.sig':     'Client Lead · BMAI',
 
       'faq.title': 'Frequently asked questions.',
@@ -425,6 +441,7 @@
       'nav.team':   'Equipo',
       'nav.cases':  'Casos',
       'nav.faq':    'FAQ',
+      'nav.blog': 'Blog',
       'nav.cta':    'Hablar con el equipo BMAi',
 
       'hero.badge': '+10.000 horas ahorradas con IA',
@@ -459,6 +476,11 @@
       'qs.card4_eyebrow': 'Fase 04 · Escala Estratégica',
       'qs.card4_h3':      'Escalamos<br><span style="color:var(--orange)">el resultado.</span>',
       'qs.card4_p':       'Cuando un agente prueba valor, replicamos el modelo a otras funciones y equipos, multiplicando la ganancia de productividad sin reinventar la rueda en cada proyecto.',
+      'qs.flip_hint': 'desliza para girar',
+      'qs.card1_brand': 'FASE 01 · BMAi',
+      'qs.card2_brand': 'FASE 02 · BMAi',
+      'qs.card3_brand': 'FASE 03 · BMAi',
+      'qs.card4_brand': 'FASE 04 · BMAi',
       'qs.brand_tag': 'integrando IA…',
 
       'metodo.title': 'Del diagnóstico<br><span style="color:var(--orange)">a la escala real.</span>',
@@ -555,6 +577,8 @@
       'team.pedro.sig':    'Socio Fundador · BMAI',
       'team.anna.role':    'Responsable de Clientes',
       'team.anna.bio':     'Cada cliente que llega a BMAI tiene una historia. Mi trabajo es escuchar esa historia, entender el momento del negocio y garantizar que la conversación correcta suceda con la persona correcta. Relación no es protocolo. Es presencia.',
+      'team.ativar_audio': 'Activar audio',
+      'team.video_badge': '▶ Vídeo',
       'team.anna.sig':     'Responsable de Clientes · BMAI',
 
       'faq.title': 'Preguntas frecuentes.',
@@ -625,6 +649,7 @@
       'nav.team':   'Team',
       'nav.cases':  'Case',
       'nav.faq':    'FAQ',
+      'nav.blog': 'Blog',
       'nav.cta':    'Parla con il team BMAi',
 
       'hero.badge': '+10.000 ore risparmiate con l’IA',
@@ -659,6 +684,11 @@
       'qs.card4_eyebrow': 'Fase 04 · Scala strategica',
       'qs.card4_h3':      'Scaliamo<br><span style="color:var(--orange)">il risultato.</span>',
       'qs.card4_p':       'Quando un agente dimostra valore, replichiamo il modello su altre funzioni e altri team, moltiplicando il guadagno di produttività senza reinventare la ruota a ogni progetto.',
+      'qs.flip_hint': 'scorri per girare',
+      'qs.card1_brand': 'FASE 01 · BMAi',
+      'qs.card2_brand': 'FASE 02 · BMAi',
+      'qs.card3_brand': 'FASE 03 · BMAi',
+      'qs.card4_brand': 'FASE 04 · BMAi',
       'qs.brand_tag': 'integrando l’IA…',
 
       'metodo.title': 'Dalla diagnosi<br><span style="color:var(--orange)">alla scala reale.</span>',
@@ -755,6 +785,8 @@
       'team.pedro.sig':    'Socio fondatore · BMAI',
       'team.anna.role':    'Client Lead',
       'team.anna.bio':     'Ogni cliente che arriva in BMAI ha una storia. Il mio lavoro è ascoltare quella storia, capire a che punto è l’azienda e fare in modo che la conversazione giusta avvenga con la persona giusta. La relazione non è un protocollo, è presenza.',
+      'team.ativar_audio': 'Attiva audio',
+      'team.video_badge': '▶ Video',
       'team.anna.sig':     'Client Lead · BMAI',
 
       'faq.title': 'Domande frequenti.',
@@ -826,6 +858,7 @@
       'nav.team':   'Équipe',
       'nav.cases':  'Cas clients',
       'nav.faq':    'FAQ',
+      'nav.blog': 'Blog',
       'nav.cta':    'Parler à l’équipe BMAi',
 
       'hero.badge': '+10 000 heures économisées grâce à l’IA',
@@ -860,6 +893,11 @@
       'qs.card4_eyebrow': 'Phase 04 · Passage à l’échelle',
       'qs.card4_h3':      'Nous démultiplions<br><span style="color:var(--orange)">le résultat.</span>',
       'qs.card4_p':       'Dès qu’un agent prouve sa valeur, nous répliquons le modèle sur d’autres fonctions et d’autres équipes, ce qui multiplie le gain de productivité sans réinventer la roue à chaque projet.',
+      'qs.flip_hint': 'faites défiler pour retourner',
+      'qs.card1_brand': 'PHASE 01 · BMAi',
+      'qs.card2_brand': 'PHASE 02 · BMAi',
+      'qs.card3_brand': 'PHASE 03 · BMAi',
+      'qs.card4_brand': 'PHASE 04 · BMAi',
       'qs.brand_tag': 'intégration de l’IA…',
 
       'metodo.title': 'Du diagnostic<br><span style="color:var(--orange)">à l’échelle réelle.</span>',
@@ -956,6 +994,8 @@
       'team.pedro.sig':    'Associé fondateur · BMAI',
       'team.anna.role':    'Client Lead',
       'team.anna.bio':     'Chaque client qui arrive chez BMAI a une histoire. Mon travail est d’écouter cette histoire, de comprendre où en est l’entreprise et de faire en sorte que la bonne conversation ait lieu avec la bonne personne. La relation n’est pas un protocole, c’est une présence.',
+      'team.ativar_audio': 'Activer le son',
+      'team.video_badge': '▶ Vidéo',
       'team.anna.sig':     'Client Lead · BMAI',
 
       'faq.title': 'Questions fréquentes.',
@@ -1027,6 +1067,7 @@
       'nav.team':   '团队',
       'nav.cases':  '客户案例',
       'nav.faq':    '常见问题',
+      'nav.blog': '博客',
       'nav.cta':    '联系 BMAi 团队',
 
       'hero.badge': '用 AI 节省了超过 10,000 小时',
@@ -1061,6 +1102,11 @@
       'qs.card4_eyebrow': '第 04 阶段 · 战略性扩展',
       'qs.card4_h3':      '把成果<br><span style="color:var(--orange)">复制放大。</span>',
       'qs.card4_p':       '当一个代理证明了价值，我们把这套模式复制到其他职能与团队，成倍放大效率收益，不必每个项目都重新造轮子。',
+      'qs.flip_hint': '滚动翻转',
+      'qs.card1_brand': '第 01 阶段 · BMAi',
+      'qs.card2_brand': '第 02 阶段 · BMAi',
+      'qs.card3_brand': '第 03 阶段 · BMAi',
+      'qs.card4_brand': '第 04 阶段 · BMAi',
       'qs.brand_tag': '正在接入 AI…',
 
       'metodo.title': '从诊断<br><span style="color:var(--orange)">到真正的规模化。</span>',
@@ -1157,6 +1203,8 @@
       'team.pedro.sig':    '创始合伙人 · BMAI',
       'team.anna.role':    '客户负责人',
       'team.anna.bio':     '每一位来到 BMAI 的客户背后都有一个故事。我的工作就是听懂这个故事，弄清楚这家公司此刻在哪里，并让对的对话发生在对的人之间。关系不是流程，而是在场。',
+      'team.ativar_audio': '开启声音',
+      'team.video_badge': '▶ 视频',
       'team.anna.sig':     '客户负责人 · BMAI',
 
       'faq.title': '常见问题。',
@@ -1228,6 +1276,7 @@
       'nav.team':   'Команда',
       'nav.cases':  'Кейсы',
       'nav.faq':    'FAQ',
+      'nav.blog': 'Блог',
       'nav.cta':    'Написать команде BMAi',
 
       'hero.badge': 'Более 10 000 часов сэкономлено с ИИ',
@@ -1262,6 +1311,11 @@
       'qs.card4_eyebrow': 'Этап 04 · Стратегический масштаб',
       'qs.card4_h3':      'Масштабируем<br><span style="color:var(--orange)">результат.</span>',
       'qs.card4_p':       'Когда агент доказал ценность, мы переносим модель на другие функции и команды и умножаем прирост производительности, не изобретая колесо заново в каждом проекте.',
+      'qs.flip_hint': 'прокрутите, чтобы перевернуть',
+      'qs.card1_brand': 'ЭТАП 01 · BMAi',
+      'qs.card2_brand': 'ЭТАП 02 · BMAi',
+      'qs.card3_brand': 'ЭТАП 03 · BMAi',
+      'qs.card4_brand': 'ЭТАП 04 · BMAi',
       'qs.brand_tag': 'внедряем ИИ…',
 
       'metodo.title': 'От диагностики<br><span style="color:var(--orange)">до реального масштаба.</span>',
@@ -1358,6 +1412,8 @@
       'team.pedro.sig':    'Партнёр-основатель · BMAI',
       'team.anna.role':    'Руководитель по работе с клиентами',
       'team.anna.bio':     'У каждого клиента, который приходит в BMAI, есть своя история. Моя работа услышать эту историю, понять, где сейчас находится бизнес, и сделать так, чтобы нужный разговор состоялся с нужным человеком. Отношения это не протокол, это присутствие.',
+      'team.ativar_audio': 'Включить звук',
+      'team.video_badge': '▶ Видео',
       'team.anna.sig':     'Руководитель по работе с клиентами · BMAI',
 
       'faq.title': 'Частые вопросы.',
