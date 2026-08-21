@@ -156,7 +156,7 @@
               '</section>'
             : '') +
 
-          '<p class="ed-assina">— BMAi</p>' +
+          '<p class="ed-assina">BMAi</p>' +
 
           // Uma conversa por edição, endereçada pelo dia.
           '<section class="bl-com" data-comentarios="' + esc(p.slug || 'edicao') + '" hidden></section>' +
