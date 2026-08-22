@@ -24,6 +24,7 @@
       'hero.stat1':   'Projetos realizados',
       'hero.stat2':   'Satisfação dos clientes',
       'hero.stat3':   'Dias até ir ao ar',
+      'hero.stat3_value': '5 a 35',
       'hero.stats_source': 'Médias apuradas em projetos BMAi entregues entre 2024 e 2026 · prazos variam por complexidade',
 
       /* QUEM SOMOS */
@@ -242,6 +243,7 @@
       'hero.stat1': 'Projects delivered',
       'hero.stat2': 'Customer satisfaction',
       'hero.stat3': 'Days to go live',
+      'hero.stat3_value': '5 to 35',
       'hero.stats_source': 'Averages from BMAi projects delivered between 2024 and 2026 · timing varies with complexity',
 
       'qs.title':     'What we do<br><span style="color:var(--orange)">in practice.</span>',
@@ -451,6 +453,7 @@
       'hero.stat1': 'Proyectos entregados',
       'hero.stat2': 'Satisfacción de los clientes',
       'hero.stat3': 'Días para salir en vivo',
+      'hero.stat3_value': '5 a 35',
       'hero.stats_source': 'Promedios de proyectos BMAi entregados entre 2024 y 2026 · los plazos varían según la complejidad',
 
       'qs.title':     'Lo que hacemos<br><span style="color:var(--orange)">en la práctica.</span>',
@@ -659,6 +662,7 @@
       'hero.stat1': 'Progetti realizzati',
       'hero.stat2': 'Soddisfazione dei clienti',
       'hero.stat3': 'Giorni per andare online',
+      'hero.stat3_value': '5 a 35',
       'hero.stats_source': 'Medie rilevate su progetti BMAi consegnati tra il 2024 e il 2026 · i tempi variano con la complessità',
 
       'qs.title':     'Che cosa facciamo<br><span style="color:var(--orange)">in concreto.</span>',
@@ -868,6 +872,7 @@
       'hero.stat1': 'Projets réalisés',
       'hero.stat2': 'Satisfaction des clients',
       'hero.stat3': 'Jours avant la mise en ligne',
+      'hero.stat3_value': '5 à 35',
       'hero.stats_source': 'Moyennes relevées sur les projets BMAi livrés entre 2024 et 2026 · les délais varient selon la complexité',
 
       'qs.title':     'Ce que nous faisons<br><span style="color:var(--orange)">concrètement.</span>',
@@ -1077,6 +1082,7 @@
       'hero.stat1': '已交付项目',
       'hero.stat2': '客户满意度',
       'hero.stat3': '上线所需天数',
+      'hero.stat3_value': '5 到 35',
       'hero.stats_source': '数据为 2024 至 2026 年间交付的 BMAi 项目平均值 · 周期随复杂度而变化',
 
       'qs.title':     '我们实际<br><span style="color:var(--orange)">做什么。</span>',
@@ -1286,6 +1292,7 @@
       'hero.stat1': 'Реализованных проектов',
       'hero.stat2': 'Довольных клиентов',
       'hero.stat3': 'Дней до запуска',
+      'hero.stat3_value': '5 до 35',
       'hero.stats_source': 'Средние значения по проектам BMAi, сданным с 2024 по 2026 год · сроки зависят от сложности',
 
       'qs.title':     'Что мы делаем<br><span style="color:var(--orange)">на практике.</span>',
