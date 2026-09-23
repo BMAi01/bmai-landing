@@ -32,6 +32,7 @@
 
   var buffer = [];
   var abertos = {}; // section -> timestamp de entrada
+  var ordemDe = {}; // section id -> índice no DOM (ordem da página)
 
   function scrollPct() {
     var h = document.documentElement;
@@ -41,12 +42,13 @@
     return p < 0 ? 0 : p > 100 ? 100 : p;
   }
 
-  function push(section, tipo, dwell) {
+  function push(section, tipo, dwell, ordem) {
     buffer.push({
       section: section,
       event_type: tipo,
       dwell_ms: dwell || 0,
       scroll_pct: scrollPct(),
+      ordem: ordem || 0,
     });
     if (buffer.length >= 20) flush();
   }
@@ -79,10 +81,10 @@
         if (en.isIntersecting) {
           if (!abertos[id]) {
             abertos[id] = agora;
-            push(id, "enter", 0);
+            push(id, "enter", 0, ordemDe[id]);
           }
         } else if (abertos[id]) {
-          push(id, "leave", agora - abertos[id]);
+          push(id, "leave", agora - abertos[id], ordemDe[id]);
           delete abertos[id];
         }
       });
@@ -94,7 +96,7 @@
   function fecharEEnviar() {
     var agora = Date.now();
     Object.keys(abertos).forEach(function (id) {
-      push(id, "leave", agora - abertos[id]);
+      push(id, "leave", agora - abertos[id], ordemDe[id]);
       delete abertos[id];
     });
     flush();
@@ -106,8 +108,12 @@
   window.addEventListener("pagehide", fecharEEnviar);
 
   function start() {
+    // querySelectorAll devolve em ordem de documento → o índice É a ordem da página.
     var sections = document.querySelectorAll("section[id]");
-    for (var i = 0; i < sections.length; i++) io.observe(sections[i]);
+    for (var i = 0; i < sections.length; i++) {
+      ordemDe[sections[i].id] = i;
+      io.observe(sections[i]);
+    }
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
