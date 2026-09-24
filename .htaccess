@@ -76,7 +76,7 @@ RewriteRule ^(.+?)/?$ $1.html [L]
   #   img https: liberado (beacon do pixel /tr + og images). 'unsafe-inline'
   #   é necessário pros scripts/styles inline e handlers onclick do site.
   # Trava frame-ancestors (anti-clickjacking), object-src e base-uri.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.bmai.com.br https://anna.bmai.space https://www.facebook.com https://connect.facebook.net; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://anna.bmai.space"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.bmai.com.br https://anna.bmai.space https://bmai.services https://www.facebook.com https://connect.facebook.net; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://anna.bmai.space"
 </IfModule>
 
 # Bloqueia acesso a fontes/temporários que não devem ser servidos (defesa extra
