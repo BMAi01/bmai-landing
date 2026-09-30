@@ -1,4 +1,9 @@
 RewriteEngine On
+# www -> sem www, direto em HTTPS (um salto só). Sem isso https://www.bmai.com.br/
+# respondia 200 e o Google contava como página separada da home (1.026
+# impressões em 90 dias, medido em 30/09/2026).
+RewriteCond %{HTTP_HOST} ^www\.bmai\.com\.br$ [NC]
+RewriteRule ^ https://bmai.com.br%{REQUEST_URI} [L,R=301]
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 

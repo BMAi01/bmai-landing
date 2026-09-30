@@ -2712,8 +2712,11 @@ html { scrollbar-gutter: stable; }
 /* Nav cols (direita) */
 .footer__cols {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
+  /* 2x2 (Soluções, Site, Legal, Contato): em 4 colunas, os ~600px ao lado
+     da marca deixavam cada coluna estreita demais pro e-mail e pros títulos
+     das páginas. */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px 48px;
 }
 .footer__cnpj {
   font-size: 14px;
@@ -2900,7 +2903,7 @@ html { scrollbar-gutter: stable; }
     gap: 40px;
     padding: 0 32px 40px;
   }
-  .footer__cols { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .footer__cols { grid-template-columns: repeat(2, 1fr); gap: 32px; }
   .footer__logo-mark { height: 28px; }
   .footer__logo-symbol { width: 32px; height: 32px; }
   .footer__bottom { padding: 20px 32px 24px; flex-direction: column; gap: 12px; align-items: flex-start; text-align: left; }
