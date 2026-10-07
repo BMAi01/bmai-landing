@@ -29,7 +29,8 @@ RewriteRule ^(.+?)/?$ $1.html [L]
   AddOutputFilterByType DEFLATE application/javascript text/javascript application/x-javascript
   AddOutputFilterByType DEFLATE application/json application/ld+json application/xml
   AddOutputFilterByType DEFLATE image/svg+xml image/x-icon
-  AddOutputFilterByType DEFLATE font/woff font/woff2 application/font-woff application/font-woff2
+  # woff2 já vem comprimido: deflate em cima só gasta CPU.
+  AddOutputFilterByType DEFLATE font/woff application/font-woff
 </IfModule>
 
 <IfModule mod_expires.c>

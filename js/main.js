@@ -115,9 +115,29 @@ const LOW_MOTION = PREFERS_REDUCE;
 /* ============================================
    PRELOADER
    ============================================ */
-window.addEventListener('load', () => {
-  setTimeout(() => document.getElementById('preloader').classList.add('done'), 200);
-});
+/* Vive inline no index.html (splash do app): sai sem esperar o window.load. */
+
+/* GSAP/ScrollTrigger chegam por CDN com defer. Espera no máximo 6s e desiste:
+   antes eram laços de 50/80ms sem fim, que giravam pra sempre se o CDN caísse. */
+function quandoGSAP(cb) {
+  const pronto = () => typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+  if (pronto()) { gsap.registerPlugin(ScrollTrigger); return cb(); }
+  const t0 = Date.now();
+  (function espera() {
+    if (pronto()) { gsap.registerPlugin(ScrollTrigger); cb(); }
+    else if (Date.now() - t0 < 6000) setTimeout(espera, 100);
+  })();
+}
+
+/* Fonte e imagem lazy mudam a altura da página depois que os gatilhos foram
+   medidos: sem refresh, pin e scrub disparam no lugar errado. */
+(function () {
+  let t;
+  const refresca = () => { clearTimeout(t); t = setTimeout(() => { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); }, 200); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresca);
+  addEventListener('load', refresca);
+  document.addEventListener('load', e => { if (e.target.tagName === 'IMG') refresca(); }, true);
+})();
 
 /* ============================================
    MOBILE NAV
@@ -296,7 +316,18 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
    ============================================ */
 const revealObs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); revealObs.unobserve(e.target); } });
-}, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+}, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+
+/* Rede: rolagem rápida ou âncora pode pular o observador. O que já passou
+   pela tela (ou está nela) aparece; nada fica com opacidade 0 pra sempre. */
+function revealRede() {
+  document.querySelectorAll('.reveal:not(.revealed)').forEach(el => {
+    if (el.getBoundingClientRect().top < innerHeight) { el.classList.add('revealed'); revealObs.unobserve(el); }
+  });
+}
+setTimeout(revealRede, 3000);
+let revealRedeT;
+addEventListener('scroll', () => { clearTimeout(revealRedeT); revealRedeT = setTimeout(revealRede, 400); }, { passive: true });
 
 function reveal(sel, stagger) {
   if (LOW_MOTION) {
@@ -1227,16 +1258,7 @@ document.querySelectorAll('section[id]').forEach(s => {
       return;
     }
     // Desktop: aguarda GSAP/ScrollTrigger carregarem (script defer)
-    const tryBuild = () => {
-      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
-        buildStack();
-        ScrollTrigger.refresh();
-      } else {
-        setTimeout(tryBuild, 50);
-      }
-    };
-    tryBuild();
+    quandoGSAP(() => { buildStack(); ScrollTrigger.refresh(); });
   }
 
   // i18n re-render
@@ -1461,11 +1483,7 @@ function _initCardStackFx() {
   // de pin + Card 2 anima durante a primeira metade no segmento 0->0.5, igual
   // primeiro card da timeline do buildStack do Metodo.)
   const tryBuild = () => {
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-      setTimeout(tryBuild, 80);
-      return;
-    }
-    gsap.registerPlugin(ScrollTrigger);
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return quandoGSAP(tryBuild);
     const card1 = stack.querySelector('.card-stack__item--1');
     const card2 = stack.querySelector('.card-stack__item--2');
     if (!card1 || !card2) return;
@@ -1538,10 +1556,7 @@ if (document.readyState === 'loading') {
 
     /* Desktop: GSAP ScrollTrigger pin + scrub */
     const tryBuild = () => {
-      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-        return setTimeout(tryBuild, 80);
-      }
-      gsap.registerPlugin(ScrollTrigger);
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return quandoGSAP(tryBuild);
 
       /* Estado inicial — todos cards mostrando o front */
       gsap.set(inners, { rotationY: 0, transformPerspective: 1800, transformOrigin: 'center center' });
@@ -1740,9 +1755,7 @@ if (document.readyState === 'loading') {
 /* ============================================
    GSAP SCROLL FX
    ============================================ */
-addEventListener('load', function () {
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-  gsap.registerPlugin(ScrollTrigger);
+addEventListener('load', () => quandoGSAP(function () {
 
   const isMobile = matchMedia('(max-width: 768px)').matches;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1950,7 +1963,7 @@ addEventListener('load', function () {
   }
 
   if (isMobile) ScrollTrigger.config({ limitCallbacks: true });
-});
+}));
 
 /* ============================================
    SECTION DOTS — scroll spy + click smooth

@@ -17,6 +17,20 @@
   <link rel="canonical" href="https://bmai.com.br/">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0d1b2a">
+  <style>
+    /* Splash da home (porte do app). Inline de propósito: o style.min.css chega por preload. */
+    .splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#0c1a2a;transition:opacity .4s ease,visibility .4s ease}
+    .splash.done{opacity:0;visibility:hidden;pointer-events:none}
+    .splash__espera{display:flex;flex-direction:column;align-items:center;gap:28px;animation:bmai-espera-entra 1.3s cubic-bezier(.22,1,.36,1) both}
+    .splash__marca{color:#db5500;filter:drop-shadow(0 6px 14px rgba(219,85,0,.35));animation:bmai-espera-respira 3.6s ease-in-out infinite}
+    .splash__pas{position:relative;display:block;width:22px;height:22px}
+    .splash__pas i{position:absolute;left:50%;top:50%;display:block;width:2px;height:6.5px;margin:-11px 0 0 -1px;border-radius:1px;background:rgba(242,238,233,.9);transform-origin:1px 11px;transform:rotate(var(--a)) translate(0,-11px);opacity:.15;animation:bmai-espera-apaga 1s linear infinite}
+    .splash__sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    @keyframes bmai-espera-respira{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+    @keyframes bmai-espera-apaga{0%{opacity:1}100%{opacity:.15}}
+    @keyframes bmai-espera-entra{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+    @media (prefers-reduced-motion:reduce){.splash__marca,.splash__pas i,.splash__espera{animation:none!important}.splash__pas i{opacity:.45}.splash__espera{opacity:1}}
+  </style>
   <!-- CSS não-bloqueante via preload+onload (mantém fallback no noscript) -->
   <link rel="preload" as="style" href="css/style.min.css?v=20260930-rodape" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/style.min.css?v=20260930-rodape"></noscript>
@@ -58,7 +72,9 @@
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
     n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    var go=function(){s.parentNode.insertBefore(t,s)};
+    /* fbevents.js (~220 KB) fora do caminho crítico: a fila fbq guarda o PageView. */
+    if('requestIdleCallback' in f)f.requestIdleCallback(go,{timeout:3000});else setTimeout(go,3000)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1211008134323057');
     fbq('track', 'PageView');
@@ -135,10 +151,28 @@
 </head>
 <body>
 
-  <!-- PRELOADER -->
-  <div class="preloader" id="preloader">
-    <div class="preloader__spinner"></div>
+  <!-- SPLASH: mesma espera do app (saasbmai/components/shared/bmai-loading.tsx).
+       CSS e saída inline: desenha no primeiro quadro e não depende do main.min.js. -->
+  <div class="splash" id="preloader">
+    <div class="splash__espera" role="status" aria-busy="true">
+      <svg class="splash__marca" viewBox="0 0 800 800" width="34" height="34" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M716.08,368.95c-61.71-22.82-117.29-57.71-163.98-101.89-.17-.14-.33-.3-.47-.44-6.26-5.91-12.34-11.98-18.24-18.24-.14-.14-.3-.3-.44-.47-44.18-46.7-79.07-102.28-101.89-163.99L400,0l-31.05,83.92c-22.82,61.71-57.71,117.29-101.89,163.99-6.18,6.57-12.58,12.97-19.15,19.15-46.69,44.18-102.28,79.07-163.98,101.89L0,400l83.92,31.05c61.71,22.82,117.29,57.71,163.98,101.89.17.14.33.3.47.44,6.26,5.91,12.34,11.98,18.24,18.24.14.14.3.3.44.47,44.18,46.69,79.07,102.28,101.89,163.98l31.05,83.92,31.05-83.92c22.82-61.71,57.71-117.29,101.89-163.98,6.18-6.57,12.58-12.97,19.15-19.15,46.69-44.18,102.28-79.07,163.98-101.89l83.92-31.05-83.92-31.05ZM371.27,603.78h-28.7c0-11.59-1.46-23.02-4.25-34.08-2.79-11.04-6.95-21.69-12.36-31.71-6.32-11.73-14.38-22.63-23.98-32.23l-7.73-7.73c-9.6-9.6-20.5-17.66-32.23-23.98-4.14-2.24-8.42-4.28-12.75-6.07-16.67-6.9-34.66-10.54-53.04-10.54v-28.7h175.05v175.05ZM371.27,371.27h-175.05v-28.7c23.18,0,45.76-5.8,65.79-16.61,11.73-6.32,22.63-14.38,32.23-23.98l7.73-7.73c9.6-9.6,17.66-20.5,23.98-32.23,2.24-4.14,4.28-8.42,6.07-12.75,6.9-16.67,10.54-34.66,10.54-53.04h28.7v175.05ZM603.78,457.43c-23.18,0-45.76,5.8-65.79,16.61-11.73,6.32-22.63,14.38-32.23,23.98l-7.73,7.73c-9.6,9.6-17.66,20.5-23.98,32.23-2.23,4.14-4.28,8.42-6.07,12.75-6.9,16.67-10.54,34.66-10.54,53.04h-28.7v-175.05h175.05v28.7ZM603.78,371.27h-175.05v-175.05h28.7c0,11.59,1.46,23.02,4.25,34.08,2.79,11.04,6.95,21.69,12.36,31.71,6.32,11.73,14.38,22.63,23.98,32.23l7.73,7.73c9.6,9.6,20.5,17.66,32.23,23.98,4.14,2.24,8.42,4.28,12.75,6.07,16.67,6.9,34.66,10.54,53.04,10.54v28.7Z"/></svg>
+      <span class="splash__pas" aria-hidden="true"><i style="--a:0deg;animation-delay:-1.000s"></i><i style="--a:30deg;animation-delay:-0.917s"></i><i style="--a:60deg;animation-delay:-0.833s"></i><i style="--a:90deg;animation-delay:-0.750s"></i><i style="--a:120deg;animation-delay:-0.667s"></i><i style="--a:150deg;animation-delay:-0.583s"></i><i style="--a:180deg;animation-delay:-0.500s"></i><i style="--a:210deg;animation-delay:-0.417s"></i><i style="--a:240deg;animation-delay:-0.333s"></i><i style="--a:270deg;animation-delay:-0.250s"></i><i style="--a:300deg;animation-delay:-0.167s"></i><i style="--a:330deg;animation-delay:-0.083s"></i></span>
+      <span class="splash__sr">Carregando a BMAi</span>
+    </div>
   </div>
+  <script>
+  (function(){
+    var el=document.getElementById('preloader'),feito=false,visto=false;
+    try{visto=sessionStorage.getItem('bmai-splash')==='1';sessionStorage.setItem('bmai-splash','1');}catch(e){}
+    function sai(){if(feito)return;feito=true;el.classList.add('done');setTimeout(function(){el.remove();},500);document.dispatchEvent(new Event('splash:fim'));}
+    setTimeout(sai,visto?600:2500);
+    var css=new Promise(function(r){var l=document.querySelector('link[href*="style.min.css"]');if(!l||l.rel==='stylesheet'||l.sheet)return r();l.addEventListener('load',r);l.addEventListener('error',r);});
+    var dom=new Promise(function(r){if(document.readyState!=='loading')r();else document.addEventListener('DOMContentLoaded',r);});
+    var fontes=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    /* Mínimo de 700ms na 1ª visita: abaixo disso a espera vira piscada. */
+    var t0=Date.now();Promise.all([css,dom,fontes]).then(function(){setTimeout(sai,Math.max(150,(visto?0:700)-(Date.now()-t0)));});
+  })();
+  </script>
 
   <!-- SCROLL PROGRESS -->
   <div class="scroll-progress" id="scrollProgress"></div>
@@ -995,7 +1029,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js" crossorigin="anonymous"></script>
 
   <script defer src="js/i18n.min.js?v=20260930-rev81"></script>
-  <script defer src="js/main.min.js?v=20260820-rev76"></script>
+  <script defer src="js/main.min.js?v=20261007-rev77"></script>
   <!-- Métricas de retenção/evasão (anônimas) → bmai.services/admin/seo -->
   <script defer src="js/lp-metrics.js?v=20260923-rev2"></script>
 
@@ -1095,10 +1129,13 @@
     // fica com a marca d'água: uma cena PARADA não vale a GPU de um celular.
     if (fraco || (estreito && reduz)) return;
     var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function load(src){ return new Promise(function(res,rej){ var s=document.createElement('script'); s.src=src; s.async=true; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
-    load('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
-      .then(function(){ return load('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/SVGLoader.js'); })
-      .then(function(){ return fetch('assets/images/simbolo-laranja.svg').then(function(r){ return r.text(); }); })
+    /* async=false: os dois baixam EM PARALELO e executam na ordem. Antes era um
+       depois do outro, de dois CDNs, e a arte entrava tarde. Agora é local
+       (mesmo r128 do blog, md5 conferido com o cdnjs). */
+    function load(src){ return new Promise(function(res,rej){ var s=document.createElement('script'); s.src=src; s.async=false; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+    var svgTxt = fetch('assets/images/simbolo-laranja.svg').then(function(r){ return r.text(); });
+    Promise.all([load('js/vendor/three.min.js'), load('js/vendor/SVGLoader.min.js')])
+      .then(function(){ return svgTxt; })
       .then(function(txt){ var m = txt.match(/\sd="([^"]+)"/); if (m) build(m[1]); })
       .catch(function(e){ console.warn('[hero3d]', e); });
 
