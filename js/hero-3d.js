@@ -525,6 +525,10 @@
     g.shadowColor = 'rgba(8,14,22,.5)';
     g.shadowBlur = 56;
     g.shadowOffsetY = 22;
+    // Redução de ~1500px pra caixa: sem 'high' o navegador usa o filtro
+    // barato e a folha fica borrada até o 3D chegar.
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
     g.drawImage(pagina, x, y, dw, dh);
     g.restore();
   }
@@ -895,8 +899,8 @@
   // tela, então 589 KB não têm pressa nenhuma de competir com o primeiro
   // desenho da página.
   function ocioso(fn) {
-    if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 2500 });
-    else setTimeout(fn, 500);
+    if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 600 });
+    else setTimeout(fn, 200);
   }
 
   function carregarThree() {
