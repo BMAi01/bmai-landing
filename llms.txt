@@ -13,6 +13,8 @@
 - [Site institucional](https://bmai.com.br/): visão geral, método, cases e contato
 - [Por que implementar IA sem reestruturar processos falha](https://bmai.com.br/por-que-implementar-ia-sem-reestruturar-processos-falha): a tese central da BMAI
 - [Como escolher uma empresa de IA em Brasília](https://bmai.com.br/como-escolher-empresa-de-ia-brasilia): guia com 6 critérios objetivos
+- [Agentes de IA para empresas](https://bmai.com.br/agentes-de-ia-para-empresas): o que é um agente de IA, o que ele faz numa PME, integração com CRM/ERP, custo e prazo
+- [Automação de processos com IA](https://bmai.com.br/automacao-de-processos-com-ia): o que automatizar, automação simples x IA x agente, como calcular o retorno
 - [G4 OS vale a pena para PME?](https://bmai.com.br/g4-os-alternativa-pme): plataforma self-serve vs. implementação feita pra você
 - [IA para clínicas](https://bmai.com.br/ia-para-clinicas)
 - [IA para agências](https://bmai.com.br/ia-para-agencias)
